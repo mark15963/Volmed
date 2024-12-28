@@ -1,0 +1,175 @@
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    src: url(fonts/Montserrat.ttf) format('ttf');
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat';
+}
+
+html {
+    width: 100vw;
+    min-width: 551px;
+    height: 100vh;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #61bdff;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+header {
+    display: flex;
+    height: 15%;
+    width: 100%;
+    margin: 0;
+    column-gap: 0px;
+    padding: 10px ;
+    justify-content: center;
+    align-items: center;
+    background-color: #187dc5;
+}
+
+a{
+    align-content: center;
+    justify-content: center;
+    height: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#imgL, #imgR {
+    align-content: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.mainTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.mainBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+    width: 100%;
+    margin-top: 5%;
+    margin-bottom: 2%;
+    padding: 0 20px;
+    background-color: #0073C7;
+    border-style: solid;
+    border-radius: 15px;
+}
+
+.topBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 2% 140px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 260px;
+    gap: 10px;
+}
+
+#searchtitle {
+    font-size: 25px;
+    font-weight: 700;
+    color: aliceblue;
+}
+
+#searchfield {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+    height: 40px;
+    border-radius: 45px;
+    padding-left: 20px;
+    font-size: 15px;
+}
+
+#submit {
+    cursor: pointer;
+    width: fit-content;
+    padding: 6px 10px;
+    font-size: 15px;
+    border-radius: 30px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    font-size: 17px;
+    text-align:left;
+    color: aliceblue;
+    height: 100%;
+    width: 100%;
+    padding: 10px 20px;
+}
+#list{
+    margin-bottom: 10px;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+
+}
+
+#home {
+    font-size: 25px;
+    height:100%;
+    color:aliceblue; 
+    text-decoration: none;
+    margin: 0;
+    text-align: center;
+}
+

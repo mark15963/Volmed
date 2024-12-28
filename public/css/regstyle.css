@@ -1,0 +1,273 @@
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    src: url(fonts/Montserrat.ttf) format('ttf');
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat';
+}
+
+html{
+    width: 100%;
+    height: 100%;
+}
+
+body{
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #61bdff;
+    overflow-x: hidden;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+header {
+    display: flex;
+    height: 15%;
+    width: 100%;
+    margin: 0;
+    column-gap: 0;
+    padding: 10px ;
+    justify-content: center;
+    align-items: center;
+    background-color: #187dc5;
+}
+
+a{
+    align-content: center;
+    justify-content: center;
+    height: 85%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#imgL, #imgR {
+    align-content: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.mainTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.mainBlock{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    background-color: #0073C7;
+    border-style: solid;
+    border-radius: 15px;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    height: 100%;    
+    width: 100%;
+    padding: 2% 5%;
+}
+
+.title{
+    display: flex;
+    flex-direction: column;
+    color: aliceblue;
+    font-size: 30px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.info p{
+    margin-top: 0;
+    margin-bottom: 15px;
+    margin-left: 0;
+    height: 20px;
+    font-size: 20px;
+    font-weight: 300;
+    color: aliceblue;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+    height: 100%;
+    color: aliceblue;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.topForms{
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+    width: 100%;
+}
+
+.topFormsA, .topFormsB, .topFormsC{
+    width: 100%;
+}
+
+.block{
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.block p{
+    margin-bottom: 5px;
+}
+b#title{
+    font-size: 19px;
+}
+
+.blockSex{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+    width: 100%;
+    gap: 5px;
+}
+
+div.blockSex p{
+    height: 10px;
+    margin-bottom: 10px;
+}
+
+#radio{
+    display: flex;
+    width: 100%;
+}
+
+input#sexF.form-control{
+    width: 20px;
+}
+
+input#sexM.form-control{
+    width: 20px;
+}
+
+.field{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    width: calc(100% - 20px);
+    gap: 5px;
+    height: 35px;
+    border-radius: 20px;
+    padding-left: 15px;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#submit{
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 15px;
+}
+
+#title{
+    font-size: 15px;
+    font-weight: 700;
+    color: aliceblue;
+}
+
+.reg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.text {
+    height: 150px;
+    width: inherit;
+    resize: none;
+    padding-left: 5px;
+    font-size: 13px;
+}
+
+.form-control{
+    resize: none;
+    height: 21px;
+    width: 100%;
+    padding-left: 3px;
+    font-size: 12px;
+}
+
+#mkb{
+    width: 100%;
+    max-width: 450px;
+}
+
+.updbut-area{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 6px 10px;
+}
+
+.updbut{
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 30px;
+    font-size: 15px;
+}
+
+#back{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 400;
+    text-align: center;
+    color: aliceblue;
+    text-decoration: none;
+    margin: 10px 0;
+    height: 100%;
+}

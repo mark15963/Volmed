@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГБУ «Городская больница Волновахского района» - Поиск</title>
+    <link rel="stylesheet" href="css/search.css">
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.ico">
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.php" >
+                <img id="imgL" src="imgs/герб_ямала.png">
+            </a>
+            <div id="mainTitle">ГБУ «Городская больница Волновахского района»</div>
+            <a href="index.php">
+                <img id="imgR"src="imgs/герб_ямала.png">
+            </a>
+        </header>
+        <main>
+            <div class="mainBlock">
+                <div class="topBlock">
+                    <form class="form" action="search.php" method="post">
+                        <label id="searchtitle" for="searchfield">Поиск пациентов:</label>
+                        <input id="searchfield" type="text" name="id" placeholder="№ Истории болезни" autocomplete="off" />
+                        <button type="submit" id="submit" name="submit">Поиск</button>
+                    </form>
+                </div>
+                <div class="info">
+                    
+                            </div>
+                            
+            
+                            <button id="printbut" onclick="window.print()">Печать</button>
+                            
+                <div id="back">
+                        <a id="back" href="index.php">Вернуться на главную</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
