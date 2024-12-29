@@ -33,11 +33,11 @@ body {
 
 header {
     display: flex;
-    height: 15%;
+    height: fit-content;
     width: 100%;
     margin: 0;
-    column-gap: 50px;
-    padding: 15px 8%;
+    column-gap: 0px;
+    padding: 10px ;
     justify-content: center;
     align-items: center;
     background-color: #187dc5;
@@ -53,23 +53,25 @@ a{
     margin-right: 50px;
 }
 
-#imgL, #imgR {
+#logo {
     align-content: center;
     justify-content: center;
-    height: 100%;
+    height: 100px;
+    margin: 0 25px;
 }
 
-#mainTitle {
+#headTitle {
     display: flex;
     justify-content: center;
     align-items: center;
     color: aliceblue;
-    font-size: 150%;
+    font-size: 30px;
     font-weight: 700;
     text-align: center;
     width: 100%;
     min-width: 110px;
-    height: 100%;
+    height: fit-content;
+    margin: 5px 5px;
 }
 
 main {
