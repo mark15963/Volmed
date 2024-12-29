@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta lang="ru">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <title>ГБУ «Городская больница Волновахского района» - Главная страница</title>
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.ico">
+</head>
+
+<body>
+    <div id="preloader"></div>
+    <div class="container">
+        <header>
+            <img id="logo" src="imgs/герб_ямала.png" />
+            <h1 id="headTitle">ГБУ «Городская больница Волновахского района»</h1>
+            <img id="logo" src="imgs/герб_ямала.png">
+        </header>
+        <main>
+            <div class="mainBlock">
+                
+                <form id="search-form" action="/search" method="POST">
+                    <label id="searchtitle" for="searchfield">Поиск пациентов:</label>
+                    <input id="searchfield" type="text" name="id" placeholder="№ Истории болезни" autocomplete="off"/>
+                    <button type="submit" id="submit" name="submit" >Поиск</button>
+                </form>
+
+                <script>
+                   
+                </script>
+                
+                <div class="block">
+                    <p><a id="list" href="patients.html" style="color:aliceblue; text-decoration:none;font-family:montserrat;">Список пациентов</a>
+                    </p>
+                </div>
+                <div class="block">
+                    <p><a id="regbut" href="register.html" style="color:aliceblue; text-decoration:none;font-family:montserrat;">Новый пациент</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!--preloader-->
+    <script>
+        var loader = document.getElementById("preloader");
+
+        window.addEventListener("load", function () {
+            preloader.style.display = "none"
+        })
+    </script>
+
+</body>
+
+</html>

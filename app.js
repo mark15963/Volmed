@@ -21,6 +21,11 @@ con.connect(err => {
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}))
 
+const routes = { 
+    search: '/search', 
+    register: '/register' 
+}
+
 app.get("/", (req, res) =>{
   res.render('index')
 })
@@ -32,7 +37,7 @@ app.post('/search', (req, res) =>{
   con.query(query, [id], (err,results)=>{
     if (err) throw err;
     if (results.length>0) {
-      res.render('results', {
+      res.render('search', {
         data: results[0]
       })
     }
@@ -42,14 +47,12 @@ app.post('/search', (req, res) =>{
   })
 })
 
+app.use(express.static('public'));
+
+
+
 
 /*
-
-const routes = { 
-  search: '/search', 
-  register: '/signup' 
-}
-
 app.use(express.static(__dirname+'/public'));
 */
 /*
@@ -62,10 +65,6 @@ app.use((req, res) =>{
 app.get('/', function(req, res){
   res.sendFile(__dirname+'/public/index');
 })
-
-
-
-
 
 
 

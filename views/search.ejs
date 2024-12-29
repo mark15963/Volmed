@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГБУ «Городская больница Волновахского района» - Поиск</title>
+    <link rel="stylesheet" href="css/search.css">
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.ico">
+
+<body>
+    <div class="container">
+        <header>
+            <a href="/" >
+                <img id="logo" src="imgs/герб_ямала.png">
+            </a>
+            <div id="headTitle">ГБУ «Городская больница Волновахского района»</div>
+            <a href="/">
+                <img id="logo"src="imgs/герб_ямала.png">
+            </a>
+        </header>
+        <main>
+            <div class="mainBlock">
+                <div class="topBlock">
+                    <form class="form" action="/search" method="post">
+                        <label id="searchtitle" for="searchfield">Поиск пациентов:</label>
+                        <input id="searchfield" type="text" name="id" placeholder="№ Истории болезни" autocomplete="off" />
+                        <button type="submit" id="submit" name="submit">Поиск</button>
+                    </form>
+                </div>
+                <div class="info">
+                    <div class='topForms'>
+                        <div class='topFormsA'>
+                            <p><b id='title'>№ Истории болезни: </b><br><%= data.id%></p>
+                            <p><b id='title'>Дата поступления: </b><br><%= data.created_at%></p>
+                            <p><b id='title'>ФИО: </b><br><%= data.lastName%> <%= data.firstName%> <%= data.patr%></p>
+                        </div>
+                        <div class='topFormsB'>
+                            <p><b id='title'>Дата рождения: </b><br><%= data.birthDay %></p>
+                            <p><b id='title'>Пол: </b><br><%= data.sex %></p>
+                        </div>
+                        <div class='topFormsC'>
+                            <p><b id='title'>Номер телефона: </b><br><%= data.phone %></p>
+                            <p><b id='title'>E-Mail: </b><br><%= data.email %></p>
+                            <p><b id='title'>Адрес: </b><br><%= data.address %></p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class='bottomForms'>
+                        <p><b id='title'>Жалобы при поступлении: </b><br><%= data.complaint %></p>
+                        <br>
+                        <p><b id='title'>История настоящего заболевания: </b><br><%= data.anam%></p>
+                        <br>
+                        <p><b id='title'>Анамнез жизни: </b><br><%= data.life %></p>
+                        <br>
+                        <p><b id='title'>Настоящее состояние больного: </b><br><%= data.status %></p>
+                        <br>
+                        <p><b id='title'>Клинический диагноз: </b><br><%= data.mkb %><br><%= data.diag %></p>
+                        <br>
+                        <p><b id='title'>Сопутствующие заболевания: </b><br><%= data.sop_zab %></p>
+                        <br>
+                        <p><b id='title'>Рекомендации: </b><br><%= data.rec %></p><br>
+                    </div>
+                </div>
+                            
+            
+                <button id="printbut" onclick="window.print()">Печать</button>
+                            
+                <div id="back">
+                        <a id="back" href="/">Вернуться на главную</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
