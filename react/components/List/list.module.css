@@ -1,0 +1,64 @@
+.container{
+  height: fit-content;
+  width: 90%;
+  box-sizing: border-box;
+  background-color: #0073C7;
+  border-style: solid;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.list{
+  height: fit-content;
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #000;
+  box-sizing: border-box;
+}
+
+/*
+table { 
+  box-sizing: border-box;
+  border: none;
+}
+
+td, th{
+  border: none;
+  color: aliceblue;
+  background-color: #0073C7;
+}
+*/
+
+.controll{
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.buttonContainer{
+  width:100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.backButton{
+  cursor: pointer;
+  width: fit-content;
+  margin: 10px;
+  padding: 6px 10px;
+  font-size: 15px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

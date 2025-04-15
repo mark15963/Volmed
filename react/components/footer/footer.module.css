@@ -1,0 +1,15 @@
+.container{
+    margin: 0;
+    padding: 0;
+    height: 100px;
+    display: flex;
+    background-color: rgb(75, 79, 82);
+    color: #fff;
+}
+.footer{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}

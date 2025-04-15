@@ -1,0 +1,27 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: aliceblue;
+}
+
+.skeleton{
+    margin-bottom: 10px;
+    
+}
+
+.skeletonItem {
+    margin-bottom: 10px;
+    width: 100%;
+}
+  
+.react-loading-skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  color:#488ab9;
+}
+  
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
