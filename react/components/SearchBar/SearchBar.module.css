@@ -1,0 +1,40 @@
+.searcharea{
+    display: flex;
+    align-items: center;
+}
+
+form{
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:10px
+}
+
+.searchtitle {
+    font-size: 25px;
+    font-weight: 700;
+    color: aliceblue;
+}
+
+.searchfield {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 350px;
+    gap: 5px;
+    height: 40px;
+    border-radius: 45px;
+    padding-left: 20px;
+    font-size: 15px;
+}
+
+.submit {
+    cursor: pointer;
+    width: fit-content;
+    padding: 6px 10px;
+    font-size: 15px;
+    border-radius: 30px;
+}
