@@ -11,20 +11,18 @@ export const SearchBar = () => {
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        setSearchValue(e.target.value)
-        setError('')
+        const inputValue = e.target.value
+        if (/^\d*$/.test(inputValue)) {
+            setSearchValue(e.target.value)
+            setError('')
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         if (!searchValue.trim()) {
-            setError('Please enter a patient ID')
-            return
-        }
-
-        if (isNaN(searchValue)) {
-            setError('Patient ID must be a number')
+            setError('Введите № истории болезни')
             return
         }
 
@@ -36,7 +34,7 @@ export const SearchBar = () => {
 
             if (!response.ok) {
                 if (response.status === 404) {
-                    throw new Error('Patient not found')
+                    throw new Error('Пациент не найден')
                 }
                 throw new Error('Failed to fetch patient data')
             }
@@ -70,6 +68,8 @@ export const SearchBar = () => {
                     onChange={handleChange}
                     placeholder="№ Истории болезни"
                     autoComplete="off"
+                    inputMode='numeric'
+                    pattern='[0-9*'
                 />
                 <Button
                     type='default'
@@ -81,12 +81,12 @@ export const SearchBar = () => {
                     disabled={isLoading}
                 >
                 </Button>
-                {error && (
-                    <div className={styles.error}>
-                        {error}
-                    </div>
-                )}
             </div>
+            {error && (
+                <div className={styles.error}>
+                    {error}
+                </div>
+            )}
         </form>
     )
 }

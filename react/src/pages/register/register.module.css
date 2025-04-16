@@ -42,7 +42,6 @@ form{
     display: flex;
     gap: 10px;
     width: 100%;
-    grid-area: topForms;
     border-bottom: 1px solid black;
 }
 
@@ -57,7 +56,7 @@ form{
 .bottomForms{
     display: flex;
     flex-direction: column;
-    grid-area: bottomForms;
+    width: 100%;
 }
 
 .title{
@@ -90,4 +89,13 @@ span{
 
 .backButton:hover{
     background-color: #e0e0e0;
+}
+
+.formLabel {
+    color:aliceblue;
+    font-weight: 500;
+}
+  
+.requiredLabel {
+    color: #ff4d4f;
 }

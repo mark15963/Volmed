@@ -1,7 +1,8 @@
 .searcharea{
     display: flex;
     align-items: center;
-    gap:10px
+    gap:10px;
+    color: aliceblue;
 }
 
 form{
@@ -10,7 +11,9 @@ form{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap:10px
+    gap:10px;
+    color: aliceblue;
+
 }
 
 .searchtitle {

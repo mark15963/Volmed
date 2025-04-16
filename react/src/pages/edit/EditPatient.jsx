@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { RegisterPatient } from '../register/RegisterPatient';
+import { usePageTitle } from '../../../components/PageTitle/PageTitle';
 
 export const EditPatient = () => {
     const { id } = useParams();
@@ -25,7 +26,12 @@ export const EditPatient = () => {
         fetchPatient();
     }, [id]);
 
-    const handleSubmitSuccess = (updatedPatient) => {
+    usePageTitle(patientData ?
+        `Редактирование: ${patientData.lastName}` :
+        "Новый пациент");
+
+    const handleSubmitSuccess = (responseData) => {
+        const updatedPatient = responseData.patient || responseData
         navigate(`/search/${id}`, {
             state: {
                 results: [updatedPatient],
@@ -34,9 +40,9 @@ export const EditPatient = () => {
         });
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!patientData) return <div>Patient not found</div>;
+    if (loading) return <div>Загрузка...</div>;
+    if (error) return <div>Ошибка: {error}</div>;
+    if (!patientData) return <div>Пациент не найден</div>;
 
     return (
         <RegisterPatient

@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { usePageTitle } from '../../../components/PageTitle/PageTitle';
 import styles from './searchResults.module.css';
 
 export const SearchResults = () => {
@@ -12,22 +13,22 @@ export const SearchResults = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Improved state handling
-    const results = state?.results || [];
-    const searchQuery = state?.searchQuery ||
-        (data ? `${data.lastName} ${data.firstName}` : '');
+    usePageTitle(
+        loading ? "Загрузка..." :
+            error ? "Ошибка" :
+                !data ? "Пациент не найден" :
+                    state?.searchQuery ? `Результаты поиска: ${data.lastName}` :
+                        `Карта пациента: ${data.lastName} ${data.firstName}`
+    );
 
     useEffect(() => {
         const fetchPatientData = async () => {
             try {
                 let patientData;
 
-                // First try to use state data if available
                 if (state?.results?.length > 0) {
                     patientData = state.results[0];
-                }
-                // Fall back to API if we have an ID
-                else if (id) {
+                } else if (id) {
                     const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
                     patientData = response.data;
                 }
@@ -47,8 +48,25 @@ export const SearchResults = () => {
         fetchPatientData();
     }, [id, state]);
 
+    useEffect(() => {
+        if (loading) {
+            document.title = "Загрузка данных пациента...";
+        } else if (error) {
+            document.title = "Ошибка загрузки";
+        } else if (!data) {
+            document.title = "Пациент не найден";
+        } else {
+            document.title = `Карта пациента: ${data.lastName} ${data.firstName}${data.patr ? ` ${data.patr}` : ''}`;
+        }
+
+        // Cleanup function to reset title when component unmounts
+        return () => {
+            document.title = "ГБУ «Городская больница Волновахского района»"; // Your default app title
+        };
+    }, [loading, error, data]);
+
     const handleBack = () => {
-        navigate(-1)
+        navigate('/')
     }
 
     const handlePrint = () => {
