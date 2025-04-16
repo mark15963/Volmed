@@ -214,10 +214,10 @@ export const EditButton = () => {
                 return;
             }
 
-            console.log("Attempting to fetch patient with ID:", patientId); // Debug log
+            console.log("Attempting to fetch patient with ID:", patientId);
 
             const response = await axios.get(`http://localhost:5000/api/patients/${patientId}`);
-            console.log("Response received:", response.data); // Debug log
+            console.log("Response received:", response.data);
 
             if (!response.data) {
                 throw new Error("Empty response from server");
@@ -254,13 +254,10 @@ export const EditButton = () => {
             });
 
             if (error.response) {
-                // Server responded with a status code outside 2xx
                 alert(`Server error: ${error.response.status} - ${error.response.data?.message || 'No details'}`);
             } else if (error.request) {
-                // Request was made but no response received
                 alert("No response from server - is it running?");
             } else {
-                // Something else happened
                 alert(`Error: ${error.message}`);
             }
         }
@@ -274,7 +271,7 @@ export const EditButton = () => {
     const submitUpdate = async () => {
         try {
             await axios.put(`http://localhost:5000/api/patients/${patientId}`, editPatient)
-            handleClick() // Close form after successful update
+            handleClick()
         } catch (error) {
             console.log("Error updating patient:", error)
         }
@@ -313,7 +310,7 @@ export const EditButton = () => {
                         </button>
                     </div>
 
-                    {editPatient.lastName && ( // Only show form if data is loaded
+                    {editPatient.lastName && (
                         <div className={styles.editTable}>
 
                             <input
