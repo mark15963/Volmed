@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Main } from '../../src/pages/main/main'
 import { SearchResults } from "../../src/pages/SearchResults/searchRes";
-import { List } from '../List/list'
+import { List } from "../../src/pages/List of patients/list";
 import { RegisterPatient } from "../../src/pages/register/RegisterPatient";
 import { EditPatient } from "../../src/pages/edit/EditPatient"
 

@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Input, Form, Alert, Radio, DatePicker, Select } from "antd";
+import { Button, Input, Form, Alert, Radio, DatePicker, Select } from "antd"
 const { Option } = Select
-import styles from './register.module.css'
 import moment from 'moment'
+import { usePageTitle } from '../../../components/PageTitle/PageTitle'
 
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import weekday from 'dayjs/plugin/weekday'
+import localeData from 'dayjs/plugin/localeData'
+
+import styles from './register.module.css'
 
 export const RegisterPatient = ({
     initialValues = null,
@@ -18,6 +25,8 @@ export const RegisterPatient = ({
     const [error, setError] = useState('');
     const [form] = Form.useForm()
 
+    usePageTitle("Регистрация пациента");
+
     useEffect(() => {
         if (initialValues) {
             form.setFieldsValue({
@@ -27,75 +36,31 @@ export const RegisterPatient = ({
         }
     }, [initialValues, form]);
 
-    /*
-        const handleSearchChange = (e) => {
-            setSearchValue()
-        }
-    */
+
     const handleChange = (e) => {
         setSearchValue(e.target.value)
         setError('')
     }
-    /*
-        const handleSearchSubmit = async (e) => {
-            e?.preventDefault();
-    
-            // Validate input
-            if (!searchValue.trim()) {
-                setError('Пожалуйста, введите номер истории болезни');
-                return;
-            }
-    
-            if (isNaN(searchValue)) {
-                setError('Номер истории болезни должен быть числом');
-                return;
-            }
-    
-            setIsLoading(true);
-            setError('');
-    
-            try {
-                const response = await fetch(`http://localhost:5000/api/patients/${searchValue}`);
-    
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('Пациент не найден');
-                    }
-                    throw new Error('Ошибка при получении данных пациента');
-                }
-    
-                const patientData = await response.json();
-    
-                // Fill form with existing patient data
-                form.setFieldsValue({
-                    lastName: patientData.lastName,
-                    firstName: patientData.firstName,
-                    patr: patientData.patr,
-                    sex: patientData.sex,
-                    birthDay: moment(patientData.birthDay).format('YYYY-MM-DD'),
-                    phone: patientData.phone,
-                    address: patientData.address,
-                    complaint: patientData.complaint,
-                    anam: patientData.anam,
-                    life: patientData.life,
-                    status: patientData.status,
-                    mkb: patientData.mkb,
-                    diag: patientData.diag,
-                    sop_zab: patientData.sop_zab,
-                    rec: patientData.rec
-                });
-    
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-    */
+
+    dayjs.extend(updateLocale);
+    dayjs.extend(weekday);
+    dayjs.extend(localeData);
+
+    const datePickerLocale = {
+        ...dayjs.localeData('ru'),
+        firstDayOfWeek: 1,
+    };
+
+    dayjs.updateLocale('ru', {
+        weekStart: 1,
+        weekdaysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+    });
+
+    dayjs.locale('ru');
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Validate input
         if (!searchValue.trim()) {
             setError('Please enter a patient ID')
             return
@@ -121,10 +86,9 @@ export const RegisterPatient = ({
 
             const patientData = await response.json()
 
-            // Navigate to results page with the patient data
             navigate('/search', {
                 state: {
-                    results: [patientData], // Wrap in array to match table structure
+                    results: [patientData],
                     searchQuery: searchValue
                 }
             })
@@ -213,15 +177,16 @@ export const RegisterPatient = ({
                             <div className={styles.topForms}>
                                 <div className={styles.topFormsA}>
                                     <Form.Item
-                                        label="Фамилия"
+                                        label={<span className={styles.formLabel}>Фамилия</span>}
                                         name="lastName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите фамилию' }]}
+
                                     >
                                         <Input />
                                     </Form.Item>
 
                                     <Form.Item
-                                        label="Имя"
+                                        label={<span className={styles.formLabel}>Имя</span>}
                                         name="firstName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите имя' }]}
                                     >
@@ -229,7 +194,7 @@ export const RegisterPatient = ({
                                     </Form.Item>
 
                                     <Form.Item
-                                        label="Отчество"
+                                        label={<span className={styles.formLabel}>Отчество</span>}
                                         name="patr"
                                     >
                                         <Input />
@@ -238,47 +203,50 @@ export const RegisterPatient = ({
 
                                 <div className={styles.topFormsB}>
                                     <Form.Item
-                                        label="Пол"
+                                        label={<span className={styles.formLabel}>Пол</span>}
                                         name="sex"
                                     >
                                         <Radio.Group>
-                                            <Radio value="Мужской">М</Radio>
-                                            <Radio value="Женский">Ж</Radio>
+                                            <Radio style={{ color: 'aliceblue' }} value="Мужской">М</Radio>
+                                            <Radio style={{ color: 'aliceblue' }} value="Женский">Ж</Radio>
                                         </Radio.Group>
                                     </Form.Item>
 
                                     <Form.Item
-                                        label="Дата рождения"
+                                        label={<span className={styles.formLabel}>Дата рождения</span>}
                                         name="birthDay"
                                         rules={[{ required: true, message: 'Пожалуйста, выберите дату рождения' }]}
                                     >
+
                                         <DatePicker
                                             style={{ width: '100%' }}
                                             format="DD.MM.YYYY"
                                             placeholder="Выберите дату"
+                                            locale={datePickerLocale}
                                         />
                                     </Form.Item>
                                 </div>
 
                                 <div className={styles.topFormsC}>
                                     <Form.Item
-                                        label="Номер телефона"
+                                        label={<span className={styles.formLabel}>Номер телефона</span>}
                                         name="phone"
                                     >
                                         <Input />
                                     </Form.Item>
 
                                     <Form.Item
-                                        label="Адрес"
+                                        label={<span className={styles.formLabel}>Адрес</span>}
                                         name="address"
                                     >
                                         <Input placeholder="г. Москва, ул..." />
                                     </Form.Item>
                                 </div>
                             </div>
-                            <div className='bottomForms'>
+
+                            <div className={styles.bottomForms}>
                                 <Form.Item
-                                    label="Жалобы при поступлении"
+                                    label={<span className={styles.formLabel}>Жалобы при поступлении</span>}
                                     name="complaint"
                                 >
                                     <Input.TextArea
@@ -289,7 +257,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="История настоящего заболевания"
+                                    label={<span className={styles.formLabel}>История настоящего заболевания</span>}
                                     name="anam"
                                 >
                                     <Input.TextArea
@@ -299,7 +267,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Анамнез жизни"
+                                    label={<span className={styles.formLabel}>Анамнез жизни</span>}
                                     name="life"
                                 >
                                     <Input.TextArea
@@ -309,7 +277,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Настоящее состояние больного"
+                                    label={<span className={styles.formLabel}>Настоящее состояние больного</span>}
                                     name="status"
                                 >
                                     <Input.TextArea
@@ -319,7 +287,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Клинический диагноз (МКБ)"
+                                    label={<span className={styles.formLabel}>Клинический диагноз (МКБ)</span>}
                                     name="mkb"
                                 >
                                     <Select
@@ -333,7 +301,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Диагноз"
+                                    label={<span className={styles.formLabel}>Диагноз</span>}
                                     name="diag"
                                 >
                                     <Input.TextArea
@@ -343,7 +311,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Сопутствующие заболевания"
+                                    label={<span className={styles.formLabel}>Сопутствующие заболевания</span>}
                                     name="sop_zab"
                                 >
                                     <Input.TextArea
@@ -353,7 +321,7 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label="Рекомендации"
+                                    label={<span className={styles.formLabel}>Рекомендации</span>}
                                     name="rec"
                                 >
                                     <Input.TextArea
@@ -362,7 +330,7 @@ export const RegisterPatient = ({
                                     />
                                 </Form.Item>
 
-                                <Form.Item>
+                                <div className={styles.buttons}>
                                     <Button
                                         type="primary"
                                         htmlType="submit"
@@ -376,7 +344,7 @@ export const RegisterPatient = ({
                                     >
                                         На главную
                                     </Button>
-                                </Form.Item>
+                                </div>
                             </div>
                         </Form>
                     </div>

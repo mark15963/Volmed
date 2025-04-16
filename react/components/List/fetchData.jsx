@@ -210,7 +210,7 @@ export const PatientCount = () => {
 
   return (
     <div className={styles.container}>
-      <div style={{ color: 'aliceblue' }}>
+      <div style={{ color: 'aliceblue', cursor: 'default' }}>
         <span>Общее количиство пациентов: </span>
         {loading ? (
           <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
