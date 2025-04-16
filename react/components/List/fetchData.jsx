@@ -191,6 +191,8 @@ export const PatientsList = () => {
 
 export const PatientCount = () => {
   const [count, setCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -199,14 +201,29 @@ export const PatientCount = () => {
         setCount(response.data.count)
       } catch (error) {
         console.error("Error fetching count:", error)
+      } finally {
+        setLoading(false)
       }
     }
     fetchCount()
   }, [])
 
   return (
-    <div style={{ color: 'aliceblue' }}>
-      Общее количиство пациентов: {count}
+    <div className={styles.container}>
+      <div style={{ color: 'aliceblue' }}>
+        <span>Общее количиство пациентов: </span>
+        {loading ? (
+          <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+            <Skeleton
+              borderRadius={5}
+              width='20px'
+              duration='3'
+              inline />
+          </SkeletonTheme>
+        ) : (
+          <span>{count}</span>
+        )}
+      </div>
     </div>
   )
 }

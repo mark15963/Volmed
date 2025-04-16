@@ -58,6 +58,9 @@ export const SearchBar = () => {
 
     return (
         <form onSubmit={handleSubmit}>
+            <label className={styles.searchtitle} htmlFor="searchfield">
+                Поиск пациентов:
+            </label>
             <div className={styles.searcharea}>
                 <input
                     className={styles.searchfield}
