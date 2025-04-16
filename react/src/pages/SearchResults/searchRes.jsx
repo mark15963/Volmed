@@ -1,8 +1,8 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import styles from './searchResults.module.css';
 import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import styles from './searchResults.module.css';
 
 export const SearchResults = () => {
     const { state } = useLocation();
@@ -175,7 +175,7 @@ export const SearchResults = () => {
 
             <br />
 
-            <div className={styles.buttons}>
+            <div className={styles.buttonsContainer}>
                 <div>
                     <button
                         className={styles.updbut}

@@ -1,6 +1,7 @@
 .searcharea{
     display: flex;
     align-items: center;
+    gap:10px
 }
 
 form{
@@ -29,6 +30,7 @@ form{
     border-radius: 45px;
     padding-left: 20px;
     font-size: 15px;
+    margin-left: 5px
 }
 
 .submit {
