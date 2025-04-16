@@ -1,4 +1,4 @@
 @echo off
 cd react
-npm run dev
+npm run dev -- --host
 pause
