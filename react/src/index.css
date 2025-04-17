@@ -1,5 +1,7 @@
-*{
-  font-family: montserrat;
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  src: url(fonts/Montserrat.ttf) format('ttf');
 }
 
 /*
