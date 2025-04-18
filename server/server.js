@@ -255,7 +255,6 @@ app.get("/api/backup", (req, res) => {
       if (err) {
         console.error("Ошибка при скачивании:", err);
       }
-      //fs.unlink(backupFile, () => {});
     });
   });
 });
