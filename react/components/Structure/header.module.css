@@ -1,6 +1,7 @@
 .container{
     margin: 0;
-    padding: 0 20px;    height: 120px;
+    padding: 0 20px;    
+    height: 120px;
     width: 100%;
     background-color: rgb(60, 151, 230);
     color: #000;
@@ -30,6 +31,7 @@ img{
 .title{
     color: aliceblue;
     font-size: 2em;
+    font-weight: 700;
     text-align: center;
     margin: 0 10px;
     flex-grow: 1;
