@@ -6,6 +6,7 @@ const saltRounds = 10;
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { exec } = require("child_process");
 
 const app = express();
 app.use(cors());
@@ -205,6 +206,56 @@ app.delete("/api/patients/:id", (req, res) => {
       success: true,
       message: "Patient deleted successfully",
       deletedId: id,
+    });
+  });
+});
+
+app.get("/api/backup", (req, res) => {
+  const dbUser = "root";
+  const dbPassword = "";
+  const dbName = "volmed_db";
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+
+  const backupDir = path.join(__dirname, "DB_Backup");
+  const backupFile = path.join(backupDir, `backup-${timestamp}.sql`);
+
+  console.log("🗂 Проверка папки DB_Backup:", backupDir);
+
+  console.log("📂 Директория бэкапов:", backupDir);
+  console.log("📄 Путь к файлу бэкапа:", backupFile);
+
+  try {
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+      console.log("✅ Папка DB_Backup создана");
+    }
+  } catch (err) {
+    console.error("❌ Ошибка при создании папки:", err);
+    return res.status(500).json({ error: "Не удалось создать папку" });
+  }
+
+  const mysqldumpPath = `"C:\\xampp\\mysql\\bin\\mysqldump.exe"`;
+
+  const command = `${mysqldumpPath} -u ${dbUser} ${
+    dbPassword ? `-p${dbPassword}` : ""
+  } ${dbName} > "${backupFile}"`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Ошибка при создании бэкапа:", error.message);
+      console.error("stderr:", stderr);
+      return res.status(500).json({
+        error: "Ошибка создания бэкапа",
+        details: error.message,
+        stderr,
+      });
+    }
+
+    res.download(backupFile, (err) => {
+      if (err) {
+        console.error("Ошибка при скачивании:", err);
+      }
+      //fs.unlink(backupFile, () => {});
     });
   });
 });
