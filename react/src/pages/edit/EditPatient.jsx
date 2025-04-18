@@ -40,7 +40,13 @@ export const EditPatient = () => {
         });
     };
 
-    if (loading) return <div>Загрузка...</div>;
+    if (loading) {
+        return (
+            <div className="spinner-border text-light" style={{ width: '3rem', height: '3rem' }} role="status">
+                <span className="visually-hidden">Загрузка данных...</span>
+            </div>
+        )
+    }
     if (error) return <div>Ошибка: {error}</div>;
     if (!patientData) return <div>Пациент не найден</div>;
 

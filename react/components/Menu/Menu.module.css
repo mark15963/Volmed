@@ -1,0 +1,35 @@
+.menuContainer{
+    display: flex;
+    width: 100%;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 1;
+    gap:0
+}
+
+.menuCard{
+    border: 2px solid black;
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+    padding: 5px 15px;
+    background-color: #0073c7;
+    cursor: pointer;    
+    border-right: none;
+}
+
+.menuCard:last-child {
+    border-right: 2px solid black;
+}
+
+.menuCard:hover{
+    background-color: #0067b1;
+}
+
+.menuCard.active{
+    background-color: #0086e6;
+    border-color: black;
+    margin-bottom: -2px;
+    z-index: 2;
+    position: relative;
+}
+
