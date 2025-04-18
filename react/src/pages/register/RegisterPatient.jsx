@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Input, Form, Alert, Radio, DatePicker, Select } from "antd"
+
+import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
+import { UploadOutlined } from '@ant-design/icons'
+
 const { Option } = Select
+const { Dragger } = Upload;
+
 import moment from 'moment'
 import { usePageTitle } from '../../../components/PageTitle/PageTitle'
 
@@ -24,6 +29,50 @@ export const RegisterPatient = ({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [form] = Form.useForm()
+    const [fileList, setFileList] = useState([])
+    const [uploading, setUploading] = useState(false)
+
+    const uploadProps = {
+        name: 'file',
+        multiple: true,
+        action: `http://localhost:5000/api/patients/${patientId || 'temp'}/upload`,
+        onChange(info) {
+            const { status } = info.file
+            if (status !== 'uploading') {
+                setFileList(info.fileList)
+            }
+            if (status === 'done') {
+                message.success(`${info.file.name} файл успешно загружен.`);
+            } else if (status === 'error') {
+                message.error(`${info.file.name} ошибка загрузки файла.`);
+            } else if (status === 'removed') {
+
+            }
+        },
+        onRemove: async (file) => {
+            try {
+                // Only attempt deletion if the file was successfully uploaded
+                if (file.response?.path) {
+                    await axios.delete(`http://localhost:5000/api/files`, {
+                        data: { filePath: file.response.path }
+                    });
+                }
+                return true; // Allow removal from list
+            } catch (error) {
+                message.error(`Ошибка удаления файла: ${file.name}`);
+                return false; // Prevent removal from list
+            }
+        },
+        beforeUpload(file) {
+            const isLt10M = file.size / 1024 / 1024 < 10;
+            if (!isLt10M) {
+                message.error('Файл должен быть меньше 10MB!');
+                return Upload.LIST_IGNORE;
+            }
+            return true;
+        },
+        defaultFileList: []
+    }
 
     usePageTitle("Регистрация пациента");
 
@@ -330,6 +379,20 @@ export const RegisterPatient = ({
                                     />
                                 </Form.Item>
 
+                                <Form.Item
+                                    label={<span className={styles.formLabel}>Медицинские документы</span>}
+                                >
+                                    <Dragger {...uploadProps}>
+                                        <p className="ant-upload-drag-icon">
+                                            <UploadOutlined />
+                                        </p>
+                                        <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
+                                        <p className="ant-upload-hint">
+                                            Поддерживаются файлы до 10MB (PDF, JPG, PNG)
+                                        </p>
+                                    </Dragger>
+                                </Form.Item>
+
                                 <div className={styles.buttons}>
                                     <Button
                                         type="primary"
@@ -350,7 +413,6 @@ export const RegisterPatient = ({
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }

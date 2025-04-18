@@ -3,6 +3,8 @@ import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { usePageTitle } from '../../../components/PageTitle/PageTitle';
+import { Menu } from '../../../components/Menu/Menu';
+
 import styles from './searchResults.module.css';
 
 export const SearchResults = () => {
@@ -12,6 +14,10 @@ export const SearchResults = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState(0)
+    const [files, setFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
+
 
     usePageTitle(
         loading ? "Загрузка..." :
@@ -20,6 +26,7 @@ export const SearchResults = () => {
                     state?.searchQuery ? `Результаты поиска: ${data.lastName}` :
                         `Карта пациента: ${data.lastName} ${data.firstName}`
     );
+
 
     useEffect(() => {
         const fetchPatientData = async () => {
@@ -65,6 +72,22 @@ export const SearchResults = () => {
         };
     }, [loading, error, data]);
 
+    useEffect(() => {
+        // File fetching logic
+        const fetchFiles = async () => {
+            if (data?.id) {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/patients/${data.id}/files`);
+                    setFiles(response.data);
+                } catch (error) {
+                    console.error('Error fetching files:', error);
+                }
+            }
+        };
+        fetchFiles();
+    }, [data?.id]);
+
+
     const handleBack = () => {
         navigate('/')
     }
@@ -83,114 +106,189 @@ export const SearchResults = () => {
         }
     }
 
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            await axios.post(`http://localhost:5000/api/patients/${data.id}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            await fetchFiles(); // Refresh file list
+        } catch (error) {
+            console.error('Upload error:', error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const openFile = (filePath) => {
+        window.open(`http://localhost:5000${filePath}`, '_blank');
+    };
+
+
     if (loading) return <div className={styles.resultsContainer}>Загрузка...</div>;
     if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
     if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
 
-    return (
-        <div className={styles.resultsContainer}>
-            <h2 style={{ marginBottom: '20px' }}>
-                {state?.searchQuery ? `Результаты поиска:` : `Данные пациента`}
-            </h2>
-
-            <div className={styles.info}>
-                <div className={styles.topForms}>
-                    <div className={styles.topFormsA}>
-                        <div className={styles.title}>ФИО: <br />
-                            <span>
-                                {data.lastName} {data.firstName} {data.patr}
-                            </span>
-                        </div>
-                        <div className={styles.title}>№ Истории болезни:<br />
-                            <span>
-                                {data.id}
-                            </span>
-                        </div>
-                        <div className={styles.title}>Дата поступления: <br />
-                            <span>
-                                {moment(data.created_at).format('DD.MM.YYYY')}
-                            </span>
-                        </div>
-
+    const tabContents = [
+        //Tab 1
+        <div className={styles.info}>
+            <div className={styles.topForms}>
+                <div className={styles.topFormsA}>
+                    <div className={styles.title}>ФИО:
+                        <span>
+                            {data.lastName} {data.firstName} {data.patr}
+                        </span>
                     </div>
-                    <div className={styles.topFormsB}>
-                        <div className={styles.title}>Дата рождения:<br />
-                            <span>
-                                {moment(data.birthDay).format('DD.MM.YYYY')}
-                            </span>
-                        </div>
-                        <div className={styles.title}>Пол: <br />
-                            <span>
-                                {data.sex}
-                            </span>
-                        </div>
+                    <div className={styles.title}>№ карты:<br />
+                        <span>
+                            {data.id}
+                        </span>
                     </div>
-                    <div className={styles.topFormsC}>
-                        <div className={styles.title}>Номер телефона: <br />
-                            <span>
-                                {data.phone}
-                            </span>
-                        </div>
-                        <div className={styles.title}>E-Mail: <br />
-                            <span>
-                                {data.email}
-                            </span>
-                        </div>
-                        <div className={styles.title}>Адрес: <br />
-                            <span>
-                                {data.address}
-                            </span>
-                        </div>
+                    <div className={styles.title}>Дата поступления: <br />
+                        <span>
+                            {moment(data.created_at).format('DD.MM.YYYY')}
+                        </span>
+                    </div>
+
+                </div>
+                <div className={styles.topFormsB}>
+                    <div className={styles.title}>Дата рождения:<br />
+                        <span>
+                            {moment(data.birthDay).format('DD.MM.YYYY')}
+                        </span>
+                    </div>
+                    <div className={styles.title}>Пол: <br />
+                        <span>
+                            {data.sex}
+                        </span>
                     </div>
                 </div>
-                <br />
-                <div className={styles.bottomForms}>
-                    <div className={styles.title}>Жалобы при поступлении: <br />
+                <div className={styles.topFormsC}>
+                    <div className={styles.title}>Номер телефона: <br />
                         <span>
-                            {data.complaint}
+                            {data.phone}
                         </span>
                     </div>
-                    <br />
-                    <div className={styles.title}>История настоящего заболевания: <br />
+                    <div className={styles.title}>E-Mail: <br />
                         <span>
-                            {data.anam}
+                            {data.email}
                         </span>
                     </div>
-                    <br />
-                    <div className={styles.title}>Анамнез жизни: <br />
+                    <div className={styles.title}>Адрес: <br />
                         <span>
-                            {data.life}
+                            {data.address}
                         </span>
                     </div>
-                    <br />
-                    <div className={styles.title}>Настоящее состояние больного: <br />
-                        <span>
-                            {data.status}
-                        </span>
-                    </div>
-                    <br />
-                    <div className={styles.title}>Клинический диагноз: <br />
-                        <span>
-                            {data.mkb}<br />
-                            {data.diag}
-                        </span>
-                    </div>
-                    <br />
-                    <div className={styles.title}>Сопутствующие заболевания: <br />
-                        <span>
-                            {data.sop_zab}
-                        </span>
-                    </div>
-                    <br />
-                    <div className={styles.title}>Рекомендации: <br />
-                        <span>
-                            {data.rec}
-                        </span>
-                    </div>
-                    <br />
                 </div>
             </div>
+            <div style={{ height: '30px', borderBottom: '1px solid black' }}>
+            </div>
+            <div style={{ height: '30px' }}>
+            </div>
+            <div className={styles.bottomForms}>
+                <div className={styles.title}>Жалобы при поступлении: <br />
+                    <span>
+                        {data.complaint}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>История настоящего заболевания: <br />
+                    <span>
+                        {data.anam}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>Анамнез жизни: <br />
+                    <span>
+                        {data.life}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>Настоящее состояние больного: <br />
+                    <span>
+                        {data.status}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>Клинический диагноз: <br />
+                    <span>
+                        {data.mkb}<br />
+                        {data.diag}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>Сопутствующие заболевания: <br />
+                    <span>
+                        {data.sop_zab}
+                    </span>
+                </div>
+                <br />
+                <div className={styles.title}>Рекомендации: <br />
+                    <span>
+                        {data.rec}
+                    </span>
+                </div>
+                <br />
+            </div>
+        </div>,
 
+        //Tab 2
+        <div className={styles.info}>
+            <div>
+                <h3>Результаты анализов</h3>
+                <p>Нет анализов</p>
+            </div>
+
+            <div className={styles.fileSection}>
+                <h3>Медицинские документы</h3>
+                {/* Files list */}
+                <div className={styles.fileList}>
+                    {files.length === 0 ? (
+                        <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
+                    ) : (
+                        <ul>
+                            {files.map((file, index) => (
+                                <li key={index} className={styles.fileItem}>
+                                    <span onClick={() => openFile(file.path)}>
+                                        {file.originalname || file.filename}
+                                    </span>
+                                    <span className={styles.fileSize}>
+                                        {' '}{(file.size / 1024).toFixed(2)} KB
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+        </div>
+    ]
+
+    return (
+        <div className={styles.resultsContainer}>
+            <h2 style={{ marginBottom: '20px', cursor: 'default' }}>
+                {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
+            </h2>
+
+            <Menu
+                items={[
+                    { name: 'Основное' },
+                    { name: 'Анализы' }
+                ]}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
+
+
+            {tabContents[activeTab]}
             <br />
 
             <div className={styles.buttonsContainer}>

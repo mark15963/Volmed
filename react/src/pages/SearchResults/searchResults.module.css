@@ -11,7 +11,6 @@
     box-sizing: border-box;
     border: solid, black, 2px;
     border-radius: 10px;
-    z-index: 10;
 }
 
 
@@ -20,22 +19,21 @@
     flex-direction: column;
     font-size: 17px;
     color: aliceblue;
-    background-color: #0073C7;
+    background-color: #0086e6;
     height: 100%;
     width: 100%;
     margin-bottom: 20px;
     border: solid, black, 2px;
     border-radius: 10px;
+    border-top-left-radius:0;
     padding: 20px 20px;
-    z-index: 10;   
+    cursor: default;
 }
 
 .topForms {
     display: flex;
     gap: 10px;
     width: 100%;
-    grid-area: topForms;
-    border-bottom: 1px solid black;
 }
 
 .topFormsA, 
@@ -50,19 +48,62 @@
 .bottomForms{
     display: flex;
     flex-direction: column;
-    grid-area: bottomForms;
 }
 
 .title{
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
     height: 100%;
     font-size: 20px;
     font-weight: 700;
 }
 
+.title span{
+    margin-top: 0px;
+}
+
 span{
-    font-size: 15px;
+    padding: 0 10px;
+    font-size: 1px;
     font-weight: 400;
+    line-height: 1.5;
+    display: inline-block;
+}
+
+.fileSection{
+    margin-top: 20px;
+}
+
+.fileList{
+    cursor: pointer;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.fileItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.fileItem:hover {
+    background-color: #0062a8;    
+}
+  
+.fileSize {
+    color: #bebebe;
+    font-size: 0.9em;
+}
+
+.uploadArea {
+    margin: 20px 0;
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .buttonsContainer{

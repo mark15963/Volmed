@@ -43,7 +43,7 @@ export const SearchBar = () => {
 
             navigate('/search', {
                 state: {
-                    results: [patientData], // Wrap in array to match table structure
+                    results: [patientData],
                     searchQuery: searchValue
                 }
             })
@@ -66,7 +66,7 @@ export const SearchBar = () => {
                     type="text"
                     value={searchValue}
                     onChange={handleChange}
-                    placeholder="№ Истории болезни"
+                    placeholder="№ карты"
                     autoComplete="off"
                     inputMode='numeric'
                     pattern='[0-9*'
