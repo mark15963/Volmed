@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from './table.module.css'
 import moment from 'moment';
 import { useNavigate } from "react-router-dom";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+
+import styles from './table.module.css'
 
 export const PatientsList = () => {
   const [patients, setPatients] = useState([]);
@@ -81,17 +82,21 @@ export const AllPatients = () => {
     <div className={styles.container}>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          <table className={styles.skeleton}>
-            <tbody>
-              <tr style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <td><Skeleton borderRadius={5} width='80%' duration='3' /></td>
-                <td><Skeleton borderRadius={5} width='70%' duration='3' /></td>
-                <td><Skeleton borderRadius={5} width='80%' duration='3' /></td>
-                <td><Skeleton borderRadius={5} width='70%' duration='3' /></td>
-                <td><Skeleton borderRadius={5} width='80%' duration='3' /></td>
-              </tr>
-            </tbody>
-          </table>
+          {/* Create skeleton rows that match your actual table structure */}
+          {[...Array(5)].map((_, index) => (
+            <table key={index} className={styles.table}>
+              <tbody>
+                <tr className={styles.rows}>
+                  <td style={{ width: '50px' }}>
+                    <Skeleton borderRadius={5} width={30} />
+                  </td>
+                  <td>
+                    <Skeleton borderRadius={5} width={350} />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          ))}
         </SkeletonTheme>
       ) : (
         patients.map(patient => (
@@ -211,7 +216,7 @@ export const PatientCount = () => {
   return (
     <div className={styles.container}>
       <div style={{ color: 'aliceblue', cursor: 'default' }}>
-        <span>Общее количиство пациентов: </span>
+        <span style={{ marginRight: '10px' }}>Общее количиство пациентов: </span>
         {loading ? (
           <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
             <Skeleton

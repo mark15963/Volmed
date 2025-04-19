@@ -203,14 +203,16 @@ export const RegisterPatient = ({
 
     return (
         <div className={styles.container}>
-            <div className={styles.mainBlock}>
-                <div className={styles.info}>
+            <h2
+                style={{ marginBottom: '20px' }}
+            >
+                {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
+            </h2>
+            <div className={styles.info}>
+                <div className={styles.bg}>
+
                     <div className={styles.title}>
-                        <h2
-                            style={{ marginBottom: '20px' }}
-                        >
-                            {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
-                        </h2>
+
                         <p>Заполните ниформацию:</p>
                     </div>
 
@@ -380,8 +382,13 @@ export const RegisterPatient = ({
                                 </Form.Item>
 
                                 <Form.Item
-                                    label={<span className={styles.formLabel}>Медицинские документы</span>}
+                                    label={
+                                        <span className={styles.formLabel}>
+                                            Медицинские документы
+                                        </span>
+                                    }
                                 >
+
                                     <Dragger {...uploadProps}>
                                         <p className="ant-upload-drag-icon">
                                             <UploadOutlined />
@@ -390,12 +397,12 @@ export const RegisterPatient = ({
                                         <p className="ant-upload-hint">
                                             Поддерживаются файлы до 10MB (PDF, JPG, PNG)
                                         </p>
+
                                     </Dragger>
                                 </Form.Item>
 
                                 <div className={styles.buttons}>
                                     <Button
-                                        type="primary"
                                         htmlType="submit"
                                         loading={isLoading}
                                     >
@@ -403,9 +410,9 @@ export const RegisterPatient = ({
                                     </Button>
                                     <Button
                                         style={{ marginLeft: 8 }}
-                                        onClick={() => navigate('/')}
+                                        onClick={() => navigate(-1)}
                                     >
-                                        На главную
+                                        Назад
                                     </Button>
                                 </div>
                             </div>

@@ -55,38 +55,41 @@ export const SearchBar = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label className={styles.searchtitle} htmlFor="searchfield">
-                Поиск пациентов:
-            </label>
-            <div className={styles.searcharea}>
-                <input
-                    className={styles.searchfield}
-                    id='searchfield'
-                    type="text"
-                    value={searchValue}
-                    onChange={handleChange}
-                    placeholder="№ карты"
-                    autoComplete="off"
-                    inputMode='numeric'
-                    pattern='[0-9*'
-                />
-                <Button
-                    type='default'
-                    htmlType='submit'
-                    shape='circle'
-                    variant='solid'
-                    icon={<SearchOutlined />}
-                    className={styles.submit}
-                    disabled={isLoading}
-                >
-                </Button>
-            </div>
-            {error && (
-                <div className={styles.error}>
-                    {error}
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit}>
+                <label className={styles.searchtitle} htmlFor="searchfield">
+                    Поиск пациентов:
+                </label>
+                <div className={styles.searchContainer}>
+                    <div style={{ width: '32px' }}></div>
+                    <input
+                        className={styles.searchfield}
+                        id='searchfield'
+                        type="text"
+                        value={searchValue}
+                        onChange={handleChange}
+                        placeholder="№ карты"
+                        autoComplete="off"
+                        inputMode='numeric'
+                        pattern='[0-9*'
+                    />
+                    <Button
+                        type='default'
+                        htmlType='submit'
+                        shape='circle'
+                        variant='solid'
+                        icon={<SearchOutlined />}
+                        className={styles.submit}
+                        disabled={isLoading}
+                    >
+                    </Button>
                 </div>
-            )}
-        </form>
+                {error && (
+                    <div className={styles.error}>
+                        {error}
+                    </div>
+                )}
+            </form>
+        </div>
     )
 }
