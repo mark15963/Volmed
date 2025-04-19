@@ -295,6 +295,12 @@ export const RegisterPatient = ({
                                     <Form.Item
                                         label={<span className={styles.formLabel}>E-Mail</span>}
                                         name="email"
+                                        rules={[
+                                            {
+                                                type: 'email',
+                                                message: ''
+                                            }
+                                        ]}
                                     >
                                         <Input placeholder="" />
                                     </Form.Item>
