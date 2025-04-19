@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -210,6 +208,7 @@ app.delete("/api/patients/:id", (req, res) => {
   });
 });
 
+// DB backup
 app.get("/api/backup", (req, res) => {
   const dbUser = "root";
   const dbPassword = "";
@@ -279,6 +278,7 @@ app.get("/api/patients/:id", (req, res) => {
   });
 });
 
+// Upload patient files
 app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
@@ -312,6 +312,7 @@ app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
   });
 });
 
+// Get patient files
 app.get("/api/patients/:id/files", (req, res) => {
   const patientId = req.params.id;
   const uploadPath = `./uploads/patients/${patientId}`;

@@ -140,133 +140,138 @@ export const SearchResults = () => {
     const tabContents = [
         //Tab 1
         <div className={styles.info}>
-            <div className={styles.topForms}>
-                <div className={styles.topFormsA}>
-                    <div className={styles.title}>ФИО:
-                        <span>
-                            {data.lastName} {data.firstName} {data.patr}
-                        </span>
-                    </div>
-                    <div className={styles.title}>№ карты:<br />
-                        <span>
-                            {data.id}
-                        </span>
-                    </div>
-                    <div className={styles.title}>Дата поступления: <br />
-                        <span>
-                            {moment(data.created_at).format('DD.MM.YYYY')}
-                        </span>
-                    </div>
+            <div className={styles.bg}>
+                <div className={styles.topForms}>
+                    <div className={styles.topFormsA}>
+                        <div className={styles.title}>ФИО:
+                            <span className={styles.data}>
+                                {data.lastName} {data.firstName} {data.patr}
+                            </span>
+                        </div>
+                        <div className={styles.title}>№ карты:<br />
+                            <span>
+                                {data.id}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Дата поступления: <br />
+                            <span>
+                                {moment(data.created_at).format('DD.MM.YYYY')}
+                            </span>
+                        </div>
 
+                    </div>
+                    <div className={styles.topFormsB}>
+                        <div className={styles.title}>Дата рождения:<br />
+                            <span>
+                                {moment(data.birthDay).format('DD.MM.YYYY')}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Пол: <br />
+                            <span>
+                                {data.sex}
+                            </span>
+                        </div>
+                    </div>
+                    <div className={styles.topFormsC}>
+                        <div className={styles.title}>Номер телефона: <br />
+                            <span>
+                                {data.phone}
+                            </span>
+                        </div>
+                        <div className={styles.title}>E-Mail: <br />
+                            <span>
+                                {data.email}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Адрес: <br />
+                            <span>
+                                {data.address}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div className={styles.topFormsB}>
-                    <div className={styles.title}>Дата рождения:<br />
+                <div style={{ height: '30px', borderBottom: '1px solid black' }}>
+                </div>
+                <div style={{ height: '30px' }}>
+                </div>
+
+                <div className={styles.bottomForms}>
+                    <div className={styles.title}>Жалобы при поступлении: <br />
                         <span>
-                            {moment(data.birthDay).format('DD.MM.YYYY')}
+                            {data.complaint}
                         </span>
                     </div>
-                    <div className={styles.title}>Пол: <br />
+                    <br />
+                    <div className={styles.title}>История настоящего заболевания: <br />
                         <span>
-                            {data.sex}
+                            {data.anam}
                         </span>
                     </div>
-                </div>
-                <div className={styles.topFormsC}>
-                    <div className={styles.title}>Номер телефона: <br />
+                    <br />
+                    <div className={styles.title}>Анамнез жизни: <br />
                         <span>
-                            {data.phone}
+                            {data.life}
                         </span>
                     </div>
-                    <div className={styles.title}>E-Mail: <br />
+                    <br />
+                    <div className={styles.title}>Настоящее состояние больного: <br />
                         <span>
-                            {data.email}
+                            {data.status}
                         </span>
                     </div>
-                    <div className={styles.title}>Адрес: <br />
+                    <br />
+                    <div className={styles.title}>Клинический диагноз: <br />
                         <span>
-                            {data.address}
+                            {data.mkb}<br />
+                            {data.diag}
                         </span>
                     </div>
+                    <br />
+                    <div className={styles.title}>Сопутствующие заболевания: <br />
+                        <span>
+                            {data.sop_zab}
+                        </span>
+                    </div>
+                    <br />
+                    <div className={styles.title}>Рекомендации: <br />
+                        <span>
+                            {data.rec}
+                        </span>
+                    </div>
+                    <br />
                 </div>
-            </div>
-            <div style={{ height: '30px', borderBottom: '1px solid black' }}>
-            </div>
-            <div style={{ height: '30px' }}>
-            </div>
-            <div className={styles.bottomForms}>
-                <div className={styles.title}>Жалобы при поступлении: <br />
-                    <span>
-                        {data.complaint}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>История настоящего заболевания: <br />
-                    <span>
-                        {data.anam}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>Анамнез жизни: <br />
-                    <span>
-                        {data.life}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>Настоящее состояние больного: <br />
-                    <span>
-                        {data.status}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>Клинический диагноз: <br />
-                    <span>
-                        {data.mkb}<br />
-                        {data.diag}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>Сопутствующие заболевания: <br />
-                    <span>
-                        {data.sop_zab}
-                    </span>
-                </div>
-                <br />
-                <div className={styles.title}>Рекомендации: <br />
-                    <span>
-                        {data.rec}
-                    </span>
-                </div>
-                <br />
             </div>
         </div>,
 
         //Tab 2
         <div className={styles.info}>
-            <div>
-                <h3>Результаты анализов</h3>
-                <p>Нет анализов</p>
-            </div>
+            <div className={styles.bg}>
+                <div>
+                    <h3>Результаты анализов</h3>
+                    <p>Нет анализов</p>
+                </div>
 
-            <div className={styles.fileSection}>
-                <h3>Медицинские документы</h3>
-                {/* Files list */}
-                <div className={styles.fileList}>
-                    {files.length === 0 ? (
-                        <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
-                    ) : (
-                        <ul>
-                            {files.map((file, index) => (
-                                <li key={index} className={styles.fileItem}>
-                                    <span onClick={() => openFile(file.path)}>
-                                        {file.originalname || file.filename}
-                                    </span>
-                                    <span className={styles.fileSize}>
-                                        {' '}{(file.size / 1024).toFixed(2)} KB
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                <div className={styles.fileSection}>
+                    <h3>Медицинские документы</h3>
+                    {/* Files list */}
+                    <div className={styles.fileList}>
+                        {files.length === 0 ? (
+                            <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
+                        ) : (
+                            <ul>
+                                {files.map((file, index) => (
+                                    <li key={index} className={styles.fileItem}>
+                                        <span onClick={() => openFile(file.path)}>
+                                            {file.originalname || file.filename}
+                                        </span>
+                                        <span className={styles.fileSize}>
+                                            {' '}{(file.size / 1024).toFixed(2)} KB
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -289,7 +294,6 @@ export const SearchResults = () => {
 
 
             {tabContents[activeTab]}
-            <br />
 
             <div className={styles.buttonsContainer}>
                 <div>

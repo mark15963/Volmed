@@ -21,19 +21,6 @@
   box-sizing: border-box;
 }
 
-/*
-table { 
-  box-sizing: border-box;
-  border: none;
-}
-
-td, th{
-  border: none;
-  color: aliceblue;
-  background-color: #0073C7;
-}
-*/
-
 .controll{
   margin: 20px 0;
   display: flex;
@@ -57,7 +44,7 @@ td, th{
   margin: 10px;
   padding: 6px 10px;
   font-size: 15px;
-  border-radius: 30px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

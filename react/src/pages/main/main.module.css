@@ -9,7 +9,7 @@
 
 .mainBlock {
     height: fit-content;
-    padding: 30px 90px;
+    padding: 20px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,54 +17,18 @@
     background-color: #0073C7;
     border-style: solid;
     border-radius: 15px;
+    gap:20px;
 }
 
-.searcharea{
+.buttonsContainer{
     display: flex;
-    align-items: center;
-}
-
-form{
-    display: flex;
-    width: 400px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap:10px
-}
-
-.searchtitle {
-    font-size: 25px;
-    font-weight: 700;
-    color: aliceblue;
-}
-
-.searchfield {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 350px;
-    gap: 5px;
-    height: 40px;
-    border-radius: 45px;
-    padding-left: 20px;
-    font-size: 15px;
-}
-
-.submit {
-    cursor: pointer;
-    width: fit-content;
-    padding: 6px 10px;
-    font-size: 15px;
-    border-radius: 30px;
+    gap: 10px;
 }
 
 .backButton, .regButton{
     cursor: pointer;
     width: fit-content;
-    margin: 10px 0 0 0;
     padding: 6px 10px;
     font-size: 15px;
-    border-radius: 30px;
+    border-radius: 10px;
 }

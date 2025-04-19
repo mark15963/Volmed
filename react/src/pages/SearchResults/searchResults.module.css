@@ -26,8 +26,15 @@
     border: solid, black, 2px;
     border-radius: 10px;
     border-top-left-radius:0;
-    padding: 20px 20px;
+    padding: 10px 10px;
     cursor: default;
+}
+
+.bg{
+    background-color: #0075c9;
+    padding: 20px 40px;
+    border-radius: 8px;
+    border: solid, black, 1px;
 }
 
 .topForms {
@@ -59,12 +66,7 @@
     font-weight: 700;
 }
 
-.title span{
-    margin-top: 0px;
-}
-
 span{
-    padding: 0 10px;
     font-size: 1px;
     font-weight: 400;
     line-height: 1.5;
@@ -121,7 +123,7 @@ span{
     cursor: pointer;
     padding: 6px 10px;
     font-size: 15px;
-    border-radius: 30px;
+    border-radius: 10px;
 }
 
 .updbut:hover, .backButton:hover, .printbut:hover {
