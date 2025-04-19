@@ -7,7 +7,6 @@ import { UploadOutlined } from '@ant-design/icons'
 const { Option } = Select
 const { Dragger } = Upload;
 
-import moment from 'moment'
 import { usePageTitle } from '../../components/PageTitle/PageTitle'
 
 import dayjs from 'dayjs'
@@ -29,8 +28,6 @@ export const RegisterPatient = ({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [form] = Form.useForm()
-    const [fileList, setFileList] = useState([])
-    const [uploading, setUploading] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
 
     const success = () => {
@@ -96,12 +93,6 @@ export const RegisterPatient = ({
         }
     }, [initialValues, form]);
 
-
-    const handleChange = (e) => {
-        setSearchValue(e.target.value)
-        setError('')
-    }
-
     dayjs.extend(updateLocale);
     dayjs.extend(weekday);
     dayjs.extend(localeData);
@@ -117,47 +108,6 @@ export const RegisterPatient = ({
     });
 
     dayjs.locale('ru');
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        if (!searchValue.trim()) {
-            setError('Please enter a patient ID')
-            return
-        }
-
-        if (isNaN(searchValue)) {
-            setError('Patient ID must be a number')
-            return
-        }
-
-        setIsLoading(true)
-        setError('')
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/patients/${searchValue}`)
-
-            if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('Patient not found')
-                }
-                throw new Error('Failed to fetch patient data')
-            }
-
-            const patientData = await response.json()
-
-            navigate('/search', {
-                state: {
-                    results: [patientData],
-                    searchQuery: searchValue
-                }
-            })
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setIsLoading(false)
-        }
-    }
 
     const onFinish = async (formValues) => {
         try {

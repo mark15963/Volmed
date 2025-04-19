@@ -1,14 +1,5 @@
 import styles from './Menu.module.css'
 
-/*
-export const Menu = ({ children }) => {
-    return (
-        <div className={styles.menuContainer}>
-            {children}
-        </div>
-    )
-}
-*/
 export const Card = ({ name, isActive, onClick }) => {
     return (
         <div
