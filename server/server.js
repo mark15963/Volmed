@@ -258,6 +258,75 @@ app.get("/api/backup", (req, res) => {
   });
 });
 
+// DB restore
+app.get("/api/restore", (req, res) => {
+  const dbUser = "root";
+  const dbPassword = "";
+  const dbName = "volmed_db";
+
+  // Check if database exists
+  db.query("SHOW DATABASES LIKE ?", [dbName], (err, results) => {
+    if (err) {
+      console.error("Error checking database existence:", err);
+      return res.status(500).json({ error: "Database check failed" });
+    }
+
+    if (results.length > 0) {
+      return res.status(400).json({ error: "Database already exists" });
+    }
+
+    // Find the latest backup file
+    const backupDir = path.join(__dirname, "DB_Backup");
+    if (!fs.existsSync(backupDir)) {
+      return res.status(404).json({ error: "Backup directory not found" });
+    }
+
+    const backupFiles = fs
+      .readdirSync(backupDir)
+      .filter((file) => file.endsWith(".sql"))
+      .sort()
+      .reverse();
+
+    if (backupFiles.length === 0) {
+      return res.status(404).json({ error: "No backup files found" });
+    }
+
+    const latestBackup = path.join(backupDir, backupFiles[0]);
+    console.log("🔁 Restoring from backup:", latestBackup);
+
+    // First create the database
+    db.query(`CREATE DATABASE ${dbName}`, (err) => {
+      if (err) {
+        console.error("Error creating database:", err);
+        return res.status(500).json({ error: "Database creation failed" });
+      }
+
+      console.log("✅ Database created");
+
+      // Now restore the backup
+      const mysqlPath = `"C:\\xampp\\mysql\\bin\\mysql.exe"`;
+      const command = `${mysqlPath} -u ${dbUser} ${
+        dbPassword ? `-p${dbPassword}` : ""
+      } ${dbName} < "${latestBackup}"`;
+
+      exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error("Restore error:", error.message);
+          console.error("stderr:", stderr);
+          return res.status(500).json({
+            error: "Restore failed",
+            details: error.message,
+            stderr,
+          });
+        }
+
+        console.log("✅ Database restored successfully");
+        res.json({ success: true, message: "Database restored successfully" });
+      });
+    });
+  });
+});
+
 app.get("/api/patients/:id", (req, res) => {
   const { id } = req.params;
 
@@ -340,6 +409,13 @@ app.get("/api/patients/:id/files", (req, res) => {
   });
 });
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+  );
+  next();
+});
 app.use("/uploads", express.static("uploads"));
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
