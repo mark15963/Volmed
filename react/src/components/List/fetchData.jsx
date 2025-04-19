@@ -82,10 +82,9 @@ export const AllPatients = () => {
     <div className={styles.container}>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          {/* Create skeleton rows that match your actual table structure */}
           {[...Array(5)].map((_, index) => (
             <table key={index} className={styles.table}>
-              <tbody>
+              <tbody >
                 <tr className={styles.rows}>
                   <td style={{ width: '50px' }}>
                     <Skeleton borderRadius={5} width={30} />
@@ -109,7 +108,8 @@ export const AllPatients = () => {
             <tbody>
               <tr className={styles.rows}>
                 <td style={{ width: '50px' }}>№{patient.id}:</td>
-                <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
+                <td style={{ width: '400px' }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
+                <td style={{ width: '100px' }}>{patient.birthDay}</td>
               </tr>
             </tbody>
           </table>

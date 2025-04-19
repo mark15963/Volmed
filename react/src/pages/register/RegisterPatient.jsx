@@ -80,7 +80,7 @@ export const RegisterPatient = ({
         if (initialValues) {
             form.setFieldsValue({
                 ...initialValues,
-                birthDay: initialValues.birthDay ? moment(initialValues.birthDay) : null
+                birthDay: initialValues.birthDay ? dayjs(initialValues.birthDay) : null
             });
         }
     }, [initialValues, form]);
@@ -155,7 +155,7 @@ export const RegisterPatient = ({
 
             const formattedValues = {
                 ...formValues,
-                birthDay: formValues.birthDay ? moment(formValues.birthDay).format('YYYY-MM-DD') : null
+                birthDay: formValues.birthDay ? formValues.birthDay.format('YYYY-MM-DD') : null
             };
 
             let response
