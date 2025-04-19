@@ -37,7 +37,7 @@ export const RegisterPatient = ({
         messageApi
             .open({
                 type: 'loading',
-                content: 'Загрузка..',
+                content: 'Данные сохраняются...',
                 duration: 2
             })
             .then(() => messageApi.success('Данные сохранены!', 2.5))
