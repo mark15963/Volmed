@@ -67,7 +67,7 @@
 }
 
 span{
-    font-size: 1px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
     display: inline-block;
@@ -143,6 +143,14 @@ span{
         font-size: 12pt;
     }
 
+    .bg{
+        border: none;
+    }
+
+    .info{
+        width: 100%;
+    }
+
     h2, .backButton, .updbut, .printbut {
         display: none !important;
     }
@@ -161,11 +169,14 @@ span{
     }
 
     .title{
-        font-size: 12px;
+        font-size: 11px !important;
     }
 
     span{
-        font-size: 11px;
+        font-size: 10px !important;
+        font-weight: 400;
+        line-height: 1.5;
+        display: inline-block;
     }
 
     /* Hide any images */

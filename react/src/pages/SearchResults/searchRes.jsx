@@ -292,7 +292,6 @@ export const SearchResults = () => {
                 onTabChange={setActiveTab}
             />
 
-
             {tabContents[activeTab]}
 
             <div className={styles.buttonsContainer}>

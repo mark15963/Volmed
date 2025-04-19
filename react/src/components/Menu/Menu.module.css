@@ -33,3 +33,8 @@
     position: relative;
 }
 
+@media print{
+    .menuContainer{
+        display: none;
+    }
+}
