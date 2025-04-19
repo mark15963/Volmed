@@ -1,9 +1,9 @@
 import React from 'react'
-import { AllPatients, PatientCount } from '../../../components/List/fetchData'
+import { AllPatients, PatientCount } from '../../components/List/fetchData'
 import { useNavigate } from 'react-router-dom'
 import styles from './list.module.css'
-import { SearchBar } from '../../../components/SearchBar/SearchBar'
-import { usePageTitle } from '../../../components/PageTitle/PageTitle'
+import { SearchBar } from '../../components/SearchBar/SearchBar'
+import { usePageTitle } from '../../components/PageTitle/PageTitle'
 
 export const List = () => {
     const navigate = useNavigate()

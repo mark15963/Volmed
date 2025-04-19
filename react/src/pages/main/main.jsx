@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { SearchBar } from '../../../components/SearchBar/SearchBar';
+import { SearchBar } from '../../components/SearchBar/SearchBar';
 import styles from './main.module.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 

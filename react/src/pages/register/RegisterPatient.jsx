@@ -8,7 +8,7 @@ const { Option } = Select
 const { Dragger } = Upload;
 
 import moment from 'moment'
-import { usePageTitle } from '../../../components/PageTitle/PageTitle'
+import { usePageTitle } from '../../components/PageTitle/PageTitle'
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'

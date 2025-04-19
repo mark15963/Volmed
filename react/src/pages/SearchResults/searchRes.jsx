@@ -2,8 +2,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { usePageTitle } from '../../../components/PageTitle/PageTitle';
-import { Menu } from '../../../components/Menu/Menu';
+import { usePageTitle } from '../../components/PageTitle/PageTitle';
+import { Menu } from '../../components/Menu/Menu';
 
 import styles from './searchResults.module.css';
 
