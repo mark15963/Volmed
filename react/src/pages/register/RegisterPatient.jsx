@@ -31,6 +31,17 @@ export const RegisterPatient = ({
     const [form] = Form.useForm()
     const [fileList, setFileList] = useState([])
     const [uploading, setUploading] = useState(false)
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi
+            .open({
+                type: 'loading',
+                content: 'Загрузка..',
+                duration: 2
+            })
+            .then(() => messageApi.success('Данные сохранены!', 2.5))
+    };
 
     const uploadProps = {
         name: 'file',
@@ -42,9 +53,9 @@ export const RegisterPatient = ({
                 setFileList(info.fileList)
             }
             if (status === 'done') {
-                message.success(`${info.file.name} файл успешно загружен.`);
+                messageApi.success(`${info.file.name} файл успешно загружен.`);
             } else if (status === 'error') {
-                message.error(`${info.file.name} ошибка загрузки файла.`);
+                messageApi.error(`${info.file.name} ошибка загрузки файла.`);
             } else if (status === 'removed') {
 
             }
@@ -59,14 +70,14 @@ export const RegisterPatient = ({
                 }
                 return true; // Allow removal from list
             } catch (error) {
-                message.error(`Ошибка удаления файла: ${file.name}`);
+                messageApi.error(`Ошибка удаления файла: ${file.name}`);
                 return false; // Prevent removal from list
             }
         },
         beforeUpload(file) {
             const isLt10M = file.size / 1024 / 1024 < 10;
             if (!isLt10M) {
-                message.error('Файл должен быть меньше 10MB!');
+                messageApi.error('Файл должен быть меньше 10MB!');
                 return Upload.LIST_IGNORE;
             }
             return true;
@@ -181,6 +192,9 @@ export const RegisterPatient = ({
                 throw new Error(responseData.error || 'Ошибка при сохранении данных');
             }
 
+            success()
+
+            await new Promise(resolve => setTimeout(resolve, 3000))
 
             if (onSubmitSuccess) {
                 onSubmitSuccess(responseData);
@@ -203,6 +217,7 @@ export const RegisterPatient = ({
 
     return (
         <div className={styles.container}>
+            {contextHolder}
             <h2
                 style={{ marginBottom: '20px' }}
             >
