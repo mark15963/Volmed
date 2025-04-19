@@ -178,14 +178,14 @@ export const SearchResults = () => {
                                 {data.phone}
                             </span>
                         </div>
-                        <div className={styles.title}>E-Mail: <br />
-                            <span>
-                                {data.email}
-                            </span>
-                        </div>
                         <div className={styles.title}>Адрес: <br />
                             <span>
                                 {data.address}
+                            </span>
+                        </div>
+                        <div className={styles.title}>E-Mail: <br />
+                            <span>
+                                {data.email}
                             </span>
                         </div>
                     </div>

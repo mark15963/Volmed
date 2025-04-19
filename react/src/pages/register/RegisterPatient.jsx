@@ -292,6 +292,12 @@ export const RegisterPatient = ({
                                     >
                                         <Input placeholder="г. Москва, ул..." />
                                     </Form.Item>
+                                    <Form.Item
+                                        label={<span className={styles.formLabel}>E-Mail</span>}
+                                        name="email"
+                                    >
+                                        <Input placeholder="" />
+                                    </Form.Item>
                                 </div>
                             </div>
 
