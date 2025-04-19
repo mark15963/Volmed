@@ -161,14 +161,14 @@ export const SearchResults = () => {
 
                     </div>
                     <div className={styles.topFormsB}>
-                        <div className={styles.title}>Дата рождения:<br />
-                            <span>
-                                {moment(data.birthDay).format('DD.MM.YYYY')}
-                            </span>
-                        </div>
                         <div className={styles.title}>Пол: <br />
                             <span>
                                 {data.sex}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Дата рождения:<br />
+                            <span>
+                                {moment(data.birthDay).format('DD.MM.YYYY')}
                             </span>
                         </div>
                     </div>
