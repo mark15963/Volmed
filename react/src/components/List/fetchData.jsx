@@ -86,8 +86,8 @@ export const AllPatients = () => {
     <div className={styles.container}>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          {[...Array(5)].map((_, index) => (
-            <table key={index} className={styles.table}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <table key={i} className={styles.table}>
               <tbody >
                 <tr className={styles.rows}>
                   <td style={{ width: '50px' }}>
