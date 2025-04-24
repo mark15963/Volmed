@@ -4,18 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
 import { UploadOutlined } from '@ant-design/icons'
 
-const { Option } = Select
-const { Dragger } = Upload;
+import dayjs, { datePickerLocale } from './dayjs.config'
 
 import { usePageTitle } from '../../components/PageTitle/PageTitle'
-
-import dayjs from 'dayjs'
-import 'dayjs/locale/ru'
-import updateLocale from 'dayjs/plugin/updateLocale'
-import weekday from 'dayjs/plugin/weekday'
-import localeData from 'dayjs/plugin/localeData'
-
 import styles from './register.module.css'
+
+const { Option } = Select
+const { Dragger } = Upload;
 
 export const RegisterPatient = ({
     initialValues = null,
@@ -92,22 +87,6 @@ export const RegisterPatient = ({
             });
         }
     }, [initialValues, form]);
-
-    dayjs.extend(updateLocale);
-    dayjs.extend(weekday);
-    dayjs.extend(localeData);
-
-    const datePickerLocale = {
-        ...dayjs.localeData('ru'),
-        firstDayOfWeek: 1,
-    };
-
-    dayjs.updateLocale('ru', {
-        weekStart: 1,
-        weekdaysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
-    });
-
-    dayjs.locale('ru');
 
     const onFinish = async (formValues) => {
         try {

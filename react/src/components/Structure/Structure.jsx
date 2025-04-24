@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Main } from '../../pages/main/main'
 import { SearchResults } from "../../pages/SearchResults/searchRes";
-import { List } from "../../pages/List of patients/list";
+import { List } from "../../pages/PatientsList/list";
 import { RegisterPatient } from "../../pages/register/RegisterPatient";
 import { EditPatient } from "../../pages/edit/EditPatient"
 import { useNavigate } from 'react-router-dom';

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import axios from 'axios';
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "antd";
 import { SearchOutlined } from '@ant-design/icons';
@@ -30,16 +31,16 @@ export const SearchBar = () => {
         setError('')
 
         try {
-            const response = await fetch(`http://localhost:5000/api/patients/${searchValue}`)
+            const response = await axios.get(`http://localhost:5000/api/patients/${searchValue}`)
 
-            if (!response.ok) {
+            if (response.status !== 200) {
                 if (response.status === 404) {
                     throw new Error('Пациент не найден')
                 }
                 throw new Error('Failed to fetch patient data')
             }
 
-            const patientData = await response.json()
+            const patientData = await response.data
 
             navigate('/search', {
                 state: {
@@ -48,7 +49,7 @@ export const SearchBar = () => {
                 }
             })
         } catch (err) {
-            setError(err.message)
+            setError(err.message || 'Ошибка при поиске')
         } finally {
             setIsLoading(false)
         }
@@ -71,7 +72,7 @@ export const SearchBar = () => {
                         placeholder="№ карты"
                         autoComplete="off"
                         inputMode='numeric'
-                        pattern='[0-9*'
+                        pattern='[0-9]*'
                     />
                     <Button
                         type='default'

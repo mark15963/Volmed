@@ -18,14 +18,19 @@ export const SearchResults = () => {
     const [files, setFiles] = useState([]);
     const [uploading, setUploading] = useState(false);
 
-
-    usePageTitle(
-        loading ? "Загрузка..." :
-            error ? "Ошибка" :
-                !data ? "Пациент не найден" :
-                    state?.searchQuery ? `Результаты поиска: ${data.lastName}` :
-                        `Карта пациента: ${data.lastName} ${data.firstName}`
-    );
+    let title
+    if (loading) {
+        title = "Загрузка..."
+    } else if (error) {
+        title = "Ошибка"
+    } else if (!data) {
+        title = "Пациент не найден"
+    } else if (state?.searchQuery) {
+        title = `Результаты поиска: ${data.lastName}`
+    } else {
+        title = `Карта пациента: ${data.lastName} ${data.firstName}`
+    }
+    usePageTitle(title)
 
 
     useEffect(() => {
@@ -66,9 +71,8 @@ export const SearchResults = () => {
             document.title = `Карта пациента: ${data.lastName} ${data.firstName}${data.patr ? ` ${data.patr}` : ''}`;
         }
 
-        // Cleanup function to reset title when component unmounts
         return () => {
-            document.title = "ГБУ «Городская больница Волновахского района»"; // Your default app title
+            document.title = "ГБУ «Городская больница Волновахского района»";
         };
     }, [loading, error, data]);
 

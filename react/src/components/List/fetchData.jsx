@@ -12,8 +12,12 @@ export const PatientsList = () => {
 
   useEffect(() => {
     const fetchPatients = async () => {
-      const response = await axios.get("http://localhost:5000/api/patients");
-      setPatients(response.data);
+      try {
+        const response = await axios.get("http://localhost:5000/api/patients");
+        setPatients(response.data);
+      } catch (error) {
+        console.log('Error:', error)
+      }
     };
     fetchPatients();
   }, []);
