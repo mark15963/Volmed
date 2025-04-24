@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import axios from 'axios'
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
 import { UploadOutlined } from '@ant-design/icons'
 
@@ -42,28 +42,43 @@ export const RegisterPatient = ({
         onChange(info) {
             const { status } = info.file
             if (status !== 'uploading') {
-                setFileList(info.fileList)
+                console.log(info.file, info.fileList)
             }
             if (status === 'done') {
                 messageApi.success(`${info.file.name} файл успешно загружен.`);
             } else if (status === 'error') {
                 messageApi.error(`${info.file.name} ошибка загрузки файла.`);
             } else if (status === 'removed') {
-
+                messageApi.info(`Файл удален: ${info.file.name}`);
             }
+
+        },
+        onDrop(e) {
+            console.log('Dropped files', e.dataTransfer.files);
         },
         onRemove: async (file) => {
             try {
-                // Only attempt deletion if the file was successfully uploaded
+                console.log('File object:', file);
+
                 if (file.response?.path) {
-                    await axios.delete(`http://localhost:5000/api/files`, {
-                        data: { filePath: file.response.path }
-                    });
+                    const { path } = file.response;
+                    const urlParts = path.split('/');
+                    const patientId = urlParts[3];
+                    const filename = urlParts[5];
+
+                    console.log('Extracted patientId:', patientId);
+                    console.log('Extracted filename:', filename);
+
+                    await axios.delete(`http://localhost:5000/api/patients/${patientId}/files/${filename}`);
+                    messageApi.success(`File ${file.name} deleted successfully`);
+
                 }
-                return true; // Allow removal from list
+
+                return true;
             } catch (error) {
+                console.error('Delete error:', error.response || error);
                 messageApi.error(`Ошибка удаления файла: ${file.name}`);
-                return false; // Prevent removal from list
+                return false;
             }
         },
         beforeUpload(file) {
@@ -336,7 +351,6 @@ export const RegisterPatient = ({
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
                                 </Form.Item>
-
                                 <Form.Item
                                     label={
                                         <span className={styles.formLabel}>
@@ -345,16 +359,19 @@ export const RegisterPatient = ({
                                     }
                                 >
 
-                                    <Dragger {...uploadProps}>
-                                        <p className="ant-upload-drag-icon">
+                                    <Dragger
+                                        {...uploadProps}
+                                        className={styles.dragger}
+                                    >
+                                        <p className='ant-upload-drag-icon'>
                                             <UploadOutlined />
                                         </p>
                                         <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
                                         <p className="ant-upload-hint">
                                             Поддерживаются файлы до 10MB (PDF, JPG, PNG)
                                         </p>
-
                                     </Dragger>
+
                                 </Form.Item>
 
                                 <div className={styles.buttons}>
@@ -374,8 +391,8 @@ export const RegisterPatient = ({
                             </div>
                         </Form>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     )
 }

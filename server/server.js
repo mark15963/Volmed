@@ -7,6 +7,7 @@ const fs = require("fs");
 const { exec } = require("child_process");
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -15,6 +16,14 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "volmed_db",
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed: " + err);
+    process.exit(1);
+  }
+  console.log("Connected to database.");
 });
 
 const storage = multer.diskStorage({
@@ -62,12 +71,29 @@ const upload = multer({
   },
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed: " + err.stack);
-    return;
-  }
-  console.log("Connected to database.");
+app.use("/uploads", express.static("uploads"));
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "VolMed API",
+    endpoints: {
+      patients: {
+        getAll: "GET /api/patients",
+        getOne: "GET /api/patients/:id",
+        create: "POST /api/patients",
+        update: "PUT /api/patients/:id",
+        delete: "DELETE /api/patients/:id",
+      },
+      files: {
+        upload: "POST /api/patients/:id/upload",
+        list: "GET /api/patients/:id/files",
+      },
+      database: {
+        backup: "GET /api/backup",
+        restore: "GET /api/restore",
+      },
+    },
+  });
 });
 
 // Amount of ID's in DB
@@ -414,10 +440,18 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     "default-src 'self'; script-src 'self'; 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
   );
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-app.use("/uploads", express.static("uploads"));
+app.use((req, res) => {
+  res.status(404).send(`
+    <h1>404 Not Found</h1>
+    <p>The requested URL ${req.url} was not found on this server.</p>
+    <a href="/">Go to home page</a>
+`);
+});
+
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 });
