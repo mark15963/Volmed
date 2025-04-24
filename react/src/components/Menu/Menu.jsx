@@ -14,12 +14,12 @@ export const Card = ({ name, isActive, onClick }) => {
 export const Menu = ({ items, activeTab, onTabChange }) => {
     return (
         <div className={styles.menuContainer}>
-            {items.map((item, index) => (
+            {items.map((item, main) => (
                 <Card
-                    key={index}
+                    key={main}
                     name={item.name}
-                    isActive={activeTab === index}
-                    onClick={() => onTabChange(index)}
+                    isActive={activeTab === main}
+                    onClick={() => onTabChange(main)}
                 />
             ))}
         </div>

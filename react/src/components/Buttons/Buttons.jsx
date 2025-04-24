@@ -16,8 +16,8 @@ export const AddButton = () => {
         setNewPatient(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleClick = async () => {
-        setShowForm(!showForm)
+    const handleClick = () => {
+        setShowForm(state => !state)
     }
 
     const submitForm = async () => {
