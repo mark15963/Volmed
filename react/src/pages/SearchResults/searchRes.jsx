@@ -32,7 +32,6 @@ export const SearchResults = () => {
     }
     usePageTitle(title)
 
-
     useEffect(() => {
         const fetchPatientData = async () => {
             try {

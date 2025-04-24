@@ -8,6 +8,7 @@ const { exec } = require("child_process");
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use(express.json());
 
@@ -16,14 +17,6 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "volmed_db",
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed: " + err);
-    process.exit(1);
-  }
-  console.log("Connected to database.");
 });
 
 const storage = multer.diskStorage({
@@ -71,29 +64,12 @@ const upload = multer({
   },
 });
 
-app.use("/uploads", express.static("uploads"));
-
-app.get("/", (req, res) => {
-  res.json({
-    message: "VolMed API",
-    endpoints: {
-      patients: {
-        getAll: "GET /api/patients",
-        getOne: "GET /api/patients/:id",
-        create: "POST /api/patients",
-        update: "PUT /api/patients/:id",
-        delete: "DELETE /api/patients/:id",
-      },
-      files: {
-        upload: "POST /api/patients/:id/upload",
-        list: "GET /api/patients/:id/files",
-      },
-      database: {
-        backup: "GET /api/backup",
-        restore: "GET /api/restore",
-      },
-    },
-  });
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed: " + err.stack);
+    return;
+  }
+  console.log("Connected to database.");
 });
 
 // Amount of ID's in DB
@@ -118,26 +94,26 @@ app.get("/api/patients", (req, res) => {
 });
 
 // Add a new patient
-app.post("/api/patients", upload.array("files"), async (req, res) => {
-  try {
-    const newPatient = req.body;
-    const patientResults = await db.query(
-      "INSERT INTO patients SET ?",
-      newPatient
-    );
-    const patientId = patientResults.insertId;
+app.post("/api/patients", upload.array("files"), (req, res) => {
+  const newPatient = req.body;
 
-    // Then handle file moves if any
+  db.query("INSERT INTO patients SET ?", newPatient, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    const patientId = results.insertId;
+
+    // File handling
     if (req.files && req.files.length > 0) {
       const tempPath = `./uploads/patients/temp`;
       const finalPath = `./uploads/patients/${patientId}`;
 
-      // Create final directory
       if (!fs.existsSync(finalPath)) {
         fs.mkdirSync(finalPath, { recursive: true });
       }
 
-      // Move files from temp to final location
       for (const file of req.files) {
         const oldPath = path.join(tempPath, file.filename);
         const newPath = path.join(finalPath, file.filename);
@@ -145,15 +121,19 @@ app.post("/api/patients", upload.array("files"), async (req, res) => {
       }
     }
 
-    // Return the created patient
-    const [patient] = await db.query("SELECT * FROM patients WHERE id = ?", [
-      patientId,
-    ]);
-    res.status(201).json(patient[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
+    db.query(
+      "SELECT * FROM patients WHERE id = ?",
+      [patientId],
+      (err, patientResults) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+        }
+
+        res.status(201).json(patientResults[0]);
+      }
+    );
+  });
 });
 
 // Update a patient
@@ -440,18 +420,10 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     "default-src 'self'; script-src 'self'; 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
   );
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-app.use((req, res) => {
-  res.status(404).send(`
-    <h1>404 Not Found</h1>
-    <p>The requested URL ${req.url} was not found on this server.</p>
-    <a href="/">Go to home page</a>
-`);
-});
-
+app.use("/uploads", express.static("uploads"));
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 });

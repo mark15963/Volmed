@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
 import { UploadOutlined } from '@ant-design/icons'
 
@@ -42,43 +42,28 @@ export const RegisterPatient = ({
         onChange(info) {
             const { status } = info.file
             if (status !== 'uploading') {
-                console.log(info.file, info.fileList)
+                setFileList(info.fileList)
             }
             if (status === 'done') {
                 messageApi.success(`${info.file.name} файл успешно загружен.`);
             } else if (status === 'error') {
                 messageApi.error(`${info.file.name} ошибка загрузки файла.`);
             } else if (status === 'removed') {
-                messageApi.info(`Файл удален: ${info.file.name}`);
-            }
 
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
+            }
         },
         onRemove: async (file) => {
             try {
-                console.log('File object:', file);
-
+                // Only attempt deletion if the file was successfully uploaded
                 if (file.response?.path) {
-                    const { path } = file.response;
-                    const urlParts = path.split('/');
-                    const patientId = urlParts[3];
-                    const filename = urlParts[5];
-
-                    console.log('Extracted patientId:', patientId);
-                    console.log('Extracted filename:', filename);
-
-                    await axios.delete(`http://localhost:5000/api/patients/${patientId}/files/${filename}`);
-                    messageApi.success(`File ${file.name} deleted successfully`);
-
+                    await axios.delete(`http://localhost:5000/api/files`, {
+                        data: { filePath: file.response.path }
+                    });
                 }
-
-                return true;
+                return true; // Allow removal from list
             } catch (error) {
-                console.error('Delete error:', error.response || error);
                 messageApi.error(`Ошибка удаления файла: ${file.name}`);
-                return false;
+                return false; // Prevent removal from list
             }
         },
         beforeUpload(file) {
@@ -130,7 +115,8 @@ export const RegisterPatient = ({
                 });
             }
 
-            const responseData = await response.json();
+            const text = await response.text();
+            const responseData = text ? JSON.parse(text) : {};
 
             if (!response.ok) {
                 throw new Error(responseData.error || 'Ошибка при сохранении данных');
@@ -140,16 +126,14 @@ export const RegisterPatient = ({
 
             await new Promise(resolve => setTimeout(resolve, 3000))
 
-            if (onSubmitSuccess) {
-                onSubmitSuccess(responseData);
-            } else {
-                navigate('/search', {
-                    state: {
-                        results: [responseData],
-                        searchQuery: `${responseData.lastName} ${responseData.firstName}`
-                    }
-                });
-            }
+
+            navigate('/search', {
+                state: {
+                    results: [responseData],
+                    searchQuery: `${responseData.lastName} ${responseData.firstName}`
+                }
+            });
+
 
         } catch (err) {
             setError(err.message);
@@ -351,6 +335,7 @@ export const RegisterPatient = ({
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label={
                                         <span className={styles.formLabel}>
@@ -359,19 +344,16 @@ export const RegisterPatient = ({
                                     }
                                 >
 
-                                    <Dragger
-                                        {...uploadProps}
-                                        className={styles.dragger}
-                                    >
-                                        <p className='ant-upload-drag-icon'>
+                                    <Dragger {...uploadProps}>
+                                        <p className="ant-upload-drag-icon">
                                             <UploadOutlined />
                                         </p>
                                         <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
                                         <p className="ant-upload-hint">
                                             Поддерживаются файлы до 10MB (PDF, JPG, PNG)
                                         </p>
-                                    </Dragger>
 
+                                    </Dragger>
                                 </Form.Item>
 
                                 <div className={styles.buttons}>
@@ -391,8 +373,8 @@ export const RegisterPatient = ({
                             </div>
                         </Form>
                     </div>
-                </div >
-            </div >
-        </div >
+                </div>
+            </div>
+        </div>
     )
 }
