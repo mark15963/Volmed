@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
-import { UploadOutlined } from '@ant-design/icons'
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 
 import dayjs, { datePickerLocale } from './dayjs.config'
 
@@ -24,6 +24,30 @@ export const RegisterPatient = ({
     const [error, setError] = useState('');
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage();
+    const [fileList, setFileList] = useState([]);
+
+    // Function to refresh file list
+    const refreshFileList = async () => {
+        if (!patientId) return;
+
+        try {
+            const response = await axios.get(`http://localhost:5000/api/patients/${patientId}/files`);
+            setFileList(response.data.map(file => ({
+                uid: file.path,
+                name: file.originalname,
+                status: 'done',
+                url: `http://localhost:5000${file.path}`,
+                response: { path: file.path }
+            })));
+        } catch (error) {
+            messageApi.error('Ошибка загрузки списка файлов');
+        }
+    };
+
+    // Load files on mount and when patientId changes
+    useEffect(() => {
+        refreshFileList();
+    }, [patientId]);
 
     const success = () => {
         messageApi
@@ -35,9 +59,30 @@ export const RegisterPatient = ({
             .then(() => messageApi.success('Данные сохранены!', 2.5))
     };
 
+    useEffect(() => {
+        if (isEditMode && patientId) {
+            const loadFiles = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/patients/${patientId}/files`);
+                    setFileList(response.data.map(file => ({
+                        uid: file.path,
+                        name: file.originalname,
+                        status: 'done',
+                        url: `http://localhost:5000${file.path}`,
+                        response: { path: file.path }
+                    })));
+                } catch (error) {
+                    messageApi.error('Ошибка загрузки файлов');
+                }
+            };
+            loadFiles();
+        }
+    }, [isEditMode, patientId]);
+
     const uploadProps = {
         name: 'file',
         multiple: true,
+        fileList,
         action: `http://localhost:5000/api/patients/${patientId || 'temp'}/upload`,
         onChange(info) {
             const { status } = info.file
@@ -52,29 +97,51 @@ export const RegisterPatient = ({
 
             }
         },
+        onDrop(e) {
+            console.log('Dropped files', e.dataTransfer.files);
+        },
         onRemove: async (file) => {
             try {
-                // Only attempt deletion if the file was successfully uploaded
                 if (file.response?.path) {
-                    await axios.delete(`http://localhost:5000/api/files`, {
-                        data: { filePath: file.response.path }
+                    const filePath = file.response.path.replace(/^\/?uploads\//, '');
+
+                    const response = await axios.delete('http://localhost:5000/api/files', {
+                        data: { filePath },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     });
+
+                    if (response.data.success) {
+                        messageApi.success(`${file.name} успешно удален`);
+                        return true;
+                    }
+                    throw new Error(response.data.message || 'Неизвестная ошибка');
                 }
-                return true; // Allow removal from list
+                return false;
             } catch (error) {
-                messageApi.error(`Ошибка удаления файла: ${file.name}`);
-                return false; // Prevent removal from list
+                const errorMessage = error.response?.data?.message ||
+                    error.message ||
+                    'Ошибка удаления файла';
+                messageApi.error(`${errorMessage}: ${file.name}`);
+                console.error('Delete error details:', {
+                    error: error.response?.data || error.message,
+                    filePath: file.response?.path
+                });
+                return false;
             }
         },
-        beforeUpload(file) {
-            const isLt10M = file.size / 1024 / 1024 < 10;
-            if (!isLt10M) {
-                messageApi.error('Файл должен быть меньше 10MB!');
-                return Upload.LIST_IGNORE;
-            }
-            return true;
-        },
-        defaultFileList: []
+        showUploadList: {
+            showPreventIcon: true,
+            showUploadIcon: true,
+            downloadIcon: 'Скачать',
+            showRemoveIvon: true,
+            removeIcon: (
+                <DeleteOutlined
+                    onClick={e => console.log('Удаление файла', e)}
+                />
+            )
+        }
     }
 
     usePageTitle("Регистрация пациента");
@@ -105,7 +172,6 @@ export const RegisterPatient = ({
             let response
             let url = 'http://localhost:5000/api/patients'
 
-            console.log(isEditMode, patientId)
             if (isEditMode && patientId) {
                 response = await axios.put(`${url}/${patientId}`, formattedValues, {
                 });
@@ -117,42 +183,19 @@ export const RegisterPatient = ({
             }
 
             const responseData = response.data;
-
-            // Check for successful status (2xx)
-            if (response.status < 200 || response.status >= 300) {
-                throw new Error(responseData.error || 'Ошибка при сохранении данных');
-            }
-
             success()
 
             await new Promise(resolve => setTimeout(resolve, 3000))
 
-
-            if (!isEditMode) {
-                console.log(responseData.id)
-                navigate(`/search/${responseData.id}`, {
-                    state: {
-                        results: responseData,
-                        searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
-                    }
-                });
-
-                console.log('Registered', responseData)
-            } else {
-                console.log(patientId)
-                navigate(`/search/${patientId}`, {
-                    state: {
-                        results: responseData,
-                        searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
-                    }
-                });
-
-                console.log('Updated', responseData)
-            }
-
+            navigate(`/search/${isEditMode ? patientId : responseData.id}`, {
+                state: {
+                    results: responseData,
+                    searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
+                }
+            });
 
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.error || err.message);
             console.error('Registration error:', err);
         } finally {
             setIsLoading(false);
@@ -351,7 +394,6 @@ export const RegisterPatient = ({
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
                                 </Form.Item>
-
                                 <Form.Item
                                     label={
                                         <span className={styles.formLabel}>
@@ -371,7 +413,6 @@ export const RegisterPatient = ({
 
                                     </Dragger>
                                 </Form.Item>
-
                                 <div className={styles.buttons}>
                                     <Button
                                         htmlType="submit"
