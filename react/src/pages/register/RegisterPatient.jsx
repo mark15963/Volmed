@@ -83,7 +83,7 @@ export const RegisterPatient = ({
         if (initialValues) {
             form.setFieldsValue({
                 ...initialValues,
-                birthDay: initialValues.birthDay ? dayjs(initialValues.birthDay) : null
+                birthDate: initialValues.birthDate ? dayjs(initialValues.birthDate) : null
             });
         }
     }, [initialValues, form]);
@@ -95,7 +95,7 @@ export const RegisterPatient = ({
 
             const formattedValues = {
                 ...formValues,
-                birthDay: formValues.birthDay ? formValues.birthDay.format('YYYY-MM-DD') : null
+                birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null
             };
 
             let response
@@ -126,14 +126,7 @@ export const RegisterPatient = ({
 
             await new Promise(resolve => setTimeout(resolve, 3000))
 
-
-            navigate('/search', {
-                state: {
-                    results: [responseData],
-                    searchQuery: `${responseData.lastName} ${responseData.firstName}`
-                }
-            });
-
+            onSubmitSuccess(responseData);
 
         } catch (err) {
             setError(err.message);
@@ -208,7 +201,7 @@ export const RegisterPatient = ({
 
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Дата рождения</span>}
-                                        name="birthDay"
+                                        name="birthDate"
                                         rules={[{ required: true, message: 'Пожалуйста, выберите дату рождения' }]}
                                     >
 

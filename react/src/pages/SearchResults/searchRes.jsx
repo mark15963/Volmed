@@ -171,7 +171,7 @@ export const SearchResults = () => {
                         </div>
                         <div className={styles.title}>Дата рождения:<br />
                             <span>
-                                {moment(data.birthDay).format('DD.MM.YYYY')}
+                                {moment(data.birthDate).format('DD.MM.YYYY')}
                             </span>
                         </div>
                     </div>
