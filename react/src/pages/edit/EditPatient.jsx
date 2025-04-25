@@ -30,15 +30,6 @@ export const EditPatient = () => {
         `Редактирование: ${patientData.lastName}` :
         "Новый пациент");
 
-    const handleSubmitSuccess = (responseData) => {
-        const updatedPatient = responseData.patient || responseData
-        navigate(`/search/${updatedPatient.id}`, {
-            state: {
-                results: [updatedPatient],
-                searchQuery: `${updatedPatient.lastName} ${updatedPatient.firstName}`
-            }
-        });
-    };
 
     if (loading) {
         return (
@@ -55,7 +46,6 @@ export const EditPatient = () => {
             initialValues={patientData}
             isEditMode={true}
             patientId={id}
-            onSubmitSuccess={handleSubmitSuccess}
         />
     );
 };
