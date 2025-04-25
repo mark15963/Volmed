@@ -32,7 +32,7 @@ export const EditPatient = () => {
 
     const handleSubmitSuccess = (responseData) => {
         const updatedPatient = responseData.patient || responseData
-        navigate(`/search/${id}`, {
+        navigate(`/search/${updatedPatient.id}`, {
             state: {
                 results: [updatedPatient],
                 searchQuery: `${updatedPatient.lastName} ${updatedPatient.firstName}`

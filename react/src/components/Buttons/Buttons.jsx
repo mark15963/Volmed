@@ -70,8 +70,8 @@ export const AddButton = () => {
                     />
                     <input
                         type='date'
-                        name='birthDay'
-                        value={newPatient.birthDay}
+                        name='birthDate'
+                        value={newPatient.birthDate}
                         onChange={handleInputChange}
                         placeholder="Date of birth"
                         style={{ marginRight: '10px' }}
@@ -159,7 +159,7 @@ export const EditButton = () => {
         firstName: '',
         patr: '',
         sex: '',
-        birthDay: '',
+        birthDate: '',
         phone: '',
         email: '',
         address: '',
@@ -185,7 +185,7 @@ export const EditButton = () => {
                 firstName: '',
                 patr: '',
                 sex: '',
-                birthDay: '',
+                birthDate: '',
                 phone: '',
                 email: '',
                 address: '',
@@ -229,7 +229,7 @@ export const EditButton = () => {
                 firstName: response.data.firstName || '',
                 patr: response.data.patr || '',
                 sex: response.data.sex || '',
-                birthDay: response.data.birthDay || '',
+                birthDate: response.data.birthDate || '',
                 phone: response.data.phone || '',
                 email: response.data.email || '',
                 address: response.data.address || '',
@@ -346,8 +346,8 @@ export const EditButton = () => {
                             </select>
                             <input
                                 type="date"
-                                name="birthDay"
-                                value={editPatient.birthDay}
+                                name="birthDate"
+                                value={editPatient.birthDate}
                                 onChange={handleInputChange}
                             />
                             <IMaskInput

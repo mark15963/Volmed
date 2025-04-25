@@ -14,7 +14,12 @@ export const PatientsList = () => {
     const fetchPatients = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/patients");
-        setPatients(response.data);
+        const patientsWithProperDates = response.data.map(patient => ({
+          ...patient,
+          birthDate: moment(patient.birthDate, 'DD.MM.YYYY').toISOString(),
+          created_at: moment(patient.created_at).toISOString()
+        }))
+        setPatients(patientsWithProperDates);
       } catch (error) {
         console.log('Error:', error)
       }
@@ -29,10 +34,10 @@ export const PatientsList = () => {
         <td>{patient.id}</td>
         <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
         <td>{patient.sex}</td>
-        <td>{moment(patient.birthDay).format('DD.MM.YYYY')}</td>
+        <td>{moment(patient.birthDate, 'DD.MM.YYYY').format('DD.MM.YYYY')}</td>
         <td>{patient.diag}</td>
         <td>{patient.mkb}</td>
-        <td>{moment(patient.created_at).format('DD.MM.YYYY')}</td>
+        <td>{moment(patient.created_at).isValid() ? moment(patient.created_at).format('DD.MM.YYYY') : 'Invalid Date'}</td>
       </tr>
     )
 
@@ -113,7 +118,7 @@ export const AllPatients = () => {
               <tr className={styles.rows}>
                 <td style={{ width: '50px' }}>№{patient.id}:</td>
                 <td style={{ width: '400px' }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
-                <td style={{ width: '100px' }}>{moment(patient.birthDay).format('DD.MM.YYYY')}</td>
+                <td style={{ width: '100px' }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
               </tr>
             </tbody>
           </table>
@@ -144,7 +149,7 @@ export const PatientsList = () => {
         <td>{patient.firstName}</td>
         <td>{patient.patr}</td>
         <td>{patient.sex}</td>
-        <td>{moment(patient.birthDay).format('DD.MM.YYYY')}</td>
+        <td>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
         <td>{patient.phone}</td>
         <td>{patient.email}</td>
         <td>{patient.address}</td>
