@@ -94,46 +94,47 @@ app.get("/api/patients", (req, res) => {
 });
 
 // Add a new patient
-app.post("/api/patients", upload.array("files"), (req, res) => {
+app.post("/api/patients", (req, res) => {
   const newPatient = req.body;
 
-  db.query("INSERT INTO patients SET ?", newPatient, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
-
-    const patientId = results.insertId;
-
-    // File handling
-    if (req.files && req.files.length > 0) {
-      const tempPath = `./uploads/patients/temp`;
-      const finalPath = `./uploads/patients/${patientId}`;
-
-      if (!fs.existsSync(finalPath)) {
-        fs.mkdirSync(finalPath, { recursive: true });
+  db.query(
+    "INSERT INTO patients SET ?",
+    newPatient,
+    (insertErr, insertResults) => {
+      if (insertErr) {
+        console.error(insertErr);
+        return res.status(500).json({
+          error: "Database error",
+          message: insertErr.message,
+        });
       }
 
-      for (const file of req.files) {
-        const oldPath = path.join(tempPath, file.filename);
-        const newPath = path.join(finalPath, file.filename);
-        fs.renameSync(oldPath, newPath);
-      }
-    }
+      const patientId = insertResults.insertId;
 
-    db.query(
-      "SELECT * FROM patients WHERE id = ?",
-      [patientId],
-      (err, patientResults) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: "Database error" });
+      // Fetch the newly created patient
+      db.query(
+        "SELECT * FROM patients WHERE id = ?",
+        [patientId],
+        (selectErr, selectResults) => {
+          if (selectErr) {
+            console.error(selectErr);
+            return res.status(500).json({
+              error: "Could not retrieve created patient",
+            });
+          }
+
+          if (selectResults.length === 0) {
+            return res.status(500).json({
+              error: "Patient not found after creation",
+            });
+          }
+
+          // Single response with the created data
+          res.status(201).json(selectResults[0]);
         }
-
-        res.status(201).json(patientResults[0]);
-      }
-    );
-  });
+      );
+    }
+  );
 });
 
 // Update a patient
@@ -144,41 +145,36 @@ app.put("/api/patients/:id", (req, res) => {
   db.query(
     "UPDATE patients SET ? WHERE id = ?",
     [editPatient, id],
-    (err, results) => {
-      if (err) {
-        console.error(err);
+    (updateErr, updateResults) => {
+      if (updateErr) {
+        console.error(updateErr);
         return res.status(500).json({
-          success: false,
-          error: "Database error",
-          message: err.message,
+          error: "Update failed",
+          details: updateErr.message,
         });
       }
 
-      if (results.affectedRows === 0) {
-        return res.status(404).json({
-          success: false,
-          error: "Patient not found",
-        });
+      if (updateResults.affectedRows === 0) {
+        return res.status(404).json({ error: "Patient not found" });
       }
 
-      // Get the updated patient
+      // Single response after successful update
       db.query(
         "SELECT * FROM patients WHERE id = ?",
         [id],
-        (err, patientResults) => {
-          if (err || patientResults.length === 0) {
-            console.error(err || "Patient not found after update");
-            return res.json({
-              success: true,
-              message: "Patient updated but could not retrieve details",
-              patient: editPatient, // Return what we have
+        (selectErr, selectResults) => {
+          if (selectErr) {
+            console.error(selectErr);
+            return res.status(500).json({
+              error: "Fetch failed",
+              details: selectErr.message,
             });
           }
 
           res.json({
             success: true,
             message: "Patient updated successfully",
-            patient: patientResults[0],
+            patient: selectResults[0],
           });
         }
       );

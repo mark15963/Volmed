@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
 import { UploadOutlined } from '@ant-design/icons'
@@ -78,6 +79,8 @@ export const RegisterPatient = ({
 
     usePageTitle("Регистрация пациента");
 
+    console.log(initialValues)
+
     useEffect(() => {
         if (initialValues) {
             form.setFieldsValue({
@@ -86,6 +89,8 @@ export const RegisterPatient = ({
             });
         }
     }, [initialValues, form]);
+
+    console.log(isEditMode, patientId)
 
     const onFinish = async (formValues) => {
         try {
@@ -100,24 +105,21 @@ export const RegisterPatient = ({
             let response
             let url = 'http://localhost:5000/api/patients'
 
+            console.log(isEditMode, patientId)
             if (isEditMode && patientId) {
-                response = await fetch(`${url}/${patientId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formattedValues),
+                response = await axios.put(`${url}/${patientId}`, formattedValues, {
                 });
+                console.log('PUT:', formattedValues)
             } else {
-                response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formattedValues),
+                response = await axios.post(url, formattedValues, {
                 });
+                console.log('POST:', formattedValues)
             }
 
-            const text = await response.text();
-            const responseData = text ? JSON.parse(text) : {};
+            const responseData = response.data;
 
-            if (!response.ok) {
+            // Check for successful status (2xx)
+            if (response.status < 200 || response.status >= 300) {
                 throw new Error(responseData.error || 'Ошибка при сохранении данных');
             }
 
@@ -125,15 +127,28 @@ export const RegisterPatient = ({
 
             await new Promise(resolve => setTimeout(resolve, 3000))
 
-            console.log(isEditMode)
-            console.log(responseData)
 
-            navigate(`/search/${responseData.id}`, {
-                state: {
-                    results: [responseData],
-                    searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
-                }
-            });
+            if (!isEditMode) {
+                console.log(responseData.id)
+                navigate(`/search/${responseData.id}`, {
+                    state: {
+                        results: responseData,
+                        searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
+                    }
+                });
+
+                console.log('Registered', responseData)
+            } else {
+                console.log(patientId)
+                navigate(`/search/${patientId}`, {
+                    state: {
+                        results: responseData,
+                        searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
+                    }
+                });
+
+                console.log('Updated', responseData)
+            }
 
 
         } catch (err) {

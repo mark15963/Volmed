@@ -6,7 +6,6 @@ import { usePageTitle } from '../../components/PageTitle/PageTitle';
 
 export const EditPatient = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [patientData, setPatientData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -14,7 +13,16 @@ export const EditPatient = () => {
     useEffect(() => {
         const fetchPatient = async () => {
             try {
+                // First check if we have data in location state
+                if (location.state?.patientData) {
+                    setPatientData(location.state.patientData);
+                    setLoading(false);
+                    return;
+                }
+
+                // Otherwise fetch from API
                 const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
+                console.log(response.data)
                 setPatientData(response.data);
             } catch (err) {
                 setError(err.response?.data?.error || 'Failed to fetch patient data');
@@ -24,10 +32,10 @@ export const EditPatient = () => {
         };
 
         fetchPatient();
-    }, [id]);
+    }, [id, location.state]);
 
     usePageTitle(patientData ?
-        `Редактирование: ${patientData.lastName}` :
+        `Редактирование: ${patientData.lastName} ${patientData.firstName} ${patientData.patr}` :
         "Новый пациент");
 
 
