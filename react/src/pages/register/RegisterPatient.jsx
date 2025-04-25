@@ -16,7 +16,6 @@ export const RegisterPatient = ({
     initialValues = null,
     isEditMode = false,
     patientId = null,
-    onSubmitSuccess = () => { }
 }) => {
 
     const navigate = useNavigate()
@@ -126,7 +125,16 @@ export const RegisterPatient = ({
 
             await new Promise(resolve => setTimeout(resolve, 3000))
 
-            onSubmitSuccess(responseData);
+            console.log(isEditMode)
+            console.log(responseData)
+
+            navigate(`/search/${responseData.id}`, {
+                state: {
+                    results: [responseData],
+                    searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
+                }
+            });
+
 
         } catch (err) {
             setError(err.message);

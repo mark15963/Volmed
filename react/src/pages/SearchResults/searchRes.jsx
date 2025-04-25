@@ -16,7 +16,6 @@ export const SearchResults = () => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState(0)
     const [files, setFiles] = useState([]);
-    const [uploading, setUploading] = useState(false);
 
     let title
     if (loading) {
@@ -42,13 +41,13 @@ export const SearchResults = () => {
                 } else if (id) {
                     const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
                     patientData = response.data;
+                    console.log('Patient ID:', data.patient?.id || data?.id); // Adjusted to handle both nested and direct access
                 }
-
                 if (!patientData) {
                     throw new Error('Данные пациента не найдены');
                 }
 
-                setData(patientData);
+                setData(patientData.patient || patientData);
             } catch (err) {
                 setError(err.message);
             } finally {
