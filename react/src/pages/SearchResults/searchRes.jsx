@@ -16,6 +16,8 @@ export const SearchResults = () => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState(0)
     const [files, setFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
+    const [patientData, setPatientData] = useState(null);
 
     let title
     if (loading) {
@@ -24,10 +26,8 @@ export const SearchResults = () => {
         title = "Ошибка"
     } else if (!data) {
         title = "Пациент не найден"
-    } else if (state?.searchQuery) {
-        title = `Результаты поиска: ${data.lastName}`
     } else {
-        title = `Карта пациента: ${data.lastName} ${data.firstName}`
+        title = `Карта пациента: ${data.lastName} ${data.firstName} ${data.patr}`
     }
     usePageTitle(title)
 
@@ -36,18 +36,25 @@ export const SearchResults = () => {
             try {
                 let patientData;
 
-                if (state?.results?.length > 0) {
+                // Priority 1: Check for patientData in state
+                if (state?.patientData) {
+                    patientData = state.patientData;
+                }
+                // Priority 2: Check for legacy results array
+                else if (state?.results?.length > 0) {
                     patientData = state.results[0];
-                } else if (id) {
+                }
+                // Priority 3: Fetch by ID if no state data
+                else if (id) {
                     const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
                     patientData = response.data;
-                    console.log('Patient ID:', data.patient?.id || data?.id); // Adjusted to handle both nested and direct access
                 }
+
                 if (!patientData) {
                     throw new Error('Данные пациента не найдены');
                 }
 
-                setData(patientData.patient || patientData);
+                setData(patientData);
             } catch (err) {
                 setError(err.message);
             } finally {
