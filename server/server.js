@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
 const app = express();
@@ -34,35 +35,25 @@ const storage = multer.diskStorage({
     const originalname = file.originalname;
     const ext = path.extname(originalname);
     const basename = path.basename(originalname, ext);
-
-    // Remove special characters but keep the original structure
     const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
-
-    // Check if file exists and add suffix if needed
     const fullPath = `./uploads/patients/${req.params.id}/${safeName}`;
 
     if (fs.existsSync(fullPath)) {
-      const timestamp = Date.now();
-      cb(null, `${basename}-${timestamp}${ext}`);
+      let counter = 1;
+      let newName = `${basename} (${counter})${ext}`;
+
+      while (fs.existsSync(`./uploads/patients/${req.params.id}/${newName}`)) {
+        counter++;
+        newName = `${basename} (${counter})${ext}`;
+      }
+      cb(null, newName);
     } else {
       cb(null, safeName);
     }
   },
 });
 
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-    if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error("Only PDF, JPEG and PNG files are allowed"));
-    }
-    cb(null, true);
-  },
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
-});
+const upload = multer({ storage });
 
 db.connect((err) => {
   if (err) {
@@ -355,31 +346,39 @@ app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
+  // res.json({
+  //   filename: (req, file, cb) => {
+  //     const originalname = file.originalname;
+  //     const ext = path.extname(originalname);
+  //     const basename = path.basename(originalname, ext);
+
+  //     const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
+  //     const fullPath = `./uploads/patients/${req.params.id}/${safeName}`;
+
+  //     if (fs.existsSync(fullPath)) {
+  //       let counter = 1;
+  //       let newName = `${basename} (${counter})${ext}`;
+
+  //       while (
+  //         fs.existsSync(`./uploads/patients/${req.params.id}/${newName}`)
+  //       ) {
+  //         counter++;
+  //         newName = `${basename} (${counter})${ext}`;
+  //       }
+
+  //       cb(null, newName);
+  //     } else {
+  //       cb(null, safeName);
+  //     }
+  //   },
+  // });
+
   res.json({
-    filename: (req, file, cb) => {
-      const originalname = file.originalname;
-      const ext = path.extname(originalname);
-      const basename = path.basename(originalname, ext);
-
-      const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
-      const fullPath = `./uploads/patients/${req.params.id}/${safeName}`;
-
-      if (fs.existsSync(fullPath)) {
-        let counter = 1;
-        let newName = `${basename} (${counter})${ext}`;
-
-        while (
-          fs.existsSync(`./uploads/patients/${req.params.id}/${newName}`)
-        ) {
-          counter++;
-          newName = `${basename} (${counter})${ext}`;
-        }
-
-        cb(null, newName);
-      } else {
-        cb(null, safeName);
-      }
-    },
+    success: true,
+    filename: req.file.filename,
+    originalname: req.file.originalname,
+    path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
+    size: req.file.size,
   });
 });
 
@@ -409,6 +408,80 @@ app.get("/api/patients/:id/files", (req, res) => {
 
     res.json(fileList);
   });
+});
+
+app.delete("/api/files", async (req, res) => {
+  try {
+    // 1. Validate request body
+    if (!req.body || !req.body.filePath) {
+      return res.status(400).json({
+        error: "Bad request",
+        message: "filePath is required in request body",
+      });
+    }
+
+    const { filePath } = req.body;
+
+    // 2. Construct safe path (with additional security)
+    const uploadsDir = path.join(__dirname, "uploads");
+    const normalizedFilePath = path
+      .normalize(filePath)
+      .replace(/^(\.\.[\/\\])+/g, "") // Prevent directory traversal
+      .replace(/\\/g, "/"); // Normalize to forward slashes
+
+    const fullPath = path.join(uploadsDir, normalizedFilePath);
+
+    // 3. Verify the path is within allowed directory
+    if (!fullPath.startsWith(path.normalize(uploadsDir))) {
+      console.error("Security violation: Attempted path:", fullPath);
+      return res.status(403).json({
+        error: "Access denied",
+        message: "Invalid file path",
+      });
+    }
+
+    // 4. Verify file exists (using promises)
+    try {
+      await fsp.access(fullPath);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        return res.status(404).json({
+          error: "Not found",
+          message: "File does not exist",
+        });
+      }
+      throw err;
+    }
+
+    // 5. Delete the file (using promises)
+    await fsp.unlink(fullPath);
+
+    res.json({
+      success: true,
+      message: "File deleted successfully",
+      path: normalizedFilePath,
+    });
+  } catch (error) {
+    console.error("File deletion error:", error);
+
+    // Handle specific errors
+    let status = 500;
+    let errorMessage = "Internal server error";
+
+    if (error.code === "EPERM") {
+      status = 403;
+      errorMessage = "Permission denied";
+    } else if (error.code === "EISDIR") {
+      status = 400;
+      errorMessage = "Path is a directory";
+    }
+
+    res.status(status).json({
+      error: errorMessage,
+      message: error.message,
+      ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
+    });
+  }
 });
 
 app.use((req, res, next) => {
