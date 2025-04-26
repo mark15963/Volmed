@@ -1,6 +1,6 @@
 {
-  "name": "test-hospital-web",
-  "version": "1.0.0",
+  "name": "server",
+  "version": "3.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {

@@ -79,7 +79,10 @@ app.get("/api/patient-count", (req, res) => {
 // Get all patients
 app.get("/api/patients", (req, res) => {
   db.query("SELECT * FROM patients", (err, results) => {
-    if (err) throw err;
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
     res.json(results);
   });
 });
