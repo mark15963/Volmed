@@ -84,11 +84,13 @@ span{
 }
 
 .fileItem {
+    background-color: #076ab1;
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #eee;
     cursor: pointer;
+    margin: 5px 0;
+    border-radius: 5px;
 }
 
 .fileItem:hover {
@@ -96,7 +98,7 @@ span{
 }
   
 .fileSize {
-    color: #bebebe;
+    color: #dbdbdb;
     font-size: 0.9em;
 }
 
