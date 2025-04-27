@@ -119,3 +119,12 @@ span{
     align-items: center;
     width: 100%;
 }
+
+a{
+    color: aliceblue !important;
+    text-decoration: none;
+}
+
+.ant-upload-wrapper .ant-upload-drag .ant-upload {
+    width: 100% !important;
+}

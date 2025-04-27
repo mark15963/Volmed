@@ -89,17 +89,29 @@ export const AllPatients = () => {
 
   return (
     <div className={styles.container}>
+      <table className={styles.table}>
+        <thead className={styles.head}>
+          <tr className={styles.rows}>
+            <th style={{ flex: 0.5 }}>№ карты</th>
+            <th style={{ flex: 2 }}>ФИО</th>
+            <th style={{ flex: 0.7 }}>Дата рождения</th>
+          </tr>
+        </thead>
+      </table>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
           {Array.from({ length: 5 }).map((_, i) => (
             <table key={i} className={styles.table}>
               <tbody >
                 <tr className={styles.rows}>
-                  <td style={{ width: '50px' }}>
-                    <Skeleton borderRadius={5} width={30} />
+                  <td style={{ flex: 0.5 }}>
+                    <Skeleton borderRadius={5} width={80} />
                   </td>
-                  <td>
-                    <Skeleton borderRadius={5} width={350} />
+                  <td style={{ flex: 2 }}>
+                    <Skeleton borderRadius={5} width={390} />
+                  </td>
+                  <td style={{ flex: 0.7 }}>
+                    <Skeleton borderRadius={5} width={170} />
                   </td>
                 </tr>
               </tbody>
@@ -107,6 +119,7 @@ export const AllPatients = () => {
           ))}
         </SkeletonTheme>
       ) : (
+
         patients.map(patient => (
           <table
             key={patient.id}
@@ -116,92 +129,18 @@ export const AllPatients = () => {
           >
             <tbody>
               <tr className={styles.rows}>
-                <td style={{ width: '50px' }}>№{patient.id}:</td>
-                <td style={{ width: '400px' }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
-                <td style={{ width: '100px' }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
+                <td style={{ flex: 0.5 }}>№{patient.id}:</td>
+                <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
+                <td style={{ flex: 0.7 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
               </tr>
             </tbody>
           </table>
         ))
       )}
-    </div>
+
+    </div >
   )
 }
-
-/*
-export const PatientsList = () => {
-  const [patients, setPatients] = useState([]);
-
-  useEffect(() => {
-    const fetchPatients = async () => {
-      const response = await axios.get("http://localhost:5000/api/patients");
-      setPatients(response.data);
-    };
-    fetchPatients();
-  }, []);
-
-  let res = patients.map((patient) => {
-
-    return (
-      <tr key={patient.id}>
-        <td>{patient.id}</td>
-        <td>{patient.lastName} </td>
-        <td>{patient.firstName}</td>
-        <td>{patient.patr}</td>
-        <td>{patient.sex}</td>
-        <td>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
-        <td>{patient.phone}</td>
-        <td>{patient.email}</td>
-        <td>{patient.address}</td>
-        <td>{patient.complaint}</td>
-        <td>{patient.anam}</td>
-        <td>{patient.life}</td>
-        <td>{patient.status}</td>
-        <td>{patient.diag}</td>
-        <td>{patient.mkb}</td>
-        <td>{patient.sop_zab}</td>
-        <td>{moment(patient.created_at).format('DD.MM.YYYY')}</td>
-        <td>{patient.statusReport}</td>
-        <td>{patient.report}</td>
-        <td>{patient.treatment}</td>
-      </tr>
-    )
-
-  })
-
-  return (
-    <table className={styles.table}>
-      <thead>
-        <tr style={{ minWidth: '50px', fontWeight: '700' }}>
-          <th style={{ minWidth: '50px' }}>№ ИБ</th>
-          <th>Фамилия</th>
-          <th>Имя</th>
-          <th>Отчество</th>
-          <th>Пол</th>
-          <th style={{ minWidth: '110px' }}>Год рождения</th>
-          <th style={{ minWidth: '130px' }}>Телефон</th>
-          <th>E-Mail</th>
-          <th style={{ minWidth: '250px' }}>Адрес</th>
-          <th style={{ minWidth: '300px' }}>Жалобы</th>
-          <th style={{ minWidth: '1000px' }}>История настоящего заболевания</th>
-          <th style={{ minWidth: '1000px' }}>Анамнез жизни</th>
-          <th style={{ minWidth: '1500px' }}>Локальный статус</th>
-          <th style={{ minWidth: '300px' }}>Диагноз</th>
-          <th style={{ minWidth: '300px' }}>МКБ</th>
-          <th style={{ minWidth: '300px' }}>Сопутствующие заболевания</th>
-          <th style={{ minWidth: '150px' }}>Дата поступления</th>
-          <th>-</th>
-          <th>Эпикриз</th>
-          <th>Лечение</th>
-        </tr>
-      </thead>
-      <tbody>
-        {res}
-      </tbody>
-    </table>
-  );
-};
-*/
 
 export const PatientCount = () => {
   const [count, setCount] = useState(0)
@@ -225,7 +164,7 @@ export const PatientCount = () => {
   return (
     <div className={styles.container}>
       <div style={{ color: 'aliceblue', cursor: 'default' }}>
-        <span style={{ marginRight: '10px' }}>Общее количиство пациентов: </span>
+        <span style={{ marginRight: '10px' }}>Всего пациентов: </span>
         {loading ? (
           <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
             <Skeleton

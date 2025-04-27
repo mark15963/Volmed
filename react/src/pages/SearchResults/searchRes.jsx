@@ -267,7 +267,7 @@ export const SearchResults = () => {
                         {files.length === 0 ? (
                             <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
                         ) : (
-                            <ul>
+                            <ul style={{ paddingLeft: 10 }}>
                                 {files.map((file, index) => (
                                     <li key={index} className={styles.fileItem}>
                                         <span onClick={() => openFile(file.path)}>

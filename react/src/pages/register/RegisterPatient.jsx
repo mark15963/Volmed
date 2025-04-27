@@ -133,7 +133,7 @@ export const RegisterPatient = ({
         },
         showUploadList: {
             showPreventIcon: true,
-            showUploadIcon: true,
+            showDownloadIcon: false,
             downloadIcon: 'Скачать',
             showRemoveIvon: true,
             removeIcon: (
@@ -394,15 +394,16 @@ export const RegisterPatient = ({
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label={
                                         <span className={styles.formLabel}>
                                             Медицинские документы
                                         </span>
                                     }
+                                    style={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'center' }}
                                 >
-
-                                    <Dragger {...uploadProps}>
+                                    <Dragger {...uploadProps} >
                                         <p className="ant-upload-drag-icon">
                                             <UploadOutlined />
                                         </p>
@@ -410,9 +411,9 @@ export const RegisterPatient = ({
                                         <p className="ant-upload-hint">
                                             Поддерживаются файлы до 10MB (PDF, JPG, PNG)
                                         </p>
-
                                     </Dragger>
                                 </Form.Item>
+
                                 <div className={styles.buttons}>
                                     <Button
                                         htmlType="submit"
@@ -431,7 +432,7 @@ export const RegisterPatient = ({
                         </Form>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
