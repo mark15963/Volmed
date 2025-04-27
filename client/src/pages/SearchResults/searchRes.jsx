@@ -16,9 +16,8 @@ export const SearchResults = () => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState(0)
     const [files, setFiles] = useState([]);
-    const [uploading, setUploading] = useState(false);
-    const [patientData, setPatientData] = useState(null);
 
+    //Patient's name in title
     let title
     if (loading) {
         title = "Загрузка..."
@@ -31,20 +30,18 @@ export const SearchResults = () => {
     }
     usePageTitle(title)
 
+    //Fetch patient's data
     useEffect(() => {
         const fetchPatientData = async () => {
             try {
                 let patientData;
 
-                // Priority 1: Check for patientData in state
                 if (state?.patientData) {
                     patientData = state.patientData;
                 }
-                // Priority 2: Check for legacy results array
                 else if (state?.results?.length > 0) {
                     patientData = state.results[0];
                 }
-                // Priority 3: Fetch by ID if no state data
                 else if (id) {
                     const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
                     patientData = response.data;
@@ -65,6 +62,7 @@ export const SearchResults = () => {
         fetchPatientData();
     }, [id, state]);
 
+    //Page title
     useEffect(() => {
         if (loading) {
             document.title = "Загрузка данных пациента...";
@@ -81,8 +79,8 @@ export const SearchResults = () => {
         };
     }, [loading, error, data]);
 
+    //Fetch patient's files
     useEffect(() => {
-        // File fetching logic
         const fetchFiles = async () => {
             if (data?.id) {
                 try {
@@ -115,33 +113,11 @@ export const SearchResults = () => {
         }
     }
 
-    const handleFileUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            await axios.post(`http://localhost:5000/api/patients/${data.id}/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            await fetchFiles(); // Refresh file list
-        } catch (error) {
-            console.error('Upload error:', error);
-        } finally {
-            setUploading(false);
-        }
-    };
-
     const openFile = (filePath) => {
         window.open(`http://localhost:5000${filePath}`, '_blank');
     };
 
-
+    //Main block state
     if (loading) return <div className={styles.resultsContainer}>Загрузка...</div>;
     if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
     if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
@@ -295,7 +271,7 @@ export const SearchResults = () => {
             <Menu
                 items={[
                     { name: 'Основное' },
-                    { name: 'Анализы' }
+                    { name: 'Анализы' },
                 ]}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
