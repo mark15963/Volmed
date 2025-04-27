@@ -207,7 +207,7 @@ export const SearchResults = () => {
                     <br />
                     <div className={styles.title}>Клинический диагноз: <br />
                         <span>
-                            {data.mkb}<br />
+                            {/* {data.mkb} */}
                             {data.diag}
                         </span>
                     </div>

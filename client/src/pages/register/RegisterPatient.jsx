@@ -78,10 +78,12 @@ export const RegisterPatient = ({
             );
             const data = response.data?.suggestions || [];
 
-            return data.map(item => ({
-                value: item.data.code,
-                label: `${item.data.code} - ${item.value}`
-            }));
+            return data
+                .filter(item => item?.data?.code)
+                .map(item => ({
+                    value: item.data.code,
+                    label: `${item.data.code} - ${item.value}`
+                }));
         } catch (error) {
             console.error('Ошибка при получении подсказок МКБ:', error);
             return [];
@@ -191,7 +193,8 @@ export const RegisterPatient = ({
 
             const formattedValues = {
                 ...formValues,
-                birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null
+                birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null,
+                diag: formValues.diag,
             };
 
             let response
@@ -211,6 +214,7 @@ export const RegisterPatient = ({
             success()
 
             await new Promise(resolve => setTimeout(resolve, 3000))
+            form.resetFields(['mkb'])
 
             navigate(`/search/${isEditMode ? patientId : responseData.id}`, {
                 state: {
@@ -378,12 +382,12 @@ export const RegisterPatient = ({
 
                                 <Form.Item
                                     label={<span className={styles.formLabel}>Клинический диагноз (МКБ)</span>}
-                                    name="mkb"
+
                                 >
                                     <Select
                                         showSearch
-                                        placeholder="Введите диагноз..."
-                                        filterOption={false} // отключаем локальный фильтр, ищем на сервере
+                                        placeholder="Выберите диагноз из МКБ"
+                                        filterOption={false}
                                         onSearch={async (value) => {
                                             if (!value) {
                                                 setMkbOptions([]);
@@ -394,23 +398,21 @@ export const RegisterPatient = ({
                                             setMkbOptions(options);
                                             setMkbFetching(false);
                                         }}
+                                        onSelect={(value, option) => {
+                                            const currentDiag = form.getFieldValue('diag') || ''
+                                            const newDiag = `${option.label};\n${currentDiag}`.trim()
+                                            form.setFieldsValue({
+                                                diag: newDiag,
+                                                mkb: undefined,
+                                            })
+                                        }}
                                         notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
                                         options={mkbOptions}
                                         style={{ width: '100%' }}
                                     />
-                                    {/*
-                                    <Select
-                                        showSearch
-                                        optionFilterProp="children"
-                                        style={{ width: '100%' }}>
-                                        <Option value="">Не выбрано</Option>
-                                        <Option value="Другие">Другие</Option>
-                                    </Select>
-                                     */}
                                 </Form.Item>
 
                                 <Form.Item
-                                    label={<span className={styles.formLabel}>Диагноз</span>}
                                     name="diag"
                                 >
                                     <Input.TextArea
