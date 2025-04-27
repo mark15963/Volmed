@@ -138,11 +138,22 @@ span{
         size: auto;
     }
         
+    * {
+        color: black !important;
+    }
+
     body {
         margin: 0;
         padding: 0;
         background: white;
         font-size: 12pt;
+    }
+
+    .resultsContainer {
+        width: 100%;
+        max-width: 210mm; /* Standard A4 width */
+        margin: 0 auto;
+        padding: 0mm; /* 15mm Standard print padding */
     }
 
     .bg{
@@ -181,20 +192,7 @@ span{
         display: inline-block;
     }
 
-    /* Hide any images */
     img {
         display: none !important;
-    }
-
-    * {
-        color: black !important;
-    }
-    
-    /* Add any other print-specific styles */
-    .resultsContainer {
-        width: 100%;
-        max-width: 210mm; /* Standard A4 width */
-        margin: 0 auto;
-        padding: 15mm; /* Standard print padding */
     }
 }

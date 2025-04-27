@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Main } from '../../pages/main/main'
 import { SearchResults } from "../../pages/SearchResults/searchRes";
 import { List } from "../../pages/PatientsList/list";
@@ -10,6 +10,7 @@ import logo from '../../imgs/герб_ямала.png';
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
+import { useEffect } from "react";
 
 export const Header = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const Header = () => {
     const handleLogoClick = () => {
         navigate('/');
     };
+
     return (
         <div className={headerStyles.container}>
             <div className={headerStyles.content}>
@@ -35,8 +37,6 @@ export const Header = () => {
         </div>
     )
 }
-
-
 
 export const Content = () => {
     return (
@@ -57,7 +57,7 @@ export const Footer = () => {
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
-                Footer
+                Volmed 2025
             </div>
         </div>
     )
