@@ -25,6 +25,8 @@ export const RegisterPatient = ({
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage();
     const [fileList, setFileList] = useState([]);
+    const [mkbOptions, setMkbOptions] = useState([]);
+    const [mkbFetching, setMkbFetching] = useState(false);
 
     // Function to refresh file list
     const refreshFileList = async () => {
@@ -57,6 +59,33 @@ export const RegisterPatient = ({
                 duration: 2
             })
             .then(() => messageApi.success('Данные сохранены!', 2.5))
+    };
+
+    //Fetch ICD(МКБ) API
+    const fetchMkbSuggestions = async (query) => {
+        if (!query) return [];
+
+        try {
+            const response = await axios.post(
+                'https://api.gigdata.ru/api/v2/suggest/mkb',
+                { query, count: 10 },
+                {
+                    headers: {
+                        'Authorization': '55z311s1jl1wfzj0fxyj0sf2xsuv0x9e76gwl3vf',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            const data = response.data?.suggestions || [];
+
+            return data.map(item => ({
+                value: item.data.code,
+                label: `${item.data.code} - ${item.value}`
+            }));
+        } catch (error) {
+            console.error('Ошибка при получении подсказок МКБ:', error);
+            return [];
+        }
     };
 
     useEffect(() => {
@@ -146,8 +175,6 @@ export const RegisterPatient = ({
 
     usePageTitle("Регистрация пациента");
 
-    console.log(initialValues)
-
     useEffect(() => {
         if (initialValues) {
             form.setFieldsValue({
@@ -156,8 +183,6 @@ export const RegisterPatient = ({
             });
         }
     }, [initialValues, form]);
-
-    console.log(isEditMode, patientId)
 
     const onFinish = async (formValues) => {
         try {
@@ -357,12 +382,31 @@ export const RegisterPatient = ({
                                 >
                                     <Select
                                         showSearch
+                                        placeholder="Введите диагноз..."
+                                        filterOption={false} // отключаем локальный фильтр, ищем на сервере
+                                        onSearch={async (value) => {
+                                            if (!value) {
+                                                setMkbOptions([]);
+                                                return;
+                                            }
+                                            setMkbFetching(true);
+                                            const options = await fetchMkbSuggestions(value);
+                                            setMkbOptions(options);
+                                            setMkbFetching(false);
+                                        }}
+                                        notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
+                                        options={mkbOptions}
+                                        style={{ width: '100%' }}
+                                    />
+                                    {/*
+                                    <Select
+                                        showSearch
                                         optionFilterProp="children"
                                         style={{ width: '100%' }}>
                                         <Option value="">Не выбрано</Option>
                                         <Option value="Другие">Другие</Option>
-                                        {/* Add your MKB options here */}
                                     </Select>
+                                     */}
                                 </Form.Item>
 
                                 <Form.Item
