@@ -92,9 +92,9 @@ export const AllPatients = () => {
       <table className={styles.table}>
         <thead className={styles.head}>
           <tr className={styles.rows}>
-            <th style={{ flex: 0.5 }}>№ карты</th>
+            <th style={{ flex: 0.6 }}>№ карты</th>
             <th style={{ flex: 2 }}>ФИО</th>
-            <th style={{ flex: 0.7 }}>Дата рождения</th>
+            <th style={{ flex: 0.8 }}>Дата рождения</th>
           </tr>
         </thead>
       </table>
@@ -104,13 +104,13 @@ export const AllPatients = () => {
             <table key={i} className={styles.table}>
               <tbody >
                 <tr className={styles.rows}>
-                  <td style={{ flex: 0.5 }}>
+                  <td style={{ flex: 0.6 }}>
                     <Skeleton borderRadius={5} width={80} />
                   </td>
                   <td style={{ flex: 2 }}>
                     <Skeleton borderRadius={5} width={390} />
                   </td>
-                  <td style={{ flex: 0.7 }}>
+                  <td style={{ flex: 0.8 }}>
                     <Skeleton borderRadius={5} width={170} />
                   </td>
                 </tr>
@@ -129,9 +129,9 @@ export const AllPatients = () => {
           >
             <tbody>
               <tr className={styles.rows}>
-                <td style={{ flex: 0.5 }}>№{patient.id}:</td>
+                <td style={{ flex: 0.6 }}>№{patient.id}:</td>
                 <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
-                <td style={{ flex: 0.7 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
+                <td style={{ flex: 0.8 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
               </tr>
             </tbody>
           </table>
