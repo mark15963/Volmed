@@ -129,7 +129,7 @@ export const AllPatients = () => {
           >
             <tbody>
               <tr className={styles.rows}>
-                <td style={{ flex: 0.6 }}>№{patient.id}:</td>
+                <td style={{ flex: 0.6 }}>№{patient.id}</td>
                 <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
                 <td style={{ flex: 0.8 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
               </tr>

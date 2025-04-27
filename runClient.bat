@@ -1,4 +1,4 @@
 @echo off
-cd react
+cd client
 npm run dev
 pause
