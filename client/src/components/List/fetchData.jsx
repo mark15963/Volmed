@@ -162,21 +162,19 @@ export const PatientCount = () => {
   }, [])
 
   return (
-    <div className={styles.container}>
-      <div style={{ color: 'aliceblue', cursor: 'default' }}>
-        <span style={{ marginRight: '10px' }}>Всего пациентов: </span>
-        {loading ? (
-          <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-            <Skeleton
-              borderRadius={5}
-              width='20px'
-              duration='3'
-              inline />
-          </SkeletonTheme>
-        ) : (
-          <span>{count}</span>
-        )}
-      </div>
+    <div className={styles.countContainer}>
+      <span style={{ marginRight: '10px' }}>Всего пациентов: </span>
+      {loading ? (
+        <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+          <Skeleton
+            borderRadius={5}
+            width='20px'
+            duration='3'
+            inline />
+        </SkeletonTheme>
+      ) : (
+        <span>{count}</span>
+      )}
     </div>
   )
 }
