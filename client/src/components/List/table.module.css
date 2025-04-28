@@ -4,6 +4,9 @@
   flex-direction: column;
   gap: 5px;
   color: aliceblue;
+  background-color: #0065ad;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .skeleton{
@@ -40,4 +43,11 @@
 .head{
   display: flex;
   flex:1;
+  background-color: #0065ad;
+}
+
+.countContainer{
+  background-color: #0073C7;
+  color: aliceblue;
+  cursor: default;
 }
