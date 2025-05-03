@@ -164,7 +164,7 @@ span{
         width: 100%;
     }
 
-    h2, .backButton, .updbut, .printbut {
+    h2, .buttonsContainer {
         display: none !important;
     }
     

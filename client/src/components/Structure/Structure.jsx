@@ -44,7 +44,7 @@ export const Content = () => {
             <Route path='/patients' element={<List />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/search/:id" element={<SearchResults />} />
-            <Route path="/register-patient" element={<RegisterPatient />} />
+            <Route path="/register" element={<RegisterPatient />} />
             <Route path="/edit/:id" element={<EditPatient />} />
         </Routes>
     )
