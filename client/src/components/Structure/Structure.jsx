@@ -10,9 +10,8 @@ import logo from '../../imgs/герб_ямала.png';
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
-import { useEffect } from "react";
 
-export const Header = () => {
+export const Header = (props) => {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
@@ -27,7 +26,7 @@ export const Header = () => {
                     onClick={handleLogoClick}
                     style={{ cursor: 'pointer' }}
                 />
-                <h1 className={headerStyles.title}>ГБУ «Городская больница Волновахского района»</h1>
+                <h1 className={headerStyles.title}>{props.title}</h1>
                 <img
                     src={logo}
                     onClick={handleLogoClick}
@@ -54,10 +53,15 @@ export const Content = () => {
 
 
 export const Footer = () => {
+    const year = new Date().getFullYear()
+    const yearText = year > 2025
+        ? `Volmed 2025 - ${year}`
+        : `Volmed ${year}`
+
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
-                Volmed 2025
+                © {yearText}
             </div>
         </div>
     )
