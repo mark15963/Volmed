@@ -1,12 +1,12 @@
 import './App.css'
 import { Header, Content, Footer } from './components/Structure/Structure'
 
-export const App = (props) => {
+export const App = () => {
 
   return (
     <>
       <div className='header'>
-        <Header />
+        <Header title='ГБУ «Городская больница Волновахского района»' />
       </div>
       <div className='content'>
         <Content />

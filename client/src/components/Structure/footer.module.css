@@ -1,7 +1,7 @@
 .container{
     margin: 0;
     padding: 0;
-    height: 100px;
+    height: 100%;
     display: flex;
     background-color: rgb(75, 79, 82);
     color: #fff;
