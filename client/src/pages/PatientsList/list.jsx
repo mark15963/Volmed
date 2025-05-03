@@ -1,13 +1,14 @@
 import React from 'react'
 import { AllPatients, PatientCount } from '../../components/List/fetchData'
 import { useNavigate } from 'react-router-dom'
-import styles from './list.module.css'
 import { SearchBar } from '../../components/SearchBar/SearchBar'
 import { usePageTitle } from '../../components/PageTitle/PageTitle'
+import { HomeButton } from '../../components/Buttons/Buttons'
+
+import styles from './list.module.css'
+
 
 export const List = () => {
-    const navigate = useNavigate()
-
     usePageTitle("Список пациентов");
 
     return (
@@ -33,9 +34,7 @@ export const List = () => {
 
                 </div>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.backButton} onClick={() => navigate(-1)}>
-                        Назад на главную
-                    </button>
+                    <HomeButton />
                 </div>
             </div>
         </div>
