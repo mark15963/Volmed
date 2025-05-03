@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { IMaskInput } from 'react-imask';
+import { useNavigate } from 'react-router-dom'
 import styles from './buttons.module.css'
+
 
 export const AddButton = () => {
     const [showForm, setShowForm] = useState(false)
@@ -451,5 +453,20 @@ export const EditButton = () => {
                 </div>
             )}
         </>
+    )
+}
+
+export const HomeButton = () => {
+    const navigate = useNavigate()
+
+    return (
+        <button
+            className={styles.homeButton}
+            onClick={() =>
+                navigate('/')
+            }
+        >
+            Назад на главную
+        </button>
     )
 }

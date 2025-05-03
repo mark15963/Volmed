@@ -12,7 +12,7 @@ export const Main = () => {
                 <SearchBar />
                 <div className={styles.buttonsContainer}>
                     <button
-                        onClick={() => navigate('/list')}
+                        onClick={() => navigate('/patients')}
                         className={styles.backButton}
                     >
                         <i className="bi bi-people"><span style={{ fontStyle: 'normal', margin: '0 0 0 5px' }}>Список пациентов</span></i>

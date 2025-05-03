@@ -40,6 +40,11 @@
   background-color: #006fbe;
 }
 
+.table:hover{
+  transition: all 0.3s;
+  background-color: #006ab6;
+}
+
 .head{
   display: flex;
   flex:1;

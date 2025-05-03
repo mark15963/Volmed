@@ -6,6 +6,7 @@ import { usePageTitle } from '../../components/PageTitle/PageTitle';
 import { Menu } from '../../components/Menu/Menu';
 
 import styles from './searchResults.module.css';
+import { HomeButton } from '../../components/Buttons/Buttons';
 
 export const SearchResults = () => {
     const { state } = useLocation();
@@ -233,12 +234,12 @@ export const SearchResults = () => {
             <div className={styles.bg}>
                 <div>
                     <h3>Результаты анализов</h3>
-                    <p>Нет анализов</p>
+                    {/* В РАЗРАБОТКЕ*/}
+                    <p style={{ paddingLeft: '10px' }}>Нет анализов</p>
                 </div>
 
                 <div className={styles.fileSection}>
                     <h3>Медицинские документы</h3>
-                    {/* Files list */}
                     <div className={styles.fileList}>
                         {files.length === 0 ? (
                             <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
@@ -296,12 +297,7 @@ export const SearchResults = () => {
                     </button>
                 </div>
 
-                <button
-                    onClick={handleBack}
-                    className={styles.backButton}
-                >
-                    Назад на главную
-                </button>
+                <HomeButton />
             </div>
         </div >
     );
