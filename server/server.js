@@ -10,7 +10,20 @@ const { exec } = require("child_process");
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    res.setHeader("Content-Type", "application/json");
+  }
+  next();
+});
 app.use(express.json());
 
 const db = mysql.createConnection({

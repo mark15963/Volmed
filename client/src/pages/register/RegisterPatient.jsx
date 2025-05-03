@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-
-import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message } from "antd"
+import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message, Tooltip } from "antd"
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-
 import dayjs, { datePickerLocale } from './dayjs.config'
 
 import { usePageTitle } from '../../components/PageTitle/PageTitle'
@@ -71,7 +69,7 @@ export const RegisterPatient = ({
                 { query, count: 10 },
                 {
                     headers: {
-                        'Authorization': '55z311s1jl1wfzj0fxyj0sf2xsuv0x9e76gwl3vf',
+                        'Authorization': '8bt8og06l34vqy3o48s7mnb63lbp09rempo5nmk7',
                         'Content-Type': 'application/json'
                     }
                 }
@@ -314,14 +312,19 @@ export const RegisterPatient = ({
                                         label={<span className={styles.formLabel}>Номер телефона</span>}
                                         name="phone"
                                     >
-                                        <Input />
+                                        <Input
+                                            autoComplete='off'
+                                        />
                                     </Form.Item>
 
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Адрес</span>}
                                         name="address"
                                     >
-                                        <Input placeholder="г. Москва, ул..." />
+                                        <Input
+                                            placeholder="г. Москва, ул..."
+                                            autoComplete='off'
+                                        />
                                     </Form.Item>
                                     <Form.Item
                                         label={<span className={styles.formLabel}>E-Mail</span>}
@@ -333,7 +336,10 @@ export const RegisterPatient = ({
                                             }
                                         ]}
                                     >
-                                        <Input placeholder="" />
+                                        <Input
+                                            placeholder=""
+                                            autoComplete='off'
+                                        />
                                     </Form.Item>
                                 </div>
                             </div>
@@ -384,32 +390,34 @@ export const RegisterPatient = ({
                                     label={<span className={styles.formLabel}>Клинический диагноз (МКБ)</span>}
 
                                 >
-                                    <Select
-                                        showSearch
-                                        placeholder="Выберите диагноз из МКБ"
-                                        filterOption={false}
-                                        onSearch={async (value) => {
-                                            if (!value) {
-                                                setMkbOptions([]);
-                                                return;
-                                            }
-                                            setMkbFetching(true);
-                                            const options = await fetchMkbSuggestions(value);
-                                            setMkbOptions(options);
-                                            setMkbFetching(false);
-                                        }}
-                                        onSelect={(value, option) => {
-                                            const currentDiag = form.getFieldValue('diag') || ''
-                                            const newDiag = `${option.label};\n${currentDiag}`.trim()
-                                            form.setFieldsValue({
-                                                diag: newDiag,
-                                                mkb: undefined,
-                                            })
-                                        }}
-                                        notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
-                                        options={mkbOptions}
-                                        style={{ width: '100%' }}
-                                    />
+                                    <Tooltip placement='top' title='фунуция работает до 31.05.2025'>
+                                        <Select
+                                            showSearch
+                                            placeholder="Выберите диагноз из МКБ"
+                                            filterOption={false}
+                                            onSearch={async (value) => {
+                                                if (!value) {
+                                                    setMkbOptions([]);
+                                                    return;
+                                                }
+                                                setMkbFetching(true);
+                                                const options = await fetchMkbSuggestions(value);
+                                                setMkbOptions(options);
+                                                setMkbFetching(false);
+                                            }}
+                                            onSelect={(value, option) => {
+                                                const currentDiag = form.getFieldValue('diag') || ''
+                                                const newDiag = `${option.label};\n${currentDiag}`.trim()
+                                                form.setFieldsValue({
+                                                    diag: newDiag,
+                                                    mkb: undefined,
+                                                })
+                                            }}
+                                            notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
+                                            options={mkbOptions}
+                                            style={{ width: '100%' }}
+                                        />
+                                    </Tooltip>
                                 </Form.Item>
 
                                 <Form.Item
