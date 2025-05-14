@@ -8,7 +8,6 @@ import dayjs, { datePickerLocale } from './dayjs.config'
 import { usePageTitle } from '../../components/PageTitle/PageTitle'
 import styles from './register.module.css'
 
-const { Option } = Select
 const { Dragger } = Upload;
 
 export const RegisterPatient = ({
@@ -449,13 +448,15 @@ export const RegisterPatient = ({
                                     />
                                 </Form.Item>
 
+
                                 <Form.Item
                                     label={
                                         <span className={styles.formLabel}>
                                             Медицинские документы
                                         </span>
                                     }
-                                    style={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'center' }}
+                                    // style={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'center' }}
+                                    className={styles.center}
                                 >
                                     <Dragger {...uploadProps} >
                                         <p className="ant-upload-drag-icon">

@@ -49,3 +49,13 @@
   align-items: center;
   justify-content: center;
 }
+
+@media screen and (orientation: portrait) {
+  .container{
+    width: 100%;
+  }
+
+  .buttonContainer{
+    margin-top: 10px;
+  }
+}

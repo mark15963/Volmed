@@ -62,7 +62,7 @@ export const SearchBar = () => {
                     Поиск пациентов:
                 </label>
                 <div className={styles.searchContainer}>
-                    <div style={{ width: '32px' }}></div>
+                    <div className={styles.space}></div>
                     <input
                         className={styles.searchfield}
                         id='searchfield'

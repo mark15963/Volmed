@@ -16,6 +16,10 @@
     margin-bottom: 5px;
 }
 
+.space{
+    width: 32px;
+}
+
 .searchContainer{
     display: flex;
     align-items: center;
@@ -52,4 +56,20 @@
     font-size: 15px;
     border-radius: 30px;
     border: 1px solid black;
+}
+
+
+@media screen and (orientation: portrait) {
+    .container{
+        margin: 20px;
+        width: 300px;
+    }
+
+    .searchtitle{
+        font-size: 1.2em;
+    }
+
+    .space{
+        width: 0px;
+    }
 }
