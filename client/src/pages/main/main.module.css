@@ -39,3 +39,31 @@
     color:#1677ff;
     border: 2px solid #1677ff;
 }
+
+@media screen and (orientation: portrait) {
+    body{
+        height: 100%;
+    }
+
+    .mainBlock{
+        padding: 0px 10px 20px 10px;
+        gap:0px;
+    }
+
+    .container{
+        margin: 20px;
+        width: 200px;
+    }
+
+    .buttonsContainer{
+        gap: 0px;
+        margin: 0 15px;
+        gap: 10px;
+    }
+
+    .backButton, .regButton{
+        font-size: 1em;
+        padding: 3px 5px;
+        
+    }
+}

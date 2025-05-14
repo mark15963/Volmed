@@ -36,3 +36,18 @@ img{
     margin: 0 10px;
     flex-grow: 1;
 }
+
+@media screen and (orientation: portrait) {
+    .container{
+        height: 100px;
+    }
+
+    .title{
+        font-size: 1em;
+    }
+
+    img{
+        height: 70px;
+        width: 55px;
+    }
+}

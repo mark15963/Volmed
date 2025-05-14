@@ -50,8 +50,6 @@ export const Content = () => {
     )
 }
 
-
-
 export const Footer = () => {
     const year = new Date().getFullYear()
     const yearText = year > 2025

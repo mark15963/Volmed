@@ -13,3 +13,9 @@
     align-items: center;
     font-weight: 500;
 }
+
+@media screen and (orientation: portrait) {
+    .footer{
+        font-size: 1em;
+    }
+}
