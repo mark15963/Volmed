@@ -7,61 +7,61 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './table.module.css'
 
-export const PatientsList = () => {
-  const [patients, setPatients] = useState([]);
+// export const PatientsList = () => {
+//   const [patients, setPatients] = useState([]);
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/patients");
-        const patientsWithProperDates = response.data.map(patient => ({
-          ...patient,
-          birthDate: moment(patient.birthDate, 'DD.MM.YYYY').toISOString(),
-          created_at: moment(patient.created_at).toISOString()
-        }))
-        setPatients(patientsWithProperDates);
-      } catch (error) {
-        console.log('Error:', error)
-      }
-    };
-    fetchPatients();
-  }, []);
+//   useEffect(() => {
+//     const fetchPatients = async () => {
+//       try {
+//         const response = await axios.get("http://localhost:5000/api/patients");
+//         const patientsWithProperDates = response.data.map(patient => ({
+//           ...patient,
+//           birthDate: moment(patient.birthDate, 'DD.MM.YYYY').toISOString(),
+//           created_at: moment(patient.created_at).toISOString()
+//         }))
+//         setPatients(patientsWithProperDates);
+//       } catch (error) {
+//         console.log('Error:', error)
+//       }
+//     };
+//     fetchPatients();
+//   }, []);
 
-  let res = patients.map((patient) => {
+//   let res = patients.map((patient) => {
 
-    return (
-      <tr key={patient.id}>
-        <td>{patient.id}</td>
-        <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
-        <td>{patient.sex}</td>
-        <td>{moment(patient.birthDate, 'DD.MM.YYYY').format('DD.MM.YYYY')}</td>
-        <td>{patient.diag}</td>
-        <td>{patient.mkb}</td>
-        <td>{moment(patient.created_at).isValid() ? moment(patient.created_at).format('DD.MM.YYYY') : 'Invalid Date'}</td>
-      </tr>
-    )
+//     return (
+//       <tr key={patient.id}>
+//         <td>{patient.id}</td>
+//         <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
+//         <td>{patient.sex}</td>
+//         <td>{moment(patient.birthDate, 'DD.MM.YYYY').format('DD.MM.YYYY')}</td>
+//         <td>{patient.diag}</td>
+//         <td>{patient.mkb}</td>
+//         <td>{moment(patient.created_at).isValid() ? moment(patient.created_at).format('DD.MM.YYYY') : 'Invalid Date'}</td>
+//       </tr>
+//     )
 
-  })
+//   })
 
-  return (
-    <table className={styles.table}>
-      <thead>
-        <tr style={{ minWidth: '50px', fontWeight: '700' }}>
-          <th style={{ minWidth: '50px' }}>№ ИБ</th>
-          <th>ФИО</th>
-          <th>Пол</th>
-          <th style={{ minWidth: '130px' }}>Год рождения</th>
-          <th style={{ minWidth: '300px' }}>Диагноз</th>
-          <th style={{ minWidth: '300px' }}>МКБ</th>
-          <th style={{ minWidth: '150px' }}>Дата поступления</th>
-        </tr>
-      </thead>
-      <tbody>
-        {res}
-      </tbody>
-    </table>
-  );
-};
+//   return (
+//     <table className={styles.table}>
+//       <thead>
+//         <tr style={{ minWidth: '50px', fontWeight: '700' }}>
+//           <th style={{ minWidth: '50px' }}>№ ИБ</th>
+//           <th>ФИО</th>
+//           <th>Пол</th>
+//           <th style={{ minWidth: '130px' }}>Год рождения</th>
+//           <th style={{ minWidth: '300px' }}>Диагноз</th>
+//           <th style={{ minWidth: '300px' }}>МКБ</th>
+//           <th style={{ minWidth: '150px' }}>Дата поступления</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {res}
+//       </tbody>
+//     </table>
+//   );
+// };
 
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
@@ -103,15 +103,15 @@ export const AllPatients = () => {
           {Array.from({ length: 5 }).map((_, i) => (
             <table key={i} className={styles.table}>
               <tbody >
-                <tr className={styles.rows}>
-                  <td style={{ flex: 0.6 }}>
-                    <Skeleton borderRadius={5} width={80} />
+                <tr className={styles.rowsLoading}>
+                  <td style={{ padding: 5, flex: 0.6 }}>
+                    <Skeleton borderRadius={5} width={90} />
                   </td>
-                  <td style={{ flex: 2 }}>
-                    <Skeleton borderRadius={5} width={390} />
+                  <td style={{ padding: 5, flex: 2 }}>
+                    <Skeleton borderRadius={5} width={340} />
                   </td>
-                  <td style={{ flex: 0.8 }}>
-                    <Skeleton borderRadius={5} width={170} />
+                  <td style={{ padding: 5, flex: 0.8 }}>
+                    <Skeleton borderRadius={5} width={140} />
                   </td>
                 </tr>
               </tbody>
@@ -119,7 +119,6 @@ export const AllPatients = () => {
           ))}
         </SkeletonTheme>
       ) : (
-
         patients.map(patient => (
           <table
             key={patient.id}
