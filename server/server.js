@@ -336,6 +336,7 @@ app.get("/api/restore", (req, res) => {
   });
 });
 
+//Get data of a specific patient
 app.get("/api/patients/:id", (req, res) => {
   const { id } = req.params;
 
@@ -356,38 +357,11 @@ app.get("/api/patients/:id", (req, res) => {
   });
 });
 
-// Upload patient files
+// Upload files to a specific patient
 app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-
-  // res.json({
-  //   filename: (req, file, cb) => {
-  //     const originalname = file.originalname;
-  //     const ext = path.extname(originalname);
-  //     const basename = path.basename(originalname, ext);
-
-  //     const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
-  //     const fullPath = `./uploads/patients/${req.params.id}/${safeName}`;
-
-  //     if (fs.existsSync(fullPath)) {
-  //       let counter = 1;
-  //       let newName = `${basename} (${counter})${ext}`;
-
-  //       while (
-  //         fs.existsSync(`./uploads/patients/${req.params.id}/${newName}`)
-  //       ) {
-  //         counter++;
-  //         newName = `${basename} (${counter})${ext}`;
-  //       }
-
-  //       cb(null, newName);
-  //     } else {
-  //       cb(null, safeName);
-  //     }
-  //   },
-  // });
 
   res.json({
     success: true,
@@ -398,7 +372,7 @@ app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
   });
 });
 
-// Get patient files
+// Get files of a specific patient
 app.get("/api/patients/:id/files", (req, res) => {
   const patientId = req.params.id;
   const uploadPath = `./uploads/patients/${patientId}`;
@@ -426,6 +400,7 @@ app.get("/api/patients/:id/files", (req, res) => {
   });
 });
 
+// Delete a patient
 app.delete("/api/files", async (req, res) => {
   try {
     // 1. Validate request body
@@ -509,6 +484,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/uploads", express.static("uploads"));
+
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 });

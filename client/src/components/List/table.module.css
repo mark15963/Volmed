@@ -20,7 +20,13 @@
 
 .rows{
   display: flex;
-  padding: 5px 10px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.rowsLoading{
+  display: flex;
   width: 100%;
   justify-content: space-between;
 }
