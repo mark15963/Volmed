@@ -24,9 +24,7 @@ export const List = () => {
                         <SearchBar />
                     </div>
                     <br />
-                    <br />
                     <AllPatients />
-                    <br />
                     <br />
                     <PatientCount />
 
