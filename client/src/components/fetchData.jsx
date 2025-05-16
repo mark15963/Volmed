@@ -26,8 +26,13 @@ export const AllPatients = () => {
     fetchPatients();
   }, []);
 
-  const handlePatientClick = (patientId) => {
-    navigate(`/search/${patientId}`)
+  const handlePatientClick = (patientId, e) => {
+    if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
+      if (e.key === ' ') {
+        e.preventDefault();
+      }
+      navigate(`/search/${patientId}`)
+    }
   }
 
 
@@ -67,11 +72,17 @@ export const AllPatients = () => {
           <table
             key={patient.id}
             className={styles.table}
-            onClick={() => handlePatientClick(patient.id)}
+            onClick={(e) => handlePatientClick(patient.id, e)}
+            onKeyDown={(e) => handlePatientClick(patient.id, e)}
             style={{ cursor: 'pointer' }}
           >
             <tbody>
-              <tr className={styles.rows}>
+              <tr
+                className={styles.rows}
+                tabIndex={0}
+                role="button"
+                aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
+              >
                 <td style={{ flex: 0.6 }}>{patient.id}</td>
                 <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
                 <td style={{ flex: 0.8 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>

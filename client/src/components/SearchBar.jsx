@@ -23,7 +23,7 @@ export const SearchBar = () => {
         e.preventDefault()
 
         if (!searchValue.trim()) {
-            setError('Введите № истории болезни')
+            setError('Введите № карты')
             return
         }
 
