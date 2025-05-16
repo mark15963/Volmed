@@ -36,9 +36,9 @@ export const AllPatients = () => {
       <table className={styles.table}>
         <thead className={styles.head}>
           <tr className={styles.rows}>
-            <th style={{ flex: 0.6 }}>№ карты</th>
-            <th style={{ flex: 2 }}>ФИО</th>
-            <th style={{ flex: 0.8 }}>Дата рождения</th>
+            <th className={styles.first}>#</th>
+            <th className={styles.second}>ФИО</th>
+            <th className={styles.third}>Дата рождения</th>
           </tr>
         </thead>
       </table>
@@ -62,7 +62,7 @@ export const AllPatients = () => {
             </table>
           ))}
         </SkeletonTheme>
-      ) : (
+      ) : patients.length > 0 ? (
         patients.map(patient => (
           <table
             key={patient.id}
@@ -72,13 +72,17 @@ export const AllPatients = () => {
           >
             <tbody>
               <tr className={styles.rows}>
-                <td style={{ flex: 0.6 }}>№{patient.id}</td>
+                <td style={{ flex: 0.6 }}>{patient.id}</td>
                 <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
                 <td style={{ flex: 0.8 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
               </tr>
             </tbody>
           </table>
         ))
+      ) : (
+        <div className={styles.noData}>
+          No data found!
+        </div>
       )}
 
     </div >
