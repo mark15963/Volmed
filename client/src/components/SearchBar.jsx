@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "antd";
 import { SearchOutlined } from '@ant-design/icons';
-import styles from './SearchBar.module.css'
+import styles from './styles/SearchBar.module.css'
 
 export const SearchBar = () => {
     const [searchValue, setSearchValue] = useState('')

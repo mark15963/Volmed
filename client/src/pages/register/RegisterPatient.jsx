@@ -5,7 +5,7 @@ import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message,
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import dayjs, { datePickerLocale } from './dayjs.config'
 
-import { usePageTitle } from '../../components/PageTitle/PageTitle'
+import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
 
 const { Dragger } = Upload;

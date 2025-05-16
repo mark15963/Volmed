@@ -1,9 +1,7 @@
-import React from 'react'
-import { AllPatients, PatientCount } from '../../components/List/fetchData'
-import { useNavigate } from 'react-router-dom'
-import { SearchBar } from '../../components/SearchBar/SearchBar'
-import { usePageTitle } from '../../components/PageTitle/PageTitle'
-import { HomeButton } from '../../components/Buttons/Buttons'
+import { AllPatients, PatientCount } from '../../components/fetchData'
+import { SearchBar } from '../../components/SearchBar'
+import { usePageTitle } from '../../components/PageTitle'
+import { HomeButton } from '../../components/Buttons'
 
 import styles from './list.module.css'
 
