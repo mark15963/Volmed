@@ -2,11 +2,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { usePageTitle } from '../../components/PageTitle/PageTitle';
-import { Menu } from '../../components/Menu/Menu';
+import { usePageTitle } from '../../components/PageTitle';
+import { Menu } from '../../components/Menu';
 
 import styles from './searchResults.module.css';
-import { HomeButton } from '../../components/Buttons/Buttons';
+import { HomeButton } from '../../components/Buttons';
 
 export const SearchResults = () => {
     const { state } = useLocation();

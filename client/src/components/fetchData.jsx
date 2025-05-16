@@ -1,67 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from 'moment';
 import { useNavigate } from "react-router-dom";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import styles from './table.module.css'
-
-// export const PatientsList = () => {
-//   const [patients, setPatients] = useState([]);
-
-//   useEffect(() => {
-//     const fetchPatients = async () => {
-//       try {
-//         const response = await axios.get("http://localhost:5000/api/patients");
-//         const patientsWithProperDates = response.data.map(patient => ({
-//           ...patient,
-//           birthDate: moment(patient.birthDate, 'DD.MM.YYYY').toISOString(),
-//           created_at: moment(patient.created_at).toISOString()
-//         }))
-//         setPatients(patientsWithProperDates);
-//       } catch (error) {
-//         console.log('Error:', error)
-//       }
-//     };
-//     fetchPatients();
-//   }, []);
-
-//   let res = patients.map((patient) => {
-
-//     return (
-//       <tr key={patient.id}>
-//         <td>{patient.id}</td>
-//         <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
-//         <td>{patient.sex}</td>
-//         <td>{moment(patient.birthDate, 'DD.MM.YYYY').format('DD.MM.YYYY')}</td>
-//         <td>{patient.diag}</td>
-//         <td>{patient.mkb}</td>
-//         <td>{moment(patient.created_at).isValid() ? moment(patient.created_at).format('DD.MM.YYYY') : 'Invalid Date'}</td>
-//       </tr>
-//     )
-
-//   })
-
-//   return (
-//     <table className={styles.table}>
-//       <thead>
-//         <tr style={{ minWidth: '50px', fontWeight: '700' }}>
-//           <th style={{ minWidth: '50px' }}>№ ИБ</th>
-//           <th>ФИО</th>
-//           <th>Пол</th>
-//           <th style={{ minWidth: '130px' }}>Год рождения</th>
-//           <th style={{ minWidth: '300px' }}>Диагноз</th>
-//           <th style={{ minWidth: '300px' }}>МКБ</th>
-//           <th style={{ minWidth: '150px' }}>Дата поступления</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {res}
-//       </tbody>
-//     </table>
-//   );
-// };
+import styles from './styles/Table.module.css'
 
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])

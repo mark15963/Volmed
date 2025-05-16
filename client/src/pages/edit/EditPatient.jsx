@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { RegisterPatient } from '../register/RegisterPatient';
-import { usePageTitle } from '../../components/PageTitle/PageTitle';
+import { usePageTitle } from '../../components/PageTitle';
 
 export const EditPatient = () => {
     const { id } = useParams();

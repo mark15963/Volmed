@@ -1,7 +1,7 @@
 import axios from 'axios'
 //import { Users } from '../List/fetchData'
 import { useState } from 'react'
-import styles from './user.module.css'
+import styles from './styles/User.module.css'
 
 export const User = () => {
     const [showAuthForm, setShowAuthForm] = useState(false);

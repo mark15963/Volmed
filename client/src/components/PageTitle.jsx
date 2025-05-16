@@ -1,4 +1,3 @@
-// hooks/usePageTitle.js
 import { useEffect } from 'react';
 
 export const usePageTitle = (title) => {

@@ -1,12 +1,12 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Main } from '../../pages/main/main'
-import { SearchResults } from "../../pages/SearchResults/searchRes";
-import { List } from "../../pages/PatientsList/list";
-import { RegisterPatient } from "../../pages/register/RegisterPatient";
-import { EditPatient } from "../../pages/edit/EditPatient"
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from "react-router-dom";
 
-import logo from '../../imgs/герб_ямала.png';
+import { Main } from '../pages/main/main'
+import { SearchResults } from "../pages/SearchResults/searchRes";
+import { List } from "../pages/PatientsList/list";
+import { RegisterPatient } from "../pages/register/RegisterPatient";
+import { EditPatient } from "../pages/edit/EditPatient"
+
+import logo from '../assets/images/герб_ямала.png';
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'

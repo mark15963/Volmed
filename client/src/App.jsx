@@ -1,5 +1,5 @@
 import './App.css'
-import { Header, Content, Footer } from './components/Structure/Structure'
+import { Header, Content, Footer } from './layouts/Structure'
 
 export const App = () => {
 
