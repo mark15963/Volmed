@@ -196,3 +196,43 @@ span{
         display: none !important;
     }
 }
+
+@media screen and (orientation: portrait) {
+    body{
+        width: 100vw;
+    }
+
+    .container{
+        min-width: 0;
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .info{
+        width: 100%;
+        padding: 5px;
+    }
+
+    .bg{
+        width: 100%;
+        padding: 10px;
+    }
+
+    .title{
+        font-size: 0.9em;
+    }
+
+
+
+    .topForms{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+}
