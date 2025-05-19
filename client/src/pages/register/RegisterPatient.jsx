@@ -10,11 +10,7 @@ import styles from './register.module.css'
 
 const { Dragger } = Upload;
 
-export const RegisterPatient = ({
-    initialValues = null,
-    isEditMode = false,
-    patientId = null,
-}) => {
+export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
 
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +54,7 @@ export const RegisterPatient = ({
             .then(() => messageApi.success('Данные сохранены!', 2.5))
     };
 
-    //Fetch ICD(МКБ) API
+    // Fetch ICD(МКБ) API
     const fetchMkbSuggestions = async (query) => {
         if (!query) return [];
 
@@ -87,6 +83,7 @@ export const RegisterPatient = ({
         }
     };
 
+    //
     useEffect(() => {
         if (isEditMode && patientId) {
             const loadFiles = async () => {
@@ -231,9 +228,7 @@ export const RegisterPatient = ({
     return (
         <div className={styles.container}>
             {contextHolder}
-            <h2
-                style={{ marginBottom: '20px' }}
-            >
+            <h2 style={{ marginBottom: '20px' }}>
                 {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
             </h2>
             <div className={styles.info}>
@@ -273,7 +268,7 @@ export const RegisterPatient = ({
                                     </Form.Item>
 
                                     <Form.Item
-                                        label={<span className={styles.formLabel}>Отчество</span>}
+                                        label={<span className={styles.formLabel}>Отчество (при наличии)</span>}
                                         name="patr"
                                     >
                                         <Input />
@@ -290,7 +285,6 @@ export const RegisterPatient = ({
                                             <Radio style={{ color: 'aliceblue' }} value="Женский">Ж</Radio>
                                         </Radio.Group>
                                     </Form.Item>
-
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Дата рождения</span>}
                                         name="birthDate"
@@ -389,7 +383,7 @@ export const RegisterPatient = ({
                                     label={<span className={styles.formLabel}>Клинический диагноз (МКБ)</span>}
 
                                 >
-                                    <Tooltip placement='top' title='фунуция работает до 31.05.2025'>
+                                    <Tooltip placement='top' title='функция работает до 31.05.2025'>
                                         <Select
                                             showSearch
                                             placeholder="Выберите диагноз из МКБ"
