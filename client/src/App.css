@@ -25,7 +25,7 @@ html, body{
 }
 
 .content{
-  background-color: rgb(165, 198, 226);
+  background-color: #a5c6e2;
   grid-area: content;
   display: flex;
   align-items: center;
