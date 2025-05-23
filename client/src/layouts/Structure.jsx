@@ -1,8 +1,8 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 
-import { Main } from '../pages/main/main'
-import { SearchResults } from "../pages/SearchResults/searchRes";
-import { List } from "../pages/PatientsList/list";
+import { Main } from '../pages/main/Main'
+import { SearchResults } from "../pages/searchResults/SearchRes";
+import { List } from "../pages/patientsList/List";
 import { RegisterPatient } from "../pages/register/RegisterPatient";
 import { EditPatient } from "../pages/edit/EditPatient"
 
