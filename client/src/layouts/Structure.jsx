@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router";
 
 import { Main } from '../pages/main/Main'
 import { SearchResults } from "../pages/searchResults/SearchRes";
@@ -42,7 +42,7 @@ export const Content = () => {
         <Routes>
             <Route path='/' element={<Main />} />
             <Route path='/patients' element={<List />} />
-            <Route path="/search" element={<SearchResults />} />
+            <Route path="/search" loader element={<SearchResults />} />
             <Route path="/search/:id" element={<SearchResults />} />
             <Route path="/register" element={<RegisterPatient />} />
             <Route path="/edit/:id" element={<EditPatient />} />
