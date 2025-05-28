@@ -449,7 +449,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                             Медицинские документы
                                         </span>
                                     }
-                                    // style={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'center' }}
                                     className={styles.center}
                                 >
                                     <Dragger {...uploadProps} >
@@ -457,9 +456,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                             <UploadOutlined />
                                         </p>
                                         <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
-                                        <p className="ant-upload-hint">
-                                            Поддерживаются файлы до 10MB (PDF, JPG, PNG)
-                                        </p>
+
                                     </Dragger>
                                 </Form.Item>
 
