@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router";
 
 import '@ant-design/v5-patch-for-react-19';
 import { ConfigProvider } from 'antd';

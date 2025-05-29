@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import axios from 'axios'
 import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message, Tooltip } from "antd"
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'

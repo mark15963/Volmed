@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { IMaskInput } from 'react-imask';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import styles from './styles/Buttons.module.css'
 
 

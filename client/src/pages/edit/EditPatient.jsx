@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { RegisterPatient } from '../register/RegisterPatient';

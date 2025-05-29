@@ -32,13 +32,61 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.use((req, res, next) => {
+  req.setTimeout(30000, () => {
+    // 30 seconds timeout
+    res.status(503).json({ error: "Request timeout" });
+  });
+  next();
+});
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const db = mysql.createConnection({
+// const db = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "volmed_db",
+// });
+
+const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
   database: "volmed_db",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+// Error handling for the pool
+db.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error getting database connection:", err);
+    if (err.code === "PROTOCOL_CONNECTION_LOST") {
+      console.error("Database connection was closed.");
+    }
+    if (err.code === "ER_CON_COUNT_ERROR") {
+      console.error("Database has too many connections.");
+    }
+    if (err.code === "ECONNREFUSED") {
+      console.error("Database connection was refused.");
+    }
+  } else {
+    console.log("Connected to database.");
+    connection.release();
+  }
+});
+
+// Connection error event handler
+db.on("error", (err) => {
+  console.error("Database error:", err);
+  if (err.code === "PROTOCOL_CONNECTION_LOST") {
+    // Reconnect if connection is lost
+    db.getConnection();
+  } else {
+    throw err;
+  }
 });
 
 const storage = multer.diskStorage({
@@ -76,12 +124,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed: " + err.stack);
-    return;
-  }
-  console.log("Connected to database.");
+app.get("/", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VolMed Server</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>VolMed API Server</h1>
+      <p>Server is running successfully!</p>
+      
+      
+
+      <h2>Development URLs:</h2>
+      <ul>
+        <li>Frontend: <a href="http://localhost:5173">http://localhost:5173</a></li>
+      </ul>
+    </body>
+    </html>
+  `);
 });
 
 // Amount of ID's in DB
@@ -493,6 +560,65 @@ app.use((req, res, next) => {
 
 app.use("/uploads", express.static("uploads"));
 
-app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+function ensureDatabaseConnection(retries = 5, delay = 2000) {
+  return new Promise((resolve, reject) => {
+    const attempt = (n) => {
+      db.getConnection((err, connection) => {
+        if (err) {
+          if (n === 1) return reject(err);
+          console.log(`Connection failed. ${n - 1} retries left...`);
+          setTimeout(() => attempt(n - 1), delay);
+        } else {
+          connection.release();
+          resolve();
+        }
+      });
+    };
+    attempt(retries);
+  });
+}
+
+app.use((err, req, res, next) => {
+  console.error("Server error:", err.stack);
+  res.status(500).json({
+    error: "Internal Server Error",
+    message:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Something went wrong",
+  });
 });
+
+ensureDatabaseConnection()
+  .then(() => {
+    const server = app.listen(5000, () => {
+      console.log("Server is running on port 5000");
+
+      // Keep-alive settings
+      server.keepAliveTimeout = 60000; // 60 seconds
+      server.headersTimeout = 65000; // 65 seconds
+
+      // Graceful shutdown handlers
+      process.on("SIGTERM", () => {
+        console.log("SIGTERM received. Shutting down gracefully...");
+        server.close(() => {
+          console.log("Server closed");
+          db.end(); // Close the database pool
+          process.exit(0);
+        });
+      });
+
+      process.on("SIGINT", () => {
+        console.log("SIGINT received. Shutting down gracefully...");
+        server.close(() => {
+          console.log("Server closed");
+          db.end(); // Close the database pool
+          process.exit(0);
+        });
+      });
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to database after retries:", err);
+    process.exit(1);
+  });
