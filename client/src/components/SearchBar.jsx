@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { Button } from "antd";
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './styles/SearchBar.module.css'

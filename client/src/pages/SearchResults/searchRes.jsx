@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import moment from 'moment';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
