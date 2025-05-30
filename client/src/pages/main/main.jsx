@@ -15,7 +15,7 @@ export const Main = () => {
                         onClick={() => navigate('/patients')}
                         className={styles.backButton}
                     >
-                        <i className="bi bi-people"><span style={{ fontStyle: 'normal', margin: '0 0 0 5px' }}>Список пациентов</span></i>
+                        <i className="bi bi-people"><span style={{ fontStyle: 'normal', margin: '0 0 0 5px', lineHeight: '1' }}>Список пациентов</span></i>
                     </button>
                     <button
                         onClick={() => navigate('/register')}
