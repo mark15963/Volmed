@@ -224,7 +224,6 @@ export const SearchResults = () => {
                             {data.rec}
                         </span>
                     </div>
-                    <br />
                 </div>
             </div>
         </div>,
