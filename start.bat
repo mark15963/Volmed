@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title VolMed Launcher (Администратор)
+title VolMed Launcher
 
 :: Проверка наличия Windows Terminal
 where wt >nul 2>&1
@@ -11,16 +11,16 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-:: 2. Запуск MySQL (без окна)
+:: 2. Запуск MySQL
 echo Запуск MySQL...
 start /B "" "C:\xampp\xampp_start.exe" >nul 2>&1
 
 :: 3. Запуск сервера Node.js
-echo Запуск бэкенд-сервера...
-start "Сервер" cmd /k "cd /d %~dp0server && pm2 start ecosystem.config.js && echo Запуск завершен. && echo Сервер: http://localhost:5000, && echo Клиент локальный: http://localhost:5173 && pause &&exit"
+echo Запуск cервера...
+start "Сервер" cmd /k "cd /d %~dp0server && pm2 start ecosystem.config.js && echo Запуск завершен. && echo Сервер: http://localhost:5000, && echo Клиент: http://localhost:5173 && pause && exit"
 
 :: 4. Запуск React-клиента
-echo Запуск фронтенда...
+echo Запуск React-клиента...
 start "Клиент" cmd /k "cd /d %~dp0client && npm run dev && pause && exit"
 
 :: 5. Запуск мониторинга PM2
