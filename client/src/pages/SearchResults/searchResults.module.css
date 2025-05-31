@@ -102,6 +102,12 @@ span{
     font-size: 0.9em;
 }
 
+.formLabel {
+    color:aliceblue;
+    font-weight: 500;
+    width: 100%;
+}
+
 .uploadArea {
     margin: 20px 0;
     padding: 20px;

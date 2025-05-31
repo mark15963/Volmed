@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { Button, Input, Form, Alert, Radio, DatePicker, Select, Upload, message, Tooltip } from "antd"
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
+import { Button, Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip } from "antd"
+import { IMaskInput } from 'react-imask';
 import dayjs, { datePickerLocale } from './dayjs.config'
 
 import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
-
-const { Dragger } = Upload;
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
 
@@ -17,32 +15,8 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     const [error, setError] = useState('');
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage();
-    const [fileList, setFileList] = useState([]);
     const [mkbOptions, setMkbOptions] = useState([]);
     const [mkbFetching, setMkbFetching] = useState(false);
-
-    // Function to refresh file list
-    const refreshFileList = async () => {
-        if (!patientId) return;
-
-        try {
-            const response = await axios.get(`http://localhost:5000/api/patients/${patientId}/files`);
-            setFileList(response.data.map(file => ({
-                uid: file.path,
-                name: file.originalname,
-                status: 'done',
-                url: `http://localhost:5000${file.path}`,
-                response: { path: file.path }
-            })));
-        } catch (error) {
-            messageApi.error('Ошибка загрузки списка файлов');
-        }
-    };
-
-    // Load files on mount and when patientId changes
-    useEffect(() => {
-        refreshFileList();
-    }, [patientId]);
 
     const success = () => {
         messageApi
@@ -83,92 +57,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
         }
     };
 
-    //
-    useEffect(() => {
-        if (isEditMode && patientId) {
-            const loadFiles = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:5000/api/patients/${patientId}/files`);
-                    setFileList(response.data.map(file => ({
-                        uid: file.path,
-                        name: file.originalname,
-                        status: 'done',
-                        url: `http://localhost:5000${file.path}`,
-                        response: { path: file.path }
-                    })));
-                } catch (error) {
-                    messageApi.error('Ошибка загрузки файлов');
-                }
-            };
-            loadFiles();
-        }
-    }, [isEditMode, patientId]);
-
-    const uploadProps = {
-        name: 'file',
-        multiple: true,
-        fileList,
-        action: `http://localhost:5000/api/patients/${patientId || 'temp'}/upload`,
-        onChange(info) {
-            const { status } = info.file
-            if (status !== 'uploading') {
-                setFileList(info.fileList)
-            }
-            if (status === 'done') {
-                messageApi.success(`${info.file.name} файл успешно загружен.`);
-            } else if (status === 'error') {
-                messageApi.error(`${info.file.name} ошибка загрузки файла.`);
-            } else if (status === 'removed') {
-
-            }
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
-        onRemove: async (file) => {
-            try {
-                if (file.response?.path) {
-                    const filePath = file.response.path.replace(/^\/?uploads\//, '');
-
-                    const response = await axios.delete('http://localhost:5000/api/files', {
-                        data: { filePath },
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (response.data.success) {
-                        messageApi.success(`${file.name} успешно удален`);
-                        return true;
-                    }
-                    throw new Error(response.data.message || 'Неизвестная ошибка');
-                }
-                return false;
-            } catch (error) {
-                const errorMessage = error.response?.data?.message ||
-                    error.message ||
-                    'Ошибка удаления файла';
-                messageApi.error(`${errorMessage}: ${file.name}`);
-                console.error('Delete error details:', {
-                    error: error.response?.data || error.message,
-                    filePath: file.response?.path
-                });
-                return false;
-            }
-        },
-        showUploadList: {
-            showPreventIcon: true,
-            showDownloadIcon: false,
-            downloadIcon: 'Скачать',
-            showRemoveIvon: true,
-            removeIcon: (
-                <DeleteOutlined
-                    onClick={e => console.log('Удаление файла', e)}
-                />
-            )
-        }
-    }
-
     usePageTitle("Регистрация пациента");
 
     useEffect(() => {
@@ -189,6 +77,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 ...formValues,
                 birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null,
                 diag: formValues.diag,
+                phone: `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`,
             };
 
             let response
@@ -197,11 +86,11 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
             if (isEditMode && patientId) {
                 response = await axios.put(`${url}/${patientId}`, formattedValues, {
                 });
-                console.log('PUT:', formattedValues)
+                console.log('Изменение данных:', formattedValues)
             } else {
                 response = await axios.post(url, formattedValues, {
                 });
-                console.log('POST:', formattedValues)
+                console.log('Новый пациент:', formattedValues)
             }
 
             const responseData = response.data;
@@ -235,7 +124,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 <div className={styles.bg}>
 
                     <div className={styles.title}>
-
                         <p>Заполните ниформацию:</p>
                     </div>
 
@@ -268,7 +156,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     </Form.Item>
 
                                     <Form.Item
-                                        label={<span className={styles.formLabel}>Отчество (при наличии)</span>}
+                                        label={<span className={styles.formLabel}>Отчество</span>}
                                         name="patr"
                                     >
                                         <Input />
@@ -305,8 +193,32 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         label={<span className={styles.formLabel}>Номер телефона</span>}
                                         name="phone"
                                     >
-                                        <Input
-                                            autoComplete='off'
+                                        <IMaskInput
+                                            mask="+7(000)000-00-00"
+                                            definitions={{ '0': /[0-9]/ }}
+                                            value={form.getFieldValue('phone') || ''}
+                                            onAccept={(value) => {
+                                                // prevent the lone "7" case
+                                                const cleaned = value === '7' ? '' : value;
+                                                form.setFieldsValue({ phone: cleaned });
+                                            }}
+                                            placeholder="+7 (___) ___-__-__"
+                                            style={{
+                                                width: '100%',
+                                                padding: '4px 11px',
+                                                fontSize: '14px',
+                                                lineHeight: '1.5',
+                                                border: '1px solid #d9d9d9',
+                                                borderRadius: '6px'
+                                            }}
+                                            onBlur={(e) => {
+                                                const val = e.target.value;
+                                                if (val && val.length < 16) {
+                                                    // full mask length is 16: "+7(000)000-00-00"
+                                                    message.warning('Номер телефона неполный');
+                                                }
+                                                form.setFieldsValue({ phone: val });
+                                            }}
                                         />
                                     </Form.Item>
 
@@ -338,6 +250,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                             </div>
 
                             <div className={styles.bottomForms}>
+                                <br />
                                 <Form.Item
                                     label={<span className={styles.formLabel}>Жалобы при поступлении</span>}
                                     name="complaint"
@@ -442,28 +355,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     />
                                 </Form.Item>
 
-
-                                <Form.Item
-                                    label={
-                                        <span className={styles.formLabel}>
-                                            Медицинские документы
-                                        </span>
-                                    }
-                                    className={styles.center}
-                                >
-                                    <Dragger {...uploadProps} >
-                                        <p className="ant-upload-drag-icon">
-                                            <UploadOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
-
-                                    </Dragger>
-                                </Form.Item>
-
                                 <div className={styles.buttons}>
                                     <Button
                                         htmlType="submit"
-                                        loading={isLoading}
                                     >
                                         {isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'}
                                     </Button>
