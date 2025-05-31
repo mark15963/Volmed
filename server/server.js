@@ -550,6 +550,133 @@ app.delete("/api/files", async (req, res) => {
   }
 });
 
+// POST /api/patients/:id/medications
+app.post("/api/patients/:id/medications", (req, res) => {
+  const { id } = req.params;
+  const { name, dosage, frequency, administered } = req.body;
+
+  if (!name || !dosage || !frequency) {
+    return res
+      .status(400)
+      .json({ error: "Missing required medication fields" });
+  }
+
+  const medicationData = {
+    patient_id: id,
+    name,
+    dosage,
+    frequency,
+    administered: JSON.stringify(administered || []), // Convert array to JSON
+  };
+
+  db.query("INSERT INTO medications SET ?", medicationData, (err, results) => {
+    if (err) {
+      console.error("DB insert error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.status(201).json({ success: true, medicationId: results.insertId });
+  });
+});
+
+// GET /api/patients/:id/medications
+app.get("/api/patients/:id/medications", (req, res) => {
+  const { id } = req.params;
+
+  db.query(
+    "SELECT * FROM medications WHERE patient_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("DB fetch error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      // Parse the administered field from JSON if needed
+      const parsedResults = results.map((m) => ({
+        ...m,
+        administered: m.administered ? JSON.parse(m.administered) : [],
+      }));
+
+      res.json(parsedResults);
+    }
+  );
+});
+
+app.put("/api/medications/:medId", (req, res) => {
+  const { medId } = req.params;
+  const { name, dosage, frequency, administered } = req.body;
+
+  const updateData = {
+    ...(name && { name }),
+    ...(dosage && { dosage }),
+    ...(frequency && { frequency }),
+    administered: administered
+      ? JSON.stringify(administered)
+      : JSON.stringify([]),
+  };
+
+  db.query(
+    "UPDATE medications SET ? WHERE id = ?",
+    [updateData, medId],
+    (err, results) => {
+      if (err) {
+        console.error("DB update error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Medication not found" });
+      }
+
+      // Return updated medication
+      db.query(
+        "SELECT * FROM medications WHERE id = ?",
+        [medId],
+        (err2, meds) => {
+          if (err2) {
+            console.error("DB fetch error:", err2);
+            return res.status(500).json({ error: "Database error" });
+          }
+
+          if (meds.length === 0) {
+            return res
+              .status(404)
+              .json({ error: "Medication not found after update" });
+          }
+
+          const med = meds[0];
+          med.administered = med.administered
+            ? JSON.parse(med.administered)
+            : [];
+          res.json({ success: true, medication: med });
+        }
+      );
+    }
+  );
+});
+
+app.delete("/api/medications/:medId", (req, res) => {
+  const { medId } = req.params;
+
+  db.query("DELETE FROM medications WHERE id = ?", medId, (err, results) => {
+    if (err) {
+      console.error("DB delete error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Medication not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Medication deleted successfully",
+      deletedId: medId,
+    });
+  });
+});
+
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
