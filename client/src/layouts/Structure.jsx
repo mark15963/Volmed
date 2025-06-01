@@ -1,9 +1,9 @@
 import { Routes, Route, useNavigate } from "react-router";
 
-import { Main } from '../pages/main/MainPage.jsx'
-import { SearchResults } from '../pages/searchResults/SearchResults.jsx';
-import { List } from "../pages/patientsList/List.jsx";
-import { RegisterPatient } from "../pages/register/RegisterPatient.jsx";
+import { Main } from '../pages/main/Main'
+import { SearchResults } from '../pages/searchResults/SearchRes';
+import { List } from "../pages/patientsList/List";
+import { RegisterPatient } from "../pages/register/RegisterPatient";
 import { EditPatient } from "../pages/edit/EditPatient"
 
 import logo from '../assets/images/герб_ямала.png';
