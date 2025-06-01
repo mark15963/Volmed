@@ -4,7 +4,7 @@ import { Main } from '../pages/main/MainPage.jsx'
 import { SearchResults } from '../pages/searchResults/SearchRes.jsx';
 import { List } from "../pages/patientsList/List.jsx";
 import { RegisterPatient } from "../pages/register/RegisterPatient.jsx";
-import { EditPatient } from "../pages/edit/EditPatient.jsx"
+import { EditPatient } from "../pages/edit/EditPatient"
 
 import logo from '../assets/images/герб_ямала.png';
 
