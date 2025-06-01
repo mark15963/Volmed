@@ -11,7 +11,11 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://192.168.0.104:5173",
+  "https://volmed.onrender.com/",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -765,7 +769,9 @@ app.use((err, req, res, next) => {
 
 ensureDatabaseConnection()
   .then(() => {
-    const server = app.listen(5000, () => {
+    const PORT = process.env.PORT || 5000;
+
+    const server = app.listen(PORT, () => {
       console.log("Server is running on port 5000");
 
       // Keep-alive settings
