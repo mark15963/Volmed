@@ -10,7 +10,16 @@ import App from './App.jsx'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
-  <ConfigProvider locale={ruRU} >
+  <ConfigProvider
+    locale={ruRU}
+    theme={{
+      components: {
+        Collapse: {
+          headerBg: '#fff'
+        }
+      }
+    }}
+  >
     <Router>
       <App />
     </Router>
