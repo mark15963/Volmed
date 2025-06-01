@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router";
 
-import { Main } from '../pages/main/Main'
+import { Main } from '../pages/main/Main.jsx'
 import { SearchResults } from "../pages/searchResults/SearchRes";
 import { List } from "../pages/patientsList/List";
 import { RegisterPatient } from "../pages/register/RegisterPatient";
