@@ -45,7 +45,7 @@
 
 .topFormsA, 
 .topFormsB, 
-.topFormsC {
+.topFormsC{
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -79,8 +79,6 @@ span{
 
 .fileList{
     cursor: pointer;
-    margin-top: 20px;
-    text-align: center;
 }
 
 .fileItem {
@@ -90,6 +88,7 @@ span{
     padding: 10px;
     cursor: pointer;
     margin: 5px 0;
+    border: 1px solid black;
     border-radius: 5px;
 }
 

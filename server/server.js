@@ -21,10 +21,11 @@ const corsOptions = {
     }
   },
   methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
   credentials: true,
   optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
@@ -675,6 +676,52 @@ app.delete("/api/medications/:medId", (req, res) => {
       deletedId: medId,
     });
   });
+});
+
+// Save pulse data
+app.post("/api/patients/:id/pulse", (req, res) => {
+  const { id } = req.params;
+  const { pulseValue } = req.body;
+
+  if (!pulseValue || isNaN(pulseValue)) {
+    return res.status(400).json({ error: "Invalid pulse value" });
+  }
+
+  db.query(
+    "INSERT INTO patient_pulse (patient_id, pulse_value) VALUES (?, ?)",
+    [id, pulseValue],
+    (err, results) => {
+      if (err) {
+        console.error("DB error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.json({ success: true, pulseId: results.insertId });
+    }
+  );
+});
+
+// Get pulse data
+app.get("/api/patients/:id/pulse", (req, res) => {
+  const { id } = req.params;
+
+  db.query(
+    "SELECT pulse_value, created_at FROM patient_pulse WHERE patient_id = ? ORDER BY created_at ASC",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("DB error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      // Format the dates before sending
+      const formattedResults = results.map((item) => ({
+        value: item.pulse_value,
+        timestamp: item.created_at,
+        formattedTime: new Date(item.created_at).toLocaleTimeString(),
+        formattedDate: new Date(item.created_at).toLocaleDateString(),
+      }));
+      res.json(formattedResults);
+    }
+  );
 });
 
 app.use((req, res, next) => {
