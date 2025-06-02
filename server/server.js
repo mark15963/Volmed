@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -308,124 +308,124 @@ app.delete("/api/patients/:id", (req, res) => {
   });
 });
 
-// DB backup
-app.get("/api/backup", (req, res) => {
-  const dbUser = "root";
-  const dbPassword = "";
-  const dbName = "volmed_db";
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+// // DB backup
+// app.get("/api/backup", (req, res) => {
+//   const dbUser = "root";
+//   const dbPassword = "";
+//   const dbName = "volmed_db";
+//   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 
-  const backupDir = path.join(__dirname, "DB_Backup");
-  const backupFile = path.join(backupDir, `backup-${timestamp}.sql`);
+//   const backupDir = path.join(__dirname, "DB_Backup");
+//   const backupFile = path.join(backupDir, `backup-${timestamp}.sql`);
 
-  console.log("🗂 Проверка папки DB_Backup:", backupDir);
+//   console.log("🗂 Проверка папки DB_Backup:", backupDir);
 
-  console.log("📂 Директория бэкапов:", backupDir);
-  console.log("📄 Путь к файлу бэкапа:", backupFile);
+//   console.log("📂 Директория бэкапов:", backupDir);
+//   console.log("📄 Путь к файлу бэкапа:", backupFile);
 
-  try {
-    if (!fs.existsSync(backupDir)) {
-      fs.mkdirSync(backupDir, { recursive: true });
-      console.log("✅ Папка DB_Backup создана");
-    }
-  } catch (err) {
-    console.error("❌ Ошибка при создании папки:", err);
-    return res.status(500).json({ error: "Не удалось создать папку" });
-  }
+//   try {
+//     if (!fs.existsSync(backupDir)) {
+//       fs.mkdirSync(backupDir, { recursive: true });
+//       console.log("✅ Папка DB_Backup создана");
+//     }
+//   } catch (err) {
+//     console.error("❌ Ошибка при создании папки:", err);
+//     return res.status(500).json({ error: "Не удалось создать папку" });
+//   }
 
-  const mysqldumpPath = `"C:\\xampp\\mysql\\bin\\mysqldump.exe"`;
+//   const mysqldumpPath = `"C:\\xampp\\mysql\\bin\\mysqldump.exe"`;
 
-  const command = `${mysqldumpPath} -u ${dbUser} ${
-    dbPassword ? `-p${dbPassword}` : ""
-  } ${dbName} > "${backupFile}"`;
+//   const command = `${mysqldumpPath} -u ${dbUser} ${
+//     dbPassword ? `-p${dbPassword}` : ""
+//   } ${dbName} > "${backupFile}"`;
 
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error("Ошибка при создании бэкапа:", error.message);
-      console.error("stderr:", stderr);
-      return res.status(500).json({
-        error: "Ошибка создания бэкапа",
-        details: error.message,
-        stderr,
-      });
-    }
+//   exec(command, (error, stdout, stderr) => {
+//     if (error) {
+//       console.error("Ошибка при создании бэкапа:", error.message);
+//       console.error("stderr:", stderr);
+//       return res.status(500).json({
+//         error: "Ошибка создания бэкапа",
+//         details: error.message,
+//         stderr,
+//       });
+//     }
 
-    res.download(backupFile, (err) => {
-      if (err) {
-        console.error("Ошибка при скачивании:", err);
-      }
-    });
-  });
-});
+//     res.download(backupFile, (err) => {
+//       if (err) {
+//         console.error("Ошибка при скачивании:", err);
+//       }
+//     });
+//   });
+// });
 
-// DB restore
-app.get("/api/restore", (req, res) => {
-  const dbUser = "root";
-  const dbPassword = "";
-  const dbName = "volmed_db";
+// // DB restore
+// app.get("/api/restore", (req, res) => {
+//   const dbUser = "root";
+//   const dbPassword = "";
+//   const dbName = "volmed_db";
 
-  // Check if database exists
-  db.query("SHOW DATABASES LIKE ?", [dbName], (err, results) => {
-    if (err) {
-      console.error("Error checking database existence:", err);
-      return res.status(500).json({ error: "Database check failed" });
-    }
+//   // Check if database exists
+//   db.query("SHOW DATABASES LIKE ?", [dbName], (err, results) => {
+//     if (err) {
+//       console.error("Error checking database existence:", err);
+//       return res.status(500).json({ error: "Database check failed" });
+//     }
 
-    if (results.length > 0) {
-      return res.status(400).json({ error: "Database already exists" });
-    }
+//     if (results.length > 0) {
+//       return res.status(400).json({ error: "Database already exists" });
+//     }
 
-    // Find the latest backup file
-    const backupDir = path.join(__dirname, "DB_Backup");
-    if (!fs.existsSync(backupDir)) {
-      return res.status(404).json({ error: "Backup directory not found" });
-    }
+//     // Find the latest backup file
+//     const backupDir = path.join(__dirname, "DB_Backup");
+//     if (!fs.existsSync(backupDir)) {
+//       return res.status(404).json({ error: "Backup directory not found" });
+//     }
 
-    const backupFiles = fs
-      .readdirSync(backupDir)
-      .filter((file) => file.endsWith(".sql"))
-      .sort()
-      .reverse();
+//     const backupFiles = fs
+//       .readdirSync(backupDir)
+//       .filter((file) => file.endsWith(".sql"))
+//       .sort()
+//       .reverse();
 
-    if (backupFiles.length === 0) {
-      return res.status(404).json({ error: "No backup files found" });
-    }
+//     if (backupFiles.length === 0) {
+//       return res.status(404).json({ error: "No backup files found" });
+//     }
 
-    const latestBackup = path.join(backupDir, backupFiles[0]);
-    console.log("🔁 Restoring from backup:", latestBackup);
+//     const latestBackup = path.join(backupDir, backupFiles[0]);
+//     console.log("🔁 Restoring from backup:", latestBackup);
 
-    // First create the database
-    db.query(`CREATE DATABASE ${dbName}`, (err) => {
-      if (err) {
-        console.error("Error creating database:", err);
-        return res.status(500).json({ error: "Database creation failed" });
-      }
+//     // First create the database
+//     db.query(`CREATE DATABASE ${dbName}`, (err) => {
+//       if (err) {
+//         console.error("Error creating database:", err);
+//         return res.status(500).json({ error: "Database creation failed" });
+//       }
 
-      console.log("✅ Database created");
+//       console.log("✅ Database created");
 
-      // Now restore the backup
-      const mysqlPath = `"C:\\xampp\\mysql\\bin\\mysql.exe"`;
-      const command = `${mysqlPath} -u ${dbUser} ${
-        dbPassword ? `-p${dbPassword}` : ""
-      } ${dbName} < "${latestBackup}"`;
+//       // Now restore the backup
+//       const mysqlPath = `"C:\\xampp\\mysql\\bin\\mysql.exe"`;
+//       const command = `${mysqlPath} -u ${dbUser} ${
+//         dbPassword ? `-p${dbPassword}` : ""
+//       } ${dbName} < "${latestBackup}"`;
 
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error("Restore error:", error.message);
-          console.error("stderr:", stderr);
-          return res.status(500).json({
-            error: "Restore failed",
-            details: error.message,
-            stderr,
-          });
-        }
+//       exec(command, (error, stdout, stderr) => {
+//         if (error) {
+//           console.error("Restore error:", error.message);
+//           console.error("stderr:", stderr);
+//           return res.status(500).json({
+//             error: "Restore failed",
+//             details: error.message,
+//             stderr,
+//           });
+//         }
 
-        console.log("✅ Database restored successfully");
-        res.json({ success: true, message: "Database restored successfully" });
-      });
-    });
-  });
-});
+//         console.log("✅ Database restored successfully");
+//         res.json({ success: true, message: "Database restored successfully" });
+//       });
+//     });
+//   });
+// });
 
 //Get data of a specific patient
 app.get("/api/patients/:id", (req, res) => {
