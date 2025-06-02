@@ -7,9 +7,6 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
-const { pathToRegexp } = require("path-to-regexp");
-console.log(pathToRegexp.toString());
-
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public", "..", "client", "dist")));
@@ -17,7 +14,7 @@ app.use(express.static(path.join(__dirname, "public", "..", "client", "dist")));
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
-  "https://volmed.onrender.com",
+  "https://volmed.onrender.com/",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -49,13 +46,6 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "volmed_db",
-// });
 
 const db = mysql.createPool({
   host: "localhost",
@@ -131,11 +121,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
-// Catch-all route to serve index.html (for client-side routing)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"));
-});
 
 app.get("/", (req, res) => {
   res.send(`
