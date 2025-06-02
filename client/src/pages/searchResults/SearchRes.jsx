@@ -55,9 +55,7 @@ export const SearchResults = () => {
                     patientData = state.results[0];
                 }
                 else if (id) {
-                    const response = await axios.get(`http://localhost:5000/api/patients/${id}`, {
-                        withCredentials: true,
-                    });
+                    const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
                     patientData = response.data;
                 }
 
