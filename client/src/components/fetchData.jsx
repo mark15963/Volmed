@@ -11,11 +11,12 @@ export const AllPatients = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const API_BASE_URL = "https://volmed-v4-y364.vercel.app";
 
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/patients", {
+        const response = await axios.get(`${API_BASE_URL}/api/patients`, {
           withCredentials: true,
         });
         setPatients(response.data);
