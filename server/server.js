@@ -9,7 +9,11 @@ const { exec } = require("child_process");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  express.static(
+    path.join(__dirname, "public", "..", "client", "dist", "../client/dist")
+  )
+);
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -128,6 +132,13 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+// Catch-all route to serve index.html (for client-side routing)
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "..", "client", "dist", "index.html", "../client/dist")
+  );
+});
 
 app.get("/", (req, res) => {
   res.send(`
