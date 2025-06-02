@@ -7,11 +7,12 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './styles/Table.module.css'
 
+const API_BASE_URL = "https://volmed-v4-y364.vercel.app";
+
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const API_BASE_URL = "https://volmed-v4-y364.vercel.app";
 
   useEffect(() => {
     const fetchPatients = async () => {
