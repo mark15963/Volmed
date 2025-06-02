@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const cors = require("cors");
 const mysql = require("mysql2");
 const multer = require("multer");
@@ -6,6 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
 
@@ -47,8 +48,6 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
