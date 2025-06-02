@@ -1,17 +1,17 @@
-import { useLocation, useNavigate, useParams } from 'react-router';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { usePageTitle } from '../../components/PageTitle';
-import { Menu } from '../../components/Menu';
+import { useLocation, useNavigate, useParams } from 'react-router'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { usePageTitle } from '../../components/PageTitle'
+import { Menu } from '../../components/Menu'
 import { message } from "antd"
 
-import { Tab1 } from './tabs/tab1';
-import { Tab2 } from './tabs/tab2';
-import { Tab3 } from './tabs/tab3';
+import { Tab1 } from './tabs/tab1'
+import { Tab2 } from './tabs/tab2'
+import { Tab3 } from './tabs/tab3'
 
-import styles from './searchResults.module.css';
+import styles from './searchResults.module.css'
 
-import { HomeButton } from '../../components/Buttons';
+import { HomeButton } from '../../components/Buttons'
 
 export const SearchResults = () => {
     const { state } = useLocation();
