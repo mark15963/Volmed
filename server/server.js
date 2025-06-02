@@ -1,8 +1,8 @@
 import express from "express";
-const cors = require("cors");
-const mysql = require("mysql2");
-const multer = require("multer");
-const path = require("path");
+import cors from "cors";
+import mysql from "mysql2";
+import multer from "multer";
+import path from "path";
 const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
