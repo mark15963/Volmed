@@ -1,3 +1,12 @@
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export default async function handler(req, res) {
+  const users = await prisma.user.findMany();
+  res.json(users);
+}
+
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -42,13 +51,6 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "volmed_db",
-// });
 
 const db = mysql.createPool({
   host: "localhost",
@@ -165,15 +167,25 @@ app.get("/api/patient-count", (req, res) => {
   });
 });
 
-// Get all patients
-app.get("/api/patients", (req, res) => {
-  db.query("SELECT * FROM patients", (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json(results);
-  });
+// // Get all patients
+// app.get("/api/patients", (req, res) => {
+//   db.query("SELECT * FROM patients", (err, results) => {
+//     if (err) {
+//       console.error("Database error:", err);
+//       return res.status(500).json({ error: "Database error" });
+//     }
+//     res.json(results);
+//   });
+// });
+
+app.get("/api/patients", async (req, res) => {
+  try {
+    const patients = await prisma.patient.findMany();
+    res.json(patients);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Add a new patient
