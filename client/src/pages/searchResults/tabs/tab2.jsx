@@ -6,8 +6,6 @@ import axios from 'axios';
 
 const { Dragger } = Upload;
 
-
-
 const Graph = memo(({ data }) => {
     const containerRef = useRef(null);
     const [containerWidth, setContainerWidth] = useState(200);
@@ -174,8 +172,6 @@ const onChange = key => {
     console.log(key);
 };
 
-
-
 export const Tab2 = ({
     files,
     fileList,
@@ -240,8 +236,8 @@ export const Tab2 = ({
             try {
                 const response = await axios.get(`http://localhost:5000/api/patients/${id}/pulse`);
                 const values = response.data.map(item => ({
-                    val: item.pulse_value,
-                    created_at: item.created_at,
+                    val: item.value,
+                    created_at: item.timestamp,
                 }));
                 setPulseValues(values);
             } catch (error) {
