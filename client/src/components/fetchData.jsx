@@ -109,7 +109,7 @@ export const PatientCount = () => {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/patient-count')
+        const response = await axios.get(`${API_BASE_URL}/api/patient-count`)
         setCount(response.data.count)
       } catch (error) {
         console.error("Error fetching count:", error)
