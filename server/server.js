@@ -9,8 +9,6 @@ const { exec } = require("child_process");
 
 const app = express();
 
-const API_BASE_URL = "https://my-api.example.com";
-
 app.use(express.static(path.join(__dirname, "public")));
 
 const allowedOrigins = [
