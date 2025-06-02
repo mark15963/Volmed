@@ -9,16 +9,12 @@ const { exec } = require("child_process");
 
 const app = express();
 
-app.use(
-  express.static(
-    path.join(__dirname, "public", "..", "client", "dist", "../client/dist")
-  )
-);
+app.use(express.static(path.join(__dirname, "public", "..", "client", "dist")));
 
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
-  "https://volmed.onrender.com/",
+  "https://volmed.onrender.com",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -135,9 +131,7 @@ const upload = multer({ storage });
 
 // Catch-all route to serve index.html (for client-side routing)
 app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "..", "client", "dist", "index.html", "../client/dist")
-  );
+  res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"));
 });
 
 app.get("/", (req, res) => {
