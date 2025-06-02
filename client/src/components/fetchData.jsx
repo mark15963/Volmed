@@ -16,9 +16,7 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/patients`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(`${API_BASE_URL}/api/patients`);
         setPatients(response.data);
       } catch (error) {
         console.error("Error fetching patients:", error);
