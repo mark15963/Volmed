@@ -9,13 +9,9 @@ const { exec } = require("child_process");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "public", "..", "client", "dist")));
+app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://192.168.0.104:5173",
-  "https://volmed.onrender.com/",
-];
+const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -47,8 +43,15 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// const db = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "volmed_db",
+// });
+
 const db = mysql.createPool({
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "volmed_db",
@@ -762,9 +765,7 @@ app.use((err, req, res, next) => {
 
 ensureDatabaseConnection()
   .then(() => {
-    const PORT = process.env.PORT || 5000;
-
-    const server = app.listen(PORT, () => {
+    const server = app.listen(5000, () => {
       console.log("Server is running on port 5000");
 
       // Keep-alive settings
@@ -776,7 +777,7 @@ ensureDatabaseConnection()
         console.log("SIGTERM received. Shutting down gracefully...");
         server.close(() => {
           console.log("Server closed");
-          db.end();
+          db.end(); // Close the database pool
           process.exit(0);
         });
       });
@@ -785,7 +786,7 @@ ensureDatabaseConnection()
         console.log("SIGINT received. Shutting down gracefully...");
         server.close(() => {
           console.log("Server closed");
-          db.end();
+          db.end(); // Close the database pool
           process.exit(0);
         });
       });
