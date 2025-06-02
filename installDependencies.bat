@@ -1,3 +1,3 @@
 @echo off
-cd react
+cd client
 npm install

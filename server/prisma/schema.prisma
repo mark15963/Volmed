@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id           Int      @id @default(autoincrement())
+  lastName     String   @db.VarChar(100)
+  firstName    String   @db.VarChar(100)
+  patr         String
+  sex          String   @db.VarChar(7)
+  birthDate    String   @db.VarChar(10)
+  phone        String   @db.VarChar(16)
+  email        String   @db.VarChar(100)
+  address      String   @db.VarChar(100)
+  complaint    String
+  anam         String
+  life         String
+  status       String
+  diag         String
+  mkb          String
+  sop_zab      String
+  rec          String
+  created_at   DateTime @default(now())
+  statusReport String
+  locStat      String
+  report       String
+  state        String   @db.VarChar(100)
+
+  @@map("patients")
+
+  pulses        PatientPulse[]
+}
+
+model PatientPulse {
+  id          Int       @id @default(autoincrement())
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId   Int
+  pulseValue  Int
+  createdAt   DateTime  @default(now())
+
+  @@map("patient_pulse")
+}
+
+model Medication {
+  id          Int      @id @default(autoincrement())
+  patientId   Int
+  name        String   @db.VarChar(255)
+  dosage      String   @db.VarChar(100)
+  frequency   String   @db.VarChar(100)
+  administered Json
+  createdAt   DateTime @default(now())
+
+  @@map("medications")
+}
