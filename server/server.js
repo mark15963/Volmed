@@ -1,12 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-export default async function handler(req, res) {
-  const users = await prisma.user.findMany();
-  res.json(users);
-}
-
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -17,6 +8,8 @@ const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
 const app = express();
+
+const API_BASE_URL = "https://my-api.example.com";
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -56,45 +49,52 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "volmed_db",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+import { PrismaClient } from "@prisma/client";
 
-// Error handling for the pool
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error getting database connection:", err);
-    if (err.code === "PROTOCOL_CONNECTION_LOST") {
-      console.error("Database connection was closed.");
-    }
-    if (err.code === "ER_CON_COUNT_ERROR") {
-      console.error("Database has too many connections.");
-    }
-    if (err.code === "ECONNREFUSED") {
-      console.error("Database connection was refused.");
-    }
-  } else {
-    console.log("Connected to database.");
-    connection.release();
-  }
-});
+const prisma = new PrismaClient();
 
-// Connection error event handler
-db.on("error", (err) => {
-  console.error("Database error:", err);
-  if (err.code === "PROTOCOL_CONNECTION_LOST") {
-    // Reconnect if connection is lost
-    db.getConnection();
-  } else {
-    throw err;
-  }
-});
+export default async function handler(req, res) {
+  const users = await prisma.user.findMany();
+  res.json(users);
+}
+
+// const db = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "volmed_db",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
+// // Error handling for the pool
+// db.getConnection((err, connection) => {
+//   if (err) {
+//     console.error("Error getting database connection:", err);
+//     if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//       console.error("Database connection was closed.");
+//     }
+//     if (err.code === "ER_CON_COUNT_ERROR") {
+//       console.error("Database has too many connections.");
+//     }
+//     if (err.code === "ECONNREFUSED") {
+//       console.error("Database connection was refused.");
+//     }
+//   } else {
+//     console.log("Connected to database.");
+//     connection.release();
+//   }
+// });
+// // Connection error event handler
+// db.on("error", (err) => {
+//   console.error("Database error:", err);
+//   if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//     // Reconnect if connection is lost
+//     db.getConnection();
+//   } else {
+//     throw err;
+//   }
+// });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
