@@ -20,7 +20,11 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://192.168.0.104:5173",
+  "https://volmed-v4-y364.vercel.app",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
