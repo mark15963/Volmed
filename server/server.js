@@ -7,6 +7,9 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
+const { pathToRegexp } = require("path-to-regexp");
+console.log(pathToRegexp.toString());
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public", "..", "client", "dist")));
@@ -788,7 +791,7 @@ ensureDatabaseConnection()
         console.log("SIGTERM received. Shutting down gracefully...");
         server.close(() => {
           console.log("Server closed");
-          db.end(); // Close the database pool
+          db.end();
           process.exit(0);
         });
       });
@@ -797,7 +800,7 @@ ensureDatabaseConnection()
         console.log("SIGINT received. Shutting down gracefully...");
         server.close(() => {
           console.log("Server closed");
-          db.end(); // Close the database pool
+          db.end();
           process.exit(0);
         });
       });
