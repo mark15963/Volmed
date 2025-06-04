@@ -1,3 +1,3 @@
 [build]
-  base = "server/pacage.json" 
+  base = "server" 
   command = "npm install"
