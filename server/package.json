@@ -18,18 +18,15 @@
     "@prisma/client": "^6.8.2",
     "bcrypt": "^6.0.0",
     "chalk": "^5.4.1",
-    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "fs": "^0.0.2",
     "multer": "^2.0.0",
-    "mysql2": "^3.14.1",
-    "nodemon": "^3.1.10",
-    "path": "^0.12.7"
+    "mysql2": "^3.14.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "prisma": "^6.8.2"
+    "prisma": "^6.8.2",
+    "nodemon": "^3.1.10"
   }
 }
