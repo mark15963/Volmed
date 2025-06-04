@@ -168,16 +168,11 @@ const Graph = memo(({ data }) => {
     );
 });
 
-const onChange = key => {
-    console.log(key);
-};
-
 export const Tab2 = ({
     files,
     fileList,
     setFileList,
     isEditingFiles,
-    handleSaveFiles,
     handleRemoveFile,
     setUploadStatus,
     id,
@@ -255,7 +250,6 @@ export const Tab2 = ({
             const num = Number(pulseValue);
             if (!isNaN(num)) {
                 try {
-                    // Save to server
                     await axios.post(`http://localhost:5000/api/patients/${id}/pulse`, {
                         pulseValue: num
                     });
@@ -329,7 +323,7 @@ export const Tab2 = ({
             <div className={styles.bg}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: '500px', marginBottom: '20px' }}>
-                        <Collapse items={items} onChange={onChange} headerBg={'#ffffff'} />
+                        <Collapse items={items} headerBg={'#ffffff'} />
                     </div>
                 </div>
                 <div className={styles.fileSection}>

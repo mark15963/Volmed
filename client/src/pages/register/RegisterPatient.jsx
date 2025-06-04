@@ -11,12 +11,12 @@ import styles from './register.module.css'
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
 
     const navigate = useNavigate()
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState('')
     const [form] = Form.useForm()
-    const [messageApi, contextHolder] = message.useMessage();
-    const [mkbOptions, setMkbOptions] = useState([]);
-    const [mkbFetching, setMkbFetching] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage()
+    const [mkbOptions, setMkbOptions] = useState([])
+    const [mkbFetching, setMkbFetching] = useState(false)
 
     const success = () => {
         messageApi
@@ -294,7 +294,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
                                 <Form.Item
                                     label={<span className={styles.formLabel}>Клинический диагноз (МКБ)</span>}
-
+                                    name="mkb"
                                 >
                                     <Tooltip placement='top' title='функция работает до 31.05.2025'>
                                         <Select
