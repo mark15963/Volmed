@@ -7,11 +7,19 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
+console.log("Current mode:", process.env.NODE_ENV);
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "http://localhost:3000",
+  "http://192.168.0.104:3000",
+  "http://192.168.0.104:5173",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -27,12 +35,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
   next();
 });
+
 app.use((req, res, next) => {
   req.setTimeout(30000, () => {
     // 30 seconds timeout
@@ -43,20 +53,13 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "volmed_db",
-// });
-
 const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
   database: "volmed_db",
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 40,
   queueLimit: 0,
 });
 
@@ -125,6 +128,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+//-----REST-----
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -140,9 +144,6 @@ app.get("/", (req, res) => {
     <body>
       <h1>VolMed API Server</h1>
       <p>Server is running successfully!</p>
-      
-      
-
       <h2>Development URLs:</h2>
       <ul>
         <li>Frontend: <a href="http://localhost:5173">http://localhost:5173</a></li>
@@ -152,19 +153,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-// Amount of ID's in DB
-app.get("/api/patient-count", (req, res) => {
-  db.query("SELECT COUNT(id) AS count FROM patients", (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json({
-      count: results[0].count,
-    });
-  });
-});
-
+//-----PATIENTS-----
 // Get all patients
 app.get("/api/patients", (req, res) => {
   db.query("SELECT * FROM patients", (err, results) => {
@@ -175,7 +164,6 @@ app.get("/api/patients", (req, res) => {
     res.json(results);
   });
 });
-
 // Add a new patient
 app.post("/api/patients", (req, res) => {
   const newPatient = req.body;
@@ -219,7 +207,6 @@ app.post("/api/patients", (req, res) => {
     }
   );
 });
-
 // Update a patient
 app.put("/api/patients/:id", (req, res) => {
   const { id } = req.params;
@@ -264,7 +251,6 @@ app.put("/api/patients/:id", (req, res) => {
     }
   );
 });
-
 // Delete a patient
 app.delete("/api/patients/:id", (req, res) => {
   const { id } = req.params;
@@ -292,7 +278,40 @@ app.delete("/api/patients/:id", (req, res) => {
     });
   });
 });
+//Get data of a specific patient
+app.get("/api/patients/:id", (req, res) => {
+  const { id } = req.params;
 
+  // Validate ID is a number
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid patient ID format" });
+  }
+
+  db.query("SELECT * FROM patients WHERE id = ?", id, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+    res.json(results[0]);
+  });
+});
+// Amount of ID's in DB
+app.get("/api/patient-count", (req, res) => {
+  db.query("SELECT COUNT(id) AS count FROM patients", (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json({
+      count: results[0].count,
+    });
+  });
+});
+
+//-----DATABASE-----
 // DB backup
 app.get("/api/backup", (req, res) => {
   const dbUser = "root";
@@ -342,7 +361,6 @@ app.get("/api/backup", (req, res) => {
     });
   });
 });
-
 // DB restore
 app.get("/api/restore", (req, res) => {
   const dbUser = "root";
@@ -412,27 +430,7 @@ app.get("/api/restore", (req, res) => {
   });
 });
 
-//Get data of a specific patient
-app.get("/api/patients/:id", (req, res) => {
-  const { id } = req.params;
-
-  // Validate ID is a number
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid patient ID format" });
-  }
-
-  db.query("SELECT * FROM patients WHERE id = ?", id, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Patient not found" });
-    }
-    res.json(results[0]);
-  });
-});
-
+//-----FILES-----
 // Upload files to a specific patient
 app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
@@ -447,7 +445,6 @@ app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
     size: req.file.size,
   });
 });
-
 // Get files of a specific patient
 app.get("/api/patients/:id/files", (req, res) => {
   const patientId = req.params.id;
@@ -475,8 +472,7 @@ app.get("/api/patients/:id/files", (req, res) => {
     res.json(fileList);
   });
 });
-
-// Delete a patient
+// Delete patient's file
 app.delete("/api/files", async (req, res) => {
   try {
     // 1. Validate request body
@@ -486,7 +482,6 @@ app.delete("/api/files", async (req, res) => {
         message: "filePath is required in request body",
       });
     }
-
     const { filePath } = req.body;
 
     // 2. Construct safe path (with additional security)
@@ -551,7 +546,8 @@ app.delete("/api/files", async (req, res) => {
   }
 });
 
-// POST /api/patients/:id/medications
+//-----MEDS-----
+// Add medication to a patient
 app.post("/api/patients/:id/medications", (req, res) => {
   const { id } = req.params;
   const { name, dosage, frequency, administered } = req.body;
@@ -579,8 +575,7 @@ app.post("/api/patients/:id/medications", (req, res) => {
     res.status(201).json({ success: true, medicationId: results.insertId });
   });
 });
-
-// GET /api/patients/:id/medications
+// Show patient's medications
 app.get("/api/patients/:id/medications", (req, res) => {
   const { id } = req.params;
 
@@ -603,7 +598,7 @@ app.get("/api/patients/:id/medications", (req, res) => {
     }
   );
 });
-
+// Update a medication of a patient
 app.put("/api/medications/:medId", (req, res) => {
   const { medId } = req.params;
   const { name, dosage, frequency, administered } = req.body;
@@ -630,7 +625,6 @@ app.put("/api/medications/:medId", (req, res) => {
         return res.status(404).json({ error: "Medication not found" });
       }
 
-      // Return updated medication
       db.query(
         "SELECT * FROM medications WHERE id = ?",
         [medId],
@@ -656,7 +650,7 @@ app.put("/api/medications/:medId", (req, res) => {
     }
   );
 });
-
+// Delete a medication from a patient
 app.delete("/api/medications/:medId", (req, res) => {
   const { medId } = req.params;
 
@@ -678,6 +672,7 @@ app.delete("/api/medications/:medId", (req, res) => {
   });
 });
 
+//-----STATES-----
 // Save pulse data
 app.post("/api/patients/:id/pulse", (req, res) => {
   const { id } = req.params;
@@ -699,7 +694,6 @@ app.post("/api/patients/:id/pulse", (req, res) => {
     }
   );
 });
-
 // Get pulse data
 app.get("/api/patients/:id/pulse", (req, res) => {
   const { id } = req.params;
@@ -727,7 +721,7 @@ app.get("/api/patients/:id/pulse", (req, res) => {
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self'; 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    "default-src 'self'; script-src 'self'; style-src 'self'"
   );
   next();
 });
@@ -752,6 +746,7 @@ function ensureDatabaseConnection(retries = 5, delay = 2000) {
   });
 }
 
+// Error-handling middleware
 app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
   res.status(500).json({
