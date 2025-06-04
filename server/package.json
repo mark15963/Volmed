@@ -4,17 +4,16 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "echo 'No build needed' ",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "start:win": "start start.bat",
     "monit": "pm2 monit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "@prisma/client": "^6.8.2",
     "bcryptjs": "^3.0.2",

@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
-const serverless = require("serverless-http");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
