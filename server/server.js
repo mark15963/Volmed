@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.0.104:3000",
   "http://192.168.0.104:5173",
-  "https://celebrated-frangipane-f01238.netlify.app/",
+  "https://volmed.netlify.app/",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
