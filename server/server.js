@@ -1,13 +1,23 @@
-const express = require("express");
-const cors = require("cors");
-const mysql = require("mysql2");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const fsp = require("fs").promises;
-const { exec } = require("child_process");
+// const express = require("express");
+// const cors = require("cors");
+// const mysql = require("mysql2");
+import express from "express";
+import cors from "cors";
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
+
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { promises as fsp } from "fs";
+import { exec } from "child_process";
+import { fileURLToPath } from "url";
 
 console.log("Current mode:", process.env.NODE_ENV);
+// Create __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -21,6 +31,7 @@ const allowedOrigins = [
   "http://192.168.0.104:5173",
   "https://volmed.netlify.app/",
 ];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -54,45 +65,53 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "volmed_db",
-  waitForConnections: true,
-  connectionLimit: 40,
-  queueLimit: 0,
+// const db = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "volmed_db",
+//   waitForConnections: true,
+//   connectionLimit: 40,
+//   queueLimit: 0,
+// });
+
+export const pool = mysql.createPool({
+  host: process.env.MYSQLHOST,
+  port: process.env.MYSQLPORT,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
 });
 
-// Error handling for the pool
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error getting database connection:", err);
-    if (err.code === "PROTOCOL_CONNECTION_LOST") {
-      console.error("Database connection was closed.");
-    }
-    if (err.code === "ER_CON_COUNT_ERROR") {
-      console.error("Database has too many connections.");
-    }
-    if (err.code === "ECONNREFUSED") {
-      console.error("Database connection was refused.");
-    }
-  } else {
-    console.log("Connected to database.");
-    connection.release();
-  }
-});
+// // Error handling for the pool
+// db.getConnection((err, connection) => {
+//   if (err) {
+//     console.error("Error getting database connection:", err);
+//     if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//       console.error("Database connection was closed.");
+//     }
+//     if (err.code === "ER_CON_COUNT_ERROR") {
+//       console.error("Database has too many connections.");
+//     }
+//     if (err.code === "ECONNREFUSED") {
+//       console.error("Database connection was refused.");
+//     }
+//   } else {
+//     console.log("Connected to database.");
+//     connection.release();
+//   }
+// });
 
-// Connection error event handler
-db.on("error", (err) => {
-  console.error("Database error:", err);
-  if (err.code === "PROTOCOL_CONNECTION_LOST") {
-    // Reconnect if connection is lost
-    db.getConnection();
-  } else {
-    throw err;
-  }
-});
+// // Connection error event handler
+// db.on("error", (err) => {
+//   console.error("Database error:", err);
+//   if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//     // Reconnect if connection is lost
+//     db.getConnection();
+//   } else {
+//     throw err;
+//   }
+// });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -154,17 +173,37 @@ app.get("/", (req, res) => {
   `);
 });
 
+// -----TEST-----
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT 1 + 1 AS solution");
+    res.json({ solution: rows[0].solution });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 //-----PATIENTS-----
 // Get all patients
-app.get("/api/patients", (req, res) => {
-  db.query("SELECT * FROM patients", (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+// app.get("/api/patients", (req, res) => {
+//   db.query("SELECT * FROM patients", (err, results) => {
+//     if (err) {
+//       console.error("Database error:", err);
+//       return res.status(500).json({ error: "Database error" });
+//     }
+//     res.json(results);
+//   });
+// });
+
+app.get("/api/patients", async (req, res) => {
+  try {
+    const [results] = await pool.query("SELECT * FROM patients");
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
 // Add a new patient
 app.post("/api/patients", (req, res) => {
   const newPatient = req.body;
@@ -729,24 +768,6 @@ app.use((req, res, next) => {
 
 app.use("/uploads", express.static("uploads"));
 
-function ensureDatabaseConnection(retries = 5, delay = 2000) {
-  return new Promise((resolve, reject) => {
-    const attempt = (n) => {
-      db.getConnection((err, connection) => {
-        if (err) {
-          if (n === 1) return reject(err);
-          console.log(`Connection failed. ${n - 1} retries left...`);
-          setTimeout(() => attempt(n - 1), delay);
-        } else {
-          connection.release();
-          resolve();
-        }
-      });
-    };
-    attempt(retries);
-  });
-}
-
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
@@ -759,36 +780,60 @@ app.use((err, req, res, next) => {
   });
 });
 
-ensureDatabaseConnection()
-  .then(() => {
-    const server = app.listen(5000, () => {
-      console.log("Server is running on port 5000");
+// function ensureDatabaseConnection(retries = 5, delay = 2000) {
+//   return new Promise((resolve, reject) => {
+//     const attempt = (n) => {
+//       db.getConnection((err, connection) => {
+//         if (err) {
+//           if (n === 1) return reject(err);
+//           console.log(`Connection failed. ${n - 1} retries left...`);
+//           setTimeout(() => attempt(n - 1), delay);
+//         } else {
+//           connection.release();
+//           resolve();
+//         }
+//       });
+//     };
+//     attempt(retries);
+//   });
+// }
 
-      // Keep-alive settings
-      server.keepAliveTimeout = 60000; // 60 seconds
-      server.headersTimeout = 65000; // 65 seconds
+// ensureDatabaseConnection()
+//   .then(() => {
+//     const port = process.env.PORT || 3000;
+//     const server = app.listen(port, () => {
+//       console.log("Server is running on port 3000");
 
-      // Graceful shutdown handlers
-      process.on("SIGTERM", () => {
-        console.log("SIGTERM received. Shutting down gracefully...");
-        server.close(() => {
-          console.log("Server closed");
-          db.end(); // Close the database pool
-          process.exit(0);
-        });
-      });
+//       // Keep-alive settings
+//       server.keepAliveTimeout = 60000; // 60 seconds
+//       server.headersTimeout = 65000; // 65 seconds
 
-      process.on("SIGINT", () => {
-        console.log("SIGINT received. Shutting down gracefully...");
-        server.close(() => {
-          console.log("Server closed");
-          db.end(); // Close the database pool
-          process.exit(0);
-        });
-      });
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to connect to database after retries:", err);
-    process.exit(1);
-  });
+//       // Graceful shutdown handlers
+//       process.on("SIGTERM", () => {
+//         console.log("SIGTERM received. Shutting down gracefully...");
+//         server.close(() => {
+//           console.log("Server closed");
+//           db.end(); // Close the database pool
+//           process.exit(0);
+//         });
+//       });
+
+//       process.on("SIGINT", () => {
+//         console.log("SIGINT received. Shutting down gracefully...");
+//         server.close(() => {
+//           console.log("Server closed");
+//           db.end(); // Close the database pool
+//           process.exit(0);
+//         });
+//       });
+//     });
+//   })
+//   .catch((err) => {
+//     console.error("Failed to connect to database after retries:", err);
+//     process.exit(1);
+//   });
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
