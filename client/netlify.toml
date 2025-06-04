@@ -1,5 +1,5 @@
 [build]
-  base = "server\package.json" 
+  base = "server/package.json" 
   command = "npm run build"
   publish = "dist"
 
