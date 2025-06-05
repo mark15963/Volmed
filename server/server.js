@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -47,12 +48,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "volmed_db",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD === "" ? null : process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
-  connectionLimit: 40,
+  connectionLimit: 20,
   queueLimit: 0,
 });
 
@@ -540,6 +541,29 @@ app.delete("/api/files", async (req, res) => {
 });
 
 //-----MEDS-----
+// Show patient's medications
+app.get("/api/patients/:id/medications", (req, res) => {
+  const { id } = req.params;
+
+  db.query(
+    "SELECT * FROM medications WHERE patient_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("DB fetch error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      // Parse the administered field from JSON if needed
+      const parsedResults = results.map((m) => ({
+        ...m,
+        administered: m.administered ? JSON.parse(m.administered) : [],
+      }));
+
+      res.json(parsedResults);
+    }
+  );
+});
 // Add medication to a patient
 app.post("/api/patients/:id/medications", (req, res) => {
   const { id } = req.params;
@@ -567,29 +591,6 @@ app.post("/api/patients/:id/medications", (req, res) => {
 
     res.status(201).json({ success: true, medicationId: results.insertId });
   });
-});
-// Show patient's medications
-app.get("/api/patients/:id/medications", (req, res) => {
-  const { id } = req.params;
-
-  db.query(
-    "SELECT * FROM medications WHERE patient_id = ?",
-    [id],
-    (err, results) => {
-      if (err) {
-        console.error("DB fetch error:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
-
-      // Parse the administered field from JSON if needed
-      const parsedResults = results.map((m) => ({
-        ...m,
-        administered: m.administered ? JSON.parse(m.administered) : [],
-      }));
-
-      res.json(parsedResults);
-    }
-  );
 });
 // Update a medication of a patient
 app.put("/api/medications/:medId", (req, res) => {
