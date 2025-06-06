@@ -6,7 +6,7 @@ export const Card = ({ name, isActive, onClick }) => {
             className={`${styles.menuCard} ${isActive ? styles.active : ''}`}
             onClick={onClick}
         >
-            <h3>{name}</h3>
+            <h3 style={{ margin: '4px 0' }}>{name}</h3>
         </div>
     )
 }

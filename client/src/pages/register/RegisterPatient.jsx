@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { Button, Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip } from "antd"
+import { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip } from "antd"
 import { IMaskInput } from 'react-imask';
 import dayjs, { datePickerLocale } from './dayjs.config'
+
+import Button from '../../components/Buttons';
 
 import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
@@ -113,6 +115,8 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
             setIsLoading(false);
         }
     };
+
+    const isPastCutoffDate = new Date() > new Date('2025-05-31');
 
     return (
         <div className={styles.container}>
@@ -301,7 +305,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                             showSearch
                                             placeholder="Выберите диагноз из МКБ"
                                             filterOption={false}
-                                            onSearch={async (value) => {
+                                            onSearch={isPastCutoffDate ? undefined : async (value) => {
                                                 if (!value) {
                                                     setMkbOptions([]);
                                                     return;
@@ -311,7 +315,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                                 setMkbOptions(options);
                                                 setMkbFetching(false);
                                             }}
-                                            onSelect={(value, option) => {
+                                            onSelect={isPastCutoffDate ? undefined : (value, option) => {
                                                 const currentDiag = form.getFieldValue('diag') || ''
                                                 const newDiag = `${option.label};\n${currentDiag}`.trim()
                                                 form.setFieldsValue({
@@ -320,8 +324,10 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                                 })
                                             }}
                                             notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
-                                            options={mkbOptions}
+                                            options={isPastCutoffDate ? [] : mkbOptions}
                                             style={{ width: '100%' }}
+                                            disabled={isPastCutoffDate}
+                                        // disable style - main.jsx (colorBgContainerDisabled)
                                         />
                                     </Tooltip>
                                 </Form.Item>
@@ -357,16 +363,13 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
                                 <div className={styles.buttons}>
                                     <Button
-                                        htmlType="submit"
-                                    >
-                                        {isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'}
-                                    </Button>
+                                        text={isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'} type='submit'
+                                    />
+
                                     <Button
-                                        style={{ marginLeft: 8 }}
+                                        text='Назад'
                                         onClick={() => navigate(-1)}
-                                    >
-                                        Назад
-                                    </Button>
+                                    />
                                 </div>
                             </div>
                         </Form>

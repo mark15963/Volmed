@@ -11,7 +11,7 @@ import { Tab3 } from './tabs/tab3'
 
 import styles from './searchResults.module.css'
 
-import { HomeButton } from '../../components/Buttons'
+import Button, { HomeButton } from '../../components/Buttons'
 
 export const SearchResults = () => {
     const { state } = useLocation();
@@ -317,9 +317,9 @@ export const SearchResults = () => {
             {tabContents[activeTab]}
 
             <div className={styles.buttonsContainer}>
-                <div>
-                    <button
-                        className={styles.updbut}
+                <div style={{ display: 'flex' }}>
+                    <Button
+                        text='Редактировать'
                         onClick={(e) => {
                             handleEdit(e)
                             {
@@ -330,20 +330,14 @@ export const SearchResults = () => {
                                     handleSaveFiles(e)
                                 )
                             }
-                        }
-                        }
+                        }}
                     >
                         {isEditingAssignments || isEditingFiles ?
                             `Сохранить` : `Редактировать`
                         }
-                    </button>
+                    </Button>
 
-                    <button
-                        className={styles.printbut}
-                        onClick={handlePrint}
-                    >
-                        Печать
-                    </button>
+                    <Button text="Печать" onClick={handlePrint} />
                 </div>
 
                 <HomeButton />
