@@ -124,15 +124,6 @@ span{
     gap: 10px;
 }
 
-.updbut, .printbut, .backButton{
-    cursor: pointer;
-    margin: 5px;
-    cursor: pointer;
-    padding: 6px 10px;
-    font-size: 15px;
-    border-radius: 10px;
-}
-
 .updbut:hover, .backButton:hover, .printbut:hover {
     background-color: #e0e0e0;
 }

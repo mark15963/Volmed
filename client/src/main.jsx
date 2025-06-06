@@ -16,6 +16,9 @@ createRoot(document.getElementById('root')).render(
       components: {
         Collapse: {
           headerBg: '#fff'
+        },
+        Select: {
+          colorBgContainerDisabled: '#bbb'
         }
       }
     }}

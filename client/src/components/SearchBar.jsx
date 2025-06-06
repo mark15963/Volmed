@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { Button } from "antd";
+// import { Button } from "antd";
+import Button from '../components/Buttons';
+
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './styles/SearchBar.module.css'
 
@@ -74,16 +76,7 @@ export const SearchBar = () => {
                         inputMode='numeric'
                         pattern='[0-9]*'
                     />
-                    <Button
-                        type='default'
-                        htmlType='submit'
-                        shape='circle'
-                        variant='solid'
-                        icon={<SearchOutlined />}
-                        className={styles.submit}
-                        disabled={isLoading}
-                    >
-                    </Button>
+                    <Button type='submit' shape='circle' icon='bi bi-search' />
                 </div>
                 {error && (
                     <div className={styles.error}>

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router'
 import { SearchBar } from '../../components/SearchBar';
 import styles from './main.module.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import Button from '../../components/Buttons';
 
 export const Main = () => {
     const navigate = useNavigate()
@@ -12,18 +13,10 @@ export const Main = () => {
             <div className={styles.mainBlock}>
                 <SearchBar />
                 <div className={styles.buttonsContainer}>
-                    <button
-                        onClick={() => navigate('/patients')}
-                        className={styles.backButton}
-                    >
-                        <i className="bi bi-people"><span style={{ fontStyle: 'normal', margin: '0 0 0 5px', lineHeight: '1' }}>Список пациентов</span></i>
-                    </button>
-                    <button
-                        onClick={() => navigate('/register')}
-                        className={styles.regButton}
-                    >
-                        <i className="bi bi-person-plus"><span style={{ fontStyle: 'normal', margin: '0 0 0 5px' }}>Новый пациент</span></i>
-                    </button>
+
+                    <Button text='Список пациентов' margin='0 0 0 5px' icon='bi bi-people' onClick={() => navigate('/patients')} />
+
+                    <Button text='Новый пациент' icon='bi bi-person-plus' margin='0 0 0 5px' onClick={() => navigate('/register')} />
 
                 </div>
             </div>
