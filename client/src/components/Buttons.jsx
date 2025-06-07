@@ -44,22 +44,33 @@ export const TestButton = (props) => {
     )
 }
 
-export const Button = (props) => {
+export const Button = ({
+    onClick,
+    shape,
+    type,
+    style,
+    icon,
+    margin,
+    text,
+    ...props
+}) => {
     const [isLoading, setIsLoading] = useState(false)
 
     return (
         <div>
             <button
-                onClick={props.onClick}
-                className={`button ${props.shape} ${isLoading ? "loading" : ""}`}
+                onClick={onClick}
+                className={`button ${shape} ${isLoading ? "loading" : ""}`}
                 disabled={isLoading}
-                type={props.type}
+                type={type}
+                style={style}
+                {...props}
             >
-                <i className={props.icon}>
-                    {props.text && (
-                        <span className="button-text" style={props.margin ? { margin: props.margin } : undefined}
+                <i className={icon}>
+                    {text && (
+                        <span className="button-text" style={margin ? { margin: margin } : undefined}
                         >
-                            {props.text}
+                            {text}
                         </span>
                     )}
                 </i>
