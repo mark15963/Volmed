@@ -15,8 +15,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^6.8.2",
-    "bcryptjs": "^3.0.2",
+    "bcrypt": "^6.0.0",
     "chalk": "^5.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -26,7 +25,6 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "nodemon": "^3.1.10",
-    "prisma": "^6.8.2"
+    "nodemon": "^3.1.10"
   }
 }

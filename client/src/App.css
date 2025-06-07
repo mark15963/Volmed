@@ -34,6 +34,29 @@ html, body{
   width: 100vw;
 }
 
+.container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.mainBlock {
+    height: fit-content;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #0073C7;
+    border-style: solid;
+    border-radius: 15px;
+    gap:20px;
+}
+
 .footer{
   grid-area: foot;
   width: 100vw;
