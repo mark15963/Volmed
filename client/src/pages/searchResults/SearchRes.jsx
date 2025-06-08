@@ -340,7 +340,7 @@ export const SearchResults = () => {
                     <Button text="Печать" onClick={handlePrint} />
                 </div>
 
-                <HomeButton />
+                <Button text="Назад на главную" onClick={() => navigate('/')} />
             </div>
         </div >
     );
