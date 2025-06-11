@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "server -s dist"
+    "start": "vite preview --port 4173"
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
