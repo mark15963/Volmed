@@ -10,9 +10,12 @@ const { exec } = require("child_process");
 
 const app = express();
 
+const PORT = process.env.PORT || 5000
+
 app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173"];
+const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173,
+process.env.FRONTEND_URL"];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -48,16 +51,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD === "" ? null : process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  database: process.env.DB_NAME || "volmed_db",
   waitForConnections: true,
-  connectionLimit: 20,
+  connectionLimit: 10,
   queueLimit: 0,
 });
 
-// // Error handling for the pool
+// Error handling for the pool
 db.getConnection((err, connection) => {
   if (err) {
     console.error("Error getting database connection:", err);
@@ -76,7 +79,7 @@ db.getConnection((err, connection) => {
   }
 });
 
-// // Connection error event handler
+// Connection error event handler
 db.on("error", (err) => {
   console.error("Database error:", err);
   if (err.code === "PROTOCOL_CONNECTION_LOST") {
@@ -87,10 +90,27 @@ db.on("error", (err) => {
   }
 });
 
+async function testDbConnection(){
+  try {
+    const conn = await db.getConnection()
+    conn.release()
+    console.log("Connected to DB")
+  } catch (err) {
+    console.log("Connection failed")
+    process.exot(1)
+  }
+}
+
+const uploadDir = path.join(__dirname, "uploads")
+
+if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const patientId = req.params.id;
-    const uploadPath = `./uploads/patients/${patientId}`;
+    const uploadPath = path.join(uploadDir, "patients", patientId);
 
     // Create directory if it doesn't exist
     if (!fs.existsSync(uploadPath)) {
@@ -712,6 +732,10 @@ app.get("/api/patients/:id/pulse", (req, res) => {
   );
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({status: 'healthy'});
+});
+
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -734,51 +758,26 @@ app.use((err, req, res, next) => {
   });
 });
 
-function ensureDatabaseConnection(retries = 5, delay = 2000) {
-  return new Promise((resolve, reject) => {
-    const attempt = (n) => {
-      db.getConnection((err, connection) => {
-        if (err) {
-          if (n === 1) return reject(err);
-          console.log(`Connection failed. ${n - 1} retries left...`);
-          setTimeout(() => attempt(n - 1), delay);
-        } else {
-          connection.release();
-          resolve();
-        }
-      });
-    };
-    attempt(retries);
+async function startServer(){
+  await testConnection();
+
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`
+    server.keepAliveTimeout = 60000;
+    server.headersTimeout = 65000;
   });
+  
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received. Sutting down gracefully...");
+    Server.close(() => {
+      db.end();
+      console.log ("Server closed")
+      process.exit(0);
+    }
+  }
 }
-ensureDatabaseConnection()
-  .then(() => {
-    const server = app.listen(5000, () => {
-      console.log("Server is running on port 5000");
 
-      // Keep-alive settings
-      server.keepAliveTimeout = 60000; // 60 seconds
-      server.headersTimeout = 65000; // 65 seconds
-
-      // Graceful shutdown handlers
-      process.on("SIGTERM", () => {
-        console.log("SIGTERM received. Shutting down gracefully...");
-        server.close(() => {
-          console.log("Server closed");
-          process.exit(0);
-        });
-      });
-
-      process.on("SIGINT", () => {
-        console.log("SIGINT received. Shutting down gracefully...");
-        server.close(() => {
-          console.log("Server closed");
-          process.exit(0);
-        });
-      });
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to connect to database after retries:", err);
-    process.exit(1);
-  });
+startServer().catch(err => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+}
