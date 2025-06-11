@@ -74,8 +74,8 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const patientId = req.params.id;
     const uploadPath = path.join(uploadDir, "patients", patientId);
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
     cb(null, uploadPath);
   },
