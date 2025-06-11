@@ -11,7 +11,7 @@ import { Tab3 } from './tabs/tab3'
 
 import styles from './searchResults.module.css'
 
-import Button, { HomeButton } from '../../components/Buttons'
+import Button from '../../components/Buttons'
 
 export const SearchResults = () => {
     const { state } = useLocation();
@@ -55,7 +55,7 @@ export const SearchResults = () => {
                     patientData = state.results[0];
                 }
                 else if (id) {
-                    const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
+                    const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}`);
                     patientData = response.data;
                 }
 
@@ -96,7 +96,7 @@ export const SearchResults = () => {
         const fetchFiles = async () => {
             if (data?.id) {
                 try {
-                    const response = await axios.get(`http://localhost:5000/api/patients/${data.id}/files`);
+                    const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/files`);
                     setFiles(response.data);
                 } catch (error) {
                     console.error('Error fetching files:', error);
@@ -111,12 +111,12 @@ export const SearchResults = () => {
         if (!id) return;
 
         try {
-            const response = await axios.get(`http://localhost:5000/api/patients/${id}/files`);
+            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/files`);
             setFileList(response.data.map(file => ({
                 uid: file.path,
                 name: file.originalname,
                 status: 'done',
-                url: `http://localhost:5000${file.path}`,
+                url: `https://volmed-backend.onrender.com${file.path}`,
                 response: { path: file.path }
             })));
         } catch (error) {
@@ -133,7 +133,7 @@ export const SearchResults = () => {
         try {
             await refreshFileList();
 
-            const response = await axios.get(`http://localhost:5000/api/patients/${id}/files`);
+            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/files`);
             setFiles(response.data);
 
             setIsEditingFiles(false);
@@ -149,7 +149,7 @@ export const SearchResults = () => {
             if (file.response?.path) {
                 const filePath = file.response.path.replace(/^\/?uploads\//, '');
 
-                const response = await axios.delete('http://localhost:5000/api/files', {
+                const response = await axios.delete('https://volmed-backend.onrender.com/api/files', {
                     data: { filePath },
                     headers: {
                         'Content-Type': 'application/json'
@@ -210,7 +210,7 @@ export const SearchResults = () => {
 
         const fetchMedications = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/patients/${data.id}/medications`);
+                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
                 setAssignments(response.data);
                 setAssignments(response.data.sort((a, b) =>
                     new Date(b.createdAt) - new Date(a.createdAt)
@@ -227,9 +227,9 @@ export const SearchResults = () => {
         try {
             for (const med of assignments) {
                 if (med.id) {
-                    await axios.put(`http://localhost:5000/api/medications/${med.id}`, med);
+                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${med.id}`, med);
                 } else {
-                    await axios.post(`http://localhost:5000/api/patients/${data.id}/medications`, {
+                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, {
                         ...med,
                         createdAt: med.createdAt || new Date().toISOString()
                     });
@@ -237,7 +237,7 @@ export const SearchResults = () => {
             }
 
             // After saving, refetch meds to sync
-            const response = await axios.get(`http://localhost:5000/api/patients/${data.id}/medications`);
+            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
             setAssignments(response.data);
 
             setIsEditingAssignments(false);
