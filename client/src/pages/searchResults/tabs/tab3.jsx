@@ -98,14 +98,20 @@ export const Tab3 = ({
                                                 }}
                                                 onClick={() => {
                                                     const newList = [...assignments];
-                                                    newList[index].administered.push(new Date().toISOString());
+                                                    const current = newList[index];
+
+                                                    if (!Array.isArray(current.administered)) {
+                                                        current.administered = [];
+                                                    }
+
+                                                    current.administered.push(new Date().toISOString());
                                                     setAssignments(newList);
                                                 }}
                                             >
                                                 Отметить
                                             </button>
                                             <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: '5px', height: 'fit-content' }}>
-                                                {item.administered.map((time, i) => (
+                                                {Array.isArray(item.administered) && item.administered.map((time, i) => (
                                                     <li key={i} style={{ display: 'flex', alignItems: 'center', fontSize: '10px' }}>
                                                         <span style={{ fontSize: '10px' }}>{moment(time).format('DD.MM.YY HH:mm')}</span>
                                                         {isEditingAssignments && (
