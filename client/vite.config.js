@@ -7,6 +7,11 @@ export default defineConfig({
   preview:{
     host: '0.0.0.0',
     port: 4173,
+    strictPort: true,
+    allowedHosts: [
+      'volmed-o4s0.onrender.com',
+      'localhost' // Keep localhost for development
+    ]
   },
   define: {
     'process.env': process.env
