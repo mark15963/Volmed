@@ -20,7 +20,7 @@ export const AllPatients = () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/patients`);
         // Extract the rows array from the PostgreSQL response
-        const data = Array.isArray(response.data.rows) ? response.data.rows : [];
+        const data = Array.isArray(response.data) ? response.data : [];
         setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
