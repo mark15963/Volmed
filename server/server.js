@@ -374,7 +374,7 @@ app.put("/api/medications/:medId", async (req, res) => {
   const { administered } = req.body;
 
   try {
-    const result = await pool.query(
+    const result = await db.query(
       `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,
       [administered, medId]
     );
@@ -391,17 +391,24 @@ app.put("/api/medications/:medId", async (req, res) => {
 });
 // Delete a medication from a patient
 app.delete("/api/medications/:medId", async (req, res) => {
+  const { medId } = req.params;
+
   try {
-    const { rowCount } = await db.query(
-      "DELETE FROM medications WHERE id = $1",
-      [req.params.medId]
+    const result = await db.query(
+      `DELETE FROM medications WHERE id = $1 RETURNING *`,
+      [medId]
     );
-    if (!rowCount)
-      return res.status(404).json({ error: "Medication not found" });
-    res.json({ success: true, deletedId: req.params.medId });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "DB delete error", message: e.message });
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Medication not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Medication deleted", medication: result.rows[0] });
+  } catch (err) {
+    console.error("Error deleting medication:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
