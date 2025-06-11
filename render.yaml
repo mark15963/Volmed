@@ -8,14 +8,16 @@ services:
       - key: NODE_ENV
         value: production
       - key: DB_HOST
-        fromDatabase:
-          name: volmed_db
-          property: connectionString
+        value: dpg-d14khvuuk2gs73avtu10-a.oregon-postgres.render.com
       - key: DB_USER
         value: volmed_db_admin
       - key: DB_PASSWORD
         value: uUl8SJ9fnFoelVvOG849h1UpZ87AkiFZ
       - key: DB_NAME
         value: volmed_db
+      - key: DB_PORT
+        value: 5432
+      - key: DATABASE_URL
+        value: postgresql://volmed_db_admin:uUl8SJ9fnFoelVvOG849h1UpZ87AkiFZ@dpg-d14khvuuk2gs73avtu10-a.oregon-postgres.render.com/volmed_db
       - key: FRONTEND_URL
         value: https://volmed-o4s0.onrender.com
