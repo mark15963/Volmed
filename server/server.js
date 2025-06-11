@@ -2,12 +2,13 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 console.log("Environment variables:", process.env);
 console.log("DB_HOST:", process.env.DB_HOST);
+
 const { Pool } = require("pg");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
-const fsp = require("fs").promises;
+const fsp = fs.promises;
 const { exec } = require("child_process");
 
 const app = express();
@@ -30,12 +31,28 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ];
 
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    res.setHeader("Content-Type", "application/json");
-  }
-  next();
-});
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.includes("render.com")
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.setTimeout(30000, () => {
@@ -45,107 +62,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// const db = mysql.createPool({
-//   host: process.env.DB_HOST || "localhost",
-//   user: process.env.DB_USER || "root",
-//   password: process.env.DB_PASSWORD || null,
-//   database: process.env.DB_NAME || "volmed_db",
-//   port: process.env.DB_PORT || 3306, // MySQL default port
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-//   connectTimeout: 10000, // 10 seconds timeout
-// });
-
-// // Error handling for the pool
-// db.getConnection((err, connection) => {
-//   if (err) {
-//     console.error("Error getting database connection:", err);
-//     if (err.code === "PROTOCOL_CONNECTION_LOST") {
-//       console.error("Database connection was closed.");
-//     }
-//     if (err.code === "ER_CON_COUNT_ERROR") {
-//       console.error("Database has too many connections.");
-//     }
-//     if (err.code === "ECONNREFUSED") {
-//       console.error("Database connection was refused.");
-//     }
-//   } else {
-//     console.log("Connected to database.");
-//     connection.release();
-//   }
-// });
-
-// // Connection error event handler
-// db.on("error", (err) => {
-//   console.error("Database error:", err);
-//   if (err.code === "PROTOCOL_CONNECTION_LOST") {
-//     // Reconnect if connection is lost
-//     db.getConnection();
-//   } else {
-//     throw err;
-//   }
-// });
-
-// Test connection function
-async function testDbConnection() {
-  const maxRetries = 5;
-  const retryDelay = 2000;
-  let lastError;
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    let client;
-    try {
-      console.log(`Connection attempt ${attempt}/${maxRetries}`);
-      client = await db.connect();
-
-      // Verify connection with a simple query
-      await client.query("SELECT 1");
-      console.log("✅ Database connection verified");
-      return true;
-    } catch (err) {
-      lastError = err;
-      console.error(`Attempt ${attempt} failed:`, err.message);
-    } finally {
-      if (client) client.release();
-    }
-
-    if (attempt < maxRetries) {
-      console.log(`Retrying in ${retryDelay / 1000} seconds...`);
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-    }
-  }
-
-  console.error("❌ Maximum connection attempts reached");
-  throw lastError;
-}
-
 app.use(express.static(path.join(__dirname, "public")));
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    if (
-      allowedOrigins.indexOf(origin) !== -1 ||
-      origin.includes("render.com")
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Handle preflight requests
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -156,8 +74,6 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const patientId = req.params.id;
     const uploadPath = path.join(uploadDir, "patients", patientId);
-
-    // Create directory if it doesn't exist
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -187,7 +103,35 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-//-----REST-----
+// DB connection test
+async function testDbConnection() {
+  const retries = 5,
+    delay = 2000;
+  for (let i = 1; i <= retries; i++) {
+    try {
+      console.log(`Connection attempt ${i}/${retries}`);
+      const client = await db.connect();
+      await client.query("SELECT 1");
+      client.release();
+      console.log("✅ Database connection verified");
+      return;
+    } catch (err) {
+      console.error(`Attempt ${i} failed:`, err.message);
+      if (i < retries) await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error("❌ Maximum DB connection attempts reached");
+}
+
+// Content Security Policy
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    res.setHeader("Content-Type", "application/json");
+  }
+  next();
+});
+
+//-----HOME-----
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -209,130 +153,24 @@ app.get("/", (req, res) => {
   `);
 });
 
+// Health Check
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    database: db ? "connected" : "disconnected",
+  });
+});
+
 //-----PATIENTS-----
 // Get all patients
 app.get("/api/patients", async (req, res) => {
   try {
     const { rows } = await db.query("SELECT * FROM patients ORDER BY id");
     res.json(rows);
-  } catch (err) {
-    console.error("Database error:", err);
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ error: "Failed to fetch patients" });
   }
-});
-// Add a new patient
-app.post("/api/patients", (req, res) => {
-  const newPatient = req.body;
-
-  db.query(
-    "INSERT INTO patients SET $1",
-    newPatient,
-    (insertErr, insertResults) => {
-      if (insertErr) {
-        console.error(insertErr);
-        return res.status(500).json({
-          error: "Database error",
-          message: insertErr.message,
-        });
-      }
-
-      const patientId = insertResults.insertId;
-
-      // Fetch the newly created patient
-      db.query(
-        "SELECT * FROM patients WHERE id = $1",
-        [patientId],
-        (selectErr, selectResults) => {
-          if (selectErr) {
-            console.error(selectErr);
-            return res.status(500).json({
-              error: "Could not retrieve created patient",
-            });
-          }
-
-          if (selectResults.length === 0) {
-            return res.status(500).json({
-              error: "Patient not found after creation",
-            });
-          }
-
-          // Single response with the created data
-          res.status(201).json(selectResults[0]);
-        }
-      );
-    }
-  );
-});
-// Update a patient
-app.put("/api/patients/:id", (req, res) => {
-  const { id } = req.params;
-  const editPatient = req.body;
-
-  db.query(
-    "UPDATE patients SET $1 WHERE id = $1",
-    [editPatient, id],
-    (updateErr, updateResults) => {
-      if (updateErr) {
-        console.error(updateErr);
-        return res.status(500).json({
-          error: "Update failed",
-          details: updateErr.message,
-        });
-      }
-
-      if (updateResults.affectedRows === 0) {
-        return res.status(404).json({ error: "Patient not found" });
-      }
-
-      // Single response after successful update
-      db.query(
-        "SELECT * FROM patients WHERE id = ?",
-        [id],
-        (selectErr, selectResults) => {
-          if (selectErr) {
-            console.error(selectErr);
-            return res.status(500).json({
-              error: "Fetch failed",
-              details: selectErr.message,
-            });
-          }
-
-          res.json({
-            success: true,
-            message: "Patient updated successfully",
-            patient: selectResults[0],
-          });
-        }
-      );
-    }
-  );
-});
-// Delete a patient
-app.delete("/api/patients/:id", (req, res) => {
-  const { id } = req.params;
-  db.query("DELETE FROM patients WHERE id = $1", id, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({
-        success: false,
-        error: "Database error",
-        message: err.message,
-      });
-    }
-
-    if (results.affectedRows === 0) {
-      return res.status(404).json({
-        success: false,
-        error: "Patient not found",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Patient deleted successfully",
-      deletedId: id,
-    });
-  });
 });
 //Get data of a specific patient
 app.get("/api/patients/:id", async (req, res) => {
@@ -340,23 +178,126 @@ app.get("/api/patients/:id", async (req, res) => {
     const { rows } = await db.query("SELECT * FROM patients WHERE id = $1", [
       req.params.id,
     ]);
-    if (rows.length === 0)
+    if (!rows.length)
       return res.status(404).json({ error: "Patient not found" });
     res.json(rows[0]);
-  } catch (err) {
-    console.error("Database error:", err);
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ error: "Database error" });
   }
 });
 // Amount of ID's in DB
 app.get("/api/patient-count", async (req, res) => {
   try {
-    const { rows } = await db.query("SELECT COUNT(id) as count FROM patients");
-    res.json({ count: parseInt(rows[0].count) || 0 });
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Database error", count: 0 });
+    const { rows } = await db.query("SELECT COUNT(id) AS count FROM patients");
+    res.json({ count: parseInt(rows[0].count, 10) || 0 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error", count: 0 });
   }
+});
+// Add a new patient
+app.post("/api/patients", async (req, res) => {
+  const newPatient = req.body;
+
+  const keys = Object.keys(newPatient);
+  const values = Object.values(newPatient);
+  const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
+
+  const insertQuery = `
+  INSERT INTO patients (${keys.join(", ")})
+  VALUES (${placeholders})
+  RETURNING *
+`;
+
+  try {
+    const { rows } = await db.query(insertQuery, values);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error("Insert error:", err);
+    res.status(500).json({ error: "Database insert failed" });
+  }
+});
+// Update a patient
+app.put("/api/patients/:id", async (req, res) => {
+  const { id } = req.params;
+  const editPatient = req.body;
+
+  // db.query(
+  //   "UPDATE patients SET ? WHERE id = ?",
+  //   [editPatient, id],
+  //   (updateErr, updateResults) => {
+  //     if (updateErr) {
+  //       console.error(updateErr);
+  //       return res.status(500).json({
+  //         error: "Update failed",
+  //         details: updateErr.message,
+  //       });
+  //     }
+
+  //     if (updateResults.affectedRows === 0) {
+  //       return res.status(404).json({ error: "Patient not found" });
+  //     }
+
+  //     // Single response after successful update
+  //     db.query(
+  //       "SELECT * FROM patients WHERE id = ?",
+  //       [id],
+  //       (selectErr, selectResults) => {
+  //         if (selectErr) {
+  //           console.error(selectErr);
+  //           return res.status(500).json({
+  //             error: "Fetch failed",
+  //             details: selectErr.message,
+  //           });
+  //         }
+
+  //         res.json({
+  //           success: true,
+  //           message: "Patient updated successfully",
+  //           patient: selectResults[0],
+  //         });
+  //       }
+  //     );
+  //   }
+  // );
+  const keys = Object.keys(editPatient);
+  const values = Object.values(editPatient);
+  const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+  const query = `UPDATE patients SET ${setClause} WHERE id = $${
+    keys.length + 1
+  } RETURNING *`;
+
+  const { rows } = await db.query(query, [...values, id]);
+});
+// Delete a patient
+app.delete("/api/patients/:id", async (req, res) => {
+  const { id } = req.params;
+  const { rowCount } = await db.query("DELETE FROM patients WHERE id = $1", [
+    id,
+  ]);
+
+  if (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      error: "Database error",
+      message: err.message,
+    });
+  }
+
+  if (results.affectedRows === 0) {
+    return res.status(404).json({
+      success: false,
+      error: "Patient not found",
+    });
+  }
+
+  res.json({
+    success: true,
+    message: "Patient deleted successfully",
+    deletedId: id,
+  });
 });
 
 //-----DATABASE-----
@@ -766,14 +707,6 @@ app.get("/api/patients/:id/pulse", (req, res) => {
   );
 });
 
-// Health Check
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "healthy",
-    database: db ? "connected" : "disconnected",
-  });
-});
-
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -781,8 +714,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-app.use("/uploads", express.static("uploads"));
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
