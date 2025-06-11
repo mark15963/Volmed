@@ -1,12 +1,12 @@
+const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 console.log("Environment variables:", process.env);
 console.log("DB_HOST:", process.env.DB_HOST);
 const { Pool } = require("pg");
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql2");
+// const mysql = require("mysql2");
 const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
