@@ -228,9 +228,7 @@ export const SearchResults = () => {
             for (const med of assignments) {
                 const payload = {
                     ...med,
-                    administered: JSON.stringify(
-                        Array.isArray(med.administered) ? med.administered : []
-                    ),
+                    administered: Array.isArray(med.administered) ? med.administered : [],
                     createdAt: med.createdAt || new Date().toISOString()
                 };
 
