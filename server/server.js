@@ -773,8 +773,8 @@ async function startServer(){
       db.end();
       console.log ("Server closed")
       process.exit(0);
-    }
-  }
+    })
+  })
 }
 
 startServer().catch(err => {
