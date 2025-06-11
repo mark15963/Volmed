@@ -5,39 +5,19 @@ console.log("DB_HOST:", process.env.DB_HOST);
 const { Pool } = require("pg");
 const express = require("express");
 const cors = require("cors");
-// const mysql = require("mysql2");
 const multer = require("multer");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const { exec } = require("child_process");
 
 const app = express();
-
 const PORT = process.env.PORT || 5000;
-
-app.use(express.static(path.join(__dirname, "public")));
 
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
   process.env.FRONTEND_URL,
 ];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
@@ -53,8 +33,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // const db = mysql.createPool({
 //   host: process.env.DB_HOST || "localhost",
@@ -88,11 +66,9 @@ app.use(express.urlencoded({ extended: true }));
 // });
 
 const db = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Required for Render PostgreSQL
+    rejectUnauthorized: false,
   },
   connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 30000,
@@ -143,8 +119,27 @@ async function testDbConnection() {
   throw lastError;
 }
 
-const uploadDir = path.join(__dirname, "uploads");
+app.use(express.static(path.join(__dirname, "public")));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 
+app.use(cors(corsOptions));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -200,10 +195,7 @@ app.get("/", (req, res) => {
     <body>
       <h1>VolMed API Server</h1>
       <p>Server is running successfully!</p>
-      <h2>Development URLs:</h2>
-      <ul>
-        <li>Frontend: <a href="http://localhost:5173">http://localhost:5173</a></li>
-      </ul>
+      <p>Frontend: <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}</a></p>
     </body>
     </html>
   `);
@@ -226,7 +218,7 @@ app.post("/api/patients", (req, res) => {
   const newPatient = req.body;
 
   db.query(
-    "INSERT INTO patients SET ?",
+    "INSERT INTO patients SET $1",
     newPatient,
     (insertErr, insertResults) => {
       if (insertErr) {
@@ -241,7 +233,7 @@ app.post("/api/patients", (req, res) => {
 
       // Fetch the newly created patient
       db.query(
-        "SELECT * FROM patients WHERE id = ?",
+        "SELECT * FROM patients WHERE id = $1",
         [patientId],
         (selectErr, selectResults) => {
           if (selectErr) {
@@ -270,7 +262,7 @@ app.put("/api/patients/:id", (req, res) => {
   const editPatient = req.body;
 
   db.query(
-    "UPDATE patients SET ? WHERE id = ?",
+    "UPDATE patients SET $1 WHERE id = $1",
     [editPatient, id],
     (updateErr, updateResults) => {
       if (updateErr) {
@@ -311,7 +303,7 @@ app.put("/api/patients/:id", (req, res) => {
 // Delete a patient
 app.delete("/api/patients/:id", (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM patients WHERE id = ?", id, (err, results) => {
+  db.query("DELETE FROM patients WHERE id = $1", id, (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({
@@ -336,24 +328,18 @@ app.delete("/api/patients/:id", (req, res) => {
   });
 });
 //Get data of a specific patient
-app.get("/api/patients/:id", (req, res) => {
-  const { id } = req.params;
-
-  // Validate ID is a number
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid patient ID format" });
-  }
-
-  db.query("SELECT * FROM patients WHERE id = ?", id, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    if (results.length === 0) {
+app.get("/api/patients/:id", async (req, res) => {
+  try {
+    const { rows } = await db.query("SELECT * FROM patients WHERE id = $1", [
+      req.params.id,
+    ]);
+    if (rows.length === 0)
       return res.status(404).json({ error: "Patient not found" });
-    }
-    res.json(results[0]);
-  });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 // Amount of ID's in DB
 app.get("/api/patient-count", (req, res) => {
@@ -781,8 +767,12 @@ app.get("/api/patients/:id/pulse", (req, res) => {
   );
 });
 
+// Health Check
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "healthy" });
+  res.status(200).json({
+    status: "healthy",
+    database: db ? "connected" : "disconnected",
+  });
 });
 
 app.use((req, res, next) => {
@@ -813,15 +803,15 @@ async function startServer() {
 
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      console.log(`Database connected to: ${process.env.DB_HOST}`);
       server.keepAliveTimeout = 60000;
       server.headersTimeout = 65000;
     });
 
     process.on("SIGTERM", () => {
-      console.log("SIGTERM received. Sutting down gracefully...");
+      console.log("Shutting down gracefully...");
       server.close(() => {
         db.end();
-        console.log("Server closed");
         process.exit(0);
       });
     });
