@@ -226,13 +226,17 @@ export const SearchResults = () => {
     const handleSaveAssignments = async () => {
         try {
             for (const med of assignments) {
+                const payload = {
+                    ...med,
+                    administered: Array.isArray(med.administered)
+                        ? JSON.stringify(med.administered)
+                        : med.administered,
+                    createdAt: med.createdAt || new Date().toISOString(),
+                };
                 if (med.id) {
-                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${med.id}`, med);
+                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${med.id}`, payload);
                 } else {
-                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, {
-                        ...med,
-                        createdAt: med.createdAt || new Date().toISOString()
-                    });
+                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
                 }
             }
 
