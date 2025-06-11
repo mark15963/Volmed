@@ -420,7 +420,10 @@ app.put("/api/medications/:medId", async (req, res) => {
 });
 // Delete a medication from a patient
 app.delete("/api/medications/:medId", async (req, res) => {
-  const { medId } = req.params;
+  const medId = parseInt(req.params.medId, 10);
+  if (isNaN(medId)) {
+    return res.status(400).json({ message: "Invalid medication ID" });
+  }
 
   try {
     const result = await db.query(
@@ -437,7 +440,9 @@ app.delete("/api/medications/:medId", async (req, res) => {
       .json({ message: "Medication deleted", medication: result.rows[0] });
   } catch (err) {
     console.error("Error deleting medication:", err);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 });
 
