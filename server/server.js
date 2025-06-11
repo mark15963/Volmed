@@ -398,6 +398,10 @@ app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
   const { administered } = req.body;
 
+  const administeredJSON = JSON.stringify(
+    Array.isArray(administered) ? administered : []
+  );
+
   try {
     const result = await db.query(
       `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,

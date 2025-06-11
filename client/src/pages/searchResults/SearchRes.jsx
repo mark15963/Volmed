@@ -228,11 +228,12 @@ export const SearchResults = () => {
             for (const med of assignments) {
                 const payload = {
                     ...med,
-                    administered: Array.isArray(med.administered)
-                        ? JSON.stringify(med.administered)
-                        : med.administered,
-                    createdAt: med.createdAt || new Date().toISOString(),
+                    administered: JSON.stringify(
+                        Array.isArray(med.administered) ? med.administered : []
+                    ),
+                    createdAt: med.createdAt || new Date().toISOString()
                 };
+
                 if (med.id) {
                     await axios.put(`https://volmed-backend.onrender.com/api/medications/${med.id}`, payload);
                 } else {
