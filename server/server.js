@@ -92,12 +92,24 @@ db.on("error", (err) => {
 
 async function testDbConnection(){
   try {
-    const conn = await db.getConnection()
-    conn.release()
-    console.log("Connected to DB")
+    console.log("Attempting to connect to database with config:", {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      database: process.env.DB_NAME
+    });
+    
+    const conn = await db.getConnection();
+    conn.release();
+    console.log("✅ Successfully connected to database");
+    return true;
   } catch (err) {
-    console.log("Connection failed")
-    process.exit(1)
+    console.error("❌ Database connection failed:", {
+      error: err,
+      message: err.message,
+      code: err.code,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+    process.exit(1);
   }
 }
 
