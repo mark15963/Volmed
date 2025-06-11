@@ -370,44 +370,23 @@ app.post("/api/patients/:id/medications", async (req, res) => {
 });
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
-  const { name, dosage, frequency, administered } = req.body;
-  const adminJSON = JSON.stringify(administered || []);
-
-  const fields = [];
-  const values = [];
-  let idx = 1;
-
-  if (name) {
-    fields.push(`name = $${idx++}`);
-    values.push(name);
-  }
-  if (dosage) {
-    fields.push(`dosage = $${idx++}`);
-    values.push(dosage);
-  }
-  if (frequency) {
-    fields.push(`frequency = $${idx++}`);
-    values.push(frequency);
-  }
-
-  fields.push(`administered = $${idx++}`);
-  values.push(adminJSON);
-  values.push(req.params.medId);
-
-  const q = `UPDATE medications SET ${fields.join(
-    ", "
-  )} WHERE id = $${idx} RETURNING *`;
+  const { medId } = req.params;
+  const { administered } = req.body;
 
   try {
-    const { rows, rowCount } = await db.query(q, values);
-    if (!rowCount)
-      return res.status(404).json({ error: "Medication not found" });
-    const med = rows[0];
-    med.administered = med.administered ? JSON.parse(med.administered) : [];
-    res.json({ success: true, medication: med });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "DB update error", message: e.message });
+    const result = await pool.query(
+      `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,
+      [administered, medId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Medication not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error updating medication:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 // Delete a medication from a patient
