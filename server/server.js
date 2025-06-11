@@ -334,10 +334,33 @@ app.get("/api/patients/:id/medications", async (req, res) => {
       "SELECT * FROM medications WHERE patient_id = $1",
       [req.params.id]
     );
-    const out = rows.map((m) => ({
-      ...m,
-      administered: m.administered ? JSON.parse(m.administered) : [],
-    }));
+
+    const out = rows.map((m) => {
+      let administered = [];
+
+      try {
+        if (m.administered) {
+          administered = JSON.parse(m.administered);
+          if (!Array.isArray(administered)) {
+            console.warn(
+              `Administered field for medication ID ${m.id} is not an array. Resetting to empty array.`
+            );
+            administered = [];
+          }
+        }
+      } catch (err) {
+        console.warn(
+          `Failed to parse 'administered' for medication ID ${m.id}:`,
+          err.message
+        );
+      }
+
+      return {
+        ...m,
+        administered,
+      };
+    });
+
     res.json(out);
   } catch (e) {
     console.error(e);
