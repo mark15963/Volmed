@@ -762,7 +762,7 @@ async function startServer(){
   await testConnection();
 
   const server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`
+    console.log(`Server running on port ${PORT}`);
     server.keepAliveTimeout = 60000;
     server.headersTimeout = 65000;
   });
