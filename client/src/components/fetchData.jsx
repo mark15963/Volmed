@@ -7,6 +7,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './styles/Table.module.css'
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+
+
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
@@ -15,7 +18,7 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get("/api/patients");
+        const response = await axios.get(`${API_BASE_URL}/api/patients`);
         setPatients(response.data);
       } catch (error) {
         console.error("Error fetching patients:", error);
@@ -108,7 +111,7 @@ export const PatientCount = () => {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/patient-count')
+        const response = await axios.get(`${API_BASE_URL}/api/patient-count`)
         setCount(response.data.count)
       } catch (error) {
         console.error("Error fetching count:", error)
