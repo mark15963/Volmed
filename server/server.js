@@ -215,7 +215,8 @@ app.get("/api/patients", (req, res) => {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database error" });
     }
-    res.json(results);
+    const patients = Array.isArray(results) ? results : [];
+    res.json(patients);
   });
 });
 // Add a new patient
@@ -357,11 +358,17 @@ app.get("/api/patient-count", (req, res) => {
   db.query("SELECT COUNT(id) AS count FROM patients", (err, results) => {
     if (err) {
       console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error" });
+      return res.status(500).json({ error: "Database error", count: 0 });
     }
-    res.json({
-      count: results[0].count,
-    });
+
+    // Handle different database response formats
+    const count =
+      results?.[0]?.count ||
+      results?.rows?.[0]?.count ||
+      (Array.isArray(results) && results[0]?.count) ||
+      0;
+
+    res.json({ count });
   });
 });
 

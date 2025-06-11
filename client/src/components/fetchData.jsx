@@ -19,9 +19,12 @@ export const AllPatients = () => {
     const fetchPatients = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/patients`);
-        setPatients(response.data);
+        // Ensure we have an array before setting state
+        const data = Array.isArray(response.data) ? response.data : [];
+        setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
+        setPatients([]); // Set to empty array on error
       } finally {
         setLoading(false);
       }
@@ -107,20 +110,22 @@ export const PatientCount = () => {
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
 
-
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/patient-count`)
-        setCount(response.data.count)
+        const response = await axios.get(`${API_BASE_URL}/api/patient-count`);
+        // Safely extract count with fallback
+        const count = response.data?.count || 0;
+        setCount(count);
       } catch (error) {
-        console.error("Error fetching count:", error)
+        console.error("Error fetching count:", error);
+        setCount(0); // Fallback to 0 on error
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchCount()
-  }, [])
+    };
+    fetchCount();
+  }, []);
 
   return (
     <div className={styles.countContainer}>
