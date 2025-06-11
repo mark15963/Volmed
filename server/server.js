@@ -103,8 +103,8 @@ async function testDbConnection(){
 
 const uploadDir = path.join(__dirname, "uploads")
 
-if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
+if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
 
 const storage = multer.diskStorage({
