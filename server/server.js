@@ -405,7 +405,7 @@ app.put("/api/medications/:medId", async (req, res) => {
   try {
     const result = await db.query(
       `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,
-      [administered, medId]
+      [administeredJSON, medId]
     );
 
     if (result.rowCount === 0) {
