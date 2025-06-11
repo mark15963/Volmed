@@ -446,7 +446,7 @@ app.delete("/api/medications/:medId", async (req, res) => {
   }
 });
 
-//-----STATES-----
+//-----STATES------
 // Save pulse data
 app.post("/api/patients/:id/pulse", async (req, res) => {
   const val = req.body.pulseValue;
