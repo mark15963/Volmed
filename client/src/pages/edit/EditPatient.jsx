@@ -21,7 +21,7 @@ export const EditPatient = () => {
                 }
 
                 // Otherwise fetch from API
-                const response = await axios.get(`http://localhost:5000/api/patients/${id}`);
+                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}`);
                 console.log(response.data)
                 setPatientData(response.data);
             } catch (err) {

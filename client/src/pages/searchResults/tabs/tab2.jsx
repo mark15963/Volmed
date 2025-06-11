@@ -181,14 +181,14 @@ export const Tab2 = ({
     const [pulseValues, setPulseValues] = useState([]);
 
     const openFile = (filePath) => {
-        window.open(`http://localhost:5000${filePath}`, '_blank');
+        window.open(`https://volmed-backend.onrender.com${filePath}`, '_blank');
     };
 
     const uploadProps = {
         name: 'file',
         multiple: true,
         fileList,
-        action: `http://localhost:5000/api/patients/${id || 'temp'}/upload`,
+        action: `https://volmed-backend.onrender.com/api/patients/${id || 'temp'}/upload`,
         headers: {
             'X-Requested-With': null,
         },
@@ -229,7 +229,7 @@ export const Tab2 = ({
     useEffect(() => {
         const fetchPulseData = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/patients/${id}/pulse`);
+                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/pulse`);
                 const values = response.data.map(item => ({
                     val: item.value,
                     created_at: item.timestamp,
@@ -250,7 +250,7 @@ export const Tab2 = ({
             const num = Number(pulseValue);
             if (!isNaN(num)) {
                 try {
-                    await axios.post(`http://localhost:5000/api/patients/${id}/pulse`, {
+                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${id}/pulse`, {
                         pulseValue: num
                     });
 
