@@ -97,7 +97,7 @@ async function testDbConnection(){
     console.log("Connected to DB")
   } catch (err) {
     console.log("Connection failed")
-    process.exot(1)
+    process.exit(1)
   }
 }
 
