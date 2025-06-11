@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: volmed-backend
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: volmed_db
+          property: connectionString
+      - key: DB_USER
+        value: volmed_db_admin
+      - key: DB_PASSWORD
+        value: uUl8SJ9fnFoelVvOG849h1UpZ87AkiFZ
+      - key: DB_NAME
+        value: volmed_db
+      - key: FRONTEND_URL
+        value: https://volmed-o4s0.onrender.com
