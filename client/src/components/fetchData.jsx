@@ -7,7 +7,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './styles/Table.module.css'
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 
 export const AllPatients = () => {
@@ -18,7 +18,7 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/patients`);
+        const response = await axios.get(`https://volmed-backend.onrender.com/api/patients`);
         // Extract the rows array from the PostgreSQL response
         const data = Array.isArray(response.data) ? response.data : [];
         setPatients(data);
@@ -113,7 +113,7 @@ export const PatientCount = () => {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/patient-count`);
+        const response = await axios.get(`https://volmed-backend.onrender.com/api/patient-count`);
         // Safely extract count with fallback
         const count = response.data?.count || 0;
         setCount(count);
