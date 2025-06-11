@@ -141,7 +141,7 @@ export const Tab3 = ({
                                                         const itemToDelete = assignments[index];
                                                         if (itemToDelete.id) {
                                                             try {
-                                                                await axios.delete(`http://localhost:5000/api/medications/${itemToDelete.id}`);
+                                                                await axios.delete(`https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`);
                                                             } catch (err) {
                                                                 console.error("Ошибка при удалении:", err);
                                                                 alert("Не удалось удалить назначение.");

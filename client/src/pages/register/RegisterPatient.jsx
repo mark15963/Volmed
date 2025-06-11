@@ -83,7 +83,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
             };
 
             let response
-            let url = 'http://localhost:5000/api/patients'
+            let url = 'https://volmed-backend.onrender.com/api/patients'
 
             if (isEditMode && patientId) {
                 response = await axios.put(`${url}/${patientId}`, formattedValues, {

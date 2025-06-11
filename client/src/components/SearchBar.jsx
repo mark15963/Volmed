@@ -33,7 +33,7 @@ export const SearchBar = () => {
         setError('')
 
         try {
-            const response = await axios.get(`http://localhost:5000/api/patients/${searchValue}`)
+            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${searchValue}`)
 
             if (response.status !== 200) {
                 if (response.status === 404) {
