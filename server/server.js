@@ -13,6 +13,16 @@ const { exec } = require("child_process");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  connectionTimeoutMillis: 5000,
+  idleTimeoutMillis: 30000,
+  max: 10,
+});
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
@@ -65,16 +75,6 @@ app.use((req, res, next) => {
 //     connection.release();
 //   }
 // });
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 30000,
-  max: 10,
-});
 
 // // Connection error event handler
 // db.on("error", (err) => {
@@ -142,6 +142,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
