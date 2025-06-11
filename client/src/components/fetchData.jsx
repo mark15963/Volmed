@@ -19,12 +19,12 @@ export const AllPatients = () => {
     const fetchPatients = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/patients`);
-        // Ensure we have an array before setting state
-        const data = Array.isArray(response.data) ? response.data : [];
+        // Extract the rows array from the PostgreSQL response
+        const data = Array.isArray(response.data.rows) ? response.data.rows : [];
         setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
-        setPatients([]); // Set to empty array on error
+        setPatients([]);
       } finally {
         setLoading(false);
       }
