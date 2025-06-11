@@ -215,7 +215,7 @@ app.get("/api/patients", (req, res) => {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database error" });
     }
-    const patients = results.rows || [];
+    const patients = Array.isArray(results) ? results : [];
     res.json(patients);
   });
 });
