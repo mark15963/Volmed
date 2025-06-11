@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { Pool } = require("pg");
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -10,12 +11,15 @@ const { exec } = require("child_process");
 
 const app = express();
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const allowedOrigins = ["http://localhost:5173", "http://192.168.0.104:5173",
-process.env.FRONTEND_URL];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://192.168.0.104:5173",
+  process.env.FRONTEND_URL,
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -50,74 +54,98 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD === "" ? null : process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || "volmed_db",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+// const db = mysql.createPool({
+//   host: process.env.DB_HOST || "localhost",
+//   user: process.env.DB_USER || "root",
+//   password: process.env.DB_PASSWORD || null,
+//   database: process.env.DB_NAME || "volmed_db",
+//   port: process.env.DB_PORT || 3306, // MySQL default port
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+//   connectTimeout: 10000, // 10 seconds timeout
+// });
+
+// // Error handling for the pool
+// db.getConnection((err, connection) => {
+//   if (err) {
+//     console.error("Error getting database connection:", err);
+//     if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//       console.error("Database connection was closed.");
+//     }
+//     if (err.code === "ER_CON_COUNT_ERROR") {
+//       console.error("Database has too many connections.");
+//     }
+//     if (err.code === "ECONNREFUSED") {
+//       console.error("Database connection was refused.");
+//     }
+//   } else {
+//     console.log("Connected to database.");
+//     connection.release();
+//   }
+// });
+
+const db = new Pool({
+  connectionString:
+    process.env.DATABASE_URL ||
+    `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
+  ssl: {
+    rejectUnauthorized: false, // Required for Render PostgreSQL
+  },
+  connectionTimeoutMillis: 5000,
+  idleTimeoutMillis: 30000,
+  max: 10,
 });
 
-// Error handling for the pool
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error getting database connection:", err);
-    if (err.code === "PROTOCOL_CONNECTION_LOST") {
-      console.error("Database connection was closed.");
-    }
-    if (err.code === "ER_CON_COUNT_ERROR") {
-      console.error("Database has too many connections.");
-    }
-    if (err.code === "ECONNREFUSED") {
-      console.error("Database connection was refused.");
-    }
-  } else {
-    console.log("Connected to database.");
-    connection.release();
-  }
-});
+// // Connection error event handler
+// db.on("error", (err) => {
+//   console.error("Database error:", err);
+//   if (err.code === "PROTOCOL_CONNECTION_LOST") {
+//     // Reconnect if connection is lost
+//     db.getConnection();
+//   } else {
+//     throw err;
+//   }
+// });
 
-// Connection error event handler
-db.on("error", (err) => {
-  console.error("Database error:", err);
-  if (err.code === "PROTOCOL_CONNECTION_LOST") {
-    // Reconnect if connection is lost
-    db.getConnection();
-  } else {
-    throw err;
-  }
-});
+// Test connection function
+async function testDbConnection() {
+  const maxRetries = 5;
+  const retryDelay = 2000;
+  let lastError;
 
-async function testDbConnection(){
-  try {
-    console.log("Attempting to connect to database with config:", {
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      database: process.env.DB_NAME
-    });
-    
-    const conn = await db.getConnection();
-    conn.release();
-    console.log("✅ Successfully connected to database");
-    return true;
-  } catch (err) {
-    console.error("❌ Database connection failed:", {
-      error: err,
-      message: err.message,
-      code: err.code,
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
-    });
-    process.exit(1);
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    let client;
+    try {
+      console.log(`Connection attempt ${attempt}/${maxRetries}`);
+      client = await db.connect();
+
+      // Verify connection with a simple query
+      await client.query("SELECT 1");
+      console.log("✅ Database connection verified");
+      return true;
+    } catch (err) {
+      lastError = err;
+      console.error(`Attempt ${attempt} failed:`, err.message);
+    } finally {
+      if (client) client.release();
+    }
+
+    if (attempt < maxRetries) {
+      console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
   }
+
+  console.error("❌ Maximum connection attempts reached");
+  throw lastError;
 }
 
-const uploadDir = path.join(__dirname, "uploads")
+const uploadDir = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -744,8 +772,8 @@ app.get("/api/patients/:id/pulse", (req, res) => {
   );
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({status: 'healthy'});
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy" });
 });
 
 app.use((req, res, next) => {
@@ -770,26 +798,28 @@ app.use((err, req, res, next) => {
   });
 });
 
-async function startServer(){
-  await testDbConnection();
+async function startServer() {
+  try {
+    await testDbConnection();
 
-  const server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    server.keepAliveTimeout = 60000;
-    server.headersTimeout = 65000;
-  });
-  
-  process.on("SIGTERM", () => {
-    console.log("SIGTERM received. Sutting down gracefully...");
-    Server.close(() => {
-      db.end();
-      console.log ("Server closed")
-      process.exit(0);
-    })
-  })
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      server.keepAliveTimeout = 60000;
+      server.headersTimeout = 65000;
+    });
+
+    process.on("SIGTERM", () => {
+      console.log("SIGTERM received. Sutting down gracefully...");
+      server.close(() => {
+        db.end();
+        console.log("Server closed");
+        process.exit(0);
+      });
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
 }
 
-startServer().catch(err => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
-})
+startServer();
