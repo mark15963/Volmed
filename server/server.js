@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
+  "https://volmed-o4s0.onrender.com",
   process.env.FRONTEND_URL,
 ];
 
@@ -122,7 +123,13 @@ async function testDbConnection() {
 app.use(express.static(path.join(__dirname, "public")));
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.indexOf(origin) !== -1 ||
+      origin.includes("render.com")
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -203,15 +210,14 @@ app.get("/", (req, res) => {
 
 //-----PATIENTS-----
 // Get all patients
-app.get("/api/patients", (req, res) => {
-  db.query("SELECT * FROM patients", (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    const patients = results.rows || [];
-    res.json(patients);
-  });
+app.get("/api/patients", async (req, res) => {
+  try {
+    const { rows } = await db.query("SELECT * FROM patients ORDER BY id");
+    res.json(rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Failed to fetch patients" });
+  }
 });
 // Add a new patient
 app.post("/api/patients", (req, res) => {
@@ -342,22 +348,14 @@ app.get("/api/patients/:id", async (req, res) => {
   }
 });
 // Amount of ID's in DB
-app.get("/api/patient-count", (req, res) => {
-  db.query("SELECT COUNT(id) AS count FROM patients", (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database error", count: 0 });
-    }
-
-    // Handle different database response formats
-    const count =
-      results?.[0]?.count ||
-      results?.rows?.[0]?.count ||
-      (Array.isArray(results) && results[0]?.count) ||
-      0;
-
-    res.json({ count });
-  });
+app.get("/api/patient-count", async (req, res) => {
+  try {
+    const { rows } = await db.query("SELECT COUNT(id) as count FROM patients");
+    res.json({ count: parseInt(rows[0].count) || 0 });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error", count: 0 });
+  }
 });
 
 //-----DATABASE-----
