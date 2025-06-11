@@ -198,234 +198,64 @@ app.get("/api/patient-count", async (req, res) => {
 });
 // Add a new patient
 app.post("/api/patients", async (req, res) => {
-  const newPatient = req.body;
-
-  const keys = Object.keys(newPatient);
-  const values = Object.values(newPatient);
+  const newP = req.body;
+  const keys = Object.keys(newP),
+    values = Object.values(newP);
   const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
-
-  const insertQuery = `
-  INSERT INTO patients (${keys.join(", ")})
-  VALUES (${placeholders})
-  RETURNING *
-`;
+  const q = `INSERT INTO patients (${keys.join(
+    ","
+  )}) VALUES (${placeholders}) RETURNING *`;
 
   try {
-    const { rows } = await db.query(insertQuery, values);
+    const { rows } = await db.query(q, values);
     res.status(201).json(rows[0]);
-  } catch (err) {
-    console.error("Insert error:", err);
-    res.status(500).json({ error: "Database insert failed" });
+  } catch (e) {
+    console.error("Insert error:", e);
+    res
+      .status(500)
+      .json({ error: "Database insert failed", message: e.message });
   }
 });
 // Update a patient
 app.put("/api/patients/:id", async (req, res) => {
-  const { id } = req.params;
-  const editPatient = req.body;
-
-  // db.query(
-  //   "UPDATE patients SET ? WHERE id = ?",
-  //   [editPatient, id],
-  //   (updateErr, updateResults) => {
-  //     if (updateErr) {
-  //       console.error(updateErr);
-  //       return res.status(500).json({
-  //         error: "Update failed",
-  //         details: updateErr.message,
-  //       });
-  //     }
-
-  //     if (updateResults.affectedRows === 0) {
-  //       return res.status(404).json({ error: "Patient not found" });
-  //     }
-
-  //     // Single response after successful update
-  //     db.query(
-  //       "SELECT * FROM patients WHERE id = ?",
-  //       [id],
-  //       (selectErr, selectResults) => {
-  //         if (selectErr) {
-  //           console.error(selectErr);
-  //           return res.status(500).json({
-  //             error: "Fetch failed",
-  //             details: selectErr.message,
-  //           });
-  //         }
-
-  //         res.json({
-  //           success: true,
-  //           message: "Patient updated successfully",
-  //           patient: selectResults[0],
-  //         });
-  //       }
-  //     );
-  //   }
-  // );
-  const keys = Object.keys(editPatient);
-  const values = Object.values(editPatient);
-  const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-  const query = `UPDATE patients SET ${setClause} WHERE id = $${
+  const id = req.params.id,
+    edited = req.body;
+  const keys = Object.keys(edited),
+    values = Object.values(edited);
+  const setSQL = keys.map((k, i) => `${k}=$${i + 1}`).join(", ");
+  const q = `UPDATE patients SET ${setSQL} WHERE id=$${
     keys.length + 1
   } RETURNING *`;
 
-  const { rows } = await db.query(query, [...values, id]);
+  try {
+    const { rows, rowCount } = await db.query(q, [...values, id]);
+    if (!rowCount) return res.status(404).json({ error: "Patient not found" });
+    res.json({ success: true, message: "Updated", patient: rows[0] });
+  } catch (e) {
+    console.error("Update error:", e);
+    res
+      .status(500)
+      .json({ error: "Database update failed", message: e.message });
+  }
 });
 // Delete a patient
 app.delete("/api/patients/:id", async (req, res) => {
-  const { id } = req.params;
-  const { rowCount } = await db.query("DELETE FROM patients WHERE id = $1", [
-    id,
-  ]);
-
-  if (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      error: "Database error",
-      message: err.message,
-    });
-  }
-
-  if (results.affectedRows === 0) {
-    return res.status(404).json({
-      success: false,
-      error: "Patient not found",
-    });
-  }
-
-  res.json({
-    success: true,
-    message: "Patient deleted successfully",
-    deletedId: id,
-  });
-});
-
-//-----DATABASE-----
-// DB backup
-app.get("/api/backup", (req, res) => {
-  const dbUser = "root";
-  const dbPassword = "";
-  const dbName = "volmed_db";
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-
-  const backupDir = path.join(__dirname, "DB_Backup");
-  const backupFile = path.join(backupDir, `backup-${timestamp}.sql`);
-
-  console.log("🗂 Проверка папки DB_Backup:", backupDir);
-
-  console.log("📂 Директория бэкапов:", backupDir);
-  console.log("📄 Путь к файлу бэкапа:", backupFile);
-
   try {
-    if (!fs.existsSync(backupDir)) {
-      fs.mkdirSync(backupDir, { recursive: true });
-      console.log("✅ Папка DB_Backup создана");
-    }
-  } catch (err) {
-    console.error("❌ Ошибка при создании папки:", err);
-    return res.status(500).json({ error: "Не удалось создать папку" });
+    const { rowCount } = await db.query("DELETE FROM patients WHERE id = $1", [
+      req.params.id,
+    ]);
+    if (!rowCount) return res.status(404).json({ error: "Patient not found" });
+    res.json({ success: true, message: "Deleted", deletedId: req.params.id });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Delete failed", message: e.message });
   }
-
-  const mysqldumpPath = `"C:\\xampp\\mysql\\bin\\mysqldump.exe"`;
-
-  const command = `${mysqldumpPath} -u ${dbUser} ${
-    dbPassword ? `-p${dbPassword}` : ""
-  } ${dbName} > "${backupFile}"`;
-
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error("Ошибка при создании бэкапа:", error.message);
-      console.error("stderr:", stderr);
-      return res.status(500).json({
-        error: "Ошибка создания бэкапа",
-        details: error.message,
-        stderr,
-      });
-    }
-
-    res.download(backupFile, (err) => {
-      if (err) {
-        console.error("Ошибка при скачивании:", err);
-      }
-    });
-  });
-});
-// DB restore
-app.get("/api/restore", (req, res) => {
-  const dbUser = "root";
-  const dbPassword = "";
-  const dbName = "volmed_db";
-
-  // Check if database exists
-  db.query("SHOW DATABASES LIKE ?", [dbName], (err, results) => {
-    if (err) {
-      console.error("Error checking database existence:", err);
-      return res.status(500).json({ error: "Database check failed" });
-    }
-
-    if (results.length > 0) {
-      return res.status(400).json({ error: "Database already exists" });
-    }
-
-    // Find the latest backup file
-    const backupDir = path.join(__dirname, "DB_Backup");
-    if (!fs.existsSync(backupDir)) {
-      return res.status(404).json({ error: "Backup directory not found" });
-    }
-
-    const backupFiles = fs
-      .readdirSync(backupDir)
-      .filter((file) => file.endsWith(".sql"))
-      .sort()
-      .reverse();
-
-    if (backupFiles.length === 0) {
-      return res.status(404).json({ error: "No backup files found" });
-    }
-
-    const latestBackup = path.join(backupDir, backupFiles[0]);
-    console.log("🔁 Restoring from backup:", latestBackup);
-
-    // First create the database
-    db.query(`CREATE DATABASE ${dbName}`, (err) => {
-      if (err) {
-        console.error("Error creating database:", err);
-        return res.status(500).json({ error: "Database creation failed" });
-      }
-
-      console.log("✅ Database created");
-
-      // Now restore the backup
-      const mysqlPath = `"C:\\xampp\\mysql\\bin\\mysql.exe"`;
-      const command = `${mysqlPath} -u ${dbUser} ${
-        dbPassword ? `-p${dbPassword}` : ""
-      } ${dbName} < "${latestBackup}"`;
-
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error("Restore error:", error.message);
-          console.error("stderr:", stderr);
-          return res.status(500).json({
-            error: "Restore failed",
-            details: error.message,
-            stderr,
-          });
-        }
-
-        console.log("✅ Database restored successfully");
-        res.json({ success: true, message: "Database restored successfully" });
-      });
-    });
-  });
 });
 
 //-----FILES-----
 // Upload files to a specific patient
 app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   res.json({
     success: true,
     filename: req.file.filename,
@@ -436,286 +266,263 @@ app.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
 });
 // Get files of a specific patient
 app.get("/api/patients/:id/files", (req, res) => {
-  const patientId = req.params.id;
-  const uploadPath = `./uploads/patients/${patientId}`;
-
-  if (!fs.existsSync(uploadPath)) {
-    return res.json([]);
-  }
-
-  fs.readdir(uploadPath, (err, files) => {
-    if (err) {
-      return res.status(500).json({ error: "Error reading directory" });
-    }
-
-    const fileList = files.map((file) => {
-      const stat = fs.statSync(path.join(uploadPath, file));
+  const dir = path.join(uploadDir, "patients", req.params.id);
+  if (!fs.existsSync(dir)) return res.json([]);
+  try {
+    const files = fs.readdirSync(dir).map((fn) => {
+      const st = fs.statSync(path.join(dir, fn));
       return {
-        filename: file,
-        originalname: file,
-        path: `/uploads/patients/${patientId}/${file}`,
-        size: stat.size,
+        filename: fn,
+        originalname: fn,
+        path: `/uploads/patients/${req.params.id}/${fn}`,
+        size: st.size,
       };
     });
-
-    res.json(fileList);
-  });
+    res.json(files);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Error reading directory" });
+  }
 });
 // Delete patient's file
 app.delete("/api/files", async (req, res) => {
+  const { filePath } = req.body;
+  if (!filePath) return res.status(400).json({ error: "filePath is required" });
+
+  const uploadsDir = path.join(__dirname, "uploads");
+  const normalized = path
+    .normalize(filePath)
+    .replace(/^(\.\.[\\/])+/, "")
+    .replace(/\\/g, "/");
+  const full = path.join(uploadsDir, normalized);
+
+  if (!full.startsWith(path.normalize(uploadsDir))) {
+    return res
+      .status(403)
+      .json({ error: "Access denied", message: "Invalid path" });
+  }
+
   try {
-    // 1. Validate request body
-    if (!req.body || !req.body.filePath) {
-      return res.status(400).json({
-        error: "Bad request",
-        message: "filePath is required in request body",
-      });
-    }
-    const { filePath } = req.body;
-
-    // 2. Construct safe path (with additional security)
-    const uploadsDir = path.join(__dirname, "uploads");
-    const normalizedFilePath = path
-      .normalize(filePath)
-      .replace(/^(\.\.[\/\\])+/g, "") // Prevent directory traversal
-      .replace(/\\/g, "/"); // Normalize to forward slashes
-
-    const fullPath = path.join(uploadsDir, normalizedFilePath);
-
-    // 3. Verify the path is within allowed directory
-    if (!fullPath.startsWith(path.normalize(uploadsDir))) {
-      console.error("Security violation: Attempted path:", fullPath);
-      return res.status(403).json({
-        error: "Access denied",
-        message: "Invalid file path",
-      });
-    }
-
-    // 4. Verify file exists (using promises)
-    try {
-      await fsp.access(fullPath);
-    } catch (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({
-          error: "Not found",
-          message: "File does not exist",
-        });
-      }
-      throw err;
-    }
-
-    // 5. Delete the file (using promises)
-    await fsp.unlink(fullPath);
-
-    res.json({
-      success: true,
-      message: "File deleted successfully",
-      path: normalizedFilePath,
-    });
-  } catch (error) {
-    console.error("File deletion error:", error);
-
-    // Handle specific errors
-    let status = 500;
-    let errorMessage = "Internal server error";
-
-    if (error.code === "EPERM") {
-      status = 403;
-      errorMessage = "Permission denied";
-    } else if (error.code === "EISDIR") {
-      status = 400;
-      errorMessage = "Path is a directory";
-    }
-
-    res.status(status).json({
-      error: errorMessage,
-      message: error.message,
-      ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
-    });
+    await fsp.access(full);
+    await fsp.unlink(full);
+    res.json({ success: true, message: "Deleted", path: normalized });
+  } catch (e) {
+    console.error(e);
+    if (e.code === "ENOENT")
+      return res.status(404).json({ error: "Not found" });
+    if (e.code === "EPERM")
+      return res
+        .status(403)
+        .json({ error: "Permission denied", message: e.message });
+    if (e.code === "EISDIR")
+      return res
+        .status(400)
+        .json({ error: "Path is a directory", message: e.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", message: e.message });
   }
 });
 
 //-----MEDS-----
 // Show patient's medications
-app.get("/api/patients/:id/medications", (req, res) => {
-  const { id } = req.params;
-
-  db.query(
-    "SELECT * FROM medications WHERE patient_id = ?",
-    [id],
-    (err, results) => {
-      if (err) {
-        console.error("DB fetch error:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
-
-      // Parse the administered field from JSON if needed
-      const parsedResults = results.map((m) => ({
-        ...m,
-        administered: m.administered ? JSON.parse(m.administered) : [],
-      }));
-
-      res.json(parsedResults);
-    }
-  );
+app.get("/api/patients/:id/medications", async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT * FROM medications WHERE patient_id = $1",
+      [req.params.id]
+    );
+    const out = rows.map((m) => ({
+      ...m,
+      administered: m.administered ? JSON.parse(m.administered) : [],
+    }));
+    res.json(out);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error" });
+  }
 });
 // Add medication to a patient
-app.post("/api/patients/:id/medications", (req, res) => {
-  const { id } = req.params;
+app.post("/api/patients/:id/medications", async (req, res) => {
   const { name, dosage, frequency, administered } = req.body;
-
   if (!name || !dosage || !frequency) {
-    return res
-      .status(400)
-      .json({ error: "Missing required medication fields" });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const medicationData = {
-    patient_id: id,
-    name,
-    dosage,
-    frequency,
-    administered: JSON.stringify(administered || []), // Convert array to JSON
-  };
-
-  db.query("INSERT INTO medications SET ?", medicationData, (err, results) => {
-    if (err) {
-      console.error("DB insert error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-
-    res.status(201).json({ success: true, medicationId: results.insertId });
-  });
+  const adminJSON = JSON.stringify(administered || []);
+  const q = `
+    INSERT INTO medications (patient_id, name, dosage, frequency, administered)
+    VALUES ($1,$2,$3,$4,$5) RETURNING id
+  `;
+  try {
+    const { rows } = await db.query(q, [
+      req.params.id,
+      name,
+      dosage,
+      frequency,
+      adminJSON,
+    ]);
+    res.status(201).json({ success: true, medicationId: rows[0].id });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB insert error", message: e.message });
+  }
 });
 // Update a medication of a patient
-app.put("/api/medications/:medId", (req, res) => {
-  const { medId } = req.params;
+app.put("/api/medications/:medId", async (req, res) => {
   const { name, dosage, frequency, administered } = req.body;
+  const adminJSON = JSON.stringify(administered || []);
 
-  const updateData = {
-    ...(name && { name }),
-    ...(dosage && { dosage }),
-    ...(frequency && { frequency }),
-    administered: administered
-      ? JSON.stringify(administered)
-      : JSON.stringify([]),
-  };
+  const fields = [];
+  const values = [];
+  let idx = 1;
 
-  db.query(
-    "UPDATE medications SET ? WHERE id = ?",
-    [updateData, medId],
-    (err, results) => {
-      if (err) {
-        console.error("DB update error:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
+  if (name) {
+    fields.push(`name = $${idx++}`);
+    values.push(name);
+  }
+  if (dosage) {
+    fields.push(`dosage = $${idx++}`);
+    values.push(dosage);
+  }
+  if (frequency) {
+    fields.push(`frequency = $${idx++}`);
+    values.push(frequency);
+  }
 
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ error: "Medication not found" });
-      }
+  fields.push(`administered = $${idx++}`);
+  values.push(adminJSON);
+  values.push(req.params.medId);
 
-      db.query(
-        "SELECT * FROM medications WHERE id = ?",
-        [medId],
-        (err2, meds) => {
-          if (err2) {
-            console.error("DB fetch error:", err2);
-            return res.status(500).json({ error: "Database error" });
-          }
+  const q = `UPDATE medications SET ${fields.join(
+    ", "
+  )} WHERE id = $${idx} RETURNING *`;
 
-          if (meds.length === 0) {
-            return res
-              .status(404)
-              .json({ error: "Medication not found after update" });
-          }
-
-          const med = meds[0];
-          med.administered = med.administered
-            ? JSON.parse(med.administered)
-            : [];
-          res.json({ success: true, medication: med });
-        }
-      );
-    }
-  );
+  try {
+    const { rows, rowCount } = await db.query(q, values);
+    if (!rowCount)
+      return res.status(404).json({ error: "Medication not found" });
+    const med = rows[0];
+    med.administered = med.administered ? JSON.parse(med.administered) : [];
+    res.json({ success: true, medication: med });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB update error", message: e.message });
+  }
 });
 // Delete a medication from a patient
-app.delete("/api/medications/:medId", (req, res) => {
-  const { medId } = req.params;
-
-  db.query("DELETE FROM medications WHERE id = ?", medId, (err, results) => {
-    if (err) {
-      console.error("DB delete error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-
-    if (results.affectedRows === 0) {
+app.delete("/api/medications/:medId", async (req, res) => {
+  try {
+    const { rowCount } = await db.query(
+      "DELETE FROM medications WHERE id = $1",
+      [req.params.medId]
+    );
+    if (!rowCount)
       return res.status(404).json({ error: "Medication not found" });
-    }
-
-    res.json({
-      success: true,
-      message: "Medication deleted successfully",
-      deletedId: medId,
-    });
-  });
+    res.json({ success: true, deletedId: req.params.medId });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB delete error", message: e.message });
+  }
 });
 
 //-----STATES-----
 // Save pulse data
-app.post("/api/patients/:id/pulse", (req, res) => {
-  const { id } = req.params;
-  const { pulseValue } = req.body;
-
-  if (!pulseValue || isNaN(pulseValue)) {
+app.post("/api/patients/:id/pulse", async (req, res) => {
+  const val = req.body.pulseValue;
+  if (val == null || isNaN(val))
     return res.status(400).json({ error: "Invalid pulse value" });
+  try {
+    const q =
+      "INSERT INTO patient_pulse (patient_id, pulse_value) VALUES ($1,$2) RETURNING id";
+    const { rows } = await db.query(q, [req.params.id, val]);
+    res.json({ success: true, pulseId: rows[0].id });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error", message: e.message });
   }
-
-  db.query(
-    "INSERT INTO patient_pulse (patient_id, pulse_value) VALUES (?, ?)",
-    [id, pulseValue],
-    (err, results) => {
-      if (err) {
-        console.error("DB error:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
-      res.json({ success: true, pulseId: results.insertId });
-    }
-  );
 });
 // Get pulse data
-app.get("/api/patients/:id/pulse", (req, res) => {
-  const { id } = req.params;
+app.get("/api/patients/:id/pulse", async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT pulse_value, created_at FROM patient_pulse WHERE patient_id=$1 ORDER BY created_at ASC",
+      [req.params.id]
+    );
+    const formatted = rows.map((r) => ({
+      value: r.pulse_value,
+      timestamp: r.created_at,
+      formattedTime: new Date(r.created_at).toLocaleTimeString(),
+      formattedDate: new Date(r.created_at).toLocaleDateString(),
+    }));
+    res.json(formatted);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error", message: e.message });
+  }
+});
 
-  db.query(
-    "SELECT pulse_value, created_at FROM patient_pulse WHERE patient_id = ? ORDER BY created_at ASC",
-    [id],
-    (err, results) => {
+//-----DATABASE-----
+// DB backup
+app.get("/api/backup", (req, res) => {
+  const dumpFile = path.join(
+    __dirname,
+    "DB_Backup",
+    `backup-${Date.now()}.dump`
+  );
+  if (!fs.existsSync(path.dirname(dumpFile)))
+    fs.mkdirSync(path.dirname(dumpFile), { recursive: true });
+
+  const user = process.env.DB_USER || "postgres";
+  const host = process.env.DB_HOST;
+  const dbName = process.env.DB_NAME;
+  const cmd = `pg_dump -U ${user} -h ${host} -d ${dbName} -F c -f "${dumpFile}"`;
+
+  exec(cmd, { env: process.env }, (err, stdout, stderr) => {
+    if (err) {
+      console.error("Backup error:", stderr);
+      return res.status(500).json({ error: "Backup failed", details: stderr });
+    }
+    res.download(dumpFile);
+  });
+});
+// DB restore
+app.get("/api/restore", (req, res) => {
+  const dir = path.join(__dirname, "DB_Backup");
+  if (!fs.existsSync(dir))
+    return res.status(404).json({ error: "Backup folder not found" });
+  const files = fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".dump"))
+    .sort()
+    .reverse();
+  if (!files.length)
+    return res.status(404).json({ error: "No backup files found" });
+
+  const latest = path.join(dir, files[0]);
+  const user = process.env.DB_USER || "postgres";
+  const host = process.env.DB_HOST;
+  const dbName = process.env.DB_NAME;
+
+  const dropCreate = `psql -U ${user} -h ${host} -c "DROP DATABASE ${dbName}; CREATE DATABASE ${dbName};"`;
+  const restoreCmd = `pg_restore -U ${user} -h ${host} -d ${dbName} -c "${latest}"`;
+
+  exec(
+    `${dropCreate} && ${restoreCmd}`,
+    { env: process.env },
+    (err, stdout, stderr) => {
       if (err) {
-        console.error("DB error:", err);
-        return res.status(500).json({ error: "Database error" });
+        console.error("Restore error:", stderr);
+        return res
+          .status(500)
+          .json({ error: "Restore failed", details: stderr });
       }
-      // Format the dates before sending
-      const formattedResults = results.map((item) => ({
-        value: item.pulse_value,
-        timestamp: item.created_at,
-        formattedTime: new Date(item.created_at).toLocaleTimeString(),
-        formattedDate: new Date(item.created_at).toLocaleDateString(),
-      }));
-      res.json(formattedResults);
+      res.json({ success: true, message: "Database restored successfully" });
     }
   );
 });
 
-app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self'; style-src 'self'"
-  );
-  next();
-});
-
-// Error-handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
   res.status(500).json({
