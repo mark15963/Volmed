@@ -113,8 +113,8 @@ const storage = multer.diskStorage({
     const uploadPath = path.join(uploadDir, "patients", patientId);
 
     // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadPath);
   },
@@ -759,7 +759,7 @@ app.use((err, req, res, next) => {
 });
 
 async function startServer(){
-  await testConnection();
+  await testDbConnection();
 
   const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
