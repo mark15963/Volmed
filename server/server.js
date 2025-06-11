@@ -1,4 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+console.log("Environment variables:", process.env);
+console.log("DB_HOST:", process.env.DB_HOST);
 const { Pool } = require("pg");
 const express = require("express");
 const cors = require("cors");
