@@ -13,7 +13,4 @@ export default defineConfig({
       'localhost' // Keep localhost for development
     ]
   },
-  define: {
-    'process.env': process.env
-  }
 });
