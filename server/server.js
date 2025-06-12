@@ -31,43 +31,28 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ];
 
-const corsOptions = {
-  origin: (origin, cb) => {
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      origin.includes("render.com")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
 // const corsOptions = {
-//   origin: function (origin, callback) {
-//     // Allow requests with no origin (like mobile apps or curl requests)
-//     if (!origin) return callback(null, true);
-
-//     if (allowedOrigins.includes(origin)) {
-//       callback(null, true);
+//   origin: (origin, cb) => {
+//     if (
+//       !origin ||
+//       allowedOrigins.includes(origin) ||
+//       origin.includes("render.com")
+//     ) {
+//       cb(null, true);
 //     } else {
-//       callback(new Error("Not allowed by CORS"));
+//       cb(new Error("Not allowed by CORS"));
 //     }
 //   },
-//   credentials: true, // Important for cookies/auth
 //   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
+//   allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+//   credentials: true,
+//   optionsSuccessStatus: 200,
 // };
 
 // app.use(cors(corsOptions));
 app.use(cors({ origin: "*", credentials: true }));
 
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -435,9 +420,6 @@ app.put("/api/medications/:medId", async (req, res) => {
 });
 // Delete a medication from a patient
 app.delete("/api/medications/:medId", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://volmed-o4s0.onrender.com");
-  res.header("Access-Control-Allow-Credentials", "true");
-
   const medId = parseInt(req.params.medId, 10);
 
   if (isNaN(medId)) {
