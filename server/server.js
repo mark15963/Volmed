@@ -391,6 +391,15 @@ app.post("/api/patients/:id/medications", async (req, res) => {
     res.status(500).json({ error: "DB insert error", message: e.message });
   }
 });
+
+function tryParseJson(jsonString) {
+  try {
+    return jsonString ? JSON.parse(jsonString) : [];
+  } catch (e) {
+    console.error("Failed to parse JSON:", jsonString, e);
+    return [];
+  }
+}
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
