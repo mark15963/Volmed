@@ -225,6 +225,7 @@ export const SearchResults = () => {
 
     const handleSaveAssignments = async () => {
         try {
+            console.log("try handleSaveAssignments")
             for (const item of assignments) {
                 const payload = {
                     name: item.name,
