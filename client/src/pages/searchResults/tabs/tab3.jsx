@@ -3,6 +3,9 @@ import tableStyles from '../../../components/styles/Table.module.css';
 import styles from '../searchResults.module.css';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://volmed-backend.onrender.com';
+axios.defaults.withCredentials = true;  // Only if using cookies/sessions
+
 export const Tab3 = ({
     assignments,
     isEditingAssignments,
