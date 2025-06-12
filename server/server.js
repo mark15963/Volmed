@@ -392,26 +392,37 @@ app.post("/api/patients/:id/medications", async (req, res) => {
   }
 });
 
-function tryParseJson(jsonString) {
-  try {
-    return jsonString ? JSON.parse(jsonString) : [];
-  } catch (e) {
-    console.error("Failed to parse JSON:", jsonString, e);
-    return [];
+// Improved helper function to handle both strings and arrays
+function parseAdministeredField(administered) {
+  // If it's already an array, return it
+  if (Array.isArray(administered)) {
+    return administered;
   }
+
+  // If it's a string, try to parse it
+  if (typeof administered === "string") {
+    try {
+      // Remove any escaped quotes if present
+      const cleanString = administered.replace(/\\"/g, '"');
+      const parsed = JSON.parse(cleanString);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch (e) {
+      console.error("Failed to parse administered field:", administered, e);
+      return [];
+    }
+  }
+
+  // If it's null/undefined or other type, return empty array
+  return [];
 }
+
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
   const { name, dosage, frequency, administered } = req.body;
 
   try {
-    let administeredArray = [];
-    if (Array.isArray(administered)) {
-      administeredArray = administered;
-    } else if (administered) {
-      administeredArray = [administered];
-    }
+    const administeredArray = parseAdministeredField(administered);
 
     const result = await db.query(
       `UPDATE medications 
@@ -426,7 +437,8 @@ app.put("/api/medications/:medId", async (req, res) => {
     }
 
     const medication = result.rows[0];
-    medication.administered = tryParseJson(medication.administered) || [];
+    medication.administered =
+      parseAdministeredField(medication.administered) || [];
 
     res.json(medication);
   } catch (err) {
