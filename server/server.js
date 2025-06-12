@@ -396,14 +396,12 @@ app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
   const { administered } = req.body;
 
-  const administeredJSON = JSON.stringify(
-    Array.isArray(administered) ? administered : []
-  );
+  const administeredValue = Array.isArray(administered) ? administered : [];
 
   try {
     const result = await db.query(
       `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,
-      [administeredJSON, medId]
+      [administeredValue, medId]
     );
 
     if (result.rowCount === 0) {
@@ -411,12 +409,17 @@ app.put("/api/medications/:medId", async (req, res) => {
     }
 
     const updated = result.rows[0];
-    updated.administered = JSON.parse(updated.administered || "[]");
+    if (typeof updated.administered === "string") {
+      updated.administered = JSON.parse(updated.administered || "[]");
+    }
+
     res.json(updated);
   } catch (err) {
     console.error("Error updating medication:", {
       message: err.message,
       stack: err.stack,
+      body: req.body, // log the body for debugging
+      medId: medId, // log the ID
     });
     res.status(500).json({ message: "Internal server error" });
   }
