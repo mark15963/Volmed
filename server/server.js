@@ -435,6 +435,9 @@ app.put("/api/medications/:medId", async (req, res) => {
 });
 // Delete a medication from a patient
 app.delete("/api/medications/:medId", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "https://volmed-o4s0.onrender.com");
+  res.header("Access-Control-Allow-Credentials", "true");
+
   const medId = parseInt(req.params.medId, 10);
 
   if (isNaN(medId)) {
