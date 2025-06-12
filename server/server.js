@@ -44,28 +44,6 @@ app.use(
   })
 );
 
-// const corsOptions = {
-//   origin: (origin, cb) => {
-//     if (
-//       !origin ||
-//       allowedOrigins.includes(origin) ||
-//       origin.includes("render.com")
-//     ) {
-//       cb(null, true);
-//     } else {
-//       cb(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-//   credentials: true,
-//   optionsSuccessStatus: 200,
-// };
-
-// app.use(cors(corsOptions));
-// app.use(cors({ origin: "*", credentials: true }));
-
-// app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
