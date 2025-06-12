@@ -396,22 +396,30 @@ app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
   const { name, dosage, frequency, administered } = req.body;
 
-  const administeredValue = Array.isArray(administered) ? administered : [];
-
   try {
+    let administeredArray = [];
+    if (Array.isArray(administered)) {
+      administeredArray = administered;
+    } else if (administered) {
+      administeredArray = [administered];
+    }
+
     const result = await db.query(
       `UPDATE medications 
-       SET name = $1, dosage = $2, frequency = $3, administered = $4 
-       WHERE id = $5 
-       RETURNING *`,
-      [name, dosage, frequency, administeredValue, medId] // 💥 Don't JSON.stringify!
+      SET name = $1, dosage = $2, frequency = $3, administered = $4 
+      WHERE id = $5 
+      RETURNING *`,
+      [name, dosage, frequency, JSON.stringify(administeredArray), medId]
     );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Medication not found" });
     }
 
-    res.json(result.rows[0]);
+    const medication = result.rows[0];
+    medication.administered = tryParseJson(medication.administered) || [];
+
+    res.json(medication);
   } catch (err) {
     console.error("Error updating medication:", {
       message: err.message,
@@ -419,7 +427,11 @@ app.put("/api/medications/:medId", async (req, res) => {
       body: req.body,
       medId,
     });
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: err.message,
+      details: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
   }
 });
 // Delete a medication from a patient

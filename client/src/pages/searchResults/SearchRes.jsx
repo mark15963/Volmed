@@ -236,12 +236,24 @@ export const SearchResults = () => {
                 };
                 console.log("Payload:", payload);
 
-                if (item.id) {
-                    // Existing medication — update
-                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
-                } else {
-                    // New medication — create
-                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
+                try {
+                    if (item.id) {
+                        // Existing medication — update
+                        const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
+                        console.log("Update response:", response.data);
+
+                    } else {
+                        // New medication — create
+                        const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
+                        console.log("Create response:", response.data);
+
+                    }
+                } catch (error) {
+                    console.error("Error saving medication:", {
+                        error: error.response?.data || error.message,
+                        medication: item
+                    });
+                    throw error; // Re-throw to exit the loop
                 }
             }
 
