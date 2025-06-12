@@ -226,12 +226,14 @@ export const SearchResults = () => {
     const handleSaveAssignments = async () => {
         try {
             console.log("try handleSaveAssignments")
+
             for (const item of assignments) {
                 const payload = {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
-                    administered: Array.isArray(item.administered) ? item.administered : [],
+                    administered: item.administered ?? []
+
                 };
                 console.log(payload)
 
@@ -247,14 +249,11 @@ export const SearchResults = () => {
 
             // Refresh assignments after save
             const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
+
             setAssignments(
                 response.data.map(item => ({
                     ...item,
-                    administered: typeof item.administered === 'string'
-                        ? JSON.parse(item.administered)
-                        : Array.isArray(item.administered)
-                            ? item.administered
-                            : [],
+                    administered: Array.isArray(item.administered) ? item.administered : [],
                 }))
             ); setIsEditingAssignments(false);
             messageApi.success('Назначения успешно сохранены');
