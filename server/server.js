@@ -408,12 +408,7 @@ app.put("/api/medications/:medId", async (req, res) => {
       return res.status(404).json({ message: "Medication not found" });
     }
 
-    const updated = result.rows[0];
-    if (typeof updated.administered === "string") {
-      updated.administered = JSON.parse(updated.administered || "[]");
-    }
-
-    res.json(updated);
+    res.json(result.rows[0]);
   } catch (err) {
     console.error("Error updating medication:", {
       message: err.message,
