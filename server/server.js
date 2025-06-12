@@ -394,14 +394,17 @@ app.post("/api/patients/:id/medications", async (req, res) => {
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
-  const { administered } = req.body;
+  const { name, dosage, frequency, administered } = req.body;
 
   const administeredValue = Array.isArray(administered) ? administered : [];
 
   try {
     const result = await db.query(
-      `UPDATE medications SET administered = $1 WHERE id = $2 RETURNING *`,
-      [administeredValue, medId]
+      `UPDATE medications 
+       SET name = $1, dosage = $2, frequency = $3, administered = $4 
+       WHERE id = $5 
+       RETURNING *`,
+      [name, dosage, frequency, administeredValue, medId] // 💥 Don't JSON.stringify!
     );
 
     if (result.rowCount === 0) {
@@ -413,8 +416,8 @@ app.put("/api/medications/:medId", async (req, res) => {
     console.error("Error updating medication:", {
       message: err.message,
       stack: err.stack,
-      body: req.body, // log the body for debugging
-      medId: medId, // log the ID
+      body: req.body,
+      medId,
     });
     res.status(500).json({ message: "Internal server error" });
   }
