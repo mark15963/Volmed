@@ -145,17 +145,37 @@ export const Tab3 = ({
                                                     style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
-                                                        if (itemToDelete.id) {
-                                                            try {
-                                                                await axios.delete(`https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`);
-                                                            } catch (err) {
-                                                                console.error("Ошибка при удалении:", err);
-                                                                alert("Не удалось удалить назначение.");
-                                                                return;
+                                                        console.log("Attempting to delete medication:", itemToDelete);
+
+                                                        try {
+                                                            // Only call API if it's an existing medication (has ID)
+                                                            if (itemToDelete.id) {
+                                                                console.log("Calling API to delete medication ID:", itemToDelete.id);
+
+                                                                const response = await axios.delete(
+                                                                    `https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`, {
+                                                                    withCredentials: true
+                                                                });
+                                                                console.log("Delete response:", response.data);
+
+                                                                if (!response.data.success) {
+                                                                    throw new Error(response.data.message || "API returned unsuccessful");
+                                                                }
                                                             }
+
+                                                            // Update local state in either case
+                                                            const newList = assignments.filter((_, i) => i !== index);
+                                                            setAssignments(newList);
+
+                                                        } catch (err) {
+                                                            console.error("Full delete error:", {
+                                                                error: err,
+                                                                response: err.response?.data
+                                                            });
+                                                            alert(`Не удалось удалить назначение: ${err.message}`);
                                                         }
-                                                        const newList = assignments.filter((_, i) => i !== index);
-                                                        setAssignments(newList);
+                                                        // const newList = assignments.filter((_, i) => i !== index);
+                                                        // setAssignments(newList);
                                                     }}> Удалить</button>
                                             </td>
                                         )}
