@@ -178,8 +178,6 @@ export const Tab3 = ({
                                                             });
                                                             alert(`Не удалось удалить назначение: ${err.message}`);
                                                         }
-                                                        // const newList = assignments.filter((_, i) => i !== index);
-                                                        // setAssignments(newList);
                                                     }}> Удалить</button>
                                             </td>
                                         )}
