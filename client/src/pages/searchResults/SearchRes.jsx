@@ -226,27 +226,25 @@ export const SearchResults = () => {
     const handleSaveAssignments = async () => {
         try {
             for (const item of assignments) {
+                const payload = {
+                    name: item.name,
+                    dosage: item.dosage,
+                    frequency: item.frequency,
+                    administered: Array.isArray(item.administered) ? item.administered : [],
+                };
+
                 if (item.id) {
                     // Existing medication — update
-                    await axios.put(`/api/medications/${item.id}`, {
-                        administered: item.administered,
-                        // you could add other fields too if needed
-                    });
+                    await axios.put(`/api/medications/${item.id}`, payload);
                 } else {
                     // New medication — create
-                    await axios.post(`/api/patients/${patientId}/medications`, {
-                        name: item.name,
-                        dosage: item.dosage,
-                        frequency: item.frequency,
-                        administered: item.administered,
-                    });
+                    await axios.post(`/api/patients/${patientId}/medications`, payload);
                 }
             }
 
-            // After saving, refetch meds to sync
+            // Refresh assignments after save
             const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
             setAssignments(response.data);
-
             setIsEditingAssignments(false);
             messageApi.success('Назначения успешно сохранены');
 
