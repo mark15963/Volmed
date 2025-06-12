@@ -225,17 +225,21 @@ export const SearchResults = () => {
 
     const handleSaveAssignments = async () => {
         try {
-            for (const med of assignments) {
-                const payload = {
-                    ...med,
-                    administered: Array.isArray(med.administered) ? med.administered : [],
-                    createdAt: med.createdAt || new Date().toISOString()
-                };
-
-                if (med.id) {
-                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${med.id}`, payload);
+            for (const item of assignments) {
+                if (item.id) {
+                    // Existing medication — update
+                    await axios.put(`/api/medications/${item.id}`, {
+                        administered: item.administered,
+                        // you could add other fields too if needed
+                    });
                 } else {
-                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
+                    // New medication — create
+                    await axios.post(`/api/patients/${patientId}/medications`, {
+                        name: item.name,
+                        dosage: item.dosage,
+                        frequency: item.frequency,
+                        administered: item.administered,
+                    });
                 }
             }
 
