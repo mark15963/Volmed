@@ -421,8 +421,12 @@ app.put("/api/medications/:medId", async (req, res) => {
 // Delete a medication from a patient
 app.delete("/api/medications/:medId", async (req, res) => {
   const medId = parseInt(req.params.medId, 10);
+
   if (isNaN(medId)) {
-    return res.status(400).json({ message: "Invalid medication ID" });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid medication ID",
+    });
   }
 
   try {
@@ -432,17 +436,24 @@ app.delete("/api/medications/:medId", async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Medication not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Medication not found",
+      });
     }
 
-    res
-      .status(200)
-      .json({ message: "Medication deleted", medication: result.rows[0] });
+    res.status(200).json({
+      success: true,
+      message: "Medication deleted",
+      medication: result.rows[0],
+    });
   } catch (err) {
     console.error("Error deleting medication:", err);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: err.message,
+    });
   }
 });
 
