@@ -101,15 +101,20 @@ export const Tab3 = ({
                                                     fontSize: '12px'
                                                 }}
                                                 onClick={() => {
-                                                    const newList = [...assignments];
-                                                    const current = newList[index];
+                                                    try {
+                                                        const newList = [...assignments];
+                                                        const current = newList[index];
 
-                                                    if (!Array.isArray(current.administered)) {
-                                                        current.administered = [];
+                                                        if (!Array.isArray(current.administered)) {
+                                                            current.administered = [];
+                                                        }
+
+                                                        current.administered.push(new Date().toISOString());
+                                                        setAssignments(newList);
+                                                    } catch (error) {
+                                                        console.error("Error marking as administered:", error);
+                                                        messageApi.error('Ошибка при отметке введения');
                                                     }
-
-                                                    current.administered.push(new Date().toISOString());
-                                                    setAssignments(newList);
                                                 }}
                                             >
                                                 Отметить

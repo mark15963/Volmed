@@ -225,25 +225,23 @@ export const SearchResults = () => {
 
     const handleSaveAssignments = async () => {
         try {
-            console.log("try handleSaveAssignments")
+            console.log("Saving assignments...", assignments);
 
             for (const item of assignments) {
                 const payload = {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
-                    administered: item.administered ?? []
-
+                    administered: Array.isArray(item.administered) ? item.administered : []
                 };
-                console.log(payload)
-
+                console.log("Payload:", payload);
 
                 if (item.id) {
                     // Existing medication — update
-                    await axios.put(`/api/medications/${item.id}`, payload);
+                    await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
                 } else {
                     // New medication — create
-                    await axios.post(`/api/patients/${patientId}/medications`, payload);
+                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
                 }
             }
 
@@ -255,12 +253,17 @@ export const SearchResults = () => {
                     ...item,
                     administered: Array.isArray(item.administered) ? item.administered : [],
                 }))
-            ); setIsEditingAssignments(false);
+            );
+
+            setIsEditingAssignments(false);
             messageApi.success('Назначения успешно сохранены');
 
         } catch (error) {
-            console.error("Error saving medications:", error);
-            messageApi.error('Ошибка при сохранении назначений');
+            console.error("Error saving medications:", {
+                error: error,
+                response: error.response?.data
+            });
+            messageApi.error('Ошибка при сохранении назначений: ' + (error.response?.data?.message || error.message));
         }
     };
 
