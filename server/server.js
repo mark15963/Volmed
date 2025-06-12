@@ -410,7 +410,9 @@ app.put("/api/medications/:medId", async (req, res) => {
       return res.status(404).json({ message: "Medication not found" });
     }
 
-    res.json(result.rows[0]);
+    const updated = result.rows[0];
+    updated.administered = JSON.parse(updated.administered || "[]");
+    res.json(updated);
   } catch (err) {
     console.error("Error updating medication:", err);
     res.status(500).json({ message: "Internal server error" });
