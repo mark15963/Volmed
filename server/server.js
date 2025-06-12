@@ -31,23 +31,23 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ];
 
-// const corsOptions = {
-//   origin: (origin, cb) => {
-//     if (
-//       !origin ||
-//       allowedOrigins.includes(origin) ||
-//       origin.includes("render.com")
-//     ) {
-//       cb(null, true);
-//     } else {
-//       cb(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-//   credentials: true,
-//   optionsSuccessStatus: 200,
-// };
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.includes("render.com")
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 // const corsOptions = {
 //   origin: function (origin, callback) {
 //     // Allow requests with no origin (like mobile apps or curl requests)
