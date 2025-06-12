@@ -330,7 +330,10 @@ app.get("/api/patients/:id/medications", async (req, res) => {
       let administered = [];
 
       try {
-        if (m.administered) {
+        if (
+          typeof m.administered === "string" &&
+          m.administered.trim().startsWith("[")
+        ) {
           administered = JSON.parse(m.administered);
           if (!Array.isArray(administered)) {
             console.warn(
@@ -338,6 +341,10 @@ app.get("/api/patients/:id/medications", async (req, res) => {
             );
             administered = [];
           }
+        } else {
+          console.warn(
+            `Invalid or empty administered field for medication ID ${m.id}. Resetting to [].`
+          );
         }
       } catch (err) {
         console.warn(
