@@ -233,6 +233,8 @@ export const SearchResults = () => {
                     frequency: item.frequency,
                     administered: Array.isArray(item.administered) ? item.administered : [],
                 };
+                console.log(payload)
+
 
                 if (item.id) {
                     // Existing medication — update
