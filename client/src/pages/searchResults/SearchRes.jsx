@@ -244,7 +244,7 @@ export const SearchResults = () => {
                     dosage: item.dosage,
                     frequency: item.frequency,
                 };
-                console.log(`Saving item ${index}:`, payload);
+                console.log(`Saving item:`, payload);
 
                 try {
                     if (item.id) {
