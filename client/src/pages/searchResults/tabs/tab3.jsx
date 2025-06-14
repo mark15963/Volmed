@@ -128,6 +128,8 @@ export const Tab3 = ({
                                                             payload
                                                         );
 
+                                                        console.log(response.data)
+
                                                         if (response.data) {
                                                             console.log('Введение успешно отмечено');
                                                         } else {
