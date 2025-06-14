@@ -112,6 +112,7 @@ export const Tab3 = ({
                                                         const newTimestamp = new Date().toISOString();
                                                         current.administered.push(newTimestamp);
                                                         console.log(current.administered)
+                                                        setAssignments(newList)
 
                                                         const payload = {
                                                             name: current.name,
