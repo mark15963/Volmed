@@ -158,10 +158,36 @@ export const Tab3 = ({
                                                         <span style={{ fontSize: '10px' }}>{moment(time).format('DD.MM.YY HH:mm')}</span>
                                                         {isEditingAssignments && (
                                                             <button
-                                                                onClick={() => {
-                                                                    const newList = [...assignments];
-                                                                    newList[index].administered.splice(i, 1);
-                                                                    setAssignments(newList);
+                                                                onClick={async () => {
+                                                                    try {
+                                                                        const newList = [...assignments];
+                                                                        newList[index].administered.splice(i, 1);
+                                                                        setAssignments(newList);
+
+                                                                        const current = newList[index]
+                                                                        const payload = {
+                                                                            name: current.name,
+                                                                            dosage: current.dosage,
+                                                                            frequency: current.frequency,
+                                                                            administered: current.administered
+                                                                        };
+                                                                        const response = await axios.put(
+                                                                            `https://volmed-backend.onrender.com/api/medications/${current.id}`,
+                                                                            payload
+                                                                        );
+
+                                                                        // 4. Verify update was successful
+                                                                        if (!response.data) {
+                                                                            throw new Error('Failed to update backend');
+                                                                        }
+                                                                        messageApi.success('Отметка удалена');
+
+                                                                    } catch (error) {
+                                                                        console.error("Error deleting timestamp:", error);
+                                                                        messageApi.error('Ошибка при удалении отметки');
+                                                                        // Revert UI if API call fails
+                                                                        setAssignments([...assignments]);
+                                                                    }
                                                                 }}
                                                                 style={{
                                                                     marginLeft: '5px',
