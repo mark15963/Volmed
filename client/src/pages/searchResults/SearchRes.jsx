@@ -261,9 +261,14 @@ export const SearchResults = () => {
 
                     }
                 } catch (error) {
-                    console.error("Error saving medication:", {
-                        error: error.response?.data || error.message,
-                        medication: item
+                    console.error("Detailed medication save error:", {
+                        url: error.config?.url,
+                        method: error.config?.method,
+                        payload: error.config?.data,
+                        status: error.response?.status,
+                        statusText: error.response?.statusText,
+                        responseData: error.response?.data,
+                        errorMessage: error.message
                     });
                     throw error;
                 }
