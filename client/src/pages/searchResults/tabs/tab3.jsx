@@ -111,6 +111,7 @@ export const Tab3 = ({
 
                                                         current.administered.push(new Date().toISOString());
                                                         setAssignments(newList);
+                                                        console.log(current.administered)
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
                                                         messageApi.error('Ошибка при отметке введения');
