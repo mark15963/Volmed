@@ -210,20 +210,31 @@ export const SearchResults = () => {
 
         const fetchMedications = async () => {
             try {
-                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
+                const response = await axios.get(
+                    `https://volmed-backend.onrender.com/api/patients/${data.id}/medications`
+                );
+
+                // Debug: log raw response
+                console.log('Medications response:', response.data);
 
                 const medications = response.data.map(item => {
+                    // Ensure administered is always an array
                     let administered = [];
-                    try {
-                        if (item.administered) {
-                            if (typeof item.administered === 'string') {
+                    if (item.administered) {
+                        if (Array.isArray(item.administered)) {
+                            administered = item.administered;
+                        } else if (typeof item.administered === 'string') {
+                            try {
                                 administered = JSON.parse(item.administered);
-                            } else if (Array.isArray(item.administered)) {
-                                administered = item.administered;
+                            } catch (e) {
+                                console.error('Failed to parse administered:', item.administered);
+                                // Fallback: try to extract timestamps
+                                if (item.administered.includes('"')) {
+                                    administered = item.administered.match(/"([^"]+)"/g)
+                                        .map(s => s.replace(/"/g, ''));
+                                }
                             }
                         }
-                    } catch (e) {
-                        console.error("Error parsing administered:", e);
                     }
 
                     return {
@@ -231,6 +242,9 @@ export const SearchResults = () => {
                         administered: Array.isArray(administered) ? administered : []
                     };
                 });
+
+                // Debug: log processed medications
+                console.log('Processed medications:', medications);
 
                 setAssignments(medications.sort((a, b) =>
                     new Date(b.createdAt) - new Date(a.createdAt)

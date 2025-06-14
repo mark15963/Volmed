@@ -107,11 +107,15 @@ export const Tab3 = ({
                                                         const newList = [...assignments];
                                                         const current = newList[index];
 
-                                                        current.administered = [
-                                                            ...(Array.isArray(current.administered) ? current.administered : []),
-                                                            newTimestamp
-                                                        ];
-                                                        setAssignments(newList);
+                                                        if (!Array.isArray(current.administered)) {
+                                                            current.administered = [];
+                                                        }
+
+                                                        // Add new timestamp (avoid duplicates)
+                                                        if (!current.administered.includes(newTimestamp)) {
+                                                            current.administered = [...current.administered, newTimestamp];
+                                                            setAssignments(newList);
+                                                        }
 
                                                         const payload = {
                                                             name: current.name,
@@ -120,12 +124,16 @@ export const Tab3 = ({
                                                             administered: newTimestamp
                                                         };
 
+                                                        console.log('Sending payload:', payload);
+
                                                         const response = await axios.put(
                                                             `https://volmed-backend.onrender.com/api/medications/${current.id}`,
                                                             payload
                                                         );
 
-                                                        if (response.data) {
+                                                        console.log('Backend response:', response.data);
+
+                                                        if (response.data?.administered) {
                                                             const updatedList = [...assignments];
                                                             updatedList[index] = {
                                                                 ...updatedList[index],
@@ -133,6 +141,7 @@ export const Tab3 = ({
                                                             };
                                                             setAssignments(updatedList);
                                                         }
+
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
 
