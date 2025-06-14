@@ -217,31 +217,31 @@ export const SearchResults = () => {
                 // Debug: log raw response
                 console.log('Medications response:', response.data);
 
-                const medications = response.data.map(item => {
-                    // Ensure administered is always an array
-                    let administered = [];
-                    if (item.administered) {
-                        if (Array.isArray(item.administered)) {
-                            administered = item.administered;
-                        } else if (typeof item.administered === 'string') {
-                            try {
-                                administered = JSON.parse(item.administered);
-                            } catch (e) {
-                                console.error('Failed to parse administered:', item.administered);
-                                // Fallback: try to extract timestamps
-                                if (item.administered.includes('"')) {
-                                    administered = item.administered.match(/"([^"]+)"/g)
-                                        .map(s => s.replace(/"/g, ''));
-                                }
-                            }
-                        }
-                    }
+                // const medications = response.data.map(item => {
+                //     // Ensure administered is always an array
+                //     let administered = [];
+                //     if (item.administered) {
+                //         if (Array.isArray(item.administered)) {
+                //             administered = item.administered;
+                //         } else if (typeof item.administered === 'string') {
+                //             try {
+                //                 administered = JSON.parse(item.administered);
+                //             } catch (e) {
+                //                 console.error('Failed to parse administered:', item.administered);
+                //                 // Fallback: try to extract timestamps
+                //                 if (item.administered.includes('"')) {
+                //                     administered = item.administered.match(/"([^"]+)"/g)
+                //                         .map(s => s.replace(/"/g, ''));
+                //                 }
+                //             }
+                //         }
+                //     }
 
-                    return {
-                        ...item,
-                        administered: Array.isArray(administered) ? administered : []
-                    };
-                });
+                //     return {
+                //         ...item,
+                //         administered: Array.isArray(administered) ? administered : []
+                //     };
+                // });
 
                 // Debug: log processed medications
                 console.log('Processed medications:', medications);
@@ -266,7 +266,7 @@ export const SearchResults = () => {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
-                    administered: Array.isArray(item.administered) ? item.administered : []
+                    // administered: Array.isArray(item.administered) ? item.administered : []
                 };
                 console.log("Payload:", payload);
 
@@ -287,7 +287,7 @@ export const SearchResults = () => {
                         error: error.response?.data || error.message,
                         medication: item
                     });
-                    throw error; // Re-throw to exit the loop
+                    throw error;
                 }
             }
 
@@ -348,7 +348,6 @@ export const SearchResults = () => {
             setAssignments={setAssignments}
             data={data}
             handleSaveAssignments={handleSaveAssignments}
-            messageApi={messageApi}
         />
     ]
 

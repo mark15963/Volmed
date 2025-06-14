@@ -326,40 +326,40 @@ app.get("/api/patients/:id/medications", async (req, res) => {
       [req.params.id]
     );
 
-    const medications = rows.map((row) => {
-      let administered = [];
+    // const medications = rows.map((row) => {
+    //   let administered = [];
 
-      try {
-        // Handle different cases of administered field
-        if (row.administered) {
-          if (typeof row.administered === "string") {
-            // Remove any escaped characters if present
-            const cleanString = row.administered.replace(/\\"/g, '"');
-            // Parse JSON if it's a JSON string
-            if (cleanString.startsWith("[") || cleanString.startsWith('"')) {
-              administered = JSON.parse(cleanString);
-            } else {
-              // Handle case where it might be a single timestamp
-              administered = [cleanString].filter(Boolean);
-            }
-          } else if (Array.isArray(row.administered)) {
-            administered = row.administered;
-          }
-        }
-      } catch (e) {
-        console.error(
-          `Error parsing administered for medication ${row.id}:`,
-          e
-        );
-      }
+    //   try {
+    //     // Handle different cases of administered field
+    //     if (row.administered) {
+    //       if (typeof row.administered === "string") {
+    //         // Remove any escaped characters if present
+    //         const cleanString = row.administered.replace(/\\"/g, '"');
+    //         // Parse JSON if it's a JSON string
+    //         if (cleanString.startsWith("[") || cleanString.startsWith('"')) {
+    //           administered = JSON.parse(cleanString);
+    //         } else {
+    //           // Handle case where it might be a single timestamp
+    //           administered = [cleanString].filter(Boolean);
+    //         }
+    //       } else if (Array.isArray(row.administered)) {
+    //         administered = row.administered;
+    //       }
+    //     }
+    //   } catch (e) {
+    //     console.error(
+    //       `Error parsing administered for medication ${row.id}:`,
+    //       e
+    //     );
+    //   }
 
-      return {
-        ...row,
-        administered: Array.isArray(administered) ? administered : [],
-      };
-    });
+    //   return {
+    //     ...row,
+    //     administered: Array.isArray(administered) ? administered : [],
+    //   };
+    // });
 
-    res.json(medications);
+    res.json(rows);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "DB error" });
@@ -367,15 +367,15 @@ app.get("/api/patients/:id/medications", async (req, res) => {
 });
 // Add medication to a patient
 app.post("/api/patients/:id/medications", async (req, res) => {
-  const { name, dosage, frequency, administered } = req.body;
+  const { name, dosage, frequency } = req.body;
   if (!name || !dosage || !frequency) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   const adminJSON = JSON.stringify(administered || []);
   const q = `
-    INSERT INTO medications (patient_id, name, dosage, frequency, administered)
-    VALUES ($1,$2,$3,$4,$5) RETURNING id
+    INSERT INTO medications (patient_id, name, dosage, frequency)
+    VALUES ($1,$2,$3,$4) RETURNING id
   `;
   try {
     const { rows } = await db.query(q, [
@@ -383,7 +383,6 @@ app.post("/api/patients/:id/medications", async (req, res) => {
       name,
       dosage,
       frequency,
-      adminJSON,
     ]);
     res.status(201).json({ success: true, medicationId: rows[0].id });
   } catch (e) {
@@ -394,10 +393,9 @@ app.post("/api/patients/:id/medications", async (req, res) => {
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
-  const { name, dosage, frequency, administered } = req.body;
+  const { name, dosage, frequency } = req.body;
 
   try {
-    // 1. Get current medication data
     const current = await db.query("SELECT * FROM medications WHERE id = $1", [
       medId,
     ]);
@@ -406,30 +404,6 @@ app.put("/api/medications/:medId", async (req, res) => {
       return res.status(404).json({ message: "Medication not found" });
     }
 
-    // 2. Parse existing administered timestamps
-    let existingTimestamps = [];
-    try {
-      const dbValue = current.rows[0].administered;
-      if (dbValue && typeof dbValue === "string") {
-        existingTimestamps = JSON.parse(dbValue);
-      } else if (Array.isArray(dbValue)) {
-        existingTimestamps = dbValue;
-      }
-    } catch (e) {
-      console.error("Error parsing administered:", e);
-    }
-
-    // 3. Prepare new timestamps (ensure array)
-    const newTimestamps = Array.isArray(administered)
-      ? administered
-      : [administered];
-
-    // 4. Merge and deduplicate
-    const allTimestamps = [...existingTimestamps, ...newTimestamps]
-      .filter((t) => t) // remove empty
-      .filter((t, i, arr) => arr.indexOf(t) === i); // remove duplicates
-
-    // 5. Update database
     const result = await db.query(
       `UPDATE medications 
        SET name = $1, dosage = $2, frequency = $3, administered = $4
@@ -439,14 +413,11 @@ app.put("/api/medications/:medId", async (req, res) => {
         name || current.rows[0].name,
         dosage || current.rows[0].dosage,
         frequency || current.rows[0].frequency,
-        JSON.stringify(allTimestamps),
         medId,
       ]
     );
 
-    // 6. Return updated medication with parsed administered
     const updatedMed = result.rows[0];
-    updatedMed.administered = allTimestamps; // Already parsed
 
     res.json(updatedMed);
   } catch (err) {

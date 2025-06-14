@@ -12,7 +12,6 @@ export const Tab3 = ({
     setAssignments,
     data,
     handleSaveAssignments,
-    messageApi
 }) => {
     return (
         <div className={styles.info}>
@@ -29,7 +28,7 @@ export const Tab3 = ({
                                     name: '',
                                     dosage: '',
                                     frequency: '',
-                                    administered: [],
+                                    // administered: [],
                                     createdAt: new Date().toISOString()
                                 }]);
                             }}
@@ -46,7 +45,7 @@ export const Tab3 = ({
                                     <th style={{ width: '30%', textAlign: 'center' }}>Препарат / Манипуляция</th>
                                     <th style={{ width: '15%', textAlign: 'center' }}>Дозировка</th>
                                     <th style={{ width: '10%', textAlign: 'center' }}>Частота</th>
-                                    <th style={{ width: '25%', textAlign: 'center' }}>Отмечено медсестрой</th>
+                                    {/* <th style={{ width: '25%', textAlign: 'center' }}>Отмечено медсестрой</th> */}
                                     {isEditingAssignments && <th style={{ width: '15%' }}>Удалить</th>}
                                 </tr>
                             </thead>
@@ -95,7 +94,7 @@ export const Tab3 = ({
                                                 />
                                             ) : item.frequency}
                                         </td>
-                                        <td style={{ width: '25%', display: 'flex' }}>
+                                        {/* <td style={{ width: '25%', display: 'flex' }}>
                                             <button
                                                 style={{
                                                     width: 'fit-content', height: 'fit-content', padding: '1px 5px',
@@ -112,7 +111,6 @@ export const Tab3 = ({
                                                             current.administered = [];
                                                         }
 
-                                                        // Add new timestamp (avoid duplicates)
                                                         if (!current.administered.includes(newTimestamp)) {
                                                             current.administered = [...current.administered, newTimestamp];
                                                             setAssignments(newList);
@@ -181,14 +179,9 @@ export const Tab3 = ({
                                                                         if (!response.data) {
                                                                             throw new Error('Failed to update backend');
                                                                         }
-                                                                        if (messageApi) {
-                                                                            messageApi.success('Отметка удалена');
-                                                                        }
+
                                                                     } catch (error) {
                                                                         console.error("Error deleting timestamp:", error);
-                                                                        if (messageApi) {
-                                                                            messageApi.error('Ошибка при удалении отметки');
-                                                                        }
                                                                         // Revert UI if API call fails
                                                                         setAssignments([...assignments]);
                                                                     }
@@ -210,7 +203,7 @@ export const Tab3 = ({
                                                     </li>
                                                 ))}
                                             </ul>
-                                        </td>
+                                        </td> */}
                                         {isEditingAssignments && (
                                             <td style={{ width: '15%' }}>
                                                 <button
