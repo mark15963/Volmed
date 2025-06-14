@@ -275,8 +275,8 @@ export const Tab2 = ({
             label: 'ЧСС',
             children: (
                 <>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: '100%' }}>
-                        <div style={{ flexGrow: 1, minWidth: 0, maxWidth: '500px' }}>
+                    <div className={styles.graphContainer}>
+                        <div style={{ flexGrow: 1, maxWidth: '500px', minWidth: '120px' }}>
                             <Graph data={pulseValues} />
                         </div>
                         <input
@@ -290,7 +290,7 @@ export const Tab2 = ({
                     </div>
                     <div style={{ marginTop: '20px' }}>
                         <h4>История изменений ЧСС</h4>
-                        <table style={{ width: '300px', borderCollapse: 'collapse', fontSize: '14px' }}>
+                        <table className={styles.itemsTable}>
                             <thead>
                                 <tr style={{ backgroundColor: '#f0f0f0', color: 'black' }}>
                                     <th style={{ padding: '8px', border: '1px solid #ddd' }}>Дата</th>
@@ -321,11 +321,7 @@ export const Tab2 = ({
     return (
         <div className={styles.info}>
             <div className={styles.bg}>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <div style={{ width: '500px', marginBottom: '20px' }}>
-                        <Collapse items={items} headerBg={'#ffffff'} />
-                    </div>
-                </div>
+                <Collapse items={items} headerBg={'#ffffff'} className={styles.items} />
                 <div className={styles.fileSection}>
                     <h3>Документы</h3>
                     <div className={styles.fileList}>

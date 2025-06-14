@@ -91,6 +91,18 @@
 
 @media screen and (orientation: portrait) {
   th{
+    font-size: 0.6em;
+    }
+  tr td:nth-child(1){
+    font-size: 0.5em;
+  }
+
+  
+  tr td:nth-child(4){
+    font-size: 0.5em;
+  }
+
+  tr td{
     font-size: 0.7em;
   }
 
