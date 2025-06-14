@@ -13,7 +13,7 @@ export const Tab3 = ({
 }) => {
     return (
         <div className={styles.info}>
-            <div className={styles.bg} style={{ padding: '20px' }}>
+            <div className={styles.bg}>
                 <h3>Назначения</h3>
                 {assignments.length === 0 && !isEditingAssignments && (
                     <p>Нет назначений</p>
@@ -47,7 +47,7 @@ export const Tab3 = ({
                             <tbody>
                                 {assignments.map((item, index) => (
                                     <tr key={index} className={tableStyles.rows} style={{ fontSize: '14px', display: 'flex' }}>
-                                        <td style={{ width: '20%', fontSize: '11px' }}>
+                                        <td style={{ width: '20%' }}>
                                             {item.createdAt ? moment(item.createdAt).format('DD.MM.YYYY HH:mm') : 'Н/Д'}
                                         </td>
                                         <td style={{ width: '30%' }}>

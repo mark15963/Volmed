@@ -36,7 +36,7 @@ h2{
 
 .bg{
     background-color: #0075c9;
-    padding: 20px 40px;
+    padding: 20px;
     border-radius: 8px;
     border: solid, black, 1px;
 }
@@ -132,6 +132,27 @@ span{
     background-color: #e0e0e0;
 }
 
+.items{
+    max-width: 100%;
+    min-width: 300px;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.itemsTable{
+    max-width: 100%;
+    width: 300px; 
+    border-collapse: collapse; 
+    font-size: 14px;
+}
+
+.graphContainer{
+        display: flex;
+        gap: 10px; 
+        align-items: center; 
+        width: 100%;
+    }
+
 @media print {
     @page {
         margin: 0;
@@ -202,6 +223,10 @@ span{
         width: 100vw;
     }
 
+    .bg{
+        padding: 5px;
+    }
+
     h2{
         margin-bottom: 10px;
     }
@@ -232,11 +257,35 @@ span{
         font-size: 0.9em;
     }
 
-
-
     .topForms{
         width: 100%;
         display: flex;
         flex-direction: column;
+    }
+
+    .items{
+        max-width: 100%;
+        min-width: 0;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .graphContainer{
+        display: flex;
+        flex-direction: column;
+        gap: 10px; 
+        align-items: center; 
+        width: 100%;
+    }
+
+    .itemsTable{
+        max-width: 100%;
+        width: 300px; 
+        border-collapse: collapse; 
+        font-size: 14px;
+    }
+
+    .assignmentsTable{
+
     }
 }
