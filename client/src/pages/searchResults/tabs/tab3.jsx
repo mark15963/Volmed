@@ -100,7 +100,7 @@ export const Tab3 = ({
                                                     width: 'fit-content', height: 'fit-content', padding: '1px 5px',
                                                     fontSize: '12px'
                                                 }}
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     try {
                                                         const newList = [...assignments];
                                                         const current = newList[index];
@@ -115,6 +115,17 @@ export const Tab3 = ({
                                                         setAssignments(newList);
                                                         console.log(newList)
 
+                                                        const payload = {
+                                                            name: current.name,
+                                                            dosage: current.dosage,
+                                                            frequency: current.frequency,
+                                                            administered: current.administered // Include the updated array
+                                                        };
+
+                                                        await axios.put(
+                                                            `https://volmed-backend.onrender.com/api/medications/${current.id}`,
+                                                            payload
+                                                        );
 
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
