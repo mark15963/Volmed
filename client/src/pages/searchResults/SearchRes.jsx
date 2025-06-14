@@ -216,9 +216,6 @@ export const SearchResults = () => {
                     ...med,
                     createdAt: med.createdAt || new Date().toISOString()
                 }));
-
-                console.log('Ответ API назначений:');
-                console.table(formattedAssignments);
                 setAssignments(formattedAssignments);
 
             } catch (error) {
@@ -231,8 +228,6 @@ export const SearchResults = () => {
 
     const handleSaveAssignments = async () => {
         try {
-            console.log("Сохранение назначений...");
-            console.table(assignments);
             for (const item of assignments) {
                 const payload = {
                     name: item.name,
@@ -243,14 +238,10 @@ export const SearchResults = () => {
                     if (item.id) {
                         // Existing medication — update
                         const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
-                        console.log("Update response:");
-                        console.table(response.data);
                     } else {
                         // New medication — create
                         const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
                         const createdAssignment = response.data;
-                        console.log("Create response:");
-                        console.table(createdAssignment);
                         setAssignments(prev =>
                             prev.map(a =>
                                 !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency

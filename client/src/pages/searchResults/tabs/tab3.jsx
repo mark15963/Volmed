@@ -35,7 +35,6 @@ export const Tab3 = ({
                 {(assignments.length > 0 || isEditingAssignments) && (
                     <div className={tableStyles.container}>
                         <table className={tableStyles.table} style={{ width: '100%', tableLayout: 'fixed' }}>
-
                             <thead className={tableStyles.head}>
                                 <tr className={tableStyles.rows} style={{ fontSize: '13px' }}>
                                     <th style={{ width: '20%', textAlign: 'center' }}>Время назначения</th>
@@ -96,17 +95,12 @@ export const Tab3 = ({
                                                     style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
-                                                        console.log("Attempting to delete assingment:");
-                                                        console.table(itemToDelete);
                                                         try {
                                                             if (itemToDelete.id) {
-                                                                console.log("Вызов API для удаления назначения ID:", itemToDelete.id);
-
                                                                 const response = await axios.delete(
                                                                     `https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`, {
                                                                     withCredentials: true
                                                                 });
-                                                                console.log("Delete response:", response.data);
 
                                                                 if (!response.data.success) {
                                                                     throw new Error(response.data.message || "API returned unsuccessful");
