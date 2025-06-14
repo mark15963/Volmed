@@ -421,53 +421,60 @@ app.put("/api/medications/:medId", async (req, res) => {
   const { name, dosage, frequency, administered } = req.body;
 
   try {
-    const currentMed = await db.query(
-      "SELECT administered FROM medications WHERE id = $1",
+    // 1. Get current medication data
+    const currentResult = await db.query(
+      "SELECT * FROM medications WHERE id = $1",
       [medId]
     );
 
-    let existingAdministered = [];
-    if (currentMed.rows.length > 0) {
-      existingAdministered = parseAdministeredField(
-        currentMed.rows[0].administered
-      );
-    }
-    const newAdministered = parseAdministeredField(administered);
-    const combinedAdministered = [...existingAdministered, ...newAdministered];
-
-    // Remove duplicates and sort chronologically
-    const uniqueAdministered = [...new Set(combinedAdministered)].sort(
-      (a, b) => new Date(a) - new Date(b)
-    );
-
-    const result = await db.query(
-      `UPDATE medications 
-      SET name = $1, dosage = $2, frequency = $3, administered = $4 
-      WHERE id = $5 
-      RETURNING *`,
-      [name, dosage, frequency, JSON.stringify(uniqueAdministered), medId]
-    );
-
-    if (result.rowCount === 0) {
+    if (currentResult.rowCount === 0) {
       return res.status(404).json({ message: "Medication not found" });
     }
 
-    const medication = result.rows[0];
-    medication.administered =
-      parseAdministeredField(medication.administered) || [];
+    // 2. Parse existing administered timestamps
+    const currentMed = currentResult.rows[0];
+    let existingAdministered = [];
+    try {
+      existingAdministered = JSON.parse(currentMed.administered);
+      if (!Array.isArray(existingAdministered)) {
+        existingAdministered = [];
+      }
+    } catch (e) {
+      existingAdministered = [];
+    }
 
-    res.json(medication);
+    // 3. Merge with new timestamps (ensure we have an array)
+    const newAdministered = Array.isArray(administered)
+      ? administered
+      : [administered];
+    const combinedAdministered = [...existingAdministered, ...newAdministered]
+      .filter((t) => t) // Remove any null/undefined
+      .filter((t, i, arr) => arr.indexOf(t) === i); // Remove duplicates
+
+    // 4. Update medication
+    const updateResult = await db.query(
+      `UPDATE medications 
+       SET name = $1, dosage = $2, frequency = $3, administered = $4 
+       WHERE id = $5 
+       RETURNING *`,
+      [
+        name || currentMed.name,
+        dosage || currentMed.dosage,
+        frequency || currentMed.frequency,
+        JSON.stringify(combinedAdministered),
+        medId,
+      ]
+    );
+
+    const updatedMed = updateResult.rows[0];
+    updatedMed.administered = combinedAdministered; // Already parsed
+
+    res.json(updatedMed);
   } catch (err) {
-    console.error("Error updating medication:", {
-      message: err.message,
-      stack: err.stack,
-      body: req.body,
-      medId,
-    });
+    console.error("Error updating medication:", err);
     res.status(500).json({
       message: "Internal server error",
       error: err.message,
-      details: process.env.NODE_ENV === "development" ? err.stack : undefined,
     });
   }
 });

@@ -212,10 +212,23 @@ export const SearchResults = () => {
             try {
                 const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
 
-                const medications = response.data.map(item => ({
-                    ...item,
-                    administered: Array.isArray(item.administered) ? item.administered : []
-                }));
+                const medications = response.data.map(item => {
+                    let administered = [];
+                    try {
+                        if (typeof item.administered === 'string') {
+                            administered = JSON.parse(item.administered);
+                        } else if (Array.isArray(item.administered)) {
+                            administered = item.administered;
+                        }
+                    } catch (e) {
+                        console.warn('Failed to parse administered:', e);
+                    }
+
+                    return {
+                        ...item,
+                        administered: Array.isArray(administered) ? administered : []
+                    };
+                });
 
                 setAssignments(medications.sort((a, b) =>
                     new Date(b.createdAt) - new Date(a.createdAt)

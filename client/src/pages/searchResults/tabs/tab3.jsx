@@ -102,6 +102,8 @@ export const Tab3 = ({
                                                 }}
                                                 onClick={async () => {
                                                     try {
+                                                        const newTimestamp = new Date().toISOString();
+
                                                         const newList = [...assignments];
                                                         const current = newList[index];
 
@@ -109,16 +111,14 @@ export const Tab3 = ({
                                                             current.administered = [];
                                                         }
 
-                                                        const newTimestamp = new Date().toISOString();
-
-                                                        current.administered.push(newTimestamp);
-                                                        setAssignments(newList)
+                                                        current.administered = [...current.administered, newTimestamp];
+                                                        setAssignments(newList);
 
                                                         const payload = {
                                                             name: current.name,
                                                             dosage: current.dosage,
                                                             frequency: current.frequency,
-                                                            administered: current.administered[newTimestamp]
+                                                            administered: newTimestamp
                                                         };
 
                                                         const response = await axios.put(
@@ -126,9 +126,16 @@ export const Tab3 = ({
                                                             payload
                                                         );
 
-                                                        const updatedList = [...assignments];
-                                                        updatedList[index] = response.data;
-                                                        setAssignments(updatedList);
+                                                        if (response.data) {
+                                                            const updatedList = [...assignments];
+                                                            updatedList[index] = {
+                                                                ...updatedList[index],
+                                                                administered: response.data.administered
+                                                            };
+                                                            setAssignments(updatedList);
+                                                        } else {
+                                                            throw new Error('No response data');
+                                                        }
 
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
