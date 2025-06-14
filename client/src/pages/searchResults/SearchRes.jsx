@@ -211,10 +211,15 @@ export const SearchResults = () => {
         const fetchMedications = async () => {
             try {
                 const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
-                setAssignments(response.data);
-                setAssignments(response.data.sort((a, b) =>
+
+                const medications = response.data.map(item => ({
+                    ...item,
+                    administered: Array.isArray(item.administered) ? item.administered : []
+                }));
+
+                setAssignments(medications.sort((a, b) =>
                     new Date(b.createdAt) - new Date(a.createdAt)
-                ))
+                ));
             } catch (error) {
                 console.error('Error fetching medications:', error);
             }

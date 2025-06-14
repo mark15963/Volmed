@@ -415,21 +415,37 @@ function parseAdministeredField(administered) {
   // If it's null/undefined or other type, return empty array
   return [];
 }
-
 // Update a medication of a patient
 app.put("/api/medications/:medId", async (req, res) => {
   const { medId } = req.params;
   const { name, dosage, frequency, administered } = req.body;
 
   try {
-    const administeredArray = parseAdministeredField(administered);
+    const currentMed = await db.query(
+      "SELECT administered FROM medications WHERE id = $1",
+      [medId]
+    );
+
+    let existingAdministered = [];
+    if (currentMed.rows.length > 0) {
+      existingAdministered = parseAdministeredField(
+        currentMed.rows[0].administered
+      );
+    }
+    const newAdministered = parseAdministeredField(administered);
+    const combinedAdministered = [...existingAdministered, ...newAdministered];
+
+    // Remove duplicates and sort chronologically
+    const uniqueAdministered = [...new Set(combinedAdministered)].sort(
+      (a, b) => new Date(a) - new Date(b)
+    );
 
     const result = await db.query(
       `UPDATE medications 
       SET name = $1, dosage = $2, frequency = $3, administered = $4 
       WHERE id = $5 
       RETURNING *`,
-      [name, dosage, frequency, JSON.stringify(administeredArray), medId]
+      [name, dosage, frequency, JSON.stringify(uniqueAdministered), medId]
     );
 
     if (result.rowCount === 0) {
