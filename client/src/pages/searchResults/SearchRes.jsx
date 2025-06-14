@@ -217,7 +217,8 @@ export const SearchResults = () => {
                     createdAt: med.createdAt || new Date().toISOString()
                 }));
 
-                console.table('Ответ API назначений:', formattedAssignments.data);
+                console.log('Ответ API назначений:');
+                console.table(formattedAssignments);
                 setAssignments(formattedAssignments);
 
             } catch (error) {
@@ -230,8 +231,8 @@ export const SearchResults = () => {
 
     const handleSaveAssignments = async () => {
         try {
-            console.table("Сохранение назначений...", assignments);
-
+            console.log("Сохранение назначений...");
+            console.table(assignments);
             for (const item of assignments) {
                 const payload = {
                     name: item.name,
@@ -242,11 +243,21 @@ export const SearchResults = () => {
                     if (item.id) {
                         // Existing medication — update
                         const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
-                        console.table("Update response:", response.data);
+                        console.log("Update response:");
+                        console.table(response.data);
                     } else {
                         // New medication — create
                         const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
-                        console.table("Create response:", response.data);
+                        const createdAssignment = response.data;
+                        console.log("Create response:");
+                        console.table(createdAssignment);
+                        setAssignments(prev =>
+                            prev.map(a =>
+                                !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency
+                                    ? { ...a, id: createdAssignment.id }
+                                    : a
+                            )
+                        );
                     }
                 } catch (error) {
                     console.error("Детальная ошибка назначений:", {
