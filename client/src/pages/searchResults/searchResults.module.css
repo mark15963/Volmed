@@ -285,7 +285,7 @@ span{
         font-size: 14px;
     }
 
-    .assignmentsTable{
-
+    .printButton{
+        display: none;
     }
 }

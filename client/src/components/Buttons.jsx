@@ -52,6 +52,7 @@ export const Button = ({
     icon,
     margin,
     text,
+    className,
     ...props
 }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -60,7 +61,7 @@ export const Button = ({
         <div>
             <button
                 onClick={onClick}
-                className={`button ${shape} ${isLoading ? "loading" : ""}`}
+                className={`button ${shape} ${isLoading ? "loading" : ""} ${className}`}
                 disabled={isLoading}
                 type={type}
                 style={style}
