@@ -325,7 +325,7 @@ export const SearchResults = () => {
     return (
         <div className={styles.resultsContainer}>
             {contextHolder}
-            <h2 style={{ marginBottom: '20px', cursor: 'default' }}>
+            <h2>
                 {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
             </h2>
 

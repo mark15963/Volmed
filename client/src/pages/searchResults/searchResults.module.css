@@ -13,6 +13,10 @@
     border-radius: 10px;
 }
 
+h2{
+    margin-bottom: 20px;
+    cursor: default;
+}
 
 .info {
     display: flex;
@@ -198,6 +202,9 @@ span{
         width: 100vw;
     }
 
+    h2{
+        margin-bottom: 10px;
+    }
 
     .resultsContainer{
         min-width: 0;

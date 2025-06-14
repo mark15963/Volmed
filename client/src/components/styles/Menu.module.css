@@ -4,7 +4,9 @@
     margin-bottom: 0;
     position: relative;
     z-index: 1;
-    gap:0
+    gap:0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .menuCard{
@@ -15,6 +17,8 @@
     background-color: #0073c7;
     cursor: pointer;    
     border-right: none;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .menuCard:last-child {
@@ -28,7 +32,7 @@
 .menuCard.active{
     background-color: #0086e6;
     border-color: black;
-    margin-bottom: -2px;
+    margin-bottom: -3px;
     z-index: 2;
     position: relative;
 }
@@ -41,7 +45,16 @@
 
 @media screen and (orientation: portrait) {
     h3{
-        font-size: 1em;
+        font-size: 0.9em;
+        line-height: 10px;
+    }
+
+    .menuContainer{
+    }
+
+    .menuCard{
+        min-width: 0;
+        padding: 7px;
     }
     
 }
