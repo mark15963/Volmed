@@ -96,10 +96,11 @@ export const Tab3 = ({
                                                     style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
-                                                        console.table("Attempting to delete assingment:", itemToDelete);
+                                                        console.log("Attempting to delete assingment:");
+                                                        console.table(itemToDelete);
                                                         try {
                                                             if (itemToDelete.id) {
-                                                                console.log("Calling API to delete medication ID:", itemToDelete.id);
+                                                                console.log("Вызов API для удаления назначения ID:", itemToDelete.id);
 
                                                                 const response = await axios.delete(
                                                                     `https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`, {
