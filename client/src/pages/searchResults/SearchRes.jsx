@@ -215,13 +215,15 @@ export const SearchResults = () => {
                 const medications = response.data.map(item => {
                     let administered = [];
                     try {
-                        if (typeof item.administered === 'string') {
-                            administered = JSON.parse(item.administered);
-                        } else if (Array.isArray(item.administered)) {
-                            administered = item.administered;
+                        if (item.administered) {
+                            if (typeof item.administered === 'string') {
+                                administered = JSON.parse(item.administered);
+                            } else if (Array.isArray(item.administered)) {
+                                administered = item.administered;
+                            }
                         }
                     } catch (e) {
-                        console.warn('Failed to parse administered:', e);
+                        console.error("Error parsing administered:", e);
                     }
 
                     return {
