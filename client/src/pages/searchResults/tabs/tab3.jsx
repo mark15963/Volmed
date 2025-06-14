@@ -20,7 +20,6 @@ export const Tab3 = ({
                 )}
                 {isEditingAssignments && (
                     <>
-                        {console.log(assignments)}
                         <button
                             onClick={() => {
                                 setAssignments([...assignments, {
@@ -97,7 +96,7 @@ export const Tab3 = ({
                                                     style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
-                                                        console.log("Attempting to delete medication:", itemToDelete);
+                                                        console.table("Attempting to delete assingment:", itemToDelete);
                                                         try {
                                                             if (itemToDelete.id) {
                                                                 console.log("Calling API to delete medication ID:", itemToDelete.id);

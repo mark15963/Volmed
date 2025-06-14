@@ -207,36 +207,30 @@ export const SearchResults = () => {
     // Fetch medications
     useEffect(() => {
         if (!data?.id) return;
-
         const fetchMedications = async () => {
             try {
                 const response = await axios.get(
                     `https://volmed-backend.onrender.com/api/patients/${data.id}/medications`
                 );
-
-                console.log('API response:', response.data);
-
                 const formattedAssignments = response.data.map(med => ({
                     ...med,
                     createdAt: med.createdAt || new Date().toISOString()
                 }));
 
-                console.log('Formatted assignments:', formattedAssignments); // Log after formatting
+                console.table('Ответ API назначений:', formattedAssignments.data);
                 setAssignments(formattedAssignments);
 
-
             } catch (error) {
-                console.error('Error fetching medications:', error);
+                console.error('Ошибка при получении назначений:', error);
             }
         };
-
         fetchMedications();
     }, [data?.id]);
 
 
     const handleSaveAssignments = async () => {
         try {
-            console.log("Saving assignments...", assignments);
+            console.table("Сохранение назначений...", assignments);
 
             for (const item of assignments) {
                 const payload = {
@@ -244,24 +238,18 @@ export const SearchResults = () => {
                     dosage: item.dosage,
                     frequency: item.frequency,
                 };
-                console.log(`Saving item:`, payload);
-
                 try {
                     if (item.id) {
                         // Existing medication — update
                         const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
-                        console.log("Update response:", response.data);
-                        console.table(assignments);
-
+                        console.table("Update response:", response.data);
                     } else {
                         // New medication — create
                         const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
-                        console.log("Create response:", response.data);
-                        console.table(assignments);
-
+                        console.table("Create response:", response.data);
                     }
                 } catch (error) {
-                    console.error("Detailed medication save error:", {
+                    console.error("Детальная ошибка назначений:", {
                         url: error.config?.url,
                         method: error.config?.method,
                         payload: error.config?.data,
@@ -278,7 +266,7 @@ export const SearchResults = () => {
             messageApi.success('Назначения успешно сохранены');
 
         } catch (error) {
-            console.error("Error saving medications:", {
+            console.error("Ошибка при сохранении назначений:", {
                 error: error,
                 response: error.response?.data
             });
@@ -354,7 +342,9 @@ export const SearchResults = () => {
             <div className={styles.buttonsContainer}>
                 <div style={{ display: 'flex' }}>
                     <Button
-                        text='Редактировать'
+                        text={isEditingAssignments || isEditingFiles ?
+                            `Сохранить` : `Редактировать`
+                        }
                         onClick={(e) => {
                             handleEdit(e)
                             {
@@ -366,11 +356,7 @@ export const SearchResults = () => {
                                 )
                             }
                         }}
-                    >
-                        {isEditingAssignments || isEditingFiles ?
-                            `Сохранить` : `Редактировать`
-                        }
-                    </Button>
+                    />
 
                     <Button text="Печать" onClick={handlePrint} />
                 </div>

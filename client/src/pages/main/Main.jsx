@@ -9,7 +9,6 @@ export const Main = () => {
 
     return (
         <div className={styles.container}>
-            {console.log("Environment:", process.env.NODE_ENV)}
             <div className={styles.mainBlock}>
                 <SearchBar />
                 <div className={styles.buttonsContainer}>
