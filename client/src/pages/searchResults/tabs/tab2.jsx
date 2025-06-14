@@ -304,7 +304,7 @@ export const Tab2 = ({
                                     .map((item, index) => (
                                         <tr key={index}>
                                             <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                                                {new Date(item.created_at).toLocaleString()}
+                                                {new Date(item.created_at).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
                                             </td>
                                             <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.val}</td>
                                         </tr>
