@@ -107,11 +107,10 @@ export const Tab3 = ({
                                                         const newList = [...assignments];
                                                         const current = newList[index];
 
-                                                        if (!Array.isArray(current.administered)) {
-                                                            current.administered = [];
-                                                        }
-
-                                                        current.administered = [...current.administered, newTimestamp];
+                                                        current.administered = [
+                                                            ...(Array.isArray(current.administered) ? current.administered : []),
+                                                            newTimestamp
+                                                        ];
                                                         setAssignments(newList);
 
                                                         const payload = {
@@ -133,15 +132,10 @@ export const Tab3 = ({
                                                                 administered: response.data.administered
                                                             };
                                                             setAssignments(updatedList);
-                                                        } else {
-                                                            throw new Error('No response data');
                                                         }
-
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
-                                                        messageApi.error(`Ошибка при отметке введения: ${error.response?.data?.message || error.message}`);
 
-                                                        // Revert local state if API call fails
                                                         setAssignments([...assignments]);
 
                                                     }

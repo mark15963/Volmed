@@ -422,52 +422,55 @@ app.put("/api/medications/:medId", async (req, res) => {
 
   try {
     // 1. Get current medication data
-    const currentResult = await db.query(
-      "SELECT * FROM medications WHERE id = $1",
-      [medId]
-    );
+    const current = await db.query("SELECT * FROM medications WHERE id = $1", [
+      medId,
+    ]);
 
-    if (currentResult.rowCount === 0) {
+    if (current.rowCount === 0) {
       return res.status(404).json({ message: "Medication not found" });
     }
 
     // 2. Parse existing administered timestamps
-    const currentMed = currentResult.rows[0];
-    let existingAdministered = [];
+    let existingTimestamps = [];
     try {
-      existingAdministered = JSON.parse(currentMed.administered);
-      if (!Array.isArray(existingAdministered)) {
-        existingAdministered = [];
+      const dbValue = current.rows[0].administered;
+      if (dbValue && typeof dbValue === "string") {
+        existingTimestamps = JSON.parse(dbValue);
+      } else if (Array.isArray(dbValue)) {
+        existingTimestamps = dbValue;
       }
     } catch (e) {
-      existingAdministered = [];
+      console.error("Error parsing administered:", e);
     }
 
-    // 3. Merge with new timestamps (ensure we have an array)
-    const newAdministered = Array.isArray(administered)
+    // 3. Prepare new timestamps (ensure array)
+    const newTimestamps = Array.isArray(administered)
       ? administered
       : [administered];
-    const combinedAdministered = [...existingAdministered, ...newAdministered]
-      .filter((t) => t) // Remove any null/undefined
-      .filter((t, i, arr) => arr.indexOf(t) === i); // Remove duplicates
 
-    // 4. Update medication
-    const updateResult = await db.query(
+    // 4. Merge and deduplicate
+    const allTimestamps = [...existingTimestamps, ...newTimestamps]
+      .filter((t) => t) // remove empty
+      .filter((t, i, arr) => arr.indexOf(t) === i); // remove duplicates
+
+    // 5. Update database
+    const result = await db.query(
       `UPDATE medications 
-       SET name = $1, dosage = $2, frequency = $3, administered = $4 
-       WHERE id = $5 
+       SET name = $1, dosage = $2, frequency = $3, administered = $4
+       WHERE id = $5
        RETURNING *`,
       [
-        name || currentMed.name,
-        dosage || currentMed.dosage,
-        frequency || currentMed.frequency,
-        JSON.stringify(combinedAdministered),
+        name || current.rows[0].name,
+        dosage || current.rows[0].dosage,
+        frequency || current.rows[0].frequency,
+        JSON.stringify(allTimestamps),
         medId,
       ]
     );
 
-    const updatedMed = updateResult.rows[0];
-    updatedMed.administered = combinedAdministered; // Already parsed
+    // 6. Return updated medication with parsed administered
+    const updatedMed = result.rows[0];
+    updatedMed.administered = allTimestamps; // Already parsed
 
     res.json(updatedMed);
   } catch (err) {
