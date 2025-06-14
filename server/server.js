@@ -401,7 +401,7 @@ app.delete("/api/medications/:medId", async (req, res) => {
   if (isNaN(medId)) {
     return res.status(400).json({
       success: false,
-      message: "Invalid medication ID",
+      message: "Неверный ID назначения",
     });
   }
 
@@ -414,20 +414,20 @@ app.delete("/api/medications/:medId", async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({
         success: false,
-        message: "Medication not found",
+        message: "Назначение не найдено",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Medication deleted",
+      message: "Назначение удалено",
       medication: result.rows[0],
     });
   } catch (err) {
-    console.error("Error deleting medication:", err);
+    console.error("Ошибка при удалении назначений:", err);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Внутренняя ошибка сервера",
       error: err.message,
     });
   }
