@@ -360,7 +360,7 @@ export const SearchResults = () => {
                         }}
                     />
 
-                    <Button text="Печать" onClick={handlePrint} />
+                    <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
                 </div>
 
                 <Button text="Назад на главную" onClick={() => navigate('/')} />
