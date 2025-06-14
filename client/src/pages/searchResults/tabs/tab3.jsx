@@ -15,12 +15,12 @@ export const Tab3 = ({
         <div className={styles.info}>
             <div className={styles.bg} style={{ padding: '20px' }}>
                 <h3>Назначения</h3>
-                {console.log(assignments)}
                 {assignments.length === 0 && !isEditingAssignments && (
                     <p>Нет назначений</p>
                 )}
                 {isEditingAssignments && (
                     <>
+                        {console.log(assignments)}
                         <button
                             onClick={() => {
                                 setAssignments([...assignments, {
