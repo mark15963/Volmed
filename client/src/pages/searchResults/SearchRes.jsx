@@ -348,6 +348,7 @@ export const SearchResults = () => {
             setAssignments={setAssignments}
             data={data}
             handleSaveAssignments={handleSaveAssignments}
+            messageApi={messageApi}
         />
     ]
 
