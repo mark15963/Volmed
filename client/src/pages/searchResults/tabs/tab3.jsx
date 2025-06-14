@@ -110,15 +110,15 @@ export const Tab3 = ({
                                                         }
 
                                                         const newTimestamp = new Date().toISOString();
+
                                                         current.administered.push(newTimestamp);
-                                                        console.log(current.administered)
                                                         setAssignments(newList)
 
                                                         const payload = {
                                                             name: current.name,
                                                             dosage: current.dosage,
                                                             frequency: current.frequency,
-                                                            administered: current.administered
+                                                            administered: current.administered[newTimestamp]
                                                         };
 
                                                         const response = await axios.put(
@@ -126,13 +126,9 @@ export const Tab3 = ({
                                                             payload
                                                         );
 
-                                                        console.log(response.data)
-
-                                                        if (response.data) {
-                                                            console.log('Введение успешно отмечено');
-                                                        } else {
-                                                            throw new Error('No response data');
-                                                        }
+                                                        const updatedList = [...assignments];
+                                                        updatedList[index] = response.data;
+                                                        setAssignments(updatedList);
 
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
