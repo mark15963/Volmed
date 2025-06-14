@@ -4,14 +4,12 @@ import styles from '../searchResults.module.css';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://volmed-backend.onrender.com';
-axios.defaults.withCredentials = true;  // Only if using cookies/sessions
+axios.defaults.withCredentials = true;
 
 export const Tab3 = ({
     assignments,
     isEditingAssignments,
     setAssignments,
-    data,
-    handleSaveAssignments,
 }) => {
     return (
         <div className={styles.info}>
@@ -28,7 +26,6 @@ export const Tab3 = ({
                                     name: '',
                                     dosage: '',
                                     frequency: '',
-                                    // administered: [],
                                     createdAt: new Date().toISOString()
                                 }]);
                             }}
@@ -45,7 +42,6 @@ export const Tab3 = ({
                                     <th style={{ width: '30%', textAlign: 'center' }}>Препарат / Манипуляция</th>
                                     <th style={{ width: '15%', textAlign: 'center' }}>Дозировка</th>
                                     <th style={{ width: '10%', textAlign: 'center' }}>Частота</th>
-                                    {/* <th style={{ width: '25%', textAlign: 'center' }}>Отмечено медсестрой</th> */}
                                     {isEditingAssignments && <th style={{ width: '15%' }}>Удалить</th>}
                                 </tr>
                             </thead>
@@ -94,116 +90,6 @@ export const Tab3 = ({
                                                 />
                                             ) : item.frequency}
                                         </td>
-                                        {/* <td style={{ width: '25%', display: 'flex' }}>
-                                            <button
-                                                style={{
-                                                    width: 'fit-content', height: 'fit-content', padding: '1px 5px',
-                                                    fontSize: '12px'
-                                                }}
-                                                onClick={async () => {
-                                                    try {
-                                                        const newTimestamp = new Date().toISOString();
-
-                                                        const newList = [...assignments];
-                                                        const current = newList[index];
-
-                                                        if (!Array.isArray(current.administered)) {
-                                                            current.administered = [];
-                                                        }
-
-                                                        if (!current.administered.includes(newTimestamp)) {
-                                                            current.administered = [...current.administered, newTimestamp];
-                                                            setAssignments(newList);
-                                                        }
-
-                                                        const payload = {
-                                                            name: current.name,
-                                                            dosage: current.dosage,
-                                                            frequency: current.frequency,
-                                                            administered: newTimestamp
-                                                        };
-
-                                                        console.log('Sending payload:', payload);
-
-                                                        const response = await axios.put(
-                                                            `https://volmed-backend.onrender.com/api/medications/${current.id}`,
-                                                            payload
-                                                        );
-
-                                                        console.log('Backend response:', response.data);
-
-                                                        if (response.data?.administered) {
-                                                            const updatedList = [...assignments];
-                                                            updatedList[index] = {
-                                                                ...updatedList[index],
-                                                                administered: response.data.administered
-                                                            };
-                                                            setAssignments(updatedList);
-                                                        }
-
-                                                    } catch (error) {
-                                                        console.error("Error marking as administered:", error);
-
-                                                        setAssignments([...assignments]);
-
-                                                    }
-                                                }}
-                                            >
-                                                Отметить
-                                            </button>
-                                            <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: '5px', height: 'fit-content' }}>
-                                                {Array.isArray(item.administered) && item.administered.map((time, i) => (
-                                                    <li key={i} style={{ display: 'flex', alignItems: 'center', fontSize: '10px' }}>
-                                                        <span style={{ fontSize: '10px' }}>{moment(time).format('DD.MM.YY HH:mm')}</span>
-                                                        {isEditingAssignments && (
-                                                            <button
-                                                                onClick={async () => {
-                                                                    try {
-                                                                        const newList = [...assignments];
-                                                                        newList[index].administered.splice(i, 1);
-                                                                        setAssignments(newList);
-
-                                                                        const current = newList[index]
-                                                                        const payload = {
-                                                                            name: current.name,
-                                                                            dosage: current.dosage,
-                                                                            frequency: current.frequency,
-                                                                            administered: current.administered
-                                                                        };
-                                                                        const response = await axios.put(
-                                                                            `https://volmed-backend.onrender.com/api/medications/${current.id}`,
-                                                                            payload
-                                                                        );
-
-                                                                        // 4. Verify update was successful
-                                                                        if (!response.data) {
-                                                                            throw new Error('Failed to update backend');
-                                                                        }
-
-                                                                    } catch (error) {
-                                                                        console.error("Error deleting timestamp:", error);
-                                                                        // Revert UI if API call fails
-                                                                        setAssignments([...assignments]);
-                                                                    }
-                                                                }}
-                                                                style={{
-                                                                    marginLeft: '5px',
-                                                                    fontSize: '10px',
-                                                                    padding: '2px 4px',
-                                                                    color: 'red',
-                                                                    border: 'none',
-                                                                    background: 'transparent',
-                                                                    cursor: 'pointer'
-                                                                }}
-                                                                title="Удалить отметку"
-                                                            >
-                                                                ✕
-                                                            </button>
-                                                        )}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </td> */}
                                         {isEditingAssignments && (
                                             <td style={{ width: '15%' }}>
                                                 <button
@@ -211,9 +97,7 @@ export const Tab3 = ({
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
                                                         console.log("Attempting to delete medication:", itemToDelete);
-
                                                         try {
-                                                            // Only call API if it's an existing medication (has ID)
                                                             if (itemToDelete.id) {
                                                                 console.log("Calling API to delete medication ID:", itemToDelete.id);
 
@@ -227,8 +111,6 @@ export const Tab3 = ({
                                                                     throw new Error(response.data.message || "API returned unsuccessful");
                                                                 }
                                                             }
-
-                                                            // Update local state in either case
                                                             const newList = assignments.filter((_, i) => i !== index);
                                                             setAssignments(newList);
 
