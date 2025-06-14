@@ -217,38 +217,6 @@ export const SearchResults = () => {
                 // Debug: log raw response
                 console.log('Medications response:', response.data);
 
-                // const medications = response.data.map(item => {
-                //     // Ensure administered is always an array
-                //     let administered = [];
-                //     if (item.administered) {
-                //         if (Array.isArray(item.administered)) {
-                //             administered = item.administered;
-                //         } else if (typeof item.administered === 'string') {
-                //             try {
-                //                 administered = JSON.parse(item.administered);
-                //             } catch (e) {
-                //                 console.error('Failed to parse administered:', item.administered);
-                //                 // Fallback: try to extract timestamps
-                //                 if (item.administered.includes('"')) {
-                //                     administered = item.administered.match(/"([^"]+)"/g)
-                //                         .map(s => s.replace(/"/g, ''));
-                //                 }
-                //             }
-                //         }
-                //     }
-
-                //     return {
-                //         ...item,
-                //         administered: Array.isArray(administered) ? administered : []
-                //     };
-                // });
-
-                // Debug: log processed medications
-                console.log('Processed medications:', medications);
-
-                setAssignments(medications.sort((a, b) =>
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                ));
             } catch (error) {
                 console.error('Error fetching medications:', error);
             }
@@ -266,7 +234,6 @@ export const SearchResults = () => {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
-                    // administered: Array.isArray(item.administered) ? item.administered : []
                 };
                 console.log("Payload:", payload);
 
@@ -346,8 +313,6 @@ export const SearchResults = () => {
             assignments={assignments}
             isEditingAssignments={isEditingAssignments}
             setAssignments={setAssignments}
-            data={data}
-            handleSaveAssignments={handleSaveAssignments}
         />
     ]
 
