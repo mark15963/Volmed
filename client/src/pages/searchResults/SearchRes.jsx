@@ -257,16 +257,6 @@ export const SearchResults = () => {
                 }
             }
 
-            // Refresh assignments after save
-            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`);
-
-            setAssignments(
-                response.data.map(item => ({
-                    ...item,
-                    administered: Array.isArray(item.administered) ? item.administered : [],
-                }))
-            );
-
             setIsEditingAssignments(false);
             messageApi.success('Назначения успешно сохранены');
 

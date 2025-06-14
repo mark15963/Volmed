@@ -113,9 +113,6 @@ export const Tab3 = ({
                                                         current.administered.push(newTimestamp);
                                                         console.log(current.administered)
 
-                                                        setAssignments(newList);
-                                                        console.log(newList)
-
                                                         const payload = {
                                                             name: current.name,
                                                             dosage: current.dosage,
