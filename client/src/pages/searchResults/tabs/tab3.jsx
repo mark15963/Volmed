@@ -11,7 +11,8 @@ export const Tab3 = ({
     isEditingAssignments,
     setAssignments,
     data,
-    handleSaveAssignments
+    handleSaveAssignments,
+    messageApi
 }) => {
     return (
         <div className={styles.info}>
@@ -180,11 +181,14 @@ export const Tab3 = ({
                                                                         if (!response.data) {
                                                                             throw new Error('Failed to update backend');
                                                                         }
-                                                                        messageApi.success('Отметка удалена');
-
+                                                                        if (messageApi) {
+                                                                            messageApi.success('Отметка удалена');
+                                                                        }
                                                                     } catch (error) {
                                                                         console.error("Error deleting timestamp:", error);
-                                                                        messageApi.error('Ошибка при удалении отметки');
+                                                                        if (messageApi) {
+                                                                            messageApi.error('Ошибка при удалении отметки');
+                                                                        }
                                                                         // Revert UI if API call fails
                                                                         setAssignments([...assignments]);
                                                                     }
