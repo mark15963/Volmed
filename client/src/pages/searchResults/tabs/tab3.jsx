@@ -109,7 +109,8 @@ export const Tab3 = ({
                                                             current.administered = [];
                                                         }
 
-                                                        current.administered.push(new Date().toISOString());
+                                                        const newTimestamp = new Date().toISOString();
+                                                        current.administered.push(newTimestamp);
                                                         console.log(current.administered)
 
                                                         setAssignments(newList);
@@ -119,17 +120,25 @@ export const Tab3 = ({
                                                             name: current.name,
                                                             dosage: current.dosage,
                                                             frequency: current.frequency,
-                                                            administered: current.administered // Include the updated array
+                                                            administered: current.administered
                                                         };
 
-                                                        await axios.put(
+                                                        const response = await axios.put(
                                                             `https://volmed-backend.onrender.com/api/medications/${current.id}`,
                                                             payload
                                                         );
 
+                                                        if (response.data) {
+                                                            console.log('Введение успешно отмечено');
+                                                        } else {
+                                                            throw new Error('No response data');
+                                                        }
+
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
-                                                        messageApi.error('Ошибка при отметке введения');
+                                                        messageApi.error(`Ошибка при отметке введения: ${error.response?.data?.message || error.message}`);
+
+                                                        // Revert local state if API call fails
                                                         setAssignments([...assignments]);
 
                                                     }
