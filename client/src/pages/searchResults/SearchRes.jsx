@@ -214,8 +214,16 @@ export const SearchResults = () => {
                     `https://volmed-backend.onrender.com/api/patients/${data.id}/medications`
                 );
 
-                // Debug: log raw response
-                console.log('Medications response:', response.data);
+                console.log('API response:', response.data);
+
+                const formattedAssignments = response.data.map(med => ({
+                    ...med,
+                    createdAt: med.createdAt || new Date().toISOString()
+                }));
+
+                console.log('Formatted assignments:', formattedAssignments); // Log after formatting
+                setAssignments(formattedAssignments);
+
 
             } catch (error) {
                 console.error('Error fetching medications:', error);
@@ -225,28 +233,31 @@ export const SearchResults = () => {
         fetchMedications();
     }, [data?.id]);
 
+
     const handleSaveAssignments = async () => {
         try {
             console.log("Saving assignments...", assignments);
 
-            for (const item of assignments) {
+            for (const [index, item] of assignments.entries()) {
                 const payload = {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
                 };
-                console.log("Payload:", payload);
+                console.log(`Saving item ${index}:`, payload);
 
                 try {
                     if (item.id) {
                         // Existing medication — update
                         const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
                         console.log("Update response:", response.data);
+                        console.table(assignments);
 
                     } else {
                         // New medication — create
                         const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
                         console.log("Create response:", response.data);
+                        console.table(assignments);
 
                     }
                 } catch (error) {
