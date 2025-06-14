@@ -130,6 +130,8 @@ export const Tab3 = ({
                                                     } catch (error) {
                                                         console.error("Error marking as administered:", error);
                                                         messageApi.error('Ошибка при отметке введения');
+                                                        setAssignments([...assignments]);
+
                                                     }
                                                 }}
                                             >
