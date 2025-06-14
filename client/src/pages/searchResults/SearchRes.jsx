@@ -238,7 +238,7 @@ export const SearchResults = () => {
         try {
             console.log("Saving assignments...", assignments);
 
-            for (const [index, item] of assignments.entries()) {
+            for (const item of assignments) {
                 const payload = {
                     name: item.name,
                     dosage: item.dosage,

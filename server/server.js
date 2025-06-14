@@ -326,39 +326,6 @@ app.get("/api/patients/:id/medications", async (req, res) => {
       [req.params.id]
     );
 
-    // const medications = rows.map((row) => {
-    //   let administered = [];
-
-    //   try {
-    //     // Handle different cases of administered field
-    //     if (row.administered) {
-    //       if (typeof row.administered === "string") {
-    //         // Remove any escaped characters if present
-    //         const cleanString = row.administered.replace(/\\"/g, '"');
-    //         // Parse JSON if it's a JSON string
-    //         if (cleanString.startsWith("[") || cleanString.startsWith('"')) {
-    //           administered = JSON.parse(cleanString);
-    //         } else {
-    //           // Handle case where it might be a single timestamp
-    //           administered = [cleanString].filter(Boolean);
-    //         }
-    //       } else if (Array.isArray(row.administered)) {
-    //         administered = row.administered;
-    //       }
-    //     }
-    //   } catch (e) {
-    //     console.error(
-    //       `Error parsing administered for medication ${row.id}:`,
-    //       e
-    //     );
-    //   }
-
-    //   return {
-    //     ...row,
-    //     administered: Array.isArray(administered) ? administered : [],
-    //   };
-    // });
-
     res.json(rows);
   } catch (e) {
     console.error(e);
@@ -372,7 +339,6 @@ app.post("/api/patients/:id/medications", async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const adminJSON = JSON.stringify(administered || []);
   const q = `
     INSERT INTO medications (patient_id, name, dosage, frequency)
     VALUES ($1,$2,$3,$4) RETURNING id
@@ -406,8 +372,8 @@ app.put("/api/medications/:medId", async (req, res) => {
 
     const result = await db.query(
       `UPDATE medications 
-       SET name = $1, dosage = $2, frequency = $3, administered = $4
-       WHERE id = $5
+       SET name = $1, dosage = $2, frequency = $3
+       WHERE id = $4
        RETURNING *`,
       [
         name || current.rows[0].name,
