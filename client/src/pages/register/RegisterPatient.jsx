@@ -79,19 +79,19 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 ...formValues,
                 birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null,
                 diag: formValues.diag,
-                phone: `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`,
+                phone: formValues.phone
+                    ? `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`
+                    : '',
             };
 
             let response
             let url = 'https://volmed-backend.onrender.com/api/patients'
 
             if (isEditMode && patientId) {
-                response = await axios.put(`${url}/${patientId}`, formattedValues, {
-                });
+                response = await axios.put(`${url}/${patientId}`, formattedValues);
                 console.log('Изменение данных:', formattedValues)
             } else {
-                response = await axios.post(url, formattedValues, {
-                });
+                response = await axios.post(`${url}`, formattedValues);
                 console.log('Новый пациент:', formattedValues)
             }
 
