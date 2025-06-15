@@ -78,11 +78,26 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
             const formattedValues = {
                 ...formValues,
+                patr: formValues.patr || "",
                 birthDate: formValues.birthDate ? formValues.birthDate.format('YYYY-MM-DD') : null,
-                diag: formValues.diag,
                 phone: formValues.phone
                     ? `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`
                     : '',
+                email: formValues.email || "",
+                address: formValues.address || "",
+                complaint: formValues.complaint || "",
+                anam: formValues.anam || "",
+                life: formValues.life || "",
+                status: formValues.status || "",
+                diag: formValues.diag || "",
+                mkb: formValues.mkb || "",
+                sop_zab: formValues.sop_zab || "",
+                rec: formValues.rec || "",
+                statusReport: formValues.statusReport || "",
+                locStat: formValues.locStat || "",
+                report: formValues.report || "",
+                state: formValues.state || "",
+
             };
             console.log("Sending to server:", formattedValues);
 
