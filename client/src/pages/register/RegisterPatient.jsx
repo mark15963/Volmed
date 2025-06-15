@@ -347,7 +347,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                                 const newDiag = `${option.label};\n${currentDiag}`.trim()
                                                 form.setFieldsValue({
                                                     diag: newDiag,
-                                                    mkb: undefined,
+                                                    mkb: value,
                                                 })
                                             }}
                                             notFoundContent={mkbFetching ? 'Поиск...' : 'Ничего не найдено'}
