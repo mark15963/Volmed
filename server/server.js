@@ -192,10 +192,13 @@ app.get("/api/patient-count", async (req, res) => {
 // Add a new patient
 app.post("/api/patients", async (req, res) => {
   const newP = req.body;
-  const keys = Object.keys(newP),
-    values = Object.values(newP);
+  const keys = Object.keys(newP);
+  const values = Object.values(newP);
+
+  const quotedKeys = keys.map((key) => `"${key}"`);
   const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
-  const q = `INSERT INTO patients (${keys.join(
+
+  const q = `INSERT INTO patients (${quotedKeys.join(
     ","
   )}) VALUES (${placeholders}) RETURNING *`;
 
