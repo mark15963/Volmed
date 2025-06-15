@@ -71,6 +71,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     }, [initialValues, form]);
 
     const onFinish = async (formValues) => {
+
         try {
             setIsLoading(true);
             setError('');
@@ -83,16 +84,20 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                     ? `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`
                     : '',
             };
+            console.log("Sending to server:", formattedValues);
 
             let response
-            let url = 'https://volmed-backend.onrender.com/api/patients'
 
             if (isEditMode && patientId) {
-                response = await axios.put(`${url}/${patientId}`, formattedValues);
+                response = await axios.put(`https://volmed-backend.onrender.com/api/patients/${patientId}`, formattedValues);
                 console.log('Изменение данных:', formattedValues)
             } else {
-                response = await axios.post(`${url}`, formattedValues);
-                console.log('Новый пациент:', formattedValues)
+                response = await axios.post(`https://volmed-backend.onrender.com/api/patients`, formattedValues, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('Запись данных:', formattedValues)
             }
 
             const responseData = response.data;
@@ -110,7 +115,12 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
         } catch (err) {
             setError(err.response?.data?.error || err.message);
-            console.error('Registration error:', err);
+            console.error('Registration error:', {
+                message: err.message,
+                response: err.response?.data,
+                status: err.response?.status,
+                fullError: err,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -138,6 +148,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                             form={form}
                             layout="vertical"
                             onFinish={onFinish}
+                            onFinishFailed={(info) => {
+                                console.log('Validation Failed:', info);
+                            }}
                             initialValues={{ sex: 'Мужской' }}
                         >
                             <div className={styles.topForms}>
@@ -146,7 +159,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         label={<span className={styles.formLabel}>Фамилия</span>}
                                         name="lastName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите фамилию' }]}
-
                                     >
                                         <Input />
                                     </Form.Item>
@@ -363,7 +375,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
                                 <div className={styles.buttons}>
                                     <Button
-                                        text={isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'} type='submit'
+                                        text={isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'}
+                                        type='submit'
+
                                     />
 
                                     <Button
