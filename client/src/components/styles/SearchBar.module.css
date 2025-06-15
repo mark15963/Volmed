@@ -73,4 +73,9 @@
     .space{
         width: 0px;
     }
+
+    .searchButton{
+        width: 35px;
+        height: 35px;
+    }
 }
