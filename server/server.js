@@ -56,11 +56,7 @@ app.use(
     secret: "key",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-    },
+    createTableIfMissing: true,
   })
 );
 
@@ -143,7 +139,6 @@ app.use((req, res, next) => {
 
 //-----HOME-----
 app.get("/", (req, res) => {
-  req.session.views = (req.session.values || 0) + 1;
   req.session.isAuth = true;
   console.log(req.session);
   console.log("Session ID:", req.session.id);
@@ -160,7 +155,7 @@ app.get("/", (req, res) => {
     </head>
     <body>
       <h1>VolMed API Server</h1>
-      <p>Server is running successfully!</p>
+      <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
       <p>Frontend: <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}</a></p>
       <p>Cookie data: ${req.session}</p>
       <p>You visited this page ${req.session.views} times</p>
