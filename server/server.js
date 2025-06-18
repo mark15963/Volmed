@@ -153,6 +153,11 @@ app.use((req, res, next) => {
 
 //-----HOME-----
 app.get("/", (req, res) => {
+  console.log(req.session);
+  console.log("Session ID:", req.session.id);
+  const sessionData = req.session
+    ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
+    : "null";
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -168,6 +173,7 @@ app.get("/", (req, res) => {
       <h1>VolMed API Server</h1>
       <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
       <p>Frontend: <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}</a></p>
+      <p>Cookie data: ${sessionData}</p>
       <button onClick="window.location='/login'">Login</button>
       <button onClick="window.location='/register'">Register</button>
     </body>
@@ -314,44 +320,40 @@ app.post("/register", async (req, res) => {
 app.post("/logout", async (req, res) => {
   req.session.destroy((err) => {
     if (err) throw err;
-    // res.redirect("/");
-    res.redirect("http://localhost:5173/login");
+    res.redirect("/");
   });
 });
 
 app.get("/dashboard", isAuth, async (req, res) => {
   try {
-    res.redirect("http://localhost:5173");
-    // res.redirect(process.env.FRONTEND_URL)
-    //   res.send(`
-    //   <!DOCTYPE html>
-    //   <html>
-    //   <head>
-    //     <title>VolMed Server</title>
-    //     <style>
-    //       body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-    //       h1 { color: #2c3e50; }
-    //       .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-    //     </style>
-    //   </head>
-    //   <body>
-    //     <h1>VolMed API Server - DASHBOARD</h1>
-    //     <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
-    //     <p>${req.session.isAuth}</p>
-    //     <form action="/logout" method="POST">
-    //       <button type="submit">Logout</button>
-    //     </form>
-    //     </body>
-    //   </html>
-    // `);
+    const sessionData = req.session
+      ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
+      : "null";
+    res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VolMed Server</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>VolMed API Server - DASHBOARD</h1>
+      <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
+      <p>${sessionData}</p>
+      <form action="/logout" method="POST">
+        <button type="submit">Login</button>
+      </form>
+      </body>
+    </html>
+  `);
   } catch (err) {
     console.error("Dashboard error:", err);
     res.redirect("/login");
   }
-});
-
-app.get("/api/check-auth", (req, res) => {
-  res.json({ isAuthenticated: !!req.session.isAuth });
 });
 
 //-----PATIENTS-----
