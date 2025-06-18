@@ -1,10 +1,10 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
-console.log("Environment variables:", process.env);
-console.log("DB_HOST:", process.env.DB_HOST);
 
-const { Pool } = require("pg");
 const express = require("express");
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
+const { Pool } = require("pg");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
@@ -46,6 +46,23 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    store: new pgSession({
+      pool: db,
+      tableName: "users",
+    }),
+    secret: "key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+    },
+  })
+);
 
 app.use((req, res, next) => {
   req.setTimeout(30000, () => {
@@ -126,6 +143,10 @@ app.use((req, res, next) => {
 
 //-----HOME-----
 app.get("/", (req, res) => {
+  req.session.views = (req.session.values || 0) + 1;
+  req.session.isAuth = true;
+  console.log(req.session);
+  console.log("Session ID:", req.session.id);
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -141,6 +162,8 @@ app.get("/", (req, res) => {
       <h1>VolMed API Server</h1>
       <p>Server is running successfully!</p>
       <p>Frontend: <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}</a></p>
+      <p>Cookie data: ${req.session}</p>
+      <p>You visited this page ${req.session.views} times</p>
     </body>
     </html>
   `);
