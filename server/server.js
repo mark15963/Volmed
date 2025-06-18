@@ -32,6 +32,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.104:5173",
   "https://volmed-o4s0.onrender.com",
+  "https://volmed-backend.onrender.com",
   process.env.FRONTEND_URL,
 ];
 
