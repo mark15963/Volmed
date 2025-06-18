@@ -252,6 +252,7 @@ app.post("/login", async (req, res) => {
   }
 
   req.session.isAuth = true;
+  req.session.user = user.username;
   res.redirect("/dashboard");
 });
 
@@ -343,9 +344,10 @@ app.get("/dashboard", isAuth, async (req, res) => {
     <body>
       <h1>VolMed API Server - DASHBOARD</h1>
       <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
-      <p>${sessionData}</p>
+      <p>Authentication: ${req.session.isAuth}</p>
+      <p>User: ${req.session.user}</p>
       <form action="/logout" method="POST">
-        <button type="submit">Login</button>
+        <button type="submit">Logout</button>
       </form>
       </body>
     </html>
