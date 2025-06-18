@@ -5,6 +5,9 @@ const express = require("express");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const { Pool } = require("pg");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const User = require("./models/User");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
@@ -25,6 +28,7 @@ const db = new Pool({
 });
 
 const allowedOrigins = [
+  "http://localhost:5000",
   "http://localhost:5173",
   "http://192.168.0.104:5173",
   "https://volmed-o4s0.onrender.com",
@@ -51,14 +55,23 @@ app.use(
   session({
     store: new pgSession({
       pool: db,
-      tableName: "users",
+      // tableName: "users",
+      createTableIfMissing: true,
+      pruneSessionInterval: 60,
     }),
     secret: "key",
     resave: false,
     saveUninitialized: false,
-    createTableIfMissing: true,
   })
 );
+
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
 
 app.use((req, res, next) => {
   req.setTimeout(30000, () => {
@@ -139,9 +152,6 @@ app.use((req, res, next) => {
 
 //-----HOME-----
 app.get("/", (req, res) => {
-  req.session.isAuth = true;
-  console.log(req.session);
-  console.log("Session ID:", req.session.id);
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -157,8 +167,8 @@ app.get("/", (req, res) => {
       <h1>VolMed API Server</h1>
       <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
       <p>Frontend: <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}</a></p>
-      <p>Cookie data: ${req.session}</p>
-      <p>You visited this page ${req.session.views} times</p>
+      <button onClick="window.location='/login'">Login</button>
+      <button onClick="window.location='/register'">Register</button>
     </body>
     </html>
   `);
@@ -170,6 +180,170 @@ app.get("/health", (req, res) => {
     status: "healthy",
     database: db ? "connected" : "disconnected",
   });
+});
+
+//-----AUTH-----
+app.get("/login", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VolMed Server</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>VolMed API Server - LOGIN</h1>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <form action="/login" method="POST">
+          <label htmlFor="username">
+            Username:
+          </label>
+          <input 
+            name="username" 
+            type="text"                                             
+            placeholder="Username"
+          />
+          <br/>
+          <label htmlFor="password">
+            Password:
+          </label>
+          <input 
+            name="password" 
+            type="password"                                             
+            placeholder="Password"
+          />
+          <br/>
+         <button type="submit">Login</button>
+        </form>
+        <a href="/register">Register</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
+    username,
+  ]);
+
+  const user = await User.findByUsername(username);
+
+  if (!user) {
+    return res.redirect("/login");
+  }
+  // console.log("User:", user.username);
+
+  const match = await bcrypt.compare(password, rows[0].password);
+  if (!match) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  req.session.isAuth = true;
+  res.redirect("/dashboard");
+});
+
+app.get("/register", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VolMed Server</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>VolMed API Server - REGISTER</h1>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <form action="/register" method="POST">
+          <label htmlFor="username">
+            Username:
+          </label>
+          <input 
+            type="text"
+            placeholder="Username"
+            name="username"
+          />
+          <br/>
+          <label htmlFor="password">
+            Password:
+          </label>
+          <input 
+            type="password"    
+            placeholder="Password"
+            name="password"
+          />
+          <br/>
+         <button type="submit">Register</button>
+        </form>
+        <a href="/login">Login</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and password required" });
+  }
+
+  const existingUser = await User.findByUsername(username);
+  if (existingUser) {
+    return res.status(400).json({ error: "Username already exists" });
+  }
+
+  const hashedPass = await bcrypt.hash(password, saltRounds);
+  const user = await User.create(username, hashedPass);
+
+  // req.session.userId = user.id;
+  res.redirect("/login");
+});
+
+app.post("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) throw err;
+    res.redirect("/");
+  });
+});
+
+app.get("/dashboard", isAuth, async (req, res) => {
+  try {
+    res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VolMed Server</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>VolMed API Server - DASHBOARD</h1>
+      <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
+      <p>${req.session.isAuth}</p>
+      <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+      </form>
+      </body>
+    </html>
+  `);
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.redirect("/login");
+  }
 });
 
 //-----PATIENTS-----
