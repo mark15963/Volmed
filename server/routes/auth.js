@@ -20,7 +20,13 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
-const { isAuth } = require("../middleware/authMiddleware");
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
 
 router.get("/login", (req, res) => {
   res.send(`
@@ -189,16 +195,14 @@ router.post("/logout", async (req, res) => {
     res.clearCookie("volmed.sid", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
     });
     res.clearCookie("user", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
     });
     res.redirect("/");
   });
@@ -226,9 +230,9 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
       : "null";
 
-    // if (!req.cookies.user) {
-    //   return res.redirect("/login");
-    // }
+    if (!req.cookies.user) {
+      return res.redirect("/login");
+    }
 
     res.send(`
     <!DOCTYPE html>
