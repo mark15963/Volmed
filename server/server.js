@@ -19,9 +19,10 @@ const db = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000,
   idleTimeoutMillis: 30000,
-  max: 10,
+  max: 20,
+  allowExitOnIdle: true,
 });
 
 const allowedOrigins =
@@ -95,31 +96,37 @@ app.use((req, res, next) => {
   next();
 });
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
-    name: "session",
+    name: "volmed.sid",
     store: new pgSession({
       pool: db,
       createTableIfMissing: true,
       pruneSessionInterval: 60,
+      errorLog: console.error, // Add error logging
     }),
-    secret: process.env.SESSION_SECRET || "your-strong-secret-key", // Use env variable,
-    // secret: true,
+    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      // secure: true,
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Important for cross-site
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60, // 1 hour
       domain:
-        process.env.NODE_ENV === "production"
-          ? process.env.COOKIE_DOMAIN
-          : "localhost", // Set your domain
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
     },
   })
 );
+
+app.use((req, res, next) => {
+  console.log("Session ID:", req.sessionID);
+  console.log("Session data:", req.session);
+  console.log("Cookies:", req.cookies);
+  next();
+});
 
 app.use(cookieParser());
 app.use(routes);
