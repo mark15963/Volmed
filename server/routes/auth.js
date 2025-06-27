@@ -94,7 +94,6 @@ router.post("/login", async (req, res) => {
       req.session.user = user.username;
       req.session.firstName = user.firstName || "undefined";
       req.session.lastName = user.lastName || "undefined";
-      // res.cookie("user", user.username, { maxAge: 1000 * 60 * 5 });
 
       // Save the session before redirect
       req.session.save((err) => {
