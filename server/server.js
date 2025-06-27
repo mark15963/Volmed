@@ -25,6 +25,37 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
+app.use(cookieParser());
+app.set("trust proxy", 1);
+app.use(
+  session({
+    name: "volmed.sid",
+    store: new pgSession({
+      pool: db,
+      createTableIfMissing: true,
+      pruneSessionInterval: 60,
+      errorLog: console.error, // Add error logging
+    }),
+    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60, // 1 hour
+      domain:
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
+    },
+  })
+);
+app.use((req, res, next) => {
+  console.log("Session ID:", req.sessionID);
+  console.log("Session data:", req.session);
+  console.log("Cookies:", req.cookies);
+  next();
+});
+
 const allowedOrigins =
   process.env.NODE_ENV === "production"
     ? [
@@ -93,37 +124,6 @@ app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
-  next();
-});
-
-app.use(cookieParser());
-app.set("trust proxy", 1);
-app.use(
-  session({
-    name: "volmed.sid",
-    store: new pgSession({
-      pool: db,
-      createTableIfMissing: true,
-      pruneSessionInterval: 60,
-      errorLog: console.error, // Add error logging
-    }),
-    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 1000 * 60 * 60, // 1 hour
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
-    },
-  })
-);
-app.use((req, res, next) => {
-  console.log("Session ID:", req.sessionID);
-  console.log("Session data:", req.session);
-  console.log("Cookies:", req.cookies);
   next();
 });
 
