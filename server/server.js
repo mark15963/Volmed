@@ -103,8 +103,8 @@ app.use(
       createTableIfMissing: true,
       pruneSessionInterval: 60,
     }),
-    // secret: process.env.SESSION_SECRET || "your-strong-secret-key", // Use env variable,
-    secret: true,
+    secret: process.env.SESSION_SECRET || "your-strong-secret-key", // Use env variable,
+    // secret: true,
     resave: false,
     saveUninitialized: false,
     cookie: {
