@@ -109,19 +109,7 @@ router.post("/login", async (req, res) => {
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
         });
-        // return res.redirect("/dashboard");
-        // res.status(200).json({ success: true });
-        res.setHeader("Content-Type", "text/html");
-        res.send(`
-          <html>
-            <head>
-              <meta http-equiv="refresh" content="0; url=/dashboard" />
-            </head>
-            <body>
-              <p>Login successful. Redirecting...</p>
-            </body>
-          </html>
-        `);
+        return res.redirect("/dashboard");
       });
     });
   } catch (error) {
@@ -201,14 +189,16 @@ router.post("/logout", async (req, res) => {
     res.clearCookie("volmed.sid", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     });
     res.clearCookie("user", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     });
     res.redirect("/");
   });
