@@ -88,12 +88,14 @@ router.post("/login", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
       }
 
+      // Set session
       req.session.isAuth = true;
       req.session.user = user.username;
       req.session.firstName = user.firstName || "undefined";
       req.session.lastName = user.lastName || "undefined";
       // res.cookie("user", user.username, { maxAge: 1000 * 60 * 5 });
 
+      // Save the session before redirect
       req.session.save((err) => {
         if (err) {
           console.error("Session save error:", err);
@@ -106,12 +108,12 @@ router.post("/login", async (req, res) => {
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24, // 1 day
-          domain:
-            process.env.NODE_ENV === "production"
-              ? process.env.COOKIE_DOMAIN
-              : "localhost",
+          // domain:
+          //   process.env.NODE_ENV === "production"
+          //     ? process.env.COOKIE_DOMAIN
+          //     : "localhost",
         });
-        res.redirect("/dashboard");
+        return res.redirect("/dashboard");
       });
     });
   } catch (error) {
@@ -228,9 +230,9 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
       : "null";
 
-    // if (!req.cookies.user) {
-    //   return res.redirect("/login");
-    // }
+    if (!req.cookies.user) {
+      return res.redirect("/login");
+    }
 
     res.send(`
     <!DOCTYPE html>
