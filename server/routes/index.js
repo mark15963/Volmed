@@ -41,7 +41,7 @@ router.get("/", (req, res) => {
         <p>Logged in: ${
           req.session.isAuth && req.cookies.user ? req.session.isAuth : false
         }</p>
-        <button onClick="window.location='/dashboard'">Dashboard</button>
+        <button onClick="window.location.pathname='/dashboard'">Dashboard</button>
     </body>
     </html>
   `);
