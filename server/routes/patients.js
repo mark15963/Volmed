@@ -6,7 +6,14 @@ const multer = require("multer");
 const fs = require("fs");
 const fsp = fs.promises;
 const router = Router();
-const { isAuth } = require("../middleware/authMiddleware");
+
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
