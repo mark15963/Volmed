@@ -195,13 +195,13 @@ router.post("/logout", async (req, res) => {
     res.clearCookie("volmed.sid", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
     res.clearCookie("user", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
     res.redirect("/");
