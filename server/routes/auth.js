@@ -228,9 +228,9 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
       : "null";
 
-    if (!req.cookies.user) {
-      return res.redirect("/login");
-    }
+    // if (!req.cookies.user) {
+    //   return res.redirect("/login");
+    // }
 
     res.send(`
     <!DOCTYPE html>
