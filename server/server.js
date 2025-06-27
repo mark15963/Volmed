@@ -46,6 +46,7 @@ app.use(
       maxAge: 1000 * 60 * 60, // 1 hour
       // domain: ".onrender.com",
     },
+    proxy: true,
   })
 );
 app.use((req, res, next) => {
