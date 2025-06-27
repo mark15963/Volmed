@@ -29,7 +29,7 @@ const User = {
 
       return rows[0] || null;
     } catch (err) {
-      console.error("Database error in findByUsername:", error);
+      console.error("Database error in findByUsername:", err);
     }
   },
 };
