@@ -108,16 +108,15 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      // secure: process.env.NODE_ENV === "production",
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      // secure: true,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Important for cross-site
       maxAge: 1000 * 60 * 60, // 1 hour
-      // domain:
-      //   process.env.NODE_ENV === "production"
-      //     ? process.env.COOKIE_DOMAIN
-      //     : "localhost", // Set your domain
-      domain: process.env.COOKIE_DOMAIN || ".onrender.com", // Leading dot for subdomains
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.COOKIE_DOMAIN
+          : "localhost", // Set your domain
     },
   })
 );
