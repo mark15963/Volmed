@@ -98,8 +98,9 @@ router.post("/login", async (req, res) => {
       // Set session
       req.session.isAuth = true;
       req.session.user = user.username;
-      req.session.firstName = user.firstName || "undefined";
-      req.session.lastName = user.lastName || "undefined";
+      req.session.firstName = user.firstName || "Undefined";
+      req.session.lastName = user.lastName || "Undefined";
+      req.session.status = user.status || "Undefined";
 
       // Save the session before redirect
       req.session.save((err) => {
@@ -247,11 +248,19 @@ router.get("/dashboard", isAuth, async (req, res) => {
     </head>
     <body>
       <h1>VolMed API Server - DASHBOARD</h1>
+      
       <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
+      
       <p>Authentication: ${req.session.isAuth}</p>
+      
       <p>User: ${req.session.user}</p>
+      
       <p>Name: ${req.session.lastName} ${req.session.firstName}</p>
+      
+      <p>Status: ${req.session.status}</p>
+
       <p>Session data: ${sessionData}</p>
+      
       <button onClick="window.location='/'">Home</button>
       <form action="/logout" method="POST">
         <button type="submit">Logout</button>

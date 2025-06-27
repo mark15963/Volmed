@@ -27,20 +27,21 @@ router.get("/", (req, res) => {
     <body>
         <h1>VolMed API Server</h1>
         <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
+        
         <p>Frontend: 
             <a href="${process.env.FRONTEND_URL}">
                 ${process.env.FRONTEND_URL}
             </a>
         </p>
-        <p>Cookie data: ${
-          req.session.isAuth && req.cookies.user ? sessionData : undefined
-        }</p>
-        <p>Cookie parsed data: ${
-          req.session.isAuth && req.cookies.user ? req.cookies.user : "N/A"
-        }</p>
+        
         <p>Logged in: ${
           req.session.isAuth && req.cookies.user ? req.session.isAuth : false
         }</p>
+        
+        <p>Logged user: ${
+          req.session.isAuth && req.cookies.user ? req.cookies.user : "None"
+        }</p>
+        
         <button onClick="window.location.pathname='/dashboard'">Dashboard</button>
     </body>
     </html>
