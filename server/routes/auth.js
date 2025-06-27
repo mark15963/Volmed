@@ -108,12 +108,9 @@ router.post("/login", async (req, res) => {
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
-          // domain:
-          //   process.env.NODE_ENV === "production"
-          //     ? process.env.COOKIE_DOMAIN
-          //     : undefined,
         });
-        return res.redirect("/dashboard");
+        // return res.redirect("/dashboard");
+        res.status(200).json({ success: true });
       });
     });
   } catch (error) {
@@ -190,19 +187,17 @@ router.post("/logout", async (req, res) => {
       console.error("Logout error:", err);
       return res.status(500).json({ error: "Logout failed" });
     }
-    res.clearCookie("session", {
+    res.clearCookie("volmed.sid", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production"
-          ? "https://volmed-o4s0.onrender.com/"
-          : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+      secure: process.env.NODE_ENV === "production",
     });
     res.clearCookie("user", {
       path: "/",
       domain:
-        process.env.NODE_ENV === "production"
-          ? "https://volmed-o4s0.onrender.com/"
-          : undefined,
+        process.env.NODE_ENV === "production" ? ".onrender.com/" : undefined,
+      secure: process.env.NODE_ENV === "production",
     });
     res.redirect("/");
   });
