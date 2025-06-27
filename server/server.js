@@ -7,6 +7,8 @@ const cors = require("cors");
 const { exec } = require("child_process");
 
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
 const routes = require("./routes/index");
 
 const app = express();
@@ -22,14 +24,18 @@ const db = new Pool({
   max: 10,
 });
 
-const allowedOrigins = [
-  "http://localhost:5000",
-  "http://localhost:5173",
-  "http://192.168.0.104:5173",
-  "https://volmed-o4s0.onrender.com",
-  "https://volmed-backend.onrender.com",
-  process.env.FRONTEND_URL,
-];
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? [
+        "https://volmed-o4s0.onrender.com",
+        "https://volmed-backend.onrender.com",
+        process.env.FRONTEND_URL,
+      ]
+    : [
+        "http://localhost:5173",
+        "http://192.168.0.104:5173",
+        "http://localhost:5000",
+      ];
 
 app.use(
   cors({
@@ -41,6 +47,9 @@ app.use(
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"], // Expose cookies to frontend
   })
 );
 
@@ -85,6 +94,30 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(
+  session({
+    name: "session",
+    store: new pgSession({
+      pool: db,
+      createTableIfMissing: true,
+      pruneSessionInterval: 60,
+    }),
+    secret: process.env.SESSION_SECRET || "your-strong-secret-key", // Use env variable,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Important for cross-site
+      maxAge: 1000 * 60 * 60, // 1 hour
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.COOKIE_DOMAIN
+          : "localhost", // Set your domain
+    },
+  })
+);
 
 app.use(cookieParser());
 app.use(routes);

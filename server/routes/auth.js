@@ -19,33 +19,6 @@ const db = new Pool({
   max: 10,
 });
 
-router.use(
-  session({
-    name: "session",
-    store: new pgSession({
-      pool: db,
-      // tableName: "users",
-      createTableIfMissing: true,
-      pruneSessionInterval: 60,
-    }),
-    secret: "key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60, // 1 hour
-    },
-  })
-);
-
-// const isAuth = (req, res, next) => {
-//   if (req.session.isAuth) {
-//     next();
-//   } else {
-//     res.redirect("/login");
-//   }
-// };
-
 const { isAuth } = require("../middleware/authMiddleware");
 
 router.get("/login", (req, res) => {
@@ -93,27 +66,42 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
-    username,
-  ]);
+  try {
+    const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
 
-  const user = await User.findByUsername(username);
+    const user = await User.findByUsername(username);
 
-  if (!user) {
-    return res.redirect("/login");
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    const match = await bcrypt.compare(password, rows[0].password);
+    if (!match) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    req.session.isAuth = true;
+    req.session.user = user.username;
+    req.session.firstName = user.firstName || "undefined";
+    req.session.lastName = user.lastName || "undefined";
+    // res.cookie("user", user.username, { maxAge: 1000 * 60 * 5 });
+    res.cookie("user", user.username, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.COOKIE_DOMAIN
+          : "localhost",
+    });
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  const match = await bcrypt.compare(password, rows[0].password);
-  if (!match) {
-    return res.status(401).json({ error: "Invalid credentials" });
-  }
-
-  req.session.isAuth = true;
-  req.session.user = user.username;
-  req.session.firstName = user.firstName || "undefined";
-  req.session.lastName = user.lastName || "undefined";
-  res.cookie("user", user.username, { maxAge: 1000 * 60 * 5 });
-  res.redirect("/dashboard");
 });
 
 router.get("/register", (req, res) => {
@@ -180,8 +168,38 @@ router.post("/register", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   req.session.destroy((err) => {
-    if (err) throw err;
+    if (err) {
+      console.error("Logout error:", err);
+      return res.status(500).json({ error: "Logout failed" });
+    }
+    res.clearCookie("session", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? "https://volmed-o4s0.onrender.com/"
+          : undefined,
+    });
+    res.clearCookie("user", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? "https://volmed-o4s0.onrender.com/"
+          : undefined,
+    });
     res.redirect("/");
+  });
+});
+
+router.get("/api/auth/status", (req, res) => {
+  res.json({
+    isAuthenticated: !!req.session.isAuth,
+    user: req.session.user
+      ? {
+          username: req.session.user,
+          firstName: req.session.firstName,
+          lastName: req.session.lastName,
+        }
+      : null,
   });
 });
 
