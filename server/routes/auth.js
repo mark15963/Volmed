@@ -110,7 +110,18 @@ router.post("/login", async (req, res) => {
           maxAge: 1000 * 60 * 60 * 24,
         });
         // return res.redirect("/dashboard");
-        res.status(200).json({ success: true });
+        // res.status(200).json({ success: true });
+        res.setHeader("Content-Type", "text/html");
+        res.send(`
+          <html>
+            <head>
+              <meta http-equiv="refresh" content="0; url=/dashboard" />
+            </head>
+            <body>
+              <p>Login successful. Redirecting...</p>
+            </body>
+          </html>
+        `);
       });
     });
   } catch (error) {
@@ -225,9 +236,9 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
       : "null";
 
-    if (!req.cookies.user) {
-      return res.redirect("/login");
-    }
+    // if (!req.cookies.user) {
+    //   return res.redirect("/login");
+    // }
 
     res.send(`
     <!DOCTYPE html>
