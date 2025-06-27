@@ -105,15 +105,13 @@ router.post("/login", async (req, res) => {
         // Set cookie
         res.cookie("user", user.username, {
           httpOnly: true,
-          // secure: process.env.NODE_ENV === "production",
-          secure: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24, // 1 day
-          // domain:
-          //   process.env.NODE_ENV === "production"
-          //     ? process.env.COOKIE_DOMAIN
-          //     : "localhost",
-          domain: ".onrender.com", // Note the leading dot
+          domain:
+            process.env.NODE_ENV === "production"
+              ? process.env.COOKIE_DOMAIN
+              : "localhost",
         });
         return res.redirect("/dashboard");
       });
