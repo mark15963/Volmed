@@ -60,8 +60,11 @@ export const Footer = () => {
     const navigate = useNavigate();
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
-        username: '',
         isLoading: true,
+        username: '',
+        lastName: '',
+        firstName: '',
+        status: '',
     });
 
     const yearText = year > 2025
@@ -81,16 +84,22 @@ export const Footer = () => {
 
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
+                isLoading: false,
                 username: response.data.user?.username || '',
-                isLoading: false
+                lastName: response.data.user?.lastName || '',
+                firstName: response.data.user?.firstName || '',
+                status: response.data.user?.status || '',
             });
 
         } catch (error) {
             console.error("Auth check error:", error);
             setAuthState({
                 isAuthenticated: false,
+                isLoading: false,
                 username: '',
-                isLoading: false
+                lastName: '',
+                firstName: '',
+                status: '',
             });
         }
     };
@@ -145,7 +154,7 @@ export const Footer = () => {
                 </span> */}
                 <span style={{ margin: '0 10px' }}>
                     {authState.isAuthenticated && authState.user ? (
-                        `${authState.user.lastName} ${authState.user.firstName} (${authState.user.status})`
+                        `${authState.user.status} ${authState.user.lastName} ${authState.user.firstName} `
                     ) : 'Not logged in'}
                 </span>
                 {authState.isAuthenticated ? (

@@ -112,8 +112,8 @@ router.post("/login", async (req, res) => {
       // Set session
       req.session.isAuth = true;
       req.session.user = user.username;
-      req.session.firstName = user.firstName || "Undefined";
       req.session.lastName = user.lastName || "Undefined";
+      req.session.firstName = user.firstName || "Undefined";
       req.session.status = user.status || "Undefined";
 
       // Save the session before redirect
