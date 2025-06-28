@@ -9,6 +9,8 @@ const { Pool } = require("pg");
 
 const router = Router();
 
+const { allowedOrigins } = require("../server.js");
+
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -72,10 +74,12 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    req.headers.origin || allowedOrigins[0]
-  );
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else if (!origin) {
+    res.header("Access-Control-Allow-Origin", allowedOrigins[0]);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
 
   const { username, password } = req.body;
@@ -218,10 +222,12 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", async (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    req.headers.origin || allowedOrigins[0]
-  );
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else if (!origin) {
+    res.header("Access-Control-Allow-Origin", allowedOrigins[0]);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
 
   req.session.destroy((err) => {
