@@ -10,15 +10,40 @@ export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const [formData, setFormData] = useState({
+        username: '',
+        password: ''
+    })
 
     const navigate = useNavigate()
 
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const validate = () => {
+        const newErrors = {}
+        if (!formData.username) newErrors.username = 'Username is required'
+        if (!formData.password) newErrors.password = 'Password is required'
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!validate()) return
+
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                { username, password },
+                {
+                    username: formData.username,
+                    password: formData.password
+                },
                 {
                     withCredentials: true,
                     headers: {
@@ -32,6 +57,9 @@ export const Login = () => {
             }
         } catch (error) {
             console.error("Login error:", error)
+            setErrors({
+                general: error.response?.data?.error || 'Login failed'
+            })
         } finally {
             setIsLoading(false)
         }
@@ -41,6 +69,9 @@ export const Login = () => {
         <div className={styles.container}>
             <div className={styles.mainBlock}>
                 <h2>Вход</h2>
+                {errors.general && (
+                    <div className={styles.error}>{errors.general}</div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="username">
                         Username:
@@ -50,6 +81,9 @@ export const Login = () => {
                         id="username"
                         type="text"
                         placeholder="Username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
                     />
                     <br />
                     <label htmlFor="password">
@@ -60,12 +94,22 @@ export const Login = () => {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
                         required
                     />
-                    <Button type="button" onClick={() => setShowPassword(!showPassword)} text={showPassword ? 'Hide' : 'Show'} />
+                    <Button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        text={showPassword ? 'Hide' : 'Show'}
+                    />
                     <br />
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button type='submit' text='Вход' />
+                        <Button
+                            type='submit'
+                            text={isLoading ? 'Logging in...' : 'Вход'}
+                            disabled={isLoading}
+                        />
                     </div>
                 </form>
             </div>
