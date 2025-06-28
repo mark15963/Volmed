@@ -25,6 +25,15 @@ const db = new Pool({
   max: 20,
   allowExitOnIdle: true,
 });
+db.on("error", (err) => {
+  console.error("Database error:", err);
+});
+db.on("connect", () => {
+  console.log("Database connected");
+});
+db.on("remove", () => {
+  console.log("Database connection removed");
+});
 
 const uploadDir = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -66,13 +75,22 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.get("/api/patients", isAuth, async (req, res) => {
+router.get("/api/patients", async (req, res) => {
   try {
-    const { rows } = await db.query("SELECT * FROM patients ORDER BY id");
-    res.json(rows);
+    console.log("Attempting to fetch patients");
+    const client = await db.connect();
+    try {
+      const { rows } = await db.query("SELECT * FROM patients ORDER BY id");
+      console.log(`Fetched ${rows.length} patients`);
+      res.json(rows);
+    } finally {
+      client.release();
+    }
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Failed to fetch patients" });
+    console.error("Detailed error fetching patients:", e.stack);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch patients", details: e.message });
   }
 });
 //Get data of a specific patient
@@ -90,7 +108,7 @@ router.get("/api/patients/:id", isAuth, async (req, res) => {
   }
 });
 // Amount of ID's in DB
-router.get("/api/patient-count", isAuth, async (req, res) => {
+router.get("/api/patient-count", async (req, res) => {
   try {
     const { rows } = await db.query("SELECT COUNT(id) AS count FROM patients");
     res.json({ count: parseInt(rows[0].count, 10) || 0 });

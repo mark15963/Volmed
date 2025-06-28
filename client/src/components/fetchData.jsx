@@ -18,8 +18,9 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get(`https://volmed-backend.onrender.com/api/patients`);
-        // Extract the rows array from the PostgreSQL response
+        const response = await axios.get(`https://volmed-backend.onrender.com/api/patients`, {
+          withCredentials: true
+        });
         const data = Array.isArray(response.data) ? response.data : [];
         setPatients(data);
       } catch (error) {
