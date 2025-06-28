@@ -78,34 +78,34 @@ export const Footer = () => {
         return null;
     };
 
-    const checkAuthCookie = () => {
-        const cookies = document.cookie.split(';');
-        return cookies.some(cookie =>
-            cookie.trim().startsWith('volmed.sid=') ||
-            cookie.trim().startsWith('user=')
-        );
+    // Check authentication status
+    const checkAuthStatus = () => {
+        const authCookie = getCookie('volmed.sid');
+        const userCookie = getCookie('user');
+
+        const isAuth = !!authCookie;
+        setIsAuthenticated(isAuth);
+
+        if (userCookie) {
+            setUsername(decodeURIComponent(userCookie));
+        } else {
+            setUsername('');
+        }
+
+        setIsLoading(false);
+        return isAuth;
     };
 
+    // Check auth on mount and set up interval for updates
     useEffect(() => {
-        setIsAuthenticated(checkAuthCookie());
-        setIsLoading(false);
-    }, []);
+        // Initial check
+        checkAuthStatus();
 
-    useEffect(() => {
-        const checkAuth = () => {
-            const authCookie = getCookie('volmed.sid');
-            const userCookie = getCookie('user');
+        // Set up interval to check auth status periodically
+        const intervalId = setInterval(checkAuthStatus, 5000);
 
-            setIsAuthenticated(!!authCookie);
-            if (userCookie) {
-                console.log('User cookie: ', userCookie)
-
-                setUsername(decodeURIComponent(userCookie));
-            }
-            setIsLoading(false);
-        };
-
-        checkAuth();
+        // Clean up interval on unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     const handleLogout = async () => {
@@ -115,8 +115,7 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
-            setIsAuthenticated(false);
-            setUsername('');
+            checkAuthStatus(); // Force re-check auth status
             navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
@@ -141,11 +140,9 @@ export const Footer = () => {
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
-                {username && (
-                    <span style={{ margin: '0 10px' }}>
-                        {username}
-                    </span>
-                )}
+                <span style={{ margin: '0 10px' }}>
+                    {username || 'Not logged in'}
+                </span>
                 {isAuthenticated ? (
                     <Button
                         text='Выход'

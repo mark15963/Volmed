@@ -7,7 +7,6 @@ import styles from './login.module.css'
 import axios from "axios"
 
 export const Login = () => {
-    const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false)
 
@@ -15,22 +14,10 @@ export const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setIsLoading(true)
-        const formData = new FormData(e.target)
-        const data = {
-            username: formData.get('username'),
-            password: formData.get('password')
-        }
-
-        if (!data.username) {
-            setErrors(prev => ({ ...prev, username: 'Required' }))
-            return
-        }
-
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                data,
+                { username, password },
                 {
                     withCredentials: true,
                     headers: {
@@ -39,6 +26,7 @@ export const Login = () => {
                 }
             )
             if (response.data.success) {
+                window.dispatchEvent(new Event('authChange'));
                 navigate('/')
             }
         } catch (error) {
