@@ -55,6 +55,7 @@ export const Content = () => {
 
 export const Footer = () => {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const navigate = useNavigate();
 
     const year = new Date().getFullYear()
     const yearText = year > 2025
@@ -67,7 +68,6 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
-            console.log(res)
             navigate('/login');
         } catch (error) {
             console.error("Error logging out:", error);
