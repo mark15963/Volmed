@@ -28,22 +28,22 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true);
-        const formData = new FormData(e.target)
-        const data = {
-            username: formData.get('username'),
-            password: formData.get('password')
-        }
 
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                data,
+                { username, password },
                 { withCredentials: true }
             )
+
             if (response.data.success) {
-                // Update UI with the user data from response
+                setAuthState({
+                    isAuthenticated: true,
+                    username: response.data.user.username,
+                    isLoading: false
+                });
                 window.dispatchEvent(new Event('authChange'));
-                navigate(response.data.redirect || '/');
+                navigate('/');
             }
         } catch (error) {
             console.error("Login error:", error)
