@@ -59,7 +59,6 @@ export const Footer = () => {
     const year = new Date().getFullYear()
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [username, setUsername] = useState('Not logged it');
 
@@ -91,8 +90,6 @@ export const Footer = () => {
         } else {
             setUsername('');
         }
-
-        setIsLoading(false);
         return isAuth;
     };
 
