@@ -61,22 +61,28 @@ export const Footer = () => {
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
         username: '',
-        isLoading: true
+        isLoading: true,
     });
 
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
-
-
     // Check authentication status
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(
                 'https://volmed-backend.onrender.com/api/auth/status',
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                }
             );
+
+            console.log('Auth status response:', response.data);
 
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
@@ -113,7 +119,7 @@ export const Footer = () => {
             setAuthState({
                 isAuthenticated: false,
                 username: '',
-                isLoading: false
+                isLoading: false,
             });
             navigate('/login')
         } catch (error) {

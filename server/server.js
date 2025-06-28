@@ -62,8 +62,6 @@ app.use(
     store: new pgSession({
       pool: db,
       createTableIfMissing: true,
-      pruneSessionInterval: 60,
-      errorLog: console.error, // Add error logging
     }),
     secret: process.env.SESSION_SECRET || "your-strong-secret-key",
     resave: false,
@@ -72,6 +70,9 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain:
+        process.env.COOKIE_DOMAIN ||
+        (process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost"),
       maxAge: 1000 * 60 * 60, // 1 hour
       // domain: ".onrender.com",
     },
