@@ -123,12 +123,6 @@ router.post("/login", async (req, res) => {
           httpOnly: false,
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          domain:
-            process.env.COOKIE_DOMAIN ||
-            (process.env.NODE_ENV === "production"
-              ? ".onrender.com"
-              : "localhost"),
-          path: "/",
           maxAge: 1000 * 60 * 60 * 24,
         });
         // Send success response with redirect info
@@ -221,15 +215,11 @@ router.post("/logout", async (req, res) => {
 
     res.clearCookie("volmed.sid", {
       path: "/",
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
 
     res.clearCookie("user", {
       path: "/",
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
 
