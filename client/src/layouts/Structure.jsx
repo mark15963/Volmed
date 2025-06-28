@@ -13,6 +13,7 @@ import footerStyles from './footer.module.css'
 import Button from "../components/Buttons.jsx"
 import axios from "axios"
 import { useState } from "react"
+import { Login } from "../pages/login/Login.jsx"
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -43,6 +44,7 @@ export const Header = (props) => {
 export const Content = () => {
     return (
         <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path='/' element={<Main />} />
             <Route path='/patients' element={<List />} />
             <Route path="/search" loader element={<SearchResults />} />
@@ -68,8 +70,8 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
-            window.location.href = 'https://volmed-backend.onrender.com';
-            // navigate('/login');
+            // window.location.href = 'https://volmed-backend.onrender.com';
+            navigate('/login');
         } catch (error) {
             console.error("Error logging out:", error);
         } finally {
