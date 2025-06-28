@@ -58,6 +58,7 @@ export const Login = () => {
                     </label>
                     <input
                         name="username"
+                        id="username"
                         type="text"
                         placeholder="Username"
                     />
@@ -67,6 +68,7 @@ export const Login = () => {
                     </label>
                     <input
                         name="password"
+                        id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         required
