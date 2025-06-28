@@ -3,6 +3,8 @@ import { SearchBar } from '../../components/SearchBar';
 import styles from './main.module.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Button from '../../components/Buttons';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const Main = () => {
     const navigate = useNavigate()
