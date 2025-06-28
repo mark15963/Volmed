@@ -63,7 +63,6 @@ export const Footer = () => {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [username, setUsername] = useState('');
 
-    console.log(isAuthenticated)
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
@@ -106,6 +105,7 @@ export const Footer = () => {
 
         checkAuth();
     }, []);
+    console.log(checkAuth())
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
