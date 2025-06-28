@@ -103,9 +103,9 @@ export const Footer = () => {
             setIsLoading(false);
         };
 
+        console.log(checkAuth())
         checkAuth();
     }, []);
-    console.log(checkAuth())
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
