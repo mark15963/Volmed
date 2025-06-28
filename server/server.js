@@ -43,7 +43,9 @@ const allowedOrigins =
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -63,7 +65,7 @@ app.use(
       pool: db,
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
