@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router'
 
 import './styles/Button.css'
+import { Children } from "react";
 
 export const HomeButton = () => {
     const navigate = useNavigate()
@@ -56,12 +57,11 @@ export const Button = ({
     disabled,
     ...props
 }) => {
-    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <button
             onClick={onClick}
-            className={`button ${shape} ${isLoading ? "loading" : ""} ${className}`}
+            className={`button ${shape || ''} ${className || ''}`}
             // disabled={isLoading}
             disabled={disabled}
             type={type}

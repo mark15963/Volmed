@@ -73,10 +73,19 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and password required" });
+  }
+
   try {
     const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
+
+    if (!rows.length) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
 
     const user = await User.findByUsername(username);
 
@@ -116,7 +125,12 @@ router.post("/login", async (req, res) => {
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
         });
-        return res.redirect("/dashboard");
+        // Send success response with redirect info
+        res.status(200).json({
+          success: true,
+          message: "Logged in successfully",
+          redirect: "/",
+        });
       });
     });
   } catch (error) {
