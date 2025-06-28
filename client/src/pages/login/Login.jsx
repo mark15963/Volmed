@@ -10,6 +10,11 @@ export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const [authState, setAuthState] = useState({
+        isAuthenticated: false,
+        username: '',
+        isLoading: true,
+    });
     const [formData, setFormData] = useState({
         username: '',
         password: ''
