@@ -58,100 +58,93 @@ export const Content = () => {
 export const Footer = () => {
     const year = new Date().getFullYear()
     const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const [username, setUsername] = useState('');
+    const [authState, setAuthState] = useState({
+        isAuthenticated: false,
+        username: '',
+        isLoading: true
+    });
 
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    };
 
-    console.log('Cookies:', document.cookie);
-    console.log('Auth cookie:', getCookie('volmed.sid'));
-    console.log('User cookie:', getCookie('user'));
 
     // Check authentication status
     const checkAuthStatus = async () => {
         try {
-            // First check cookies
-            const authCookie = getCookie('volmed.sid');
-            const userCookie = getCookie('user');
+            console.log('Checking auth status...');
 
-            // If we have cookies, use them
-            if (authCookie && userCookie) {
-                setIsAuthenticated(true);
-                setUsername(decodeURIComponent(userCookie));
-                setIsLoading(false);
-                return true;
-            }
-
-            // If no cookies but might be authenticated, verify with backend
             const response = await axios.get(
                 'https://volmed-backend.onrender.com/api/auth/status',
                 { withCredentials: true }
             );
+            console.log('Auth status response:', response.data);
 
-            setIsAuthenticated(response.data.isAuthenticated);
-            if (response.data.user) {
-                setUsername(response.data.user.username);
+            setAuthState({
+                isAuthenticated: response.data.isAuthenticated,
+                username: response.data.user?.username || '',
+                isLoading: false
+            });
+
+            // If authenticated but no cookies, log the issue
+            if (response.data.isAuthenticated && !document.cookie.includes('user')) {
+                console.warn('User is authenticated but cookies not found');
             }
+
         } catch (error) {
             console.error("Auth check error:", error);
-            setIsAuthenticated(false);
-            setUsername('');
-        } finally {
-            setIsLoading(false);
+            setAuthState({
+                isAuthenticated: false,
+                username: '',
+                isLoading: false
+            });
         }
     };
 
-    // Check auth on mount and set up interval for updates
     useEffect(() => {
         checkAuthStatus();
 
-        // Listen for auth changes from other components
-        const handleAuthChange = () => checkAuthStatus();
-        window.addEventListener('authChange', handleAuthChange);
-
-        return () => {
-            window.removeEventListener('authChange', handleAuthChange);
+        const handleAuthChange = () => {
+            console.log('Auth change event received');
+            checkAuthStatus();
         };
+
+        window.addEventListener('authChange', handleAuthChange);
+        return () => window.removeEventListener('authChange', handleAuthChange);
     }, []);
 
     const handleLogout = async () => {
-        setIsLoggingOut(true);
+        setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
             await axios.post('https://volmed-backend.onrender.com/logout',
                 {},
                 { withCredentials: true }
             )
-            setIsAuthenticated(false);
-            setUsername('');
+            setAuthState({
+                isAuthenticated: false,
+                username: '',
+                isLoading: false
+            });
             navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
-        } finally {
-            setIsLoggingOut(false);
+            setAuthState(prev => ({ ...prev, isLoading: false }));
         }
     }
 
-    if (isLoading) {
+    if (authState.isLoading) {
         return (
             <div className={footerStyles.container}>
                 <div className={footerStyles.footer}>
                     © {yearText}
-                    {/* Show loading state or nothing while checking auth */}
                 </div>
             </div>
         );
     }
+
+    console.log('Current auth state:', authState);
+    console.log('All cookies:', document.cookie);
     console.log(username)
 
     return (
@@ -159,13 +152,13 @@ export const Footer = () => {
             <div className={footerStyles.footer}>
                 © {yearText}
                 <span style={{ margin: '0 10px' }}>
-                    {username || 'Not logged in'}
+                    {authState.username || 'Not logged in'}
                 </span>
-                {isAuthenticated ? (
+                {authState.isAuthenticated ? (
                     <Button
                         text='Выход'
                         onClick={handleLogout}
-                        disabled={isLoggingOut}
+                        disabled={authState.isLoading}
                     />
                 ) : (
 
