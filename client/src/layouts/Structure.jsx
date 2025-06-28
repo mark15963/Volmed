@@ -145,8 +145,6 @@ export const Footer = () => {
         );
     }
 
-    console.log('Current auth state:', authState);
-
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>

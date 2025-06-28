@@ -9,7 +9,6 @@ import axios from "axios"
 export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
         username: '',
@@ -68,12 +67,6 @@ export const Login = () => {
         }
     }
 
-    //DEBUG STATE + COOKIES
-    useEffect(() => {
-        console.log('Current auth state:', authState);
-        console.log('Document cookies:', document.cookie);
-    }, [authState]);
-
     return (
         <div className={styles.container}>
             <div className={styles.mainBlock}>
@@ -83,36 +76,29 @@ export const Login = () => {
                 )}
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="username">
-                        Username:
+                        Имя пользователя:
                     </label>
                     <input
                         name="username"
                         id="username"
                         type="text"
-                        placeholder="Username"
+                        placeholder="Имя пользователя"
                         value={formData.username}
                         onChange={handleChange}
                         required
                     />
-                    <br />
                     <label htmlFor="password">
-                        Password:
+                        Пароль:
                     </label>
                     <input
                         name="password"
                         id="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        type="password"
+                        placeholder="Пароль"
                         value={formData.password}
                         onChange={handleChange}
                         required
                     />
-                    <Button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        text={showPassword ? 'Hide' : 'Show'}
-                    />
-                    <br />
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
                             type='submit'
