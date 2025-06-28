@@ -69,7 +69,11 @@ export const Main = () => {
         return (
             <div className={styles.container}>
                 <div className={styles.mainBlock}>
-                    <p>Нет доступа</p>
+                    <p
+                        style={{ color: 'aliceblue', fontWeight: 'bold', margin: '30px 50px' }}
+                    >
+                        Нет доступа
+                    </p>
                 </div>
             </div>
         );
