@@ -120,7 +120,7 @@ router.post("/login", async (req, res) => {
 
         // Set cookie
         res.cookie("user", user.username, {
-          httpOnly: true,
+          httpOnly: false,
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
@@ -130,6 +130,11 @@ router.post("/login", async (req, res) => {
           success: true,
           message: "Logged in successfully",
           redirect: "/",
+          user: {
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
         });
       });
     });
