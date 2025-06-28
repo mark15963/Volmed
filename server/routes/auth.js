@@ -74,6 +74,12 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    req.headers.origin || allowedOrigins[0]
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -81,14 +87,6 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const origin = req.headers.origin;
-    if (!allowedOrigins.includes(origin)) {
-      console.log("CORS violation attempt from:", origin);
-      return res.status(403).json({ error: "Origin not allowed" });
-    }
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Credentials", "true");
-
     const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
@@ -108,10 +106,14 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    req.session.regenerate((err) => {
-      if (err) {
-        console.error("Session regeneration error:", err);
-        return res.status(500).json({ error: "Internal server error" });
+    req.session.regenerate((error) => {
+      if (error) {
+        console.error("Login error:", error);
+        res.status(500).json({
+          error: "Internal server error",
+          details:
+            process.env.NODE_ENV === "development" ? error.message : undefined,
+        });
       }
 
       // Set session
@@ -153,11 +155,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({
-      error: "Internal server error",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
