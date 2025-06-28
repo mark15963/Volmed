@@ -219,23 +219,30 @@ router.post("/logout", async (req, res) => {
     req.headers.origin || allowedOrigins[0]
   );
   res.header("Access-Control-Allow-Credentials", "true");
+
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);
       return res.status(500).json({ error: "Logout failed" });
     }
 
+    // Clear session cookie
     res.clearCookie("volmed.sid", {
       path: "/",
       secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      httpOnly: true,
     });
 
+    // Clear user cookie
     res.clearCookie("user", {
       path: "/",
       secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
-    // res.redirect("/");
     res.status(200).json({ success: true, message: "Logged out successfully" });
   });
 });
