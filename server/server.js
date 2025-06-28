@@ -27,6 +27,35 @@ const db = new Pool({
 
 app.use(cookieParser());
 app.set("trust proxy", 1);
+
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? [
+        "https://volmed-o4s0.onrender.com",
+        "https://volmed-backend.onrender.com",
+        process.env.FRONTEND_URL,
+      ]
+    : [
+        "http://localhost:5173",
+        "http://192.168.0.104:5173",
+        "http://localhost:5000",
+      ];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"], // Expose cookies to frontend
+  })
+);
+
 app.use(
   session({
     name: "volmed.sid",
@@ -55,35 +84,6 @@ app.use((req, res, next) => {
   console.log("Cookies:", req.cookies);
   next();
 });
-
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [
-        "https://volmed-o4s0.onrender.com",
-        "https://volmed-backend.onrender.com",
-        process.env.FRONTEND_URL,
-      ]
-    : [
-        "http://localhost:5173",
-        "http://192.168.0.104:5173",
-        "http://localhost:5000",
-      ];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["set-cookie"], // Expose cookies to frontend
-  })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
