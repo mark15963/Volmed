@@ -6,6 +6,8 @@ import Button from "../../components/Buttons"
 import styles from './login.module.css'
 import axios from "axios"
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +37,7 @@ export const Login = () => {
 
         try {
             const response = await axios.post(
-                'https://volmed-backend.onrender.com/login',
+                `${apiUrl}/login`,
                 {
                     username: formData.username,
                     password: formData.password
