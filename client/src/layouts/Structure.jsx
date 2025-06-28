@@ -56,21 +56,37 @@ export const Content = () => {
 }
 
 export const Footer = () => {
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const navigate = useNavigate();
-
     const year = new Date().getFullYear()
+    const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
-    const handleClick = async () => {
+
+    const checkAuthCookie = () => {
+        const cookies = document.cookie.split(';');
+        return cookies.some(cookie =>
+            cookie.trim().startsWith('volmed.sid=') &&
+            cookie.trim().startsWith('user=')
+        );
+    };
+
+    useEffect(() => {
+        setIsAuthenticated(checkAuthCookie());
+        setIsLoading(false);
+    }, []);
+
+    const handleLogout = async () => {
         setIsLoggingOut(true);
         try {
-            const res = await axios.post('https://volmed-backend.onrender.com/logout',
+            await axios.post('https://volmed-backend.onrender.com/logout',
                 {},
                 { withCredentials: true }
             )
-            // window.location.href = 'https://volmed-backend.onrender.com';
+            setIsAuthenticated(false);
             navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
@@ -79,11 +95,34 @@ export const Footer = () => {
         }
     }
 
+    if (isLoading) {
+        return (
+            <div className={footerStyles.container}>
+                <div className={footerStyles.footer}>
+                    © {yearText}
+                    {/* Show loading state or nothing while checking auth */}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
-                <Button text='Выход' onClick={handleClick} disabled={isLoggingOut} />
+                {isAuthenticated ? (
+                    <Button
+                        text='Выход'
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                    />
+                ) : (
+
+                    <Button
+                        text='Вход'
+                        onClick={() => navigate('/login')}
+                    />
+                )}
             </div>
         </div>
     )
