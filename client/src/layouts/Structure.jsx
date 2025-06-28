@@ -67,6 +67,7 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
+            console.log(res)
             navigate('/login');
         } catch (error) {
             console.error("Error logging out:", error);
