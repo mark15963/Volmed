@@ -9,8 +9,6 @@ const { Pool } = require("pg");
 
 const router = Router();
 
-const { allowedOrigins } = require("../server.js");
-
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -74,11 +72,14 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  const allowedOrigins = req.app.locals.allowedOrigins || [
+    "http://localhost:5173",
+    "https://volmed-o4s0.onrender.com",
+  ];
+
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
-  } else if (!origin) {
-    res.header("Access-Control-Allow-Origin", allowedOrigins[0]);
   }
   res.header("Access-Control-Allow-Credentials", "true");
 
@@ -222,11 +223,14 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", async (req, res) => {
+  const allowedOrigins = req.app.locals.allowedOrigins || [
+    "http://localhost:5173",
+    "https://volmed-o4s0.onrender.com",
+  ];
+
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
-  } else if (!origin) {
-    res.header("Access-Control-Allow-Origin", allowedOrigins[0]);
   }
   res.header("Access-Control-Allow-Credentials", "true");
 

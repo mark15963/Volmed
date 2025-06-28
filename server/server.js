@@ -42,6 +42,8 @@ const allowedOrigins =
         "http://localhost:5000",
       ];
 
+app.locals.allowedOrigins = allowedOrigins;
+
 app.use(
   cors({
     origin: function (origin, callback) {
