@@ -9,6 +9,8 @@ const { Pool } = require("pg");
 
 const router = Router();
 
+const { allowedOrigins } = require("../server");
+
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -72,12 +74,6 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    req.headers.origin || allowedOrigins[0]
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -85,6 +81,14 @@ router.post("/login", async (req, res) => {
   }
 
   try {
+    const origin = req.headers.origin;
+    if (!allowedOrigins.includes(origin)) {
+      console.log("CORS violation attempt from:", origin);
+      return res.status(403).json({ error: "Origin not allowed" });
+    }
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Credentials", "true");
+
     const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
@@ -127,6 +131,8 @@ router.post("/login", async (req, res) => {
         // Set cookie
         res.cookie("user", user.username, {
           httpOnly: false,
+          domain:
+            process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
@@ -147,7 +153,11 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 });
 
@@ -214,10 +224,10 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", async (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    req.headers.origin || allowedOrigins[0]
-  );
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
 
   req.session.destroy((err) => {
@@ -229,7 +239,8 @@ router.post("/logout", async (req, res) => {
     // Clear session cookie
     res.clearCookie("volmed.sid", {
       path: "/",
-      secure: process.env.NODE_ENV === "production",
+      domain:
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
@@ -238,7 +249,8 @@ router.post("/logout", async (req, res) => {
     // Clear user cookie
     res.clearCookie("user", {
       path: "/",
-      secure: process.env.NODE_ENV === "production",
+      domain:
+        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
