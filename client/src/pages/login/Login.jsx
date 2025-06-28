@@ -10,10 +10,6 @@ export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-    })
 
     const navigate = useNavigate()
 
@@ -25,31 +21,15 @@ export const Login = () => {
         }))
     }
 
-    const validate = () => {
-        const newErrors = {}
-        if (!formData.username) newErrors.username = 'Username is required'
-        if (!formData.password) newErrors.password = 'Password is required'
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!validate()) return
+        setIsLoading(true);
 
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                {
-                    username: formData.username,
-                    password: formData.password
-                },
-                {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
+                { username, password },
+                { withCredentials: true }
             )
             if (response.data.success) {
                 window.dispatchEvent(new Event('authChange'));

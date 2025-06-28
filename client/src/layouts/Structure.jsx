@@ -61,52 +61,70 @@ export const Footer = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const [username, setUsername] = useState('Not logged it');
+    const [username, setUsername] = useState('');
 
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
     const getCookie = (name) => {
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.trim().split('=');
-            if (cookieName === name) {
-                return cookieValue;
-            }
-        }
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
         return null;
     };
 
+    console.log('Cookies:', document.cookie);
+    console.log('Auth cookie:', getCookie('volmed.sid'));
+    console.log('User cookie:', getCookie('user'));
+
     // Check authentication status
-    const checkAuthStatus = () => {
-        const authCookie = getCookie('volmed.sid');
-        const userCookie = getCookie('user');
+    const checkAuthStatus = async () => {
+        try {
+            // First check cookies
+            const authCookie = getCookie('volmed.sid');
+            const userCookie = getCookie('user');
 
-        const isAuth = !!authCookie;
-        setIsAuthenticated(isAuth);
+            // If we have cookies, use them
+            if (authCookie && userCookie) {
+                setIsAuthenticated(true);
+                setUsername(decodeURIComponent(userCookie));
+                setIsLoading(false);
+                return true;
+            }
 
-        if (userCookie) {
-            setUsername(decodeURIComponent(userCookie));
-        } else {
+            // If no cookies but might be authenticated, verify with backend
+            const response = await axios.get(
+                'https://volmed-backend.onrender.com/api/auth/status',
+                { withCredentials: true }
+            );
+
+            setIsAuthenticated(response.data.isAuthenticated);
+            if (response.data.user) {
+                setUsername(response.data.user.username);
+            }
+        } catch (error) {
+            console.error("Auth check error:", error);
+            setIsAuthenticated(false);
             setUsername('');
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
-        return isAuth;
     };
 
     // Check auth on mount and set up interval for updates
     useEffect(() => {
-        // Initial check
         checkAuthStatus();
 
-        // Set up interval to check auth status periodically
-        const intervalId = setInterval(checkAuthStatus, 5000);
+        // Listen for auth changes from other components
+        const handleAuthChange = () => checkAuthStatus();
+        window.addEventListener('authChange', handleAuthChange);
 
-        // Clean up interval on unmount
-        return () => clearInterval(intervalId);
+        return () => {
+            window.removeEventListener('authChange', handleAuthChange);
+        };
     }, []);
+
     const handleLogout = async () => {
         setIsLoggingOut(true);
         try {
@@ -114,7 +132,8 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
-            checkAuthStatus(); // Force re-check auth status
+            setIsAuthenticated(false);
+            setUsername('');
             navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
