@@ -1,10 +1,12 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router'
+import axios from 'axios';
+
 import { SearchBar } from '../../components/SearchBar';
+import Button from '../../components/Buttons';
+
 import styles from './main.module.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Button from '../../components/Buttons';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 export const Main = () => {
     const navigate = useNavigate()
@@ -22,8 +24,6 @@ export const Main = () => {
                     withCredentials: true,
                 }
             );
-
-            console.log('Main page Auth status response:', response.data);
 
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
@@ -65,7 +65,6 @@ export const Main = () => {
             </div>
         );
     }
-
     if (!authState.isAuthenticated) {
         return (
             <div className={styles.container}>

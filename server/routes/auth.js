@@ -77,6 +77,7 @@ router.post("/login", async (req, res) => {
     req.headers.origin || allowedOrigins[0]
   );
   res.header("Access-Control-Allow-Credentials", "true");
+
   const { username, password } = req.body;
 
   if (!username || !password) {
