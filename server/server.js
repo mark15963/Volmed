@@ -126,66 +126,6 @@ async function testDbConnection() {
   throw new Error("Maximum DB connection attempts reached");
 }
 
-//-----DATABASE-----
-// DB backup
-app.get("/api/backup", (req, res) => {
-  const dumpFile = path.join(
-    __dirname,
-    "DB_Backup",
-    `backup-${Date.now()}.dump`
-  );
-  if (!fs.existsSync(path.dirname(dumpFile)))
-    fs.mkdirSync(path.dirname(dumpFile), { recursive: true });
-
-  const user = process.env.DB_USER || "postgres";
-  const host = process.env.DB_HOST;
-  const dbName = process.env.DB_NAME;
-  const cmd = `pg_dump -U ${user} -h ${host} -d ${dbName} -F c -f "${dumpFile}"`;
-
-  exec(cmd, { env: process.env }, (err, stdout, stderr) => {
-    if (err) {
-      console.error("Backup error:", stderr);
-      return res.status(500).json({ error: "Backup failed", details: stderr });
-    }
-    res.download(dumpFile);
-  });
-});
-// DB restore
-app.get("/api/restore", (req, res) => {
-  const dir = path.join(__dirname, "DB_Backup");
-  if (!fs.existsSync(dir))
-    return res.status(404).json({ error: "Backup folder not found" });
-  const files = fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".dump"))
-    .sort()
-    .reverse();
-  if (!files.length)
-    return res.status(404).json({ error: "No backup files found" });
-
-  const latest = path.join(dir, files[0]);
-  const user = process.env.DB_USER || "postgres";
-  const host = process.env.DB_HOST;
-  const dbName = process.env.DB_NAME;
-
-  const dropCreate = `psql -U ${user} -h ${host} -c "DROP DATABASE ${dbName}; CREATE DATABASE ${dbName};"`;
-  const restoreCmd = `pg_restore -U ${user} -h ${host} -d ${dbName} -c "${latest}"`;
-
-  exec(
-    `${dropCreate} && ${restoreCmd}`,
-    { env: process.env },
-    (err, stdout, stderr) => {
-      if (err) {
-        console.error("Restore error:", stderr);
-        return res
-          .status(500)
-          .json({ error: "Restore failed", details: stderr });
-      }
-      res.json({ success: true, message: "Database restored successfully" });
-    }
-  );
-});
-
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
