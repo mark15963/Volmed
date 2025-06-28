@@ -24,11 +24,16 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true);
+        const formData = new FormData(e.target)
+        const data = {
+            username: formData.get('username'),
+            password: formData.get('password')
+        }
 
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                { username, password },
+                data,
                 { withCredentials: true }
             )
             if (response.data.success) {
