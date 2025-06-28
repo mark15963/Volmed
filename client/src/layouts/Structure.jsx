@@ -68,7 +68,6 @@ export const Footer = () => {
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
-    // Check authentication status
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(
