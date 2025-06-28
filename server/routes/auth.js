@@ -124,17 +124,15 @@ router.post("/login", async (req, res) => {
       req.session.status = user.status || "Undefined";
 
       // Save the session before redirect
-      req.session.save((err) => {
-        if (err) {
-          console.error("Session save error:", err);
+      req.session.save((error) => {
+        if (error) {
+          console.error("Session save error:", error);
           return res.status(500).json({ error: "Internal server error" });
         }
 
         // Set cookie
         res.cookie("user", user.username, {
           httpOnly: false,
-          domain:
-            process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
@@ -237,8 +235,6 @@ router.post("/logout", async (req, res) => {
     // Clear session cookie
     res.clearCookie("volmed.sid", {
       path: "/",
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
@@ -247,8 +243,6 @@ router.post("/logout", async (req, res) => {
     // Clear user cookie
     res.clearCookie("user", {
       path: "/",
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
