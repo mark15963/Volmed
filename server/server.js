@@ -48,12 +48,13 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("Not allowed by CORS:", origin); // Add logging for debugging
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cach-Control", "Pragma"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["set-cookie"], // Expose cookies to frontend
   })
 );
