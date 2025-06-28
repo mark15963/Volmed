@@ -15,6 +15,8 @@ import Button from "../components/Buttons.jsx"
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 export const Header = (props) => {
     const navigate = useNavigate();
 
@@ -74,13 +76,11 @@ export const Footer = () => {
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(
-                'https://volmed-backend.onrender.com/api/auth/status',
+                `${apiUrl}/api/auth/status`,
                 {
                     withCredentials: true,
                 }
             );
-
-            console.log('Auth status response:', response.data);
 
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
@@ -116,7 +116,7 @@ export const Footer = () => {
     const handleLogout = async () => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
-            await axios.post('https://volmed-backend.onrender.com/logout',
+            await axios.post(`${apiUrl}/logout`,
                 {},
                 { withCredentials: true }
             )

@@ -114,14 +114,14 @@ async function testDbConnection() {
       const client = await db.connect();
       await client.query("SELECT 1");
       client.release();
-      console.log("✅ Database connection verified");
+      console.log("Database connection verified");
       return;
     } catch (err) {
       console.error(`Attempt ${i} failed:`, err.message);
       if (i < retries) await new Promise((r) => setTimeout(r, delay));
     }
   }
-  throw new Error("❌ Maximum DB connection attempts reached");
+  throw new Error("Maximum DB connection attempts reached");
 }
 
 //-----DATABASE-----
@@ -203,6 +203,7 @@ async function startServer() {
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Database connected to: ${process.env.DB_HOST}`);
+      console.log(`Website link: ${process.env.FRONTEND_URL}`);
       server.keepAliveTimeout = 60000;
       server.headersTimeout = 65000;
     });
