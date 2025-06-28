@@ -193,19 +193,23 @@ router.post("/logout", async (req, res) => {
       console.error("Logout error:", err);
       return res.status(500).json({ error: "Logout failed" });
     }
+
     res.clearCookie("volmed.sid", {
       path: "/",
       domain:
         process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
+
     res.clearCookie("user", {
       path: "/",
       domain:
         process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
       secure: process.env.NODE_ENV === "production",
     });
-    res.redirect("/");
+
+    // res.redirect("/");
+    res.status(200).json({ success: true, message: "Logged out successfully" });
   });
 });
 

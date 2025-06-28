@@ -10,6 +10,9 @@ import logo from '../assets/images/герб_ямала.png'
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
+import Button from "../components/Buttons.jsx"
+import axios from "axios"
+import { useState } from "react"
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -51,15 +54,32 @@ export const Content = () => {
 }
 
 export const Footer = () => {
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
     const year = new Date().getFullYear()
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
+    const handleClick = async () => {
+        setIsLoggingOut(true);
+        try {
+            const res = await axios.post('https://volmed-backend.onrender.com/logout',
+                {},
+                { withCredentials: true }
+            )
+            navigate('/login');
+        } catch (error) {
+            console.error("Error logging out:", error);
+        } finally {
+            setIsLoggingOut(false);
+        }
+    }
 
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
+                <Button text='Выход' onClick={handleClick} disabled={isLoggingOut} />
             </div>
         </div>
     )
