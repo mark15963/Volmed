@@ -147,7 +147,6 @@ export const Footer = () => {
                     <Button
                         text='Выход'
                         onClick={handleLogout}
-                        disabled={isLoggingOut}
                     />
                 ) : (
 
