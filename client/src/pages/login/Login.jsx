@@ -88,6 +88,7 @@ export const Login = () => {
                         value={formData.username}
                         onChange={handleChange}
                         required
+                        autoComplete="username"
                     />
                     <label htmlFor="password">
                         Пароль:
@@ -100,6 +101,7 @@ export const Login = () => {
                         value={formData.password}
                         onChange={handleChange}
                         required
+                        autoComplete="current-password"
                     />
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
