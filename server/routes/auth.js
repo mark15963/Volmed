@@ -72,6 +72,11 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    req.headers.origin || allowedOrigins[0]
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -230,6 +235,11 @@ router.post("/logout", async (req, res) => {
 });
 
 router.get("/api/auth/status", (req, res) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    req.headers.origin || allowedOrigins[0]
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
   res.json({
     isAuthenticated: !!req.session.isAuth,
     user: req.session.user
