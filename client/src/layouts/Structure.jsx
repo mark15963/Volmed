@@ -70,8 +70,8 @@ export const Footer = () => {
     const checkAuthCookie = () => {
         const cookies = document.cookie.split(';');
         return cookies.some(cookie =>
-            cookie.trim().startsWith('volmed.sid=') ||
-            cookie.trim().startsWith('user=')
+            cookie.trim().startsWith('volmed.sid') ||
+            cookie.trim().startsWith('user')
         );
     };
 
