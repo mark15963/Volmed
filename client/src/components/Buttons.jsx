@@ -53,6 +53,7 @@ export const Button = ({
     margin,
     text,
     className,
+    disabled,
     ...props
 }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -61,7 +62,8 @@ export const Button = ({
         <button
             onClick={onClick}
             className={`button ${shape} ${isLoading ? "loading" : ""} ${className}`}
-            disabled={isLoading}
+            // disabled={isLoading}
+            disabled={disabled}
             type={type}
             style={style}
             {...props}
