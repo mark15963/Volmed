@@ -1,19 +1,19 @@
 import { Routes, Route, useNavigate } from "react-router"
+import axios from "axios"
+import { useState } from "react"
 
 import { Main } from '../pages/main/Main.jsx'
 import { SearchResults } from "../pages/searchResults/SearchRes.jsx"
 import { List } from "../pages/patientsList/List.jsx"
 import { RegisterPatient } from "../pages/register/RegisterPatient.jsx"
 import { EditPatient } from "../pages/edit/EditPatient.jsx"
+import { Login } from "../pages/login/Login.jsx"
 
 import logo from '../assets/images/герб_ямала.png'
+import Button from "../components/Buttons.jsx"
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
-import Button from "../components/Buttons.jsx"
-import axios from "axios"
-import { useState } from "react"
-import { Login } from "../pages/login/Login.jsx"
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -71,7 +71,7 @@ export const Footer = () => {
                 { withCredentials: true }
             )
             // window.location.href = 'https://volmed-backend.onrender.com';
-            navigate('/login');
+            navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
         } finally {
