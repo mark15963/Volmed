@@ -21,24 +21,16 @@
     gap:20px;
 }
 
+.loadingTitle{
+    color: aliceblue;
+    font-weight: bold;
+    margin: 30px 50px;
+}
+
 .buttonsContainer{
     display: flex;
     gap: 10px;
 }
-
-/* .button{
-    cursor: pointer;
-    width: fit-content;
-    padding: 6px 10px;
-    font-size: 15px;
-    border-radius: 10px;
-}
-
-.button:hover{
-    transition: all 0.2s ;
-    color:#1677ff;
-    border: 2px solid #1677ff;
-} */
 
 @media screen and (orientation: portrait) {
     body{
