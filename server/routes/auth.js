@@ -213,6 +213,11 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", async (req, res) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    req.headers.origin || allowedOrigins[0]
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);
