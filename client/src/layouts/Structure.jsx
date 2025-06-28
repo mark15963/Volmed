@@ -75,9 +75,6 @@ export const Footer = () => {
                 'https://volmed-backend.onrender.com/api/auth/status',
                 {
                     withCredentials: true,
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                    }
                 }
             );
 
