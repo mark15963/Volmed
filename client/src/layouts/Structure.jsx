@@ -156,8 +156,8 @@ export const Footer = () => {
                     {authState.username || 'Not logged in'}
                 </span> */}
                 <span style={{ margin: '0 10px' }}>
-                    {authState.isAuthenticated && authState.user ? (
-                        `${authState.user.status} ${authState.user.lastName} ${authState.user.firstName} `
+                    {authState.isAuthenticated ? (
+                        `${authState.status} ${authState.lastName} ${authState.firstName} `
                     ) : 'Not logged in'}
                 </span>
                 {authState.isAuthenticated ? (
