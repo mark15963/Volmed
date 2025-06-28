@@ -98,6 +98,8 @@ export const Footer = () => {
 
             setIsAuthenticated(!!authCookie);
             if (userCookie) {
+                console.log('User cookie: ', userCookie)
+
                 setUsername(decodeURIComponent(userCookie));
             }
             setIsLoading(false);
