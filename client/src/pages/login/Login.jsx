@@ -32,7 +32,10 @@ export const Login = () => {
         try {
             const response = await axios.post(
                 'https://volmed-backend.onrender.com/login',
-                { username, password },
+                {
+                    username: formData.username,
+                    password: formData.password
+                },
                 {
                     withCredentials: true,
                     headers: {
