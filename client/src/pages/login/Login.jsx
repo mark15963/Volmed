@@ -10,6 +10,10 @@ export const Login = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const [formData, setFormData] = useState({
+        username: '',
+        password: ''
+    })
 
     const navigate = useNavigate()
 
