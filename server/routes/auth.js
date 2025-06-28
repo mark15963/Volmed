@@ -134,6 +134,7 @@ router.post("/login", async (req, res) => {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
+            status: user.status,
           },
         });
       });
@@ -236,6 +237,7 @@ router.get("/api/auth/status", (req, res) => {
           username: req.session.user,
           firstName: req.session.firstName,
           lastName: req.session.lastName,
+          status: req.session.status,
         }
       : null,
   });

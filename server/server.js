@@ -63,14 +63,14 @@ app.use(
       pool: db,
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "none",
-      maxAge: 1000 * 60 * 60, // 1 hour
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60,
     },
     proxy: true,
   })

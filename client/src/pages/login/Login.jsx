@@ -52,7 +52,7 @@ export const Login = () => {
             if (response.data.success) {
                 setAuthState({
                     isAuthenticated: true,
-                    username: response.data.user.username,
+                    username: response.data.user,
                     isLoading: false
                 });
                 window.dispatchEvent(new Event('authChange'));
@@ -67,6 +67,12 @@ export const Login = () => {
             setIsLoading(false)
         }
     }
+
+    //DEBUG STATE + COOKIES
+    useEffect(() => {
+        console.log('Current auth state:', authState);
+        console.log('Document cookies:', document.cookie);
+    }, [authState]);
 
     return (
         <div className={styles.container}>
