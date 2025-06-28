@@ -68,6 +68,7 @@ export const Footer = () => {
                 {},
                 { withCredentials: true }
             )
+            window.location.href = 'https://volmed-backend.onrender.com';
             navigate('/login');
         } catch (error) {
             console.error("Error logging out:", error);
