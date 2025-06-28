@@ -67,19 +67,6 @@ export const Footer = () => {
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
-    const checkAuthCookie = () => {
-        const cookies = document.cookie.split(';');
-        return cookies.some(cookie =>
-            cookie.trim().startsWith('volmed.sid') ||
-            cookie.trim().startsWith('user')
-        );
-    };
-
-    useEffect(() => {
-        setIsAuthenticated(checkAuthCookie());
-        setIsLoading(false);
-    }, []);
-
     const getCookie = (name) => {
         const cookies = document.cookie.split(';');
         for (let cookie of cookies) {
@@ -90,6 +77,19 @@ export const Footer = () => {
         }
         return null;
     };
+
+    const checkAuthCookie = () => {
+        const cookies = document.cookie.split(';');
+        return cookies.some(cookie =>
+            cookie.trim().startsWith('volmed.sid=') ||
+            cookie.trim().startsWith('user=')
+        );
+    };
+
+    useEffect(() => {
+        setIsAuthenticated(checkAuthCookie());
+        setIsLoading(false);
+    }, []);
 
     useEffect(() => {
         const checkAuth = () => {
