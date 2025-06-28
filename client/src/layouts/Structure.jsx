@@ -62,6 +62,7 @@ export const Footer = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+    console.log(isAuthenticated)
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
