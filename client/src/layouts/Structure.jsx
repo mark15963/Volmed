@@ -122,8 +122,11 @@ export const Footer = () => {
             )
             setAuthState({
                 isAuthenticated: false,
-                username: '',
                 isLoading: false,
+                username: '',
+                lastName: '',
+                firstName: '',
+                status: '',
             });
             navigate('/login')
         } catch (error) {
