@@ -76,8 +76,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get("/api/patients", isAuth, async (req, res) => {
-  console.log("Attempting to fetch");
-
   try {
     console.log("Attempting to fetch patients");
     const client = await db.connect();
@@ -96,7 +94,7 @@ router.get("/api/patients", isAuth, async (req, res) => {
   }
 });
 //Get data of a specific patient
-router.get("/api/patients/:id", async (req, res) => {
+router.get("/api/patients/:id", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query("SELECT * FROM patients WHERE id = $1", [
       req.params.id,
@@ -110,7 +108,7 @@ router.get("/api/patients/:id", async (req, res) => {
   }
 });
 // Amount of ID's in DB
-router.get("/api/patient-count", async (req, res) => {
+router.get("/api/patient-count", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query("SELECT COUNT(id) AS count FROM patients");
     res.json({ count: parseInt(rows[0].count, 10) || 0 });
@@ -120,7 +118,7 @@ router.get("/api/patient-count", async (req, res) => {
   }
 });
 // Add a new patient
-router.post("/api/patients", async (req, res) => {
+router.post("/api/patients", isAuth, async (req, res) => {
   const newP = req.body;
   const keys = Object.keys(newP);
   const values = Object.values(newP);
@@ -143,7 +141,7 @@ router.post("/api/patients", async (req, res) => {
   }
 });
 // Update a patient
-router.put("/api/patients/:id", async (req, res) => {
+router.put("/api/patients/:id", isAuth, async (req, res) => {
   const id = req.params.id,
     edited = req.body;
   const keys = Object.keys(edited),
@@ -165,7 +163,7 @@ router.put("/api/patients/:id", async (req, res) => {
   }
 });
 // Delete a patient
-router.delete("/api/patients/:id", async (req, res) => {
+router.delete("/api/patients/:id", isAuth, async (req, res) => {
   try {
     const { rowCount } = await db.query("DELETE FROM patients WHERE id = $1", [
       req.params.id,
@@ -180,18 +178,23 @@ router.delete("/api/patients/:id", async (req, res) => {
 
 //-----FILES-----
 // Upload files to a specific patient
-router.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-  res.json({
-    success: true,
-    filename: req.file.filename,
-    originalname: req.file.originalname,
-    path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
-    size: req.file.size,
-  });
-});
+router.post(
+  "/api/patients/:id/upload",
+  isAuth,
+  upload.single("file"),
+  (req, res) => {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    res.json({
+      success: true,
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
+      size: req.file.size,
+    });
+  }
+);
 // Get files of a specific patient
-router.get("/api/patients/:id/files", (req, res) => {
+router.get("/api/patients/:id/files", isAuth, (req, res) => {
   const dir = path.join(uploadDir, "patients", req.params.id);
   if (!fs.existsSync(dir)) return res.json([]);
   try {
@@ -211,7 +214,7 @@ router.get("/api/patients/:id/files", (req, res) => {
   }
 });
 // Delete patient's file
-router.delete("/api/files", async (req, res) => {
+router.delete("/api/files", isAuth, async (req, res) => {
   const { filePath } = req.body;
   if (!filePath) return res.status(400).json({ error: "filePath is required" });
 
@@ -252,7 +255,7 @@ router.delete("/api/files", async (req, res) => {
 
 //-----MEDS-----
 // Show patient's medications
-router.get("/api/patients/:id/medications", async (req, res) => {
+router.get("/api/patients/:id/medications", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       "SELECT * FROM medications WHERE patient_id = $1",
@@ -266,7 +269,7 @@ router.get("/api/patients/:id/medications", async (req, res) => {
   }
 });
 // Add medication to a patient
-router.post("/api/patients/:id/medications", async (req, res) => {
+router.post("/api/patients/:id/medications", isAuth, async (req, res) => {
   const { name, dosage, frequency } = req.body;
   if (!name || !dosage || !frequency) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -290,7 +293,7 @@ router.post("/api/patients/:id/medications", async (req, res) => {
   }
 });
 // Update a medication of a patient
-router.put("/api/medications/:medId", async (req, res) => {
+router.put("/api/medications/:medId", isAuth, async (req, res) => {
   const { medId } = req.params;
   const { name, dosage, frequency } = req.body;
 
@@ -328,7 +331,7 @@ router.put("/api/medications/:medId", async (req, res) => {
   }
 });
 // Delete a medication from a patient
-router.delete("/api/medications/:medId", async (req, res) => {
+router.delete("/api/medications/:medId", isAuth, async (req, res) => {
   const medId = parseInt(req.params.medId, 10);
 
   if (isNaN(medId)) {
@@ -368,7 +371,7 @@ router.delete("/api/medications/:medId", async (req, res) => {
 
 //-----STATES------
 // Save pulse data
-router.post("/api/patients/:id/pulse", async (req, res) => {
+router.post("/api/patients/:id/pulse", isAuth, async (req, res) => {
   const val = req.body.pulseValue;
   if (val == null || isNaN(val))
     return res.status(400).json({ error: "Invalid pulse value" });
@@ -383,7 +386,7 @@ router.post("/api/patients/:id/pulse", async (req, res) => {
   }
 });
 // Get pulse data
-router.get("/api/patients/:id/pulse", async (req, res) => {
+router.get("/api/patients/:id/pulse", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       "SELECT pulse_value, created_at FROM patient_pulse WHERE patient_id=$1 ORDER BY created_at ASC",
