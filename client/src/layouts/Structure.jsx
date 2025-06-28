@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router"
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Main } from '../pages/main/Main.jsx'
 import { SearchResults } from "../pages/searchResults/SearchRes.jsx"
