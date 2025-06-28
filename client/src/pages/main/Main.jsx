@@ -58,8 +58,8 @@ export const Main = () => {
 
     if (authState.isLoading) {
         return (
-            <div className={footerStyles.container}>
-                <div className={footerStyles.mainBlock}>
+            <div className={styles.container}>
+                <div className={styles.mainBlock}>
                     <p>Нет доступа</p>
                 </div>
             </div>
