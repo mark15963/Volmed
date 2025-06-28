@@ -152,13 +152,10 @@ export const Footer = () => {
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
-                {/* <span style={{ margin: '0 10px' }}>
-                    {authState.username || 'Not logged in'}
-                </span> */}
                 <span style={{ margin: '0 10px' }}>
                     {authState.isAuthenticated ? (
                         `${authState.status} ${authState.lastName} ${authState.firstName} `
-                    ) : 'Not logged in'}
+                    ) : ''}
                 </span>
                 {authState.isAuthenticated ? (
                     <Button

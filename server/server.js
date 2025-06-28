@@ -9,11 +9,14 @@ const { exec } = require("child_process");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
+const fs = require("fs");
+
 const routes = require("./routes/index");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+//DB setup
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -25,9 +28,7 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
-app.use(cookieParser());
-app.set("trust proxy", 1);
-
+//CORS setup
 const allowedOrigins =
   process.env.NODE_ENV === "production"
     ? [
@@ -40,25 +41,29 @@ const allowedOrigins =
         "http://192.168.0.104:5173",
         "http://localhost:5000",
       ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Not allowed by CORS:", origin); // Add logging for debugging
-        callback(new Error("Not allowed by CORS"));
-      }
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      console.log("Not allowed by CORS:", origin);
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["set-cookie"], // Expose cookies to frontend
+    exposedHeaders: ["set-cookie"],
   })
 );
 
+//Trust Proxy & Middleware
+app.set("trust proxy", 1);
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+//Session config
 app.use(
   session({
     name: "volmed.sid",
@@ -78,6 +83,8 @@ app.use(
     proxy: true,
   })
 );
+
+//Debug
 app.use((req, res, next) => {
   console.log("Session ID:", req.sessionID);
   console.log("Session data:", req.session);
@@ -85,19 +92,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  req.setTimeout(30000, () => {
-    // 30 seconds timeout
-    res.status(503).json({ error: "Request timeout" });
-  });
-  next();
-});
-
+//Static & Routing
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("uploads"));
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    res.setHeader("Content-Type", "application/json");
+  }
+  next();
+});
+app.use(routes);
 
 // DB connection test
 async function testDbConnection() {
@@ -118,16 +123,6 @@ async function testDbConnection() {
   }
   throw new Error("❌ Maximum DB connection attempts reached");
 }
-
-// Content Security Policy
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    res.setHeader("Content-Type", "application/json");
-  }
-  next();
-});
-
-app.use(routes);
 
 //-----DATABASE-----
 // DB backup
