@@ -103,7 +103,6 @@ export const Footer = () => {
             setIsLoading(false);
         };
 
-        console.log(checkAuth())
         checkAuth();
     }, []);
 
@@ -134,6 +133,7 @@ export const Footer = () => {
             </div>
         );
     }
+    console.log(username)
 
     return (
         <div className={footerStyles.container}>
