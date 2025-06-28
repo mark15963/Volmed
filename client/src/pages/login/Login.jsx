@@ -41,8 +41,9 @@ export const Login = () => {
                 { withCredentials: true }
             )
             if (response.data.success) {
+                // Update UI with the user data from response
                 window.dispatchEvent(new Event('authChange'));
-                navigate('/')
+                navigate(response.data.redirect || '/');
             }
         } catch (error) {
             console.error("Login error:", error)
