@@ -73,24 +73,16 @@ export const Footer = () => {
     // Check authentication status
     const checkAuthStatus = async () => {
         try {
-            console.log('Checking auth status...');
-
             const response = await axios.get(
                 'https://volmed-backend.onrender.com/api/auth/status',
                 { withCredentials: true }
             );
-            console.log('Auth status response:', response.data);
 
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
                 username: response.data.user?.username || '',
                 isLoading: false
             });
-
-            // If authenticated but no cookies, log the issue
-            if (response.data.isAuthenticated && !document.cookie.includes('user')) {
-                console.warn('User is authenticated but cookies not found');
-            }
 
         } catch (error) {
             console.error("Auth check error:", error);
@@ -105,12 +97,9 @@ export const Footer = () => {
     useEffect(() => {
         checkAuthStatus();
 
-        const handleAuthChange = () => {
-            console.log('Auth change event received');
-            checkAuthStatus();
-        };
-
+        const handleAuthChange = () => checkAuthStatus();
         window.addEventListener('authChange', handleAuthChange);
+
         return () => window.removeEventListener('authChange', handleAuthChange);
     }, []);
 
