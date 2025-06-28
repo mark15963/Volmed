@@ -60,6 +60,16 @@ export const Main = () => {
         return (
             <div className={styles.container}>
                 <div className={styles.mainBlock}>
+                    <p>Загрузка данных...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!authState.isAuthenticated) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.mainBlock}>
                     <p>Нет доступа</p>
                 </div>
             </div>
