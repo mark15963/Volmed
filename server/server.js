@@ -70,9 +70,6 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain:
-        process.env.COOKIE_DOMAIN ||
-        (process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost"),
       maxAge: 1000 * 60 * 60, // 1 hour
       // domain: ".onrender.com",
     },
