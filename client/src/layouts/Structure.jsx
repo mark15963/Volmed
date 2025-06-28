@@ -61,6 +61,7 @@ export const Footer = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [username, setUsername] = useState('');
 
     console.log(isAuthenticated)
     const yearText = year > 2025
@@ -80,6 +81,32 @@ export const Footer = () => {
         setIsLoading(false);
     }, []);
 
+    const getCookie = (name) => {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [cookieName, cookieValue] = cookie.trim().split('=');
+            if (cookieName === name) {
+                return cookieValue;
+            }
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const authCookie = getCookie('volmed.sid');
+            const userCookie = getCookie('user');
+
+            setIsAuthenticated(!!authCookie);
+            if (userCookie) {
+                setUsername(decodeURIComponent(userCookie));
+            }
+            setIsLoading(false);
+        };
+
+        checkAuth();
+    }, []);
+
     const handleLogout = async () => {
         setIsLoggingOut(true);
         try {
@@ -88,6 +115,7 @@ export const Footer = () => {
                 { withCredentials: true }
             )
             setIsAuthenticated(false);
+            setUsername('');
             navigate('/login')
         } catch (error) {
             console.error("Error logging out:", error);
@@ -111,6 +139,11 @@ export const Footer = () => {
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
+                {username && (
+                    <span style={{ margin: '0 10px' }}>
+                        {username}
+                    </span>
+                )}
                 {isAuthenticated ? (
                     <Button
                         text='Выход'
