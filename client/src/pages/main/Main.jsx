@@ -6,6 +6,63 @@ import Button from '../../components/Buttons';
 
 export const Main = () => {
     const navigate = useNavigate()
+    const [authState, setAuthState] = useState({
+        isAuthenticated: false,
+        username: '',
+        isLoading: true,
+    });
+
+    const checkAuthStatus = async () => {
+        try {
+            const response = await axios.get(
+                'https://volmed-backend.onrender.com/api/auth/status',
+                {
+                    withCredentials: true,
+                }
+            );
+
+            console.log('Main page Auth status response:', response.data);
+
+            setAuthState({
+                isAuthenticated: response.data.isAuthenticated,
+                isLoading: false,
+                username: response.data.user?.username || '',
+                lastName: response.data.user?.lastName || '',
+                firstName: response.data.user?.firstName || '',
+                status: response.data.user?.status || '',
+            });
+
+        } catch (error) {
+            console.error("Auth check error:", error);
+            setAuthState({
+                isAuthenticated: false,
+                isLoading: false,
+                username: '',
+                lastName: '',
+                firstName: '',
+                status: '',
+            });
+        }
+    };
+
+    useEffect(() => {
+        checkAuthStatus();
+
+        const handleAuthChange = () => checkAuthStatus();
+        window.addEventListener('authChange', handleAuthChange);
+
+        return () => window.removeEventListener('authChange', handleAuthChange);
+    }, []);
+
+    if (authState.isLoading) {
+        return (
+            <div className={footerStyles.container}>
+                <div className={footerStyles.mainBlock}>
+                    <p>Нет доступа</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container}>

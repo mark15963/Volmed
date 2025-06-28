@@ -146,7 +146,6 @@ export const Footer = () => {
     }
 
     console.log('Current auth state:', authState);
-    console.log('All cookies:', document.cookie);
 
     return (
         <div className={footerStyles.container}>
