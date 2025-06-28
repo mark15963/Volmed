@@ -75,7 +75,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.get("/api/patients", async (req, res) => {
+router.get("/api/patients", isAuth, async (req, res) => {
+  console.log("Attempting to fetch");
+
   try {
     console.log("Attempting to fetch patients");
     const client = await db.connect();
@@ -178,21 +180,16 @@ router.delete("/api/patients/:id", async (req, res) => {
 
 //-----FILES-----
 // Upload files to a specific patient
-router.post(
-  "/api/patients/:id/upload",
-  isAuth,
-  upload.single("file"),
-  (req, res) => {
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-    res.json({
-      success: true,
-      filename: req.file.filename,
-      originalname: req.file.originalname,
-      path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
-      size: req.file.size,
-    });
-  }
-);
+router.post("/api/patients/:id/upload", upload.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  res.json({
+    success: true,
+    filename: req.file.filename,
+    originalname: req.file.originalname,
+    path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
+    size: req.file.size,
+  });
+});
 // Get files of a specific patient
 router.get("/api/patients/:id/files", (req, res) => {
   const dir = path.join(uploadDir, "patients", req.params.id);

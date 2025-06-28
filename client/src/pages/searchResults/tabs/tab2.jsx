@@ -305,7 +305,6 @@ export const Tab2 = ({
                                         <tr key={index}>
                                             <td style={{ padding: '8px', border: '1px solid #ddd' }}>
                                                 {new Date(item.created_at).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
-                                                {console.log('created_at raw:', item.created_at)}
                                             </td>
                                             <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.val}</td>
                                         </tr>
