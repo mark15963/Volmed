@@ -77,7 +77,6 @@ export const Footer = () => {
                     withCredentials: true,
                     headers: {
                         'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
                     }
                 }
             );
