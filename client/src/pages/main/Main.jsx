@@ -60,7 +60,9 @@ export const Main = () => {
         return (
             <div className={styles.container}>
                 <div className={styles.mainBlock}>
-                    <p>Загрузка данных...</p>
+                    <p className={styles.loadingTitle}>
+                        Загрузка данных...
+                    </p>
                 </div>
             </div>
         );
@@ -69,9 +71,7 @@ export const Main = () => {
         return (
             <div className={styles.container}>
                 <div className={styles.mainBlock}>
-                    <p
-                        style={{ color: 'aliceblue', fontWeight: 'bold', margin: '30px 50px' }}
-                    >
+                    <p className={styles.loadingTitle}>
                         Нет доступа
                     </p>
                 </div>
