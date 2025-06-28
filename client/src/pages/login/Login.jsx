@@ -8,9 +8,29 @@ export const Login = () => {
     return (
         <div className={styles.container}>
             <div className={styles.mainBlock}>
-                <input type="text" name="username" placeholder="username" />
-                <input type="password" name="password" placeholder="password" />
-                <Button text='Новый пациент' icon='bi bi-person-plus' margin='0 0 0 5px' onClick={() => navigate('/register')} />
+
+                <form action="https://volmed-backend.onrender.com/login" method="POST">
+                    <label htmlFor="username">
+                        Username:
+                    </label>
+                    <input
+                        name="username"
+                        type="text"
+                        placeholder="Username"
+                    />
+                    <br />
+                    <label htmlFor="password">
+                        Password:
+                    </label>
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                    />
+                    <br />
+                    <Button type='submit' text='Вход' />
+                </form>
+
             </div>
         </div >
     )
