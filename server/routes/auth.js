@@ -119,21 +119,18 @@ router.post("/login", async (req, res) => {
         });
       }
 
-      // Set session
       req.session.isAuth = true;
       req.session.user = user.username;
       req.session.lastName = user.lastName || "Undefined";
       req.session.firstName = user.firstName || "Undefined";
       req.session.status = user.status || "Undefined";
 
-      // Save the session before redirect
       req.session.save((error) => {
         if (error) {
           console.error("Session save error:", error);
           return res.status(500).json({ error: "Internal server error" });
         }
 
-        // Set cookie
         res.cookie("user", user.username, {
           httpOnly: false,
           secure: process.env.NODE_ENV === "production",
