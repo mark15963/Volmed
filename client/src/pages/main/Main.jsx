@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 
 import { SearchBar } from '../../components/SearchBar';
-import Button from '../../components/Buttons';
+import Button from '../../components/Buttons.tsx';
 import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
@@ -44,6 +44,7 @@ export const Main = () => {
                     <Button text='Новый пациент' icon='bi bi-person-plus' margin='0 0 0 5px' onClick={() => navigate('/register')} />
 
                 </div>
+
             </div>
         </div>
     )

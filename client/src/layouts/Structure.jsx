@@ -11,7 +11,7 @@ import Login from "../pages/login/Login.jsx"
 import NotFound from "../pages/NotFound.jsx"
 
 import logo from '../assets/images/герб_ямала.png'
-import Button from "../components/Buttons.jsx"
+import Button from "../components/Buttons.tsx"
 
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'

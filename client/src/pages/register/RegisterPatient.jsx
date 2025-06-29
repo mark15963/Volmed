@@ -5,7 +5,7 @@ import { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip } from 
 import { IMaskInput } from 'react-imask';
 import dayjs, { datePickerLocale } from './dayjs.config'
 
-import Button from '../../components/Buttons';
+import Button from '../../components/Buttons.tsx';
 
 import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
