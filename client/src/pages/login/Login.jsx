@@ -95,7 +95,7 @@ export const Login = () => {
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
                             type='submit'
-                            text={isLoading ? 'Logging in...' : 'Вход'}
+                            text={isLoading ? 'Загрузка...' : 'Вход'}
                             disabled={isLoading}
                         />
                     </div>
