@@ -29,14 +29,13 @@ const db = new Pool({
 });
 
 //CORS setup
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [process.env.FRONTEND_URL, process.env.BACKEND_URL]
-    : [
-        "http://localhost:5173",
-        "http://192.168.0.104:5173",
-        "http://localhost:5000",
-      ];
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.BACKEND_URL,
+  "http://localhost:5173",
+  "http://192.168.0.104:5173",
+  "http://localhost:5000",
+];
 
 app.locals.allowedOrigins = allowedOrigins;
 
