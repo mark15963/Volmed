@@ -146,6 +146,7 @@ async function startServer() {
       console.log(`Server running on port ${PORT}`);
       console.log(`Database connected to: ${process.env.DB_HOST}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
+      console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
       server.headersTimeout = 65000;
     });

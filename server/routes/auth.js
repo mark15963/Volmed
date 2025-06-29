@@ -280,9 +280,6 @@ router.get("/api/auth/status", (req, res) => {
 
 router.get("/dashboard", isAuth, async (req, res) => {
   try {
-    console.log("Session:", req.session);
-    console.log("Cookies:", req.cookies);
-
     const sessionData = req.session
       ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
       : "null";
