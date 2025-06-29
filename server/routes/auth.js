@@ -246,6 +246,14 @@ router.post("/logout", isAuth, async (req, res) => {
 });
 
 router.get("/status", async (req, res) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = req.app.locals.allowedOrigins || [];
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
   try {
     res.json({
       isAuthenticated: !!req.session.isAuth,
