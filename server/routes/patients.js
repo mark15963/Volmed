@@ -77,11 +77,9 @@ const upload = multer({ storage });
 
 router.get("/api/patients", isAuth, async (req, res) => {
   try {
-    console.log("Attempting to fetch patients");
     const client = await db.connect();
     try {
       const { rows } = await db.query("SELECT * FROM patients ORDER BY id");
-      console.log(`Fetched ${rows.length} patients`);
       res.json(rows);
     } finally {
       client.release();
