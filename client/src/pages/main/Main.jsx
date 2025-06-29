@@ -19,7 +19,7 @@ export const Main = () => {
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(
-                'https://volmed-backend.onrender.com/api/auth/status',
+                'https://volmed-backend.onrender.com/status',
                 {
                     withCredentials: true,
                 }

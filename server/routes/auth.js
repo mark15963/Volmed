@@ -245,7 +245,7 @@ router.post("/logout", isAuth, async (req, res) => {
   });
 });
 
-router.get("/api/auth/status", async (req, res) => {
+router.get("/status", async (req, res) => {
   try {
     res.json({
       isAuthenticated: !!req.session.isAuth,
