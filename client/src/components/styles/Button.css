@@ -31,11 +31,11 @@ button{
     line-height: 1;
 }
 
-
-
 /* SHAPE */
 .button.circle{
-    border-radius: 20px;
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 50%;
 }
 
 @media screen and (orientation: portrait) {
@@ -44,72 +44,3 @@ button{
         padding: 3px 5px;
     }
 }
-
-/* 
-.test-button{
-    --color-icon:#000;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    border: 1px solid black;
-    background-color: aliceblue;
-    color:var(--color-icon);
-    padding: 5px 10px;
-    transition: 0.3s;
-    opacity: 0.7;
-}
-
-@keyframes loader-move {
-    0% { scale: 0 1 }
-    100% { scale: 1 1 }
-}
-
-.test-button .loader{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    height: 100%;
-    background-color: rgb(0 0 0/24%);
-    opacity: 0;
-    transition: 0.3s;
-}
-
-.test-button.working
-.loader{
-    opacity: 1;
-}
-
-.test-button
-.loader::after{
-    content:'';
-    position: inherit;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform-origin: 0% 50%;
-    background: #000;
-}
-
-.test-button.working
-.loader::after{
-    animation: loader-move 1.5s linear both;
-}
-
-.test-button:hover{
-    opacity: 1;
-}
-
-.test-button
-.button-text{
-    flex: 0 0 66px;
-    width: 66px; 
-}
-
-.test-button:disabled{
-    cursor: not-allowed;
-} */

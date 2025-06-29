@@ -11,7 +11,7 @@ import { Tab3 } from './tabs/tab3'
 
 import styles from './searchResults.module.css'
 
-import Button from '../../components/Buttons'
+import Button from '../../components/Buttons.tsx'
 
 export const SearchResults = () => {
     const { state } = useLocation();

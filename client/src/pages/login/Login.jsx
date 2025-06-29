@@ -3,7 +3,7 @@ import { useNavigate } from "react-router"
 
 import { useAuth } from '../../context/AuthContext';
 
-import Button from "../../components/Buttons"
+import Button from "../../components/Buttons.tsx"
 
 import styles from './login.module.css'
 import axios from "axios"
