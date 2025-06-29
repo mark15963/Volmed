@@ -58,11 +58,12 @@ export const Button = ({
     ...props
 }) => {
 
+    const buttonClass = ['button', shape, className].filter(Boolean).join(' ');
+
     return (
         <button
             onClick={onClick}
-            className={`button ${shape || ''} ${className || ''}`}
-            // disabled={isLoading}
+            className={buttonClass}
             disabled={disabled}
             type={type}
             style={style}
