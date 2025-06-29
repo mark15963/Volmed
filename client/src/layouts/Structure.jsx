@@ -128,7 +128,7 @@ export const Footer = () => {
                 firstName: '',
                 status: '',
             });
-            navigate('/login')
+            navigate('/')
         } catch (error) {
             console.error("Error logging out:", error);
             setAuthState(prev => ({ ...prev, isLoading: false }));
