@@ -9,6 +9,7 @@ import axios from "axios"
 const apiUrl = import.meta.env.VITE_API_URL
 
 export const Login = () => {
+    const navigate = useNavigate()
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [authState, setAuthState] = useState({
@@ -20,8 +21,6 @@ export const Login = () => {
         username: '',
         password: ''
     })
-
-    const navigate = useNavigate()
 
     const handleChange = (e) => {
         const { name, value } = e.target

@@ -31,11 +31,7 @@ const db = new Pool({
 //CORS setup
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? [
-        "https://volmed-o4s0.onrender.com",
-        "https://volmed-backend.onrender.com",
-        process.env.FRONTEND_URL,
-      ]
+    ? [process.env.FRONTEND_URL, process.env.BACKEND_URL]
     : [
         "http://localhost:5173",
         "http://192.168.0.104:5173",
@@ -86,7 +82,7 @@ app.use(
   })
 );
 
-//Debug
+//Debug session & cookies
 app.use((req, res, next) => {
   console.log("Session ID:", req.sessionID);
   console.log("Session data:", req.session);
@@ -163,7 +159,6 @@ async function startServer() {
     process.exit(1);
   }
 }
-
 startServer();
 
 module.exports = { allowedOrigins };

@@ -219,18 +219,7 @@ router.post("/register", async (req, res) => {
   res.redirect("/login");
 });
 
-router.post("/logout", async (req, res) => {
-  const allowedOrigins = req.app.locals.allowedOrigins || [
-    "http://localhost:5173",
-    "https://volmed-o4s0.onrender.com",
-  ];
-
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-
+router.post("/logout", isAuth, async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);
@@ -256,23 +245,26 @@ router.post("/logout", async (req, res) => {
   });
 });
 
-router.get("/api/auth/status", (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    req.headers.origin || allowedOrigins[0]
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.json({
-    isAuthenticated: !!req.session.isAuth,
-    user: req.session.user
-      ? {
-          username: req.session.user,
-          firstName: req.session.firstName,
-          lastName: req.session.lastName,
-          status: req.session.status,
-        }
-      : null,
-  });
+router.get("/api/auth/status", async (req, res) => {
+  try {
+    res.json({
+      isAuthenticated: !!req.session.isAuth,
+      user: req.session.user
+        ? {
+            username: req.session.user,
+            firstName: req.session.firstName,
+            lastName: req.session.lastName,
+            status: req.session.status,
+          }
+        : null,
+    });
+  } catch (error) {
+    console.error("Auth status check failed:", error);
+    res.status(500).json({
+      isAuthenticated: false,
+      error: "Authentication service unavailable",
+    });
+  }
 });
 
 router.get("/dashboard", isAuth, async (req, res) => {

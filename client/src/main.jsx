@@ -8,6 +8,9 @@ import ruRU from 'antd/locale/ru_RU';
 import App from './App.jsx'
 
 import './index.css'
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')).render(
   <ConfigProvider
