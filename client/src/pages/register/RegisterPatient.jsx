@@ -408,3 +408,5 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
         </div >
     )
 }
+
+export default RegisterPatient

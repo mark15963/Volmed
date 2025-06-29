@@ -1,5 +1,5 @@
-import './App.css'
 import { Header, Content, Footer } from './layouts/Structure'
+import { AuthProvider } from './context/AuthContext'
 
 //fonts
 import './assets/fonts/Montserrat-Black.ttf'
@@ -13,19 +13,23 @@ import './assets/fonts/Montserrat-SemiBold.ttf'
 import './assets/fonts/Montserrat-Thin.ttf'
 import './assets/fonts/Montserrat-VariableFont_wght.ttf'
 
+import './App.css'
+
 export const App = () => {
 
   return (
     <>
-      <div className='header'>
-        <Header title='ГБУ «Городская больница Волновахского района»' />
-      </div>
-      <div className='content'>
-        <Content />
-      </div>
-      <div className='footer'>
-        <Footer />
-      </div>
+      <AuthProvider>
+        <header>
+          <Header title='ГБУ «Городская больница Волновахского района»' />
+        </header>
+        <main>
+          <Content />
+        </main>
+        <footer>
+          <Footer />
+        </footer>
+      </AuthProvider>
     </>
   )
 }

@@ -42,6 +42,7 @@ app.locals.allowedOrigins = allowedOrigins;
 app.use(
   cors({
     origin: function (origin, callback) {
+      console.log("Incoming origin:", origin);
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
       console.log("Not allowed by CORS:", origin);
@@ -53,6 +54,8 @@ app.use(
     exposedHeaders: ["set-cookie"],
   })
 );
+
+// app.use(cors({ origin: true, credentials: true }));
 
 //Trust Proxy & Middleware
 app.set("trust proxy", 1);
