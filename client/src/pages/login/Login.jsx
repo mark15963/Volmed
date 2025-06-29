@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 
+import { useAuth } from '../../context/AuthContext';
+
 import Button from "../../components/Buttons"
 
 import styles from './login.module.css'
@@ -12,15 +14,12 @@ export const Login = () => {
     const navigate = useNavigate()
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
-    const [authState, setAuthState] = useState({
-        isAuthenticated: false,
-        username: '',
-        isLoading: true,
-    });
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     })
+    const { checkAuthStatus } = useAuth();
+
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -37,10 +36,7 @@ export const Login = () => {
         try {
             const response = await axios.post(
                 `${apiUrl}/login`,
-                {
-                    username: formData.username,
-                    password: formData.password
-                },
+                formData,
                 {
                     withCredentials: true,
                     headers: {
@@ -48,14 +44,8 @@ export const Login = () => {
                     }
                 }
             )
-
             if (response.data.success) {
-                setAuthState({
-                    isAuthenticated: true,
-                    username: response.data.user,
-                    isLoading: false
-                });
-                window.dispatchEvent(new Event('authChange'));
+                await checkAuthStatus();
                 navigate('/');
             }
         } catch (error) {
@@ -114,3 +104,5 @@ export const Login = () => {
         </div >
     )
 }
+
+export default Login

@@ -19,19 +19,9 @@ html, body{
   grid-template-rows: 120px 1fr 60px;
 }
 
-.header{
+header{
   width: 100vw;
   grid-area: head;
-}
-
-.content{
-  background-color: #a5c6e2;
-  grid-area: content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100vw;
 }
 
 .container{
@@ -57,7 +47,17 @@ html, body{
     gap:20px;
 }
 
-.footer{
+main{
+  background-color: #a5c6e2;
+  grid-area: content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100vw;
+}
+
+footer{
   grid-area: foot;
   width: 100vw;
 }

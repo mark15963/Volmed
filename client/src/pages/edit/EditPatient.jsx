@@ -57,3 +57,5 @@ export const EditPatient = () => {
         />
     );
 };
+
+export default EditPatient

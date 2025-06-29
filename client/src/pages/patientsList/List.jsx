@@ -5,7 +5,6 @@ import { HomeButton } from '../../components/Buttons'
 
 import styles from './list.module.css'
 
-
 export const List = () => {
     usePageTitle("Список пациентов");
 
@@ -37,3 +36,5 @@ export const List = () => {
     )
 
 }
+
+export default List
