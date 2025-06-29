@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router"
+import { Routes, Route, useNavigate, useLocation } from "react-router"
 import axios from "axios"
 import { useState, useEffect } from "react"
 
@@ -60,6 +60,7 @@ export const Content = () => {
 export const Footer = () => {
     const year = new Date().getFullYear()
     const navigate = useNavigate();
+    const location = useLocation()
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
         isLoading: true,
@@ -154,18 +155,19 @@ export const Footer = () => {
                         `${authState.status} ${authState.lastName} ${authState.firstName} `
                     ) : ''}
                 </span>
-                {authState.isAuthenticated ? (
-                    <Button
-                        text='Выход'
-                        onClick={handleLogout}
-                        disabled={authState.isLoading}
-                    />
-                ) : (
-
-                    <Button
-                        text='Вход'
-                        onClick={() => navigate('/login')}
-                    />
+                {location.pathname !== '/login' && (
+                    authState.isAuthenticated ? (
+                        <Button
+                            text='Выход'
+                            onClick={handleLogout}
+                            disabled={authState.isLoading}
+                        />
+                    ) : (
+                        <Button
+                            text='Вход'
+                            onClick={() => navigate('/login')}
+                        />
+                    )
                 )}
             </div>
         </div>
