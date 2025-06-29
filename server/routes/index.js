@@ -8,8 +8,6 @@ router.use(authRouter);
 router.use(patientsRouter);
 
 router.get("/", (req, res) => {
-  console.log(req.session);
-  console.log("Session ID:", req.session.id);
   const sessionData = req.session
     ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
     : "null";
