@@ -57,7 +57,7 @@ export const SearchBar = () => {
 
     return (
         <div className={styles.container}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <label className={styles.searchtitle} htmlFor="searchfield">
                     Поиск пациентов:
                 </label>

@@ -22,6 +22,7 @@ export const Main = () => {
             </div>
         );
     }
+
     if (!authState.isAuthenticated) {
         return (
             <div className={styles.container}>
