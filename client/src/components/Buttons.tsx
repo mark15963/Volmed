@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, CSSProperties, FC, useState } from "react";
+import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
 
 import "./styles/Button.css";
 
