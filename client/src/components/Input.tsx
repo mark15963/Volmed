@@ -1,6 +1,7 @@
 import { InputHTMLAttributes, CSSProperties, FC } from "react";
 
 import "./styles/Input.module.css";
+// import styles from "./styles/Input.module.css"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: "text" | "password" | "email" | "tel" | "search";
@@ -28,6 +29,7 @@ export const Input: FC<InputProps> = ({
   style,
   ...props
 }) => {
+  const inputClass = ["input", className].filter(Boolean).join(" ");
   return (
     <input
       name={name}
@@ -39,7 +41,7 @@ export const Input: FC<InputProps> = ({
       autoComplete={autoComplete}
       pattern={pattern}
       inputMode={inputMode}
-      className={className}
+      className={inputClass}
       style={style}
       {...props}
     />
