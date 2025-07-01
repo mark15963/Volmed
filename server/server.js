@@ -41,8 +41,6 @@ app.locals.allowedOrigins = allowedOrigins;
 app.use(
   cors({
     origin: function (origin, callback) {
-      console.log("Incoming origin:", origin);
-      console.log("Allowed origins:", allowedOrigins);
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
       console.log("Not allowed by CORS:", origin);
@@ -83,12 +81,12 @@ app.use(
 );
 
 //Debug session & cookies
-app.use((req, res, next) => {
-  console.log("Session ID:", req.sessionID);
-  console.log("Session data:", req.session);
-  console.log("Cookies:", req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Session ID:", req.sessionID);
+//   console.log("Session data:", req.session);
+//   console.log("Cookies:", req.cookies);
+//   next();
+// });
 
 //Static & Routing
 app.use(express.static(path.join(__dirname, "public")));
@@ -108,11 +106,11 @@ async function testDbConnection() {
     delay = 2000;
   for (let i = 1; i <= retries; i++) {
     try {
-      console.log(`Connection attempt ${i}/${retries}`);
+      // console.log(`Connection attempt ${i}/${retries}`);
       const client = await db.connect();
       await client.query("SELECT 1");
       client.release();
-      console.log("Database connection verified");
+      // console.log("Database connection verified");
       return;
     } catch (err) {
       console.error(`Attempt ${i} failed:`, err.message);
@@ -140,7 +138,7 @@ async function startServer() {
 
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
-      console.log(`Database connected to: ${process.env.DB_HOST}`);
+      // console.log(`Database connected to: ${process.env.DB_HOST}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
