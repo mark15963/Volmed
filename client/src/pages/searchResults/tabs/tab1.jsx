@@ -1,3 +1,4 @@
+import { Divider } from 'antd';
 import styles from '../searchResults.module.css';
 import moment from 'moment';
 
@@ -31,7 +32,6 @@ export const Tab1 = ({ data }) => {
                                 {moment(data.created_at).format('DD.MM.YYYY')}
                             </span>
                         </div>
-
                     </div>
                     <div className={styles.topFormsB}>
                         <div className={styles.title}>Пол: <br />
@@ -63,10 +63,8 @@ export const Tab1 = ({ data }) => {
                         </div>
                     </div>
                 </div>
-                <div style={{ height: '20px', borderBottom: '1px solid black' }}>
-                </div>
-                <div style={{ height: '30px' }}>
-                </div>
+
+                <Divider style={{ borderColor: 'black' }} />
 
                 <div className={styles.bottomForms}>
                     <div className={styles.title}>Жалобы при поступлении: <br />

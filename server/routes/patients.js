@@ -214,15 +214,18 @@ router.get("/api/patients/:id/files", isAuth, (req, res) => {
 // Delete patient's file
 router.delete("/api/files", isAuth, async (req, res) => {
   const { filePath } = req.body;
+
   if (!filePath) return res.status(400).json({ error: "filePath is required" });
 
-  const uploadsDir = path.join(__dirname, "uploads");
+  const uploadsDir = path.join(__dirname, "..", "uploads");
   const normalized = path
     .normalize(filePath)
     .replace(/^(\.\.[\\/])+/, "")
     .replace(/\\/g, "/");
-  const full = path.join(uploadsDir, normalized);
+  const relativePath = normalized.split("uploads/").pop() || normalized;
+  const full = path.join(uploadsDir, relativePath);
 
+  // Security check
   if (!full.startsWith(path.normalize(uploadsDir))) {
     return res
       .status(403)
@@ -232,11 +235,19 @@ router.delete("/api/files", isAuth, async (req, res) => {
   try {
     await fsp.access(full);
     await fsp.unlink(full);
-    res.json({ success: true, message: "Deleted", path: normalized });
+    res.json({
+      success: true,
+      message: "Deleted",
+      path: normalized,
+    });
   } catch (e) {
-    console.error(e);
+    console.error("Deletion error:", e);
     if (e.code === "ENOENT")
-      return res.status(404).json({ error: "Not found" });
+      return res.status(404).json({
+        error: "Not found",
+        requestedPath: normalized,
+        actualSearchedPath: full,
+      });
     if (e.code === "EPERM")
       return res
         .status(403)
