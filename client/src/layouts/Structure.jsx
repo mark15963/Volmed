@@ -1,8 +1,10 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
+import { lazy, Suspence } from "react"
 
 import { useAuth } from "../context/AuthContext.jsx"
 
-import Main from '../pages/main/Main.jsx'
+import Main from "../pages/main/Main.jsx"
+//const Main = lazy(() => import("../pages/main/Main.jsx"))
 import SearchResults from "../pages/searchResults/SearchRes.jsx"
 import List from "../pages/patientsList/List.jsx"
 import RegisterPatient from "../pages/register/RegisterPatient.jsx"
