@@ -17,6 +17,11 @@
 
 @media screen and (orientation: portrait) {
     .footer{
-        font-size: 1em;
+        font-size: 0.7em;
+        padding: 0 10px;
+    }
+
+    .footer span{
+        font-size: 1.3em;
     }
 }

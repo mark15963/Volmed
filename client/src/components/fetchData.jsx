@@ -7,8 +7,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './styles/Table.module.css'
 
-const environment = import.meta.env.VITE_ENV
-const apiUrl = import.meta.env.VITE_API_URL
+import api from "../services/api";
 
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
@@ -18,7 +17,7 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/patients`);
+        const response = await api.getPatients()
         const data = Array.isArray(response.data) ? response.data : [];
         setPatients(data);
       } catch (error) {
@@ -40,7 +39,9 @@ export const AllPatients = () => {
     }
   }
 
-
+  // useEffect(() => {
+  //   setLoading(true)
+  // })
   return (
     <div className={styles.container}>
       <table className={styles.table}>
@@ -112,13 +113,13 @@ export const PatientCount = () => {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/patient-count`);
+        const response = await api.getPatientCount()
         // Safely extract count with fallback
         const count = response.data?.count || 0;
         setCount(count);
       } catch (error) {
         console.error("Error fetching count:", error);
-        setCount(0); // Fallback to 0 on error
+        setCount(0);
       } finally {
         setLoading(false);
       }
@@ -138,7 +139,7 @@ export const PatientCount = () => {
             inline />
         </SkeletonTheme>
       ) : (
-        <span>{count}</span>
+        <span className={styles.counterText}>{count}</span>
       )}
     </div>
   )
