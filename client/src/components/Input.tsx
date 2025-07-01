@@ -30,7 +30,6 @@ export const Input: FC<InputProps> = ({
 }) => {
   return (
     <input
-      // id={id}
       name={name}
       type={type}
       placeholder={placeholder}

@@ -2,9 +2,9 @@ import moment from 'moment';
 import tableStyles from '../../../components/styles/Table.module.css';
 import styles from '../searchResults.module.css';
 import axios from 'axios';
+import api from '../../../services/api';
+import Input from '../../../components/Input';
 
-const environment = import.meta.env.VITE_ENV
-const apiUrl = import.meta.env.VITE_API_URL
 axios.defaults.withCredentials = true;
 
 export const Tab3 = ({
@@ -20,18 +20,16 @@ export const Tab3 = ({
                     <p>Нет назначений</p>
                 )}
                 {isEditingAssignments && (
-                    <>
-                        <button
-                            onClick={() => {
-                                setAssignments([...assignments, {
-                                    name: '',
-                                    dosage: '',
-                                    frequency: '',
-                                    createdAt: new Date().toISOString()
-                                }]);
-                            }}
-                            style={{ marginBottom: '10px', marginLeft: '0' }}>Добавить</button>
-                    </>
+                    <button
+                        onClick={() => {
+                            setAssignments([...assignments, {
+                                name: '',
+                                dosage: '',
+                                frequency: '',
+                                createdAt: new Date().toISOString()
+                            }]);
+                        }}
+                        style={{ marginBottom: '10px', marginLeft: '0' }}>Добавить</button>
                 )}
                 {(assignments.length > 0 || isEditingAssignments) && (
                     <div className={tableStyles.container}>
@@ -79,8 +77,16 @@ export const Tab3 = ({
                                         </td>
                                         <td style={{ width: '10%' }}>
                                             {isEditingAssignments ? (
-                                                <input
-                                                    style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                // <input
+                                                //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                //     value={item.frequency}
+                                                //     onChange={(e) => {
+                                                //         const newList = [...assignments];
+                                                //         newList[index].frequency = e.target.value;
+                                                //         setAssignments(newList);
+                                                //     }}
+                                                // />
+                                                <Input
                                                     value={item.frequency}
                                                     onChange={(e) => {
                                                         const newList = [...assignments];
@@ -98,9 +104,7 @@ export const Tab3 = ({
                                                         const itemToDelete = assignments[index];
                                                         try {
                                                             if (itemToDelete.id) {
-                                                                const response = await axios.delete(
-                                                                    `${apiUrl}/api/medications/${itemToDelete.id}`);
-
+                                                                const response = await api.deleteMedication(itemToDelete.id)
                                                                 if (!response.data.success) {
                                                                     throw new Error(response.data.message || "API returned unsuccessful");
                                                                 }

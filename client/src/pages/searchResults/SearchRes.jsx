@@ -138,7 +138,6 @@ export const SearchResults = () => {
         try {
             await refreshFileList();
 
-            // const response = await axios.get(`${apiUrl}/api/patients/${id}/files`);
             const response = await api.getPatientFiles(id)
             setFiles(response.data);
 
@@ -224,9 +223,7 @@ export const SearchResults = () => {
         if (!data?.id) return;
         const fetchMedications = async () => {
             try {
-                const response = await axios.get(
-                    `${apiUrl}/api/patients/${data.id}/medications`
-                );
+                const response = await api.getMedications(data.id)
                 const formattedAssignments = response.data.map(med => ({
                     ...med,
                     createdAt: med.createdAt || new Date().toISOString()
@@ -251,11 +248,9 @@ export const SearchResults = () => {
                 };
                 try {
                     if (item.id) {
-                        // Existing medication — update
-                        const response = await axios.put(`${apiUrl}/api/medications/${item.id}`, payload);
+                        const response = await api.updateMedication(item.id, payload)
                     } else {
-                        // New medication — create
-                        const response = await axios.post(`${apiUrl}/api/patients/${data.id}/medications`, payload);
+                        const response = await api.createMedication(data.id, payload)
                         const createdAssignment = response.data;
                         setAssignments(prev =>
                             prev.map(a =>
