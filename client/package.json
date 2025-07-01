@@ -5,8 +5,8 @@
   "type": "module",
   "proxy": "http://localhost:5000",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "dev": "vite --host 0.0.0.0 --mode development",
+    "build": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "start": "vite preview --host 0.0.0.0 --port 4173"
