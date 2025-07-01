@@ -1,10 +1,11 @@
+import { useNavigate } from 'react-router'
+
 import { AllPatients, PatientCount } from '../../components/fetchData'
 import { SearchBar } from '../../components/SearchBar'
 import { usePageTitle } from '../../components/PageTitle'
 import Button from '../../components/Buttons.tsx'
 
 import styles from './list.module.css'
-import { useNavigate } from 'react-router'
 
 export const List = () => {
     const navigate = useNavigate()
@@ -24,9 +25,7 @@ export const List = () => {
                     >
                         <SearchBar />
                     </div>
-                    <br />
                     <AllPatients />
-                    <br />
                     <PatientCount />
 
                 </div>

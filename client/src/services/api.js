@@ -15,7 +15,7 @@ const api = axios.create({
 
 export default {
   //Patients
-  getPatient: () => axios.get(`${apiUrl}/api/patients`),
+  getPatients: () => axios.get(`${apiUrl}/api/patients`),
   getPatient: (id) => axios.get(`${apiUrl}/api/patients/${id}`),
   getPatientCount: () => axios.get(`${apiUrl}/api/patient-count`),
   createPatient: (data) => axios.post(`${apiUrl}/api/patients`, data),

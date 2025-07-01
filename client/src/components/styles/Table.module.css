@@ -7,6 +7,7 @@
   background-color: #0065ad;
   padding: 5px;
   border-radius: 5px;
+  margin: 20px 0;
 }
 
 .skeleton{
@@ -90,20 +91,45 @@
 }
 
 @media screen and (orientation: portrait) {
+  .container{
+    margin: 0;
+    padding: 0 5px;
+    padding-bottom: 5px;
+  }
+
+  .rowsLoading td span span{
+    width: 100%;
+    overflow: hidden;
+  }
+
+  thead .rows{
+    display: none;
+  }
+
+  tbody .rows{
+    display: flex;
+    flex-direction: column;
+    padding: 5px 15px;
+  }
+
   th{
     font-size: 0.6em;
-    }
+  }
+
   tr td:nth-child(1){
     font-size: 0.5em;
   }
 
-  
+  tr td:nth-child(3){
+    font-size: 0.7em;
+  }
+
   tr td:nth-child(4){
     font-size: 0.5em;
   }
 
   tr td{
-    font-size: 0.7em;
+    font-size: 1em;
   }
 
   .first{
@@ -112,5 +138,9 @@
 
   .second{
       flex: 1;
+  }
+  
+  .counterText{
+    font-size: 1em;
   }
 }

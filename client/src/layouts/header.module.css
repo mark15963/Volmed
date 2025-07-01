@@ -39,7 +39,8 @@ img{
 
 @media screen and (orientation: portrait) {
     .container{
-        height: 100px;
+        /* height: 100px; */
+        height: 100%;
     }
 
     .title{
@@ -47,7 +48,9 @@ img{
     }
 
     img{
-        height: 70px;
-        width: 55px;
+        /* height: 70px;
+        width: 55px; */
+        height: 70%;
+        aspect-ratio: 3/4;
     }
 }
