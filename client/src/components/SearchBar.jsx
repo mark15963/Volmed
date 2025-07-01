@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import Button from '../components/Buttons.tsx';
-import Input from './Input.tsx'
+import Button from './Buttons.tsx';
 
 import styles from './styles/SearchBar.module.css'
 
@@ -34,7 +33,7 @@ export const SearchBar = () => {
         setError('')
 
         try {
-            const response = await api.getPatient(searchValue)
+            const response = await api.getPatient(searchValue.trim())
 
             if (response.status !== 200) {
                 if (response.status === 404) {
@@ -66,7 +65,9 @@ export const SearchBar = () => {
                 </label>
                 <div className={styles.searchContainer}>
                     <div className={styles.space}></div>
-                    <Input
+
+                    <input
+                        className={styles.searchfield}
                         id='searchfield'
                         type='search'
                         value={searchValue}
@@ -77,6 +78,17 @@ export const SearchBar = () => {
                         pattern='[0-9]*'
                         required
                     />
+                    {/* <Input
+                        id='searchfield'
+                        type='search'
+                        value={searchValue}
+                        onChange={handleChange}
+                        placeholder='№ карты'
+                        autoComplete='off'
+                        inputMode='numeric'
+                        pattern='[0-9]*'
+                        required
+                    /> */}
                     <Button
                         type='submit'
                         shape='circle'
