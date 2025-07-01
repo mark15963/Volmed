@@ -220,9 +220,18 @@ export const Tab2 = ({
         },
         onRemove: handleRemoveFile,
         showUploadList: {
-            extra: ({ size = 0 }) => (
-                <span style={{ marginLeft: '5px', color: '#cccccc' }}>({(size / 1024 / 1024).toFixed(2)}MB)</span>
-            ),
+            extra: (file) => {
+                const size = file.size || (file.response && file.response.size) || 0
+                if (size < 1024 * 1024) {
+                    return <span style={{ marginLeft: '5px', color: '#cccccc' }}>
+                        ({(size / 1024).toFixed(2)}KB)
+                    </span>;
+                } else {
+                    return <span style={{ marginLeft: '5px', color: '#cccccc' }}>
+                        ({(size / (1024 * 1024)).toFixed(2)}MB)
+                    </span>;
+                }
+            },
             showPreventIcon: true,
             showRemoveIcon: true,
             removeIcon: (
