@@ -4,7 +4,6 @@ const express = require("express");
 
 const { Pool } = require("pg");
 const cors = require("cors");
-const { exec } = require("child_process");
 
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -56,8 +55,6 @@ app.use(
   })
 );
 
-// app.use(cors({ origin: true, credentials: true }));
-
 //Trust Proxy & Middleware
 app.set("trust proxy", 1);
 app.use(cookieParser());
@@ -79,7 +76,7 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 1000 * 60 * 60,
+      maxAge: 1000 * 60 * 60 * 24,
     },
     proxy: true,
   })

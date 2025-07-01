@@ -1,8 +1,15 @@
-import { Upload, Form, Collapse } from "antd"
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import styles from '../searchResults.module.css';
 import { useState, useEffect, useRef, memo } from 'react';
 import axios from 'axios';
+
+import { Upload, Form, Collapse } from "antd"
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
+
+import styles from '../searchResults.module.css';
+
+import api from '../../../services/api'
+
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
 
 const { Dragger } = Upload;
 
@@ -181,18 +188,18 @@ export const Tab2 = ({
     const [pulseValues, setPulseValues] = useState([]);
 
     const openFile = (filePath) => {
-        window.open(`https://volmed-backend.onrender.com${filePath}`, '_blank');
+        window.open(`${apiUrl}${filePath}`, '_blank');
     };
 
     const uploadProps = {
         name: 'file',
         multiple: true,
         fileList,
-        action: `https://volmed-backend.onrender.com/api/patients/${id || 'temp'}/upload`,
+        action: `${apiUrl}/api/patients/${id || 'temp'}/upload`,
         headers: {
             'X-Requested-With': null,
         },
-        withCredentials: false,
+        withCredentials: true,
         onChange(info) {
             setFileList([...info.fileList])
             const { status } = info.file
@@ -229,7 +236,7 @@ export const Tab2 = ({
     useEffect(() => {
         const fetchPulseData = async () => {
             try {
-                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/pulse`);
+                const response = await api.getPulseData(id)
                 const values = response.data.map(item => ({
                     val: item.value,
                     created_at: item.timestamp,
@@ -250,9 +257,7 @@ export const Tab2 = ({
             const num = Number(pulseValue);
             if (!isNaN(num)) {
                 try {
-                    await axios.post(`https://volmed-backend.onrender.com/api/patients/${id}/pulse`, {
-                        pulseValue: num
-                    });
+                    await api.savePulse(id, num)
 
                     const newEntry = {
                         val: num,
@@ -328,6 +333,7 @@ export const Tab2 = ({
                         {files.length === 0 && !isEditingFiles && (
                             <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
                         )}
+
                         {!isEditingFiles && (
                             <ul style={{ paddingLeft: 10 }}>
                                 {files.map((file, index) => (
@@ -342,6 +348,7 @@ export const Tab2 = ({
                                 ))}
                             </ul>
                         )}
+
                         {isEditingFiles && (
                             <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                                 <Form.Item>
@@ -350,7 +357,6 @@ export const Tab2 = ({
                                             <UploadOutlined />
                                         </p>
                                         <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
-
                                     </Dragger>
                                 </Form.Item>
                             </div>

@@ -10,6 +10,9 @@ import Button from '../../components/Buttons.tsx';
 import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
 
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
+
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
 
     const navigate = useNavigate()
@@ -101,9 +104,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
             let response
             if (isEditMode && patientId) {
-                response = await axios.put(`https://volmed-backend.onrender.com/api/patients/${patientId}`, formattedValues);
+                response = await axios.put(`${apiUrl}/api/patients/${patientId}`, formattedValues);
             } else {
-                response = await axios.post(`https://volmed-backend.onrender.com/api/patients`, formattedValues, {
+                response = await axios.post(`${apiUrl}/api/patients`, formattedValues, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

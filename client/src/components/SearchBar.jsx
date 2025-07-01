@@ -5,6 +5,8 @@ import Button from '../components/Buttons.tsx';
 
 import styles from './styles/SearchBar.module.css'
 
+import api from '../../src/services/api.js'
+
 export const SearchBar = () => {
     const [searchValue, setSearchValue] = useState('')
     const navigate = useNavigate()
@@ -31,7 +33,7 @@ export const SearchBar = () => {
         setError('')
 
         try {
-            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${searchValue}`)
+            const response = await api.getPatient(searchValue)
 
             if (response.status !== 200) {
                 if (response.status === 404) {
@@ -74,7 +76,11 @@ export const SearchBar = () => {
                         inputMode='numeric'
                         pattern='[0-9]*'
                     />
-                    <Button type='submit' shape='circle' icon='bi bi-search' />
+                    <Button
+                        type='submit'
+                        shape='circle'
+                        icon='bi bi-search'
+                    />
                 </div>
                 {error && (
                     <div className={styles.error}>

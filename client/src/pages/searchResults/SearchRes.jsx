@@ -13,6 +13,11 @@ import styles from './searchResults.module.css'
 
 import Button from '../../components/Buttons.tsx'
 
+import api from '../../services/api'
+
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
+
 export const SearchResults = () => {
     const { state } = useLocation();
     const { id } = useParams();
@@ -55,8 +60,8 @@ export const SearchResults = () => {
                     patientData = state.results[0];
                 }
                 else if (id) {
-                    const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}`);
-                    patientData = response.data;
+                    const response = await api.getPatient(id)
+                    patientData = response.data
                 }
 
                 if (!patientData) {
@@ -96,7 +101,7 @@ export const SearchResults = () => {
         const fetchFiles = async () => {
             if (data?.id) {
                 try {
-                    const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${data.id}/files`);
+                    const response = await api.getPatientFiles(data.id)
                     setFiles(response.data);
                 } catch (error) {
                     console.error('Error fetching files:', error);
@@ -111,12 +116,12 @@ export const SearchResults = () => {
         if (!id) return;
 
         try {
-            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/files`);
+            const response = await api.getPatientFiles(id)
             setFileList(response.data.map(file => ({
                 uid: file.path,
                 name: file.originalname,
                 status: 'done',
-                url: `https://volmed-backend.onrender.com${file.path}`,
+                url: `${apiUrl}${file.path}`,
                 response: { path: file.path }
             })));
         } catch (error) {
@@ -133,7 +138,8 @@ export const SearchResults = () => {
         try {
             await refreshFileList();
 
-            const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}/files`);
+            // const response = await axios.get(`${apiUrl}/api/patients/${id}/files`);
+            const response = await api.getPatientFiles(id)
             setFiles(response.data);
 
             setIsEditingFiles(false);
@@ -147,14 +153,15 @@ export const SearchResults = () => {
     const handleRemoveFile = async (file) => {
         try {
             if (file.response?.path) {
-                const filePath = file.response.path.replace(/^\/?uploads\//, '');
+                const filePath = file.response.path
+                    .replace(/^\/?uploads\//, '')
+                    .replace(/^\/?public\//, '')
+                    .replace(/^\/?/, '')
+                    .replace(/\\/g, '/')
 
-                const response = await axios.delete('https://volmed-backend.onrender.com/api/files', {
-                    data: { filePath },
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                console.log('Sending file:', filePath);
+
+                const response = await api.deleteFile(filePath)
 
                 if (response.data.success) {
                     setFileList(prev => prev.filter(f => f.uid !== file.uid));
@@ -174,7 +181,15 @@ export const SearchResults = () => {
                 fileName: file.name,
                 error: error.response?.data?.message || error.message || 'Ошибка удаления файла'
             });
-            return false; // Prevent removal from UI if deletion failed
+            console.error("Delete error:", {
+                error: error.message,
+                response: error.response?.data
+            });
+            messageApi.error(`Ошибка при удалении ${file.name}: ${error.response?.data?.error ||
+                error.response?.data?.message ||
+                error.message
+                }`);
+            return false;
         }
     };
 
@@ -210,7 +225,7 @@ export const SearchResults = () => {
         const fetchMedications = async () => {
             try {
                 const response = await axios.get(
-                    `https://volmed-backend.onrender.com/api/patients/${data.id}/medications`
+                    `${apiUrl}/api/patients/${data.id}/medications`
                 );
                 const formattedAssignments = response.data.map(med => ({
                     ...med,
@@ -237,10 +252,10 @@ export const SearchResults = () => {
                 try {
                     if (item.id) {
                         // Existing medication — update
-                        const response = await axios.put(`https://volmed-backend.onrender.com/api/medications/${item.id}`, payload);
+                        const response = await axios.put(`${apiUrl}/api/medications/${item.id}`, payload);
                     } else {
                         // New medication — create
-                        const response = await axios.post(`https://volmed-backend.onrender.com/api/patients/${data.id}/medications`, payload);
+                        const response = await axios.post(`${apiUrl}/api/patients/${data.id}/medications`, payload);
                         const createdAssignment = response.data;
                         setAssignments(prev =>
                             prev.map(a =>
@@ -295,11 +310,6 @@ export const SearchResults = () => {
         }
     }
 
-    //Main block state
-    if (loading) return <div className={styles.resultsContainer}>Загрузка...</div>;
-    if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
-    if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
-
     const tabContents = [
         <Tab1 data={data} />,
         <Tab2
@@ -321,6 +331,11 @@ export const SearchResults = () => {
             setAssignments={setAssignments}
         />
     ]
+
+    //Main block state
+    if (loading && !data) return <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>Загрузка...</div>;
+    if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
+    if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
 
     return (
         <div className={styles.resultsContainer}>

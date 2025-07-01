@@ -7,8 +7,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './styles/Table.module.css'
 
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
-
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
 
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
@@ -18,9 +18,7 @@ export const AllPatients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get(`https://volmed-backend.onrender.com/api/patients`, {
-          withCredentials: true
-        });
+        const response = await axios.get(`${apiUrl}/api/patients`);
         const data = Array.isArray(response.data) ? response.data : [];
         setPatients(data);
       } catch (error) {
@@ -114,7 +112,7 @@ export const PatientCount = () => {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const response = await axios.get(`https://volmed-backend.onrender.com/api/patient-count`);
+        const response = await axios.get(`${apiUrl}/api/patient-count`);
         // Safely extract count with fallback
         const count = response.data?.count || 0;
         setCount(count);

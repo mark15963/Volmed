@@ -4,6 +4,9 @@ import axios from 'axios';
 import { RegisterPatient } from '../register/RegisterPatient';
 import { usePageTitle } from '../../components/PageTitle';
 
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
+
 export const EditPatient = () => {
     const { id } = useParams();
     const [patientData, setPatientData] = useState(null);
@@ -13,15 +16,13 @@ export const EditPatient = () => {
     useEffect(() => {
         const fetchPatient = async () => {
             try {
-                // First check if we have data in location state
                 if (location.state?.patientData) {
                     setPatientData(location.state.patientData);
                     setLoading(false);
                     return;
                 }
 
-                // Otherwise fetch from API
-                const response = await axios.get(`https://volmed-backend.onrender.com/api/patients/${id}`);
+                const response = await axios.get(`${apiUrl}/api/patients/${id}`);
                 console.log(response.data)
                 setPatientData(response.data);
             } catch (err) {

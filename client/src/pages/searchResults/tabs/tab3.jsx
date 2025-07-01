@@ -3,7 +3,8 @@ import tableStyles from '../../../components/styles/Table.module.css';
 import styles from '../searchResults.module.css';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://volmed-backend.onrender.com';
+const environment = import.meta.env.VITE_ENV
+const apiUrl = import.meta.env.VITE_API_URL
 axios.defaults.withCredentials = true;
 
 export const Tab3 = ({
@@ -98,9 +99,7 @@ export const Tab3 = ({
                                                         try {
                                                             if (itemToDelete.id) {
                                                                 const response = await axios.delete(
-                                                                    `https://volmed-backend.onrender.com/api/medications/${itemToDelete.id}`, {
-                                                                    withCredentials: true
-                                                                });
+                                                                    `${apiUrl}/api/medications/${itemToDelete.id}`);
 
                                                                 if (!response.data.success) {
                                                                     throw new Error(response.data.message || "API returned unsuccessful");
