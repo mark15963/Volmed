@@ -71,7 +71,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     }, [initialValues, form]);
 
     const onFinish = async (formValues) => {
-
         try {
             setIsLoading(true);
             setError('');
@@ -99,32 +98,27 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 state: formValues.state || "",
 
             };
-            console.log("Sending to server:", formattedValues);
 
             let response
-
             if (isEditMode && patientId) {
                 response = await axios.put(`https://volmed-backend.onrender.com/api/patients/${patientId}`, formattedValues);
-                console.log('Изменение данных:', formattedValues)
             } else {
                 response = await axios.post(`https://volmed-backend.onrender.com/api/patients`, formattedValues, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-                console.log('Запись данных:', formattedValues)
             }
 
-            const responseData = response.data;
             success()
 
-            await new Promise(resolve => setTimeout(resolve, 3000))
+            // await new Promise(resolve => setTimeout(resolve, 3000))
             form.resetFields(['mkb'])
 
-            navigate(`/search/${isEditMode ? patientId : responseData.id}`, {
+            navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
                 state: {
-                    results: responseData,
-                    searchQuery: `${responseData.lastName} ${responseData.firstName} ${responseData.patr}`
+                    results: response.data,
+                    searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
                 }
             });
 
