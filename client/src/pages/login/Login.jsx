@@ -8,8 +8,14 @@ import Button from "../../components/Buttons.tsx"
 import styles from './login.module.css'
 import axios from "axios"
 
+const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
+if (import.meta.env.VITE_ENV === 'development') {
+    console.log('Running in development mode');
+} else {
+    console.log('test')
+}
 export const Login = () => {
     const navigate = useNavigate()
     const [errors, setErrors] = useState({})
