@@ -5,11 +5,11 @@ import { usePageTitle } from '../../components/PageTitle'
 import { Menu } from '../../components/Menu'
 import { message } from "antd"
 
-// import { Tab1 } from './tabs/tab1'
+import { Tab1 } from './tabs/tab1'
 // import { Tab2 } from './tabs/tab2'
 // import { Tab3 } from './tabs/tab3'
 
-const Tab1 = lazy(() => import('./tabs/tab1'))
+// const Tab1 = lazy(() => import('./tabs/tab1'))
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
 
@@ -310,9 +310,8 @@ export const SearchResults = () => {
     }
 
     const tabContents = [
-        <Suspense fallback={<div>Загрузка</div>}>
-            <Tab1 data={data} />
-        </Suspense>,
+        <Tab1 data={data} />,
+
         <Suspense fallback={<div>Загрузка</div>}>
             <Tab2
                 files={files}
@@ -328,6 +327,7 @@ export const SearchResults = () => {
                 messageApi={messageApi}
             />
         </Suspense>,
+
         <Suspense fallback={<div>Загрузка</div>}>
             <Tab3
                 assignments={assignments}
@@ -338,7 +338,13 @@ export const SearchResults = () => {
     ]
 
     //Main block state
-    if (loading && !data) return <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>Загрузка...</div>;
+    if (loading && !data) {
+        return (
+            <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>
+                Загрузка...
+            </div>
+        );
+    }
     if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
     if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
 
