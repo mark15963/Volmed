@@ -6,10 +6,6 @@ import { Menu } from '../../components/Menu'
 import { message } from "antd"
 
 import { Tab1 } from './tabs/tab1'
-// import { Tab2 } from './tabs/tab2'
-// import { Tab3 } from './tabs/tab3'
-
-// const Tab1 = lazy(() => import('./tabs/tab1'))
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
 
