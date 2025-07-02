@@ -101,11 +101,18 @@ export const Footer = () => {
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
-                <span style={{ margin: '0 10px' }}>
-                    {authState.isAuthenticated ? (
-                        `${authState.status} ${authState.lastName} ${authState.firstName} `
-                    ) : ''}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <span style={{ margin: '0 10px' }}>
+                        {authState.isAuthenticated ? (
+                            `${authState.status}`
+                        ) : ''}
+                    </span>
+                    <span style={{ margin: '0 10px' }}>
+                        {authState.isAuthenticated ? (
+                            `${authState.lastName} ${authState.firstName}`
+                        ) : ''}
+                    </span>
+                </div>
                 {location.pathname !== '/login' && (
                     authState.isAuthenticated ? (
                         <Button
