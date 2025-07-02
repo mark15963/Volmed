@@ -46,12 +46,15 @@ export const SideMenu = () => {
                 onClick={(e) => {
                     if (e.key === '1') {
                         DesktopNotification.show("Testing", "Notification from button 1")
+                        console.log('Testing", "Notification from button 1')
                     }
                     if (e.key === '2') {
                         DesktopNotification.show("Testing", "Notification from button 1.1")
+                        console.log('Testing", "Notification from button 2')
                     }
                     if (e.key === '3') {
                         DesktopNotification.show("Testing", "Notification from button 1.2")
+                        console.log('Testing", "Notification from button 3')
                     }
                 }}
             />
