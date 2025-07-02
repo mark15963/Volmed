@@ -132,3 +132,5 @@ export const Tab3 = ({
         </div >
     )
 }
+
+export default Tab3

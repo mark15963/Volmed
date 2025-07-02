@@ -1,13 +1,17 @@
 import { useLocation, useNavigate, useParams } from 'react-router'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { usePageTitle } from '../../components/PageTitle'
 import { Menu } from '../../components/Menu'
 import { message } from "antd"
 
-import { Tab1 } from './tabs/tab1'
-import { Tab2 } from './tabs/tab2'
-import { Tab3 } from './tabs/tab3'
+// import { Tab1 } from './tabs/tab1'
+// import { Tab2 } from './tabs/tab2'
+// import { Tab3 } from './tabs/tab3'
+
+const Tab1 = lazy(() => import('./tabs/tab1'))
+const Tab2 = lazy(() => import('./tabs/tab2'))
+const Tab3 = lazy(() => import('./tabs/tab3'))
 
 import styles from './searchResults.module.css'
 
@@ -306,25 +310,31 @@ export const SearchResults = () => {
     }
 
     const tabContents = [
-        <Tab1 data={data} />,
-        <Tab2
-            files={files}
-            fileList={fileList}
-            setFileList={setFileList}
-            isEditingFiles={isEditingFiles}
-            setIsEditingFiles={setIsEditingFiles}
-            handleSaveFiles={handleSaveFiles}
-            handleRemoveFile={handleRemoveFile}
-            uploadStatus={uploadStatus}
-            setUploadStatus={setUploadStatus}
-            id={id}
-            messageApi={messageApi}
-        />,
-        <Tab3
-            assignments={assignments}
-            isEditingAssignments={isEditingAssignments}
-            setAssignments={setAssignments}
-        />
+        <Suspense fallback={<div>Загрузка</div>}>
+            <Tab1 data={data} />
+        </Suspense>,
+        <Suspense fallback={<div>Загрузка</div>}>
+            <Tab2
+                files={files}
+                fileList={fileList}
+                setFileList={setFileList}
+                isEditingFiles={isEditingFiles}
+                setIsEditingFiles={setIsEditingFiles}
+                handleSaveFiles={handleSaveFiles}
+                handleRemoveFile={handleRemoveFile}
+                uploadStatus={uploadStatus}
+                setUploadStatus={setUploadStatus}
+                id={id}
+                messageApi={messageApi}
+            />
+        </Suspense>,
+        <Suspense fallback={<div>Загрузка</div>}>
+            <Tab3
+                assignments={assignments}
+                isEditingAssignments={isEditingAssignments}
+                setAssignments={setAssignments}
+            />
+        </Suspense>
     ]
 
     //Main block state
