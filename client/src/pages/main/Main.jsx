@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router'
+import { useEffect, useState } from 'react'
 
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
@@ -8,7 +9,7 @@ import styles from './main.module.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export const Main = () => {
-    const { authState } = useAuth();
+    const { authState } = useAuth()
     const navigate = useNavigate()
 
     if (authState.isLoading) {
