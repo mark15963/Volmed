@@ -31,8 +31,6 @@ export const AuthProvider = ({ children }) => {
                 }
             );
 
-            console.log('Auth status response:', response.data); // Add this
-
             const isAdmin = response.data.user?.status === 'admin' || response.data.user?.status === 'Администратор';
 
             setAuthState({
