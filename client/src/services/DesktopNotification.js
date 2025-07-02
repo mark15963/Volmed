@@ -17,7 +17,7 @@ export default {
     if (Notification.permission === "granted") {
       var options = {
         body,
-        icon: "../../../public/favicon.ico",
+        icon: "../../../public/герб_ямала.png",
         dir: "ltr",
       };
     }

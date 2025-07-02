@@ -7,12 +7,14 @@ const AuthContext = createContext({
     authState: {
         isAuthenticated: false,
         isLoading: true,
+        isAdmin: false,
     }
 });
 
 export const AuthProvider = ({ children }) => {
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
+        isAdmin: false,
         isLoading: true,
         username: '',
         lastName: '',
@@ -29,8 +31,11 @@ export const AuthProvider = ({ children }) => {
                 }
             );
 
+            const isAdmin = response.data.user?.status === 'admin' || response.data.user?.status === 'Администратор';
+
             setAuthState({
                 isAuthenticated: response.data.isAuthenticated,
+                isAdmin: isAdmin,
                 isLoading: false,
                 username: response.data.user?.username || '',
                 lastName: response.data.user?.lastName || '',
@@ -41,6 +46,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             setAuthState({
                 isAuthenticated: false,
+                isAdmin: false,
                 isLoading: false,
                 username: '',
                 lastName: '',
@@ -59,6 +65,7 @@ export const AuthProvider = ({ children }) => {
             )
             setAuthState({
                 isAuthenticated: false,
+                isAdmin: false,
                 isLoading: false,
                 username: '',
                 lastName: '',

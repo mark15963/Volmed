@@ -120,6 +120,8 @@ router.post("/login", async (req, res) => {
       }
 
       req.session.isAuth = true;
+      if (user.status === "admin" || user.status === "Администратор")
+        req.session.isAdmin = true;
       req.session.user = user.username;
       req.session.lastName = user.lastName || "Undefined";
       req.session.firstName = user.firstName || "Undefined";
