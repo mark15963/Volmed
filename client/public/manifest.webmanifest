@@ -1,10 +1,11 @@
 {
   "name": "ГБУ «Городская больница Волновахского района»",
-  "short_name": "Volmed",
-  "start_url": ".",
+  "short_name": "VolMed",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0073c7",
+  "version":"1.0.1",
   "icons": [
     {
       "src": "/icons/icon-orig.png",
