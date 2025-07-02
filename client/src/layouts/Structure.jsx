@@ -25,6 +25,7 @@ import Button from "../components/Buttons.tsx"
 //----- STYLES -----
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
+import SideMenu from "../components/admin/SideMenu.jsx";
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -53,17 +54,21 @@ export const Header = (props) => {
 }
 
 export const Content = () => {
+    const { authState } = useAuth()
     return (
-        <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path='/' element={<Main />} />
-            <Route path='/patients' element={<List />} />
-            <Route path="/search" loader element={<SearchResults />} />
-            <Route path="/search/:id" element={<SearchResults />} />
-            <Route path="/register" element={<RegisterPatient />} />
-            <Route path="/edit/:id" element={<EditPatient />} />
-            <Route path="/*" element={<NotFound />} />
-        </Routes>
+        <>
+            {authState.isAdmin ? <SideMenu /> : null}
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path='/' element={<Main />} />
+                <Route path='/patients' element={<List />} />
+                <Route path="/search" loader element={<SearchResults />} />
+                <Route path="/search/:id" element={<SearchResults />} />
+                <Route path="/register" element={<RegisterPatient />} />
+                <Route path="/edit/:id" element={<EditPatient />} />
+                <Route path="/*" element={<NotFound />} />
+            </Routes>
+        </>
     )
 }
 
