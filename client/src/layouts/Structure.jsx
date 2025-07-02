@@ -26,6 +26,7 @@ import Button from "../components/Buttons.tsx"
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
 import SideMenu from "../components/admin/SideMenu.jsx";
+import styles from '../components/admin/sideMenu.module.css'
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -57,7 +58,11 @@ export const Content = () => {
     const { authState } = useAuth()
     return (
         <>
-            {authState.isAdmin ? <SideMenu /> : null}
+            {authState.isAdmin ?
+                <div className={styles.sideMenu}>
+                    <SideMenu />
+                </div>
+                : null}
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path='/' element={<Main />} />
