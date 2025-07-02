@@ -1,0 +1,7 @@
+@media screen and (orientation: portrait) {
+    .sideMenu{
+        position: absolute; 
+        top: 15%;
+        left: 0;
+    }    
+}
