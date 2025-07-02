@@ -259,6 +259,7 @@ router.get("/status", async (req, res) => {
   try {
     res.json({
       isAuthenticated: !!req.session.isAuth,
+      isAdmin: req.session.isAdmin,
       user: req.session.user
         ? {
             username: req.session.user,
