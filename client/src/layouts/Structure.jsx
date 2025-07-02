@@ -1,14 +1,22 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
-
+import { lazy, Suspense } from 'react'
 import { useAuth } from "../context/AuthContext.jsx"
 
-import Main from "../pages/main/Main.jsx"
-import SearchResults from "../pages/searchResults/SearchRes.jsx"
-import List from "../pages/patientsList/List.jsx"
-import RegisterPatient from "../pages/register/RegisterPatient.jsx"
-import EditPatient from "../pages/edit/EditPatient.jsx"
-import Login from "../pages/login/Login.jsx"
-import NotFound from "../pages/NotFound.jsx"
+// import Main from "../pages/main/Main.jsx"
+// import SearchResults from "../pages/searchResults/SearchRes.jsx"
+// import List from "../pages/patientsList/List.jsx"
+// import RegisterPatient from "../pages/register/RegisterPatient.jsx"
+// import EditPatient from "../pages/edit/EditPatient.jsx"
+// import Login from "../pages/login/Login.jsx"
+// import NotFound from "../pages/NotFound.jsx"
+
+const Main = lazy(() => import('../pages/main/Main.jsx'));
+const SearchResults = lazy(() => import('../pages/searchResults/SearchRes.jsx'));
+const List = lazy(() => import('../pages/patientsList/List.jsx'));
+const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient.jsx'));
+const EditPatient = lazy(() => import('../pages/edit/EditPatient.jsx'));
+const Login = lazy(() => import('../pages/login/Login.jsx'));
+const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 //----- COMPONENTS -----
 import logo from '../assets/images/герб_ямала.png'

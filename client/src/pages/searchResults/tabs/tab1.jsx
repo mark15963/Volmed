@@ -114,3 +114,5 @@ export const Tab1 = ({ data }) => {
         </div>
     )
 }
+
+export default Tab1
