@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     AppstoreOutlined,
     MailOutlined,
@@ -31,11 +31,32 @@ export const SideMenu = () => {
         setCollapsed(!collapsed)
     }
 
+    useEffect(() => {
+        DesktopNotification.requestPermission();
+    }, []);
 
+    const handleNotification = (key) => {
+        switch (key) {
+            case '1':
+                DesktopNotification.show("Testing", "Notification from button 1")
+                console.log('Testing", "Notification from button 1')
+                break
+            case '2':
+                DesktopNotification.show("Testing", "Notification from button 1.1")
+                console.log('Testing", "Notification from button 2')
+                break
+            case '3':
+                DesktopNotification.show("Testing", "Notification from button 1.2")
+                console.log('Testing", "Notification from button 3')
+                break
+            default:
+                break
+        }
+    }
 
     return (
         <div>
-            <Button type='primary' onClick={toggleCollapsed}>
+            <Button type='primary' onClick={() => setCollapsed(!collapsed)}>
                 {collapsed ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
             </Button>
             <Menu
@@ -43,20 +64,7 @@ export const SideMenu = () => {
                 theme='dark'
                 inlineCollapsed={collapsed}
                 items={items}
-                onClick={(e) => {
-                    if (e.key === '1') {
-                        DesktopNotification.show("Testing", "Notification from button 1")
-                        console.log('Testing", "Notification from button 1')
-                    }
-                    if (e.key === '2') {
-                        DesktopNotification.show("Testing", "Notification from button 1.1")
-                        console.log('Testing", "Notification from button 2')
-                    }
-                    if (e.key === '3') {
-                        DesktopNotification.show("Testing", "Notification from button 1.2")
-                        console.log('Testing", "Notification from button 3')
-                    }
-                }}
+                onClick={(e) => handleNotification(e.key)}
             />
         </div>
     )
