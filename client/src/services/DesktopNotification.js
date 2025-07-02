@@ -1,17 +1,10 @@
-// USE IN REACT
+// USE IN REACT (NOT WORKING ON MOBILE)
+//---------------------------------------------------------------
 // import notification from '../../services/DesktopNotification';
 // notification.show("TITLE", "BODY", time)
+//---------------------------------------------------------------
 
 import { useEffect } from "react";
-
-// const premPerms = () => {
-//   useEffect(() => {
-//     if ("Notification" in window && Notification.permission !== "granted") {
-//       Notification.requestPermission();
-//       console.log("Permissions has to be agreed to");
-//     }
-//   }, []);
-// };
 
 export default {
   requestPermission: () => {
@@ -34,6 +27,7 @@ export default {
       console.warn("Notifications not granted");
       return;
     }
+
     try {
       const options = {
         body,
