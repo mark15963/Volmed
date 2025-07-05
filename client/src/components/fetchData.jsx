@@ -5,7 +5,8 @@ import { useNavigate } from "react-router";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import styles from './styles/Table.module.css'
+// import styles from './styles/Table.module.css'
+import styles from './styles/patientList.module.css'
 
 import api from "../services/api";
 
@@ -39,9 +40,6 @@ export const AllPatients = () => {
     }
   }
 
-  // useEffect(() => {
-  //   setLoading(true)
-  // })
   return (
     <div className={styles.container}>
       <table className={styles.table}>
@@ -89,9 +87,15 @@ export const AllPatients = () => {
                 role="button"
                 aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
               >
-                <td style={{ flex: 0.6 }}>{patient.id}</td>
-                <td style={{ flex: 2 }}>{patient.lastName} {patient.firstName} {patient.patr}</td>
-                <td style={{ flex: 0.8 }}>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
+                <td className={styles.first}>
+                  {patient.id}
+                </td>
+                <td className={styles.second}>
+                  {patient.lastName} {patient.firstName} {patient.patr}
+                </td>
+                <td className={styles.third}>
+                  {moment(patient.birthDate).format('DD.MM.YYYY')}
+                </td>
               </tr>
             </tbody>
           </table>

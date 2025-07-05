@@ -61,19 +61,19 @@
 
 .first{
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   flex: 0.6;
 }
 
 .second{
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   flex: 2;
 }
 
 .third{
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   flex: 0.8;
 }
 
@@ -93,26 +93,21 @@
 }
 
 @media screen and (orientation: portrait) {
-  th{
-    font-size: 0.6em;
+    .head .rows{
+        font-size: 0.8em !important;
     }
-  tr td:nth-child(1){
-    font-size: 0.5em;
-  }
 
-  tr td:nth-child(4){
-    font-size: 0.5em;
-  }
+    .first{
+        flex: 0.3;
+        font-size: 0.7em !important;
+    }
 
-  tr td{
-    font-size: 0.7em;
-  }
+    .second{
+        font-size: 1em !important;
+    }
 
-  .first{
-      flex: 0.3;
-  }
-
-  .second{
-      flex: 1;
-  }
+    .third{
+        flex: 0.8;
+        font-size: 0.8em !important;
+    }
 }
