@@ -125,6 +125,7 @@ router.post("/login", async (req, res) => {
       req.session.user = user.username;
       req.session.lastName = user.lastName || "Undefined";
       req.session.firstName = user.firstName || "Undefined";
+      req.session.patr = user.patr || "";
       req.session.status = user.status || "Undefined";
 
       req.session.save((error) => {
@@ -146,8 +147,9 @@ router.post("/login", async (req, res) => {
           redirect: "/",
           user: {
             username: user.username,
-            firstName: user.firstName,
             lastName: user.lastName,
+            firstName: user.firstName,
+            patr: user.patr,
             status: user.status,
           },
         });
@@ -265,6 +267,7 @@ router.get("/status", async (req, res) => {
             username: req.session.user,
             firstName: req.session.firstName,
             lastName: req.session.lastName,
+            patr: req.session.patr,
             status: req.session.status,
           }
         : null,

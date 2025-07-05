@@ -21,7 +21,7 @@ export const App = () => {
     <>
       <AuthProvider>
         <header>
-          <Header title='ГБУ «Городская больница Волновахского района»' />
+          <Header />
         </header>
         <main>
           <Content />

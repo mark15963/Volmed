@@ -2,14 +2,6 @@ import { Routes, Route, useNavigate, useLocation } from "react-router"
 import { lazy, Suspense } from 'react'
 import { useAuth } from "../context/AuthContext.jsx"
 
-// import Main from "../pages/main/Main.jsx"
-// import SearchResults from "../pages/searchResults/SearchRes.jsx"
-// import List from "../pages/patientsList/List.jsx"
-// import RegisterPatient from "../pages/register/RegisterPatient.jsx"
-// import EditPatient from "../pages/edit/EditPatient.jsx"
-// import Login from "../pages/login/Login.jsx"
-// import NotFound from "../pages/NotFound.jsx"
-
 const Main = lazy(() => import('../pages/main/Main.jsx'));
 const SearchResults = lazy(() => import('../pages/searchResults/SearchRes.jsx'));
 const List = lazy(() => import('../pages/patientsList/List.jsx'));
@@ -19,36 +11,69 @@ const Login = lazy(() => import('../pages/login/Login.jsx'));
 const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 //----- COMPONENTS -----
-import logo from '../assets/images/герб_ямала.png'
 import Button from "../components/Buttons.tsx"
+import logo from '../assets/images/герб_ямала.png'
 
 //----- STYLES -----
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
 import SideMenu from "../components/admin/SideMenu.jsx";
 import styles from '../components/admin/sideMenu.module.css'
+import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 
 export const Header = (props) => {
     const navigate = useNavigate();
+    const { authState, logout } = useAuth();
 
-    const handleLogoClick = () => {
+    const handleClick = () => {
         navigate('/');
     };
+
+    const userContainerClass = `${headerStyles.userContainer} ${authState.isAuthenticated ? headerStyles.auth : ''}`
 
     return (
         <div className={headerStyles.container}>
             <div className={headerStyles.content}>
-                <img
-                    src={logo}
-                    onClick={handleLogoClick}
-                    style={{ cursor: 'pointer' }}
-                />
-                <h1 className={headerStyles.title}>{props.title}</h1>
-                <img
-                    src={logo}
-                    onClick={handleLogoClick}
-                    style={{ cursor: 'pointer' }}
-                />
+                <img src={logo} style={{ cursor: 'pointer', height: 'calc(100% - 40px)', marginRight: '10px' }} onClick={handleClick} />
+                <h1 className={headerStyles.title} onClick={handleClick}>
+                    <span className={headerStyles.title}>ГБУ «Городская больница</span>
+                    <br />
+                    <span className={headerStyles.title}>Волновахского района»</span>
+                </h1>
+
+                <div className={userContainerClass}>
+                    {authState.isAuthenticated && (
+                        <div className={headerStyles.userNameContainer}>
+                            <span className={headerStyles.userNameText}>
+                                {authState.isAuthenticated ? (
+                                    `${authState.status}`
+                                ) : ''}
+                            </span>
+                            <span className={headerStyles.userNameText}>
+                                {authState.isAuthenticated ? (
+                                    `${authState.lastName} ${authState.firstName} ${authState.patr}`
+                                ) : ''}
+                            </span>
+                        </div>
+                    )}
+                    <div>
+                        {location.pathname !== '/login' && (
+                            authState.isAuthenticated ? (
+                                <Button
+                                    icon="logout"
+                                    onClick={() => { logout(); navigate('/'); }}
+                                    disabled={authState.isLoading}
+                                />
+                            ) : (
+                                <Button
+                                    text="Вход"
+                                    icon="login"
+                                    onClick={() => navigate('/login')}
+                                />
+                            )
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -81,52 +106,15 @@ export const Footer = () => {
     const year = new Date().getFullYear()
     const navigate = useNavigate();
     const location = useLocation();
-    const { authState, logout } = useAuth();
 
     const yearText = year > 2025
         ? `Volmed 2025 - ${year}`
         : `Volmed ${year}`
 
-    if (authState.isLoading) {
-        return (
-            <div className={footerStyles.container}>
-                <div className={footerStyles.footer}>
-                    © {yearText}
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className={footerStyles.container}>
             <div className={footerStyles.footer}>
                 © {yearText}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <span style={{ margin: '0 10px' }}>
-                        {authState.isAuthenticated ? (
-                            `${authState.status}`
-                        ) : ''}
-                    </span>
-                    <span style={{ margin: '0 10px' }}>
-                        {authState.isAuthenticated ? (
-                            `${authState.lastName} ${authState.firstName}`
-                        ) : ''}
-                    </span>
-                </div>
-                {location.pathname !== '/login' && (
-                    authState.isAuthenticated ? (
-                        <Button
-                            text='Выход'
-                            onClick={() => { logout(); navigate('/'); }}
-                            disabled={authState.isLoading}
-                        />
-                    ) : (
-                        <Button
-                            text='Вход'
-                            onClick={() => navigate('/login')}
-                        />
-                    )
-                )}
             </div>
         </div>
     )
