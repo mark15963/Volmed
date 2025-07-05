@@ -10,6 +10,7 @@
     vertical-align: middle;
     align-items: center;
     box-sizing: border-box;
+    contain: layout paint style;
 }
 
 .content{
