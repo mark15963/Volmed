@@ -1,7 +1,8 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
-import { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import { useAuth } from "../context/AuthContext.jsx"
 
+//----- PAGES -----
 const Main = lazy(() => import('../pages/main/Main.jsx'));
 const SearchResults = lazy(() => import('../pages/searchResults/SearchRes.jsx'));
 const List = lazy(() => import('../pages/patientsList/List.jsx'));
@@ -24,17 +25,30 @@ import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 export const Header = (props) => {
     const navigate = useNavigate();
     const { authState, logout } = useAuth();
+    const location = useLocation()
 
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         navigate('/');
-    };
+    }, [navigate])
+
+    const isLoginPage = useMemo(() => location.pathname === '/login', [location.pathname]);
 
     const userContainerClass = `${headerStyles.userContainer} ${authState.isAuthenticated ? headerStyles.auth : ''}`
 
     return (
         <div className={headerStyles.container}>
             <div className={headerStyles.content}>
-                <img src={logo} style={{ cursor: 'pointer', height: 'calc(100% - 40px)', marginRight: '10px' }} onClick={handleClick} />
+                <img
+                    src={logo}
+                    alt="Logo"
+                    style={{
+                        cursor: 'pointer',
+                        height: 'calc(100% - 40px)',
+                        marginRight: '10px'
+                    }}
+                    onClick={handleClick}
+                    loading='lazy'
+                />
                 <h1 className={headerStyles.title} onClick={handleClick}>
                     <span className={headerStyles.title}>ГБУ «Городская больница</span>
                     <br />
