@@ -66,8 +66,14 @@ export const Tab3 = ({
                                         className={medStyles.rows}
                                     >
                                         <td>
-                                            <CalendarTwoTone />
-                                            {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
+                                            <div style={{ display: 'flex' }}>
+                                                <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
+                                                    <CalendarTwoTone />
+                                                </div>
+                                                <div>
+                                                    {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             {isEditingAssignments ? (
@@ -82,8 +88,14 @@ export const Tab3 = ({
                                                 />
                                             ) :
                                                 <>
-                                                    <MedicineBoxTwoTone />
-                                                    {' ' + item.name}
+                                                    <div style={{ display: 'flex' }}>
+                                                        <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
+                                                            <MedicineBoxTwoTone />
+                                                        </div>
+                                                        <div>
+                                                            {' ' + item.name}
+                                                        </div>
+                                                    </div>
                                                 </>
                                             }
                                         </td>
@@ -100,31 +112,41 @@ export const Tab3 = ({
                                                 />
                                             ) :
                                                 <>
-                                                    <FieldTimeOutlined />
-                                                    {' ' + item.dosage}
+                                                    <div style={{ display: 'flex' }}>
+                                                        <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
+                                                            <FieldTimeOutlined />
+                                                        </div>
+                                                        <div>
+                                                            {' ' + item.dosage}
+                                                        </div>
+                                                    </div>
                                                 </>
                                             }
                                         </td>
                                         <td>
-                                            {isEditingAssignments ? (
-                                                // <input
-                                                //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
-                                                //     value={item.frequency}
-                                                //     onChange={(e) => {
-                                                //         const newList = [...assignments];
-                                                //         newList[index].frequency = e.target.value;
-                                                //         setAssignments(newList);
-                                                //     }}
-                                                // />
-                                                <Input
-                                                    value={item.frequency}
-                                                    onChange={(e) => {
-                                                        const newList = [...assignments];
-                                                        newList[index].frequency = e.target.value;
-                                                        setAssignments(newList);
-                                                    }}
-                                                />
-                                            ) : item.frequency}
+                                            <div style={{ display: 'flex' }}>
+                                                <div style={{ width: '100px', display: 'flex', justifyContent: 'center' }}>
+                                                    {isEditingAssignments ? (
+                                                        // <input
+                                                        //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                        //     value={item.frequency}
+                                                        //     onChange={(e) => {
+                                                        //         const newList = [...assignments];
+                                                        //         newList[index].frequency = e.target.value;
+                                                        //         setAssignments(newList);
+                                                        //     }}
+                                                        // />
+                                                        <Input
+                                                            value={item.frequency}
+                                                            onChange={(e) => {
+                                                                const newList = [...assignments];
+                                                                newList[index].frequency = e.target.value;
+                                                                setAssignments(newList);
+                                                            }}
+                                                        />
+                                                    ) : item.frequency}
+                                                </div>
+                                            </div>
                                         </td>
                                         {isEditingAssignments && (
                                             <td style={{ width: '15%' }}>
