@@ -78,21 +78,10 @@ export const SearchBar = () => {
                         pattern='[0-9]*'
                         required
                     />
-                    {/* <Input
-                        id='searchfield'
-                        type='search'
-                        value={searchValue}
-                        onChange={handleChange}
-                        placeholder='№ карты'
-                        autoComplete='off'
-                        inputMode='numeric'
-                        pattern='[0-9]*'
-                        required
-                    /> */}
                     <Button
                         type='submit'
                         shape='circle'
-                        icon='bi bi-search'
+                        icon='search'
                     />
                 </div>
                 {error && (
