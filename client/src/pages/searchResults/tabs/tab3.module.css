@@ -106,8 +106,14 @@ data:nth-child(4){
         background-color: aliceblue;
         color: #000;
         border-radius: 6px;
-        padding: 10px;
+        padding: 10px 5px;
     }
+
+    .iconTextContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* This creates space between icon and text */
+}
 
     thead tr:first-child {
         display: none;
