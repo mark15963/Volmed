@@ -45,6 +45,8 @@
 
 .table {
   background-color: #006fbe;
+  width: 100%; 
+  table-layout: fixed;
 }
 
 .table:hover{

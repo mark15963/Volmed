@@ -21,7 +21,7 @@ export const Tab3 = ({
     return (
         <div className={medStyles.info}>
             <div className={medStyles.bg}>
-                <h3>Назначения</h3>
+                <h2>Назначения</h2>
 
                 {/* EMPTY LIST */}
                 {assignments.length === 0 && !isEditingAssignments && (
@@ -48,7 +48,7 @@ export const Tab3 = ({
                 {(assignments.length > 0 || isEditingAssignments) && (
 
                     <div className={medStyles.listContainer}>
-                        <table className={tableStyles.table} style={{ width: '100%', tableLayout: 'fixed' }}>
+                        <table className={medStyles.table}>
                             <thead className={tableStyles.head}>
                                 <tr className={tableStyles.rows} style={{ fontSize: '13px' }}>
                                     <th style={{ width: '20%', textAlign: 'center' }}>Время назначения</th>
