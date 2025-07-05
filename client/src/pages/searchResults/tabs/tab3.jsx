@@ -60,101 +60,99 @@ export const Tab3 = ({
                             </thead>
                             <tbody>
                                 {assignments.map((item, index) => (
-                                    <>
-                                        <tr
-                                            key={index}
-                                            className={medStyles.rows}
-                                        >
-                                            <td>
-                                                <CalendarTwoTone />
-                                                {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
-                                            </td>
-                                            <td>
-                                                {isEditingAssignments ? (
-                                                    <input
-                                                        style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
-                                                        value={item.name}
-                                                        onChange={(e) => {
-                                                            const newList = [...assignments];
-                                                            newList[index].name = e.target.value;
-                                                            setAssignments(newList);
-                                                        }}
-                                                    />
-                                                ) :
-                                                    <>
-                                                        <MedicineBoxTwoTone />
-                                                        {' ' + item.name}
-                                                    </>
-                                                }
-                                            </td>
-                                            <td>
-                                                {isEditingAssignments ? (
-                                                    <input
-                                                        style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
-                                                        value={item.dosage}
-                                                        onChange={(e) => {
-                                                            const newList = [...assignments];
-                                                            newList[index].dosage = e.target.value;
-                                                            setAssignments(newList);
-                                                        }}
-                                                    />
-                                                ) :
-                                                    <>
-                                                        <FieldTimeOutlined />
-                                                        {' ' + item.dosage}
-                                                    </>
-                                                }
-                                            </td>
-                                            <td>
-                                                {isEditingAssignments ? (
-                                                    // <input
-                                                    //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
-                                                    //     value={item.frequency}
-                                                    //     onChange={(e) => {
-                                                    //         const newList = [...assignments];
-                                                    //         newList[index].frequency = e.target.value;
-                                                    //         setAssignments(newList);
-                                                    //     }}
-                                                    // />
-                                                    <Input
-                                                        value={item.frequency}
-                                                        onChange={(e) => {
-                                                            const newList = [...assignments];
-                                                            newList[index].frequency = e.target.value;
-                                                            setAssignments(newList);
-                                                        }}
-                                                    />
-                                                ) : item.frequency}
-                                            </td>
-                                            {isEditingAssignments && (
-                                                <td style={{ width: '15%' }}>
-                                                    <button
-                                                        style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
-                                                        onClick={async () => {
-                                                            const itemToDelete = assignments[index];
-                                                            try {
-                                                                if (itemToDelete.id) {
-                                                                    const response = await api.deleteMedication(itemToDelete.id)
-                                                                    if (!response.data.success) {
-                                                                        throw new Error(response.data.message || "API returned unsuccessful");
-                                                                    }
-                                                                }
-                                                                const newList = assignments.filter((_, i) => i !== index);
-                                                                setAssignments(newList);
 
-                                                            } catch (err) {
-                                                                console.error("Full delete error:", {
-                                                                    error: err,
-                                                                    response: err.response?.data
-                                                                });
-                                                                alert(`Не удалось удалить назначение: ${err.message}`);
+                                    <tr
+                                        key={index}
+                                        className={medStyles.rows}
+                                    >
+                                        <td>
+                                            <CalendarTwoTone />
+                                            {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
+                                        </td>
+                                        <td>
+                                            {isEditingAssignments ? (
+                                                <input
+                                                    style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                    value={item.name}
+                                                    onChange={(e) => {
+                                                        const newList = [...assignments];
+                                                        newList[index].name = e.target.value;
+                                                        setAssignments(newList);
+                                                    }}
+                                                />
+                                            ) :
+                                                <>
+                                                    <MedicineBoxTwoTone />
+                                                    {' ' + item.name}
+                                                </>
+                                            }
+                                        </td>
+                                        <td>
+                                            {isEditingAssignments ? (
+                                                <input
+                                                    style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                    value={item.dosage}
+                                                    onChange={(e) => {
+                                                        const newList = [...assignments];
+                                                        newList[index].dosage = e.target.value;
+                                                        setAssignments(newList);
+                                                    }}
+                                                />
+                                            ) :
+                                                <>
+                                                    <FieldTimeOutlined />
+                                                    {' ' + item.dosage}
+                                                </>
+                                            }
+                                        </td>
+                                        <td>
+                                            {isEditingAssignments ? (
+                                                // <input
+                                                //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                //     value={item.frequency}
+                                                //     onChange={(e) => {
+                                                //         const newList = [...assignments];
+                                                //         newList[index].frequency = e.target.value;
+                                                //         setAssignments(newList);
+                                                //     }}
+                                                // />
+                                                <Input
+                                                    value={item.frequency}
+                                                    onChange={(e) => {
+                                                        const newList = [...assignments];
+                                                        newList[index].frequency = e.target.value;
+                                                        setAssignments(newList);
+                                                    }}
+                                                />
+                                            ) : item.frequency}
+                                        </td>
+                                        {isEditingAssignments && (
+                                            <td style={{ width: '15%' }}>
+                                                <button
+                                                    style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
+                                                    onClick={async () => {
+                                                        const itemToDelete = assignments[index];
+                                                        try {
+                                                            if (itemToDelete.id) {
+                                                                const response = await api.deleteMedication(itemToDelete.id)
+                                                                if (!response.data.success) {
+                                                                    throw new Error(response.data.message || "API returned unsuccessful");
+                                                                }
                                                             }
-                                                        }}> Удалить</button>
-                                                </td>
-                                            )}
-                                        </tr>
-                                        {index !== assignments.length - 1 && <hr />}
-                                    </>
+                                                            const newList = assignments.filter((_, i) => i !== index);
+                                                            setAssignments(newList);
+
+                                                        } catch (err) {
+                                                            console.error("Full delete error:", {
+                                                                error: err,
+                                                                response: err.response?.data
+                                                            });
+                                                            alert(`Не удалось удалить назначение: ${err.message}`);
+                                                        }
+                                                    }}> Удалить</button>
+                                            </td>
+                                        )}
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
