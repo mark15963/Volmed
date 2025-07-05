@@ -6,7 +6,6 @@ import Button from '../../components/Buttons.tsx';
 import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
-import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export const Main = () => {
     const { authState } = useAuth()

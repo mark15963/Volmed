@@ -109,8 +109,11 @@ data:nth-child(4){
         padding: 10px;
     }
 
-    hr{
-        margin: 10px;
+    thead tr:first-child {
+        display: none;
+    }
+    .rows:not(:last-child) {
+        margin-bottom: 10px;
     }
 
     th{
