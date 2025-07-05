@@ -7,15 +7,11 @@ import Button from "../../components/Buttons.tsx"
 
 import styles from './login.module.css'
 import axios from "axios"
+import api from "../../services/api";
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
-// if (import.meta.env.VITE_ENV === 'development') {
-//     console.log('Running in development mode');
-// } else {
-//     console.log('test')
-// }
 export const Login = () => {
     const navigate = useNavigate()
     const [errors, setErrors] = useState({})
@@ -40,8 +36,7 @@ export const Login = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(
-                `${apiUrl}/login`,
+            const response = await api.postLogin(
                 formData,
                 {
                     withCredentials: true,
@@ -100,8 +95,9 @@ export const Login = () => {
                     />
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
-                            type='submit'
                             text={isLoading ? 'Загрузка...' : 'Вход'}
+                            type='submit'
+                            icon='login'
                             disabled={isLoading}
                         />
                     </div>

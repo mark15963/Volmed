@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, memo } from 'react';
 import axios from 'axios';
 
 import { Upload, Form, Collapse } from "antd"
+const { Dragger } = Upload;
+
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 
 import styles from '../searchResults.module.css';
@@ -10,8 +12,6 @@ import api from '../../../services/api'
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
-
-const { Dragger } = Upload;
 
 const Graph = memo(({ data }) => {
     const containerRef = useRef(null);
@@ -233,12 +233,15 @@ export const Tab2 = ({
                 }
             },
             showPreventIcon: true,
+            showDownloadIcon: true,
+            downloadIcon: 'Скачать',
             showRemoveIcon: true,
             removeIcon: (
                 <DeleteOutlined
                     onClick={e => console.log('Удаление файла', e)}
                 />
-            )
+            ),
+
         }
     }
 
@@ -337,7 +340,7 @@ export const Tab2 = ({
             <div className={styles.bg}>
                 <Collapse items={items} headerBg={'#ffffff'} className={styles.items} />
                 <div className={styles.fileSection}>
-                    <h3>Документы</h3>
+                    <h3 style={{ textAlign: 'center' }}>Документы</h3>
                     <div className={styles.fileList}>
                         {files.length === 0 && !isEditingFiles && (
                             <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
@@ -359,16 +362,14 @@ export const Tab2 = ({
                         )}
 
                         {isEditingFiles && (
-                            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                                <Form.Item>
-                                    <Dragger {...uploadProps} >
-                                        <p className="ant-upload-drag-icon">
-                                            <UploadOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Нажмите или перетащите файлы в эту область</p>
-                                    </Dragger>
-                                </Form.Item>
-                            </div>
+                            <Form.Item className={styles.uploadArea}>
+                                <Dragger {...uploadProps} className={styles.uploadListText}>
+                                    <p className="ant-upload-drag-icon">
+                                        <UploadOutlined />
+                                    </p>
+                                    <p className={styles.uploadAreaText}>Нажмите или перетащите файлы в эту область</p>
+                                </Dragger>
+                            </Form.Item>
                         )}
                     </div>
                 </div>

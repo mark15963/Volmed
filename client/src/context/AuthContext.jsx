@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -19,13 +20,13 @@ export const AuthProvider = ({ children }) => {
         username: '',
         lastName: '',
         firstName: '',
+        patr: '',
         status: '',
     });
 
     const checkAuthStatus = async () => {
         try {
-            const response = await axios.get(
-                `${apiUrl}/status`,
+            const response = await api.status(
                 {
                     withCredentials: true,
                 }
@@ -40,11 +41,12 @@ export const AuthProvider = ({ children }) => {
                 username: response.data.user?.username || '',
                 lastName: response.data.user?.lastName || '',
                 firstName: response.data.user?.firstName || '',
+                patr: response.data.user?.patr || '',
                 status: response.data.user?.status || '',
             });
 
         } catch (error) {
-            console.error('Auth check error:', error); // Add this
+            console.error('Auth check error:', error);
             setAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
@@ -52,6 +54,7 @@ export const AuthProvider = ({ children }) => {
                 username: '',
                 lastName: '',
                 firstName: '',
+                patr: '',
                 status: '',
             });
         }
@@ -60,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
-            await axios.post(`${apiUrl}/logout`,
+            await api.logout(
                 {},
                 { withCredentials: true }
             )
@@ -71,6 +74,7 @@ export const AuthProvider = ({ children }) => {
                 username: '',
                 lastName: '',
                 firstName: '',
+                patr: '',
                 status: '',
             });
         } catch {

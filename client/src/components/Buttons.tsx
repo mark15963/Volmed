@@ -1,11 +1,11 @@
 import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
-
+import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import "./styles/Button.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   shape?: string;
-  icon?: string;
+  icon?: "login" | "logout" | string;
   margin?: string;
   text?: string;
   style?: CSSProperties;
@@ -26,7 +26,34 @@ export const Button: FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const buttonClass = ["button", shape, className].filter(Boolean).join(" ");
+  const buttonClass = ["button", shape, className, disabled ? "loading" : ""]
+    .filter(Boolean)
+    .join(" ");
+
+  const renderIcon = () => {
+    switch (icon) {
+      case "login":
+        return <LoginOutlined />;
+      case "logout":
+        return <LogoutOutlined />;
+      default:
+        return icon ? <i className={icon} /> : null;
+    }
+  };
+
+  const renderText = () => {
+    if (icon === "login" || icon === "logout") {
+      if (!text) return (text = "");
+      if (text) return " " + text;
+    }
+
+    if (icon !== "login" || "logout") {
+      if (text) {
+        return " " + text;
+      }
+      return "";
+    }
+  };
 
   return (
     <button
@@ -37,16 +64,15 @@ export const Button: FC<ButtonProps> = ({
       style={style}
       {...props}
     >
-      <i className={icon}>
-        {text && (
-          <span
-            className="button-text"
-            style={margin ? { margin: margin } : undefined}
-          >
-            {text}
-          </span>
-        )}
-      </i>
+      {renderIcon()}
+      {renderText() && (
+        <span
+          className="button-text"
+          style={margin ? { margin: margin } : undefined}
+        >
+          {renderText()}
+        </span>
+      )}
     </button>
   );
 };

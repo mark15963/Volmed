@@ -59,4 +59,7 @@ export default {
     axios.get(`${apiUrl}/api/patients/${patientId}/pulse`),
 
   //Auth
+  postLogin: (data) => axios.post(`${apiUrl}/login`, data),
+  logout: () => axios.post(`${apiUrl}/logout`),
+  status: () => axios.get(`${apiUrl}/status`),
 };
