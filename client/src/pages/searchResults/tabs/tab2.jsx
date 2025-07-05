@@ -206,13 +206,11 @@ export const Tab2 = ({
             if (status !== 'uploading') {
                 setFileList(info.fileList)
             }
-            if (status === 'done' || status === 'error') {
+            else if (status === 'done' || status === 'error') {
                 setUploadStatus({
                     status,
                     fileName: info.file.name
                 });
-            } else if (status === 'removed') {
-
             }
         },
         onDrop(e) {
@@ -222,15 +220,15 @@ export const Tab2 = ({
         showUploadList: {
             extra: (file) => {
                 const size = file.size || (file.response && file.response.size) || 0
-                if (size < 1024 * 1024) {
-                    return <span style={{ marginLeft: '5px', color: '#cccccc' }}>
-                        ({(size / 1024).toFixed(2)}KB)
-                    </span>;
-                } else {
-                    return <span style={{ marginLeft: '5px', color: '#cccccc' }}>
-                        ({(size / (1024 * 1024)).toFixed(2)}MB)
-                    </span>;
-                }
+                const sizeText = size < 1024 * 1024
+                    ? `(${(size / 1024).toFixed(2)}KB)`
+                    : `(${(size / (1024 * 1024)).toFixed(2)}MB)`
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: '#cccccc' }}>{sizeText}</span>
+
+                    </div>
+                );
             },
             showPreventIcon: true,
             showDownloadIcon: true,
