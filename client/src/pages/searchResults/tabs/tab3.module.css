@@ -33,6 +33,17 @@
   margin: 10px 0;
 }
 
+.table {
+  background-color: #006fbe;
+  width: 100%; 
+  table-layout: fixed;
+}
+
+.table:hover{
+  transition: all 0.3s;
+  background-color: #006ab6;
+}
+
 .rows{
     font-size: 14px;
     display: flex;
@@ -81,6 +92,12 @@ data:nth-child(4){
         padding: 10px;
         border-radius: 5px;
         margin: 0;
+    }
+
+    .table {
+        background-color: #0065ad;
+        width: 100%; 
+        table-layout: fixed;
     }
 
     .rows{
