@@ -41,9 +41,19 @@ export const Main = () => {
                 <SearchBar />
                 <div className={styles.buttonsContainer}>
 
-                    <Button text='Список пациентов' margin='0 0 0 5px' icon='bi bi-people' onClick={() => navigate('/patients')} />
+                    <Button
+                        text='Список пациентов'
+                        icon='patients'
+                        margin='0 0 0 5px'
+                        onClick={() => navigate('/patients')}
+                    />
 
-                    <Button text='Новый пациент' icon='bi bi-person-plus' margin='0 0 0 5px' onClick={() => navigate('/register')} />
+                    <Button
+                        text='Новый пациент'
+                        icon='newPatient'
+                        margin='0 0 0 5px'
+                        onClick={() => navigate('/register')}
+                    />
 
                 </div>
 

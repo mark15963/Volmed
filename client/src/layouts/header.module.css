@@ -59,11 +59,25 @@ h1.title{
 }
 
 @media screen and (orientation: portrait) {
-    .container{
+    .container {
         height: 100%;
     }
 
-    .title{
-        font-size: 1em;
+    h1.title {
+        color: aliceblue;
+        font-size: 0.75em;
+        font-weight: 600 !important;
+        text-align: left;
+        margin: 0 5px;
+        flex-grow: 1;
+        cursor: default;
+    }
+
+    .userContainer .userNameContainer .userNameText {
+        margin: 0 10px; 
+        color: aliceblue;
+        font-weight: 500;
+        font-size: 0.7em;
+        text-align: center;
     }
 }
