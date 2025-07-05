@@ -1,11 +1,16 @@
 import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
-import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  LoginOutlined,
+  LogoutOutlined,
+  TeamOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import "./styles/Button.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   shape?: string;
-  icon?: "login" | "logout" | string;
+  icon?: "login" | "logout" | "newPatient" | "patients" | string;
   margin?: string;
   text?: string;
   style?: CSSProperties;
@@ -36,6 +41,10 @@ export const Button: FC<ButtonProps> = ({
         return <LoginOutlined />;
       case "logout":
         return <LogoutOutlined />;
+      case "newPatient":
+        return <UserAddOutlined />;
+      case "patients":
+        return <TeamOutlined />;
       default:
         return icon ? <i className={icon} /> : null;
     }
