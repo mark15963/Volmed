@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { usePageTitle } from '../../components/PageTitle'
 import { Menu } from '../../components/Menu'
-import { message } from "antd"
+import { message, Spin } from "antd"
 
 import { Tab1 } from './tabs/tab1'
 const Tab2 = lazy(() => import('./tabs/tab2'))
@@ -14,6 +14,7 @@ import styles from './searchResults.module.css'
 import Button from '../../components/Buttons.tsx'
 
 import api from '../../services/api'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -309,9 +310,27 @@ export const SearchResults = () => {
     }
 
     const tabContents = [
-        <Tab1 data={data} />,
+        <Suspense fallback={
+            <div className={styles.info}>
+                <div className={styles.bg}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+                    </div>
+                </div>
+            </div>
+        }>
+            <Tab1 data={data} />
+        </Suspense>,
 
-        <Suspense fallback={<div>Загрузка</div>}>
+        <Suspense fallback={
+            <div className={styles.info}>
+                <div className={styles.bg}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+                    </div>
+                </div>
+            </div>
+        }>
             <Tab2
                 files={files}
                 fileList={fileList}
@@ -327,7 +346,15 @@ export const SearchResults = () => {
             />
         </Suspense>,
 
-        <Suspense fallback={<div>Загрузка</div>}>
+        <Suspense fallback={
+            <div className={styles.info}>
+                <div className={styles.bg}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+                    </div>
+                </div>
+            </div>
+        }>
             <Tab3
                 assignments={assignments}
                 isEditingAssignments={isEditingAssignments}
@@ -340,7 +367,50 @@ export const SearchResults = () => {
     if (loading && !data) {
         return (
             <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>
-                Загрузка...
+                <h2>
+                    {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
+                </h2>
+
+                <Menu
+                    items={[
+                        { name: 'Основное' },
+                        { name: 'Анализы' },
+                        { name: 'Назначения' }
+                    ]}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                />
+                <div className={styles.info}>
+                    <div className={styles.bg}>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.buttonsContainer}>
+                    <div style={{ display: 'flex' }}>
+                        <Button
+                            text={isEditingAssignments || isEditingFiles ?
+                                `Сохранить` : `Редактировать`
+                            }
+                            onClick={(e) => {
+                                handleEdit(e)
+                                {
+                                    isEditingAssignments && (
+                                        handleSaveAssignments(e)
+                                    )
+                                    isEditingFiles && (
+                                        handleSaveFiles(e)
+                                    )
+                                }
+                            }}
+                        />
+
+                        <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
+                    </div>
+
+                    <Button text="Назад на главную" onClick={() => navigate('/')} />
+                </div>
             </div>
         );
     }

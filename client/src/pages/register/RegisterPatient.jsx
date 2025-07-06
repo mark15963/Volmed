@@ -115,7 +115,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
             success()
 
-            // await new Promise(resolve => setTimeout(resolve, 3000))
             form.resetFields(['mkb'])
 
             navigate(`/search/${isEditMode ? patientId : response.data.id}`, {

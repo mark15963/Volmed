@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+
 import Button from './Buttons.tsx';
+import Input from './Input';
 
 import styles from './styles/SearchBar.module.css'
 
@@ -66,7 +68,19 @@ export const SearchBar = () => {
                 <div className={styles.searchContainer}>
                     <div className={styles.space}></div>
 
-                    <input
+                    {/* <input
+                        className={styles.searchfield}
+                        id='searchfield'
+                        type='search'
+                        value={searchValue}
+                        onChange={handleChange}
+                        placeholder='№ карты'
+                        autoComplete='off'
+                        inputMode='numeric'
+                        pattern='[0-9]*'
+                        required
+                    /> */}
+                    <Input
                         className={styles.searchfield}
                         id='searchfield'
                         type='search'
