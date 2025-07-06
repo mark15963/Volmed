@@ -1,8 +1,12 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import { RegisterPatient } from '../register/RegisterPatient';
+
 import { usePageTitle } from '../../components/PageTitle';
+
+import api from '../../services/api';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -22,8 +26,7 @@ export const EditPatient = () => {
                     return;
                 }
 
-                const response = await axios.get(`${apiUrl}/api/patients/${id}`);
-                console.log(response.data)
+                const response = await api.getPatient(id)
                 setPatientData(response.data);
             } catch (err) {
                 setError(err.response?.data?.error || 'Failed to fetch patient data');

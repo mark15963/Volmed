@@ -25,15 +25,23 @@ const db = new Pool({
   max: 20,
   allowExitOnIdle: true,
 });
-db.on("error", (err) => {
-  console.error("Database error:", err);
-});
-db.on("connect", () => {
-  console.log("Database connected");
-});
-db.on("remove", () => {
-  console.log("Database connection removed");
-});
+//-----DATABASE DEBUG-----
+// db.on("error", (err) => {
+//   console.error("Database error:", err);
+// });
+// db.on("connect", () => {
+//   console.log("Database connected");
+// });
+// db.on("remove", () => {
+//   console.log("Database connection removed");
+// });
+// db.on("acquire", (client) => {
+//   console.log("Client checked out from pool");
+// });
+
+// db.on("release", (client) => {
+//   console.log("Client returned to pool");
+// });
 
 const uploadDir = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -75,6 +83,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+//-----PATIENTS-----
+//Get all patients
 router.get("/api/patients", isAuth, async (req, res) => {
   try {
     const client = await db.connect();
@@ -142,22 +152,40 @@ router.post("/api/patients", isAuth, async (req, res) => {
 router.put("/api/patients/:id", isAuth, async (req, res) => {
   const id = req.params.id,
     edited = req.body;
+
+  if (!id || !edited || typeof edited !== "object") {
+    return res.status(400).json({ error: "Invalid request data" });
+  }
+
   const keys = Object.keys(edited),
     values = Object.values(edited);
-  const setSQL = keys.map((k, i) => `${k}=$${i + 1}`).join(", ");
+
+  if (keys.length === 0) {
+    return res.status(400).json({ error: "No fields to update" });
+  }
+
+  const setSQL = keys.map((k, i) => `"${k}"=$${i + 1}`).join(", ");
   const q = `UPDATE patients SET ${setSQL} WHERE id=$${
     keys.length + 1
   } RETURNING *`;
 
   try {
-    const { rows, rowCount } = await db.query(q, [...values, id]);
-    if (!rowCount) return res.status(404).json({ error: "Patient not found" });
-    res.json({ success: true, message: "Updated", patient: rows[0] });
+    const client = await db.connect();
+    try {
+      const { rows, rowCount } = await db.query(q, [...values, id]);
+      if (!rowCount)
+        return res.status(404).json({ error: "Patient not found" });
+      res.json({ success: true, message: "Updated", patient: rows[0] });
+    } finally {
+      client.release();
+    }
   } catch (e) {
-    console.error("Update error:", e);
-    res
-      .status(500)
-      .json({ error: "Database update failed", message: e.message });
+    console.error("Update error:", e.stack);
+    res.status(500).json({
+      error: "Database update failed",
+      message: e.message,
+      detail: e.detail,
+    });
   }
 });
 // Delete a patient
@@ -378,7 +406,7 @@ router.delete("/api/medications/:medId", isAuth, async (req, res) => {
   }
 });
 
-//-----STATES------
+//-----VITALS------
 // Save pulse data
 router.post("/api/patients/:id/pulse", isAuth, async (req, res) => {
   const val = req.body.pulseValue;
