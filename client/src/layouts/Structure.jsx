@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
 import React, { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
-import { useAuth } from "../context/AuthContext.jsx"
+import { useAuth } from "../context/AuthContext"
 
 //----- PAGES -----
 const Main = lazy(() => import('../pages/main/Main.jsx'));

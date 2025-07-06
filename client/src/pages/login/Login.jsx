@@ -20,7 +20,7 @@ export const Login = () => {
         username: '',
         password: ''
     })
-    const { checkAuthStatus } = useAuth();
+    const { authState, checkAuthStatus } = useAuth();
 
 
     const handleChange = (e) => {
@@ -45,9 +45,17 @@ export const Login = () => {
                     }
                 }
             )
+
             if (response.data.success) {
-                await checkAuthStatus();
-                navigate('/');
+                const isAuthenticated = await checkAuthStatus();
+                if (response.data.success) {
+                    await checkAuthStatus();
+                    navigate('/');
+                } else {
+                    setErrors({
+                        general: 'Authentication failed after login'
+                    });
+                }
             }
         } catch (error) {
             console.error("Login error:", error)

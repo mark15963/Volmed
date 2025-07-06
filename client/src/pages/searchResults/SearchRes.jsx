@@ -125,7 +125,10 @@ export const SearchResults = () => {
                 response: { path: file.path }
             })));
         } catch (error) {
-            messageApi.error('Ошибка загрузки списка файлов');
+            setTimeout(() => {
+                messageApi.error('Ошибка загрузки списка файлов');
+            }, 0)
+
         }
     };
 
