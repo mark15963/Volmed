@@ -9,7 +9,14 @@ const AuthContext = createContext({
         isAuthenticated: false,
         isLoading: true,
         isAdmin: false,
-    }
+        username: '',
+        lastName: '',
+        firstName: '',
+        patr: '',
+        status: ''
+    },
+    checkAuthStatus: () => { }, // Add default function
+    logout: () => { }
 });
 
 export const AuthProvider = ({ children }) => {
@@ -26,11 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuthStatus = async () => {
         try {
-            const response = await api.status(
-                {
-                    withCredentials: true,
-                }
-            );
+            const response = await api.status({ withCredentials: true });
 
             const isAdmin = response.data.user?.status === 'admin' || response.data.user?.status === 'Администратор';
 
@@ -44,7 +47,7 @@ export const AuthProvider = ({ children }) => {
                 patr: response.data.user?.patr || '',
                 status: response.data.user?.status || '',
             });
-
+            return response.data.isAuthenticated;
         } catch (error) {
             console.error('Auth check error:', error);
             setAuthState({
@@ -57,16 +60,14 @@ export const AuthProvider = ({ children }) => {
                 patr: '',
                 status: '',
             });
+            return false
         }
     };
 
     const logout = async () => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
-            await api.logout(
-                {},
-                { withCredentials: true }
-            )
+            await api.logout({}, { withCredentials: true })
             setAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
@@ -87,10 +88,20 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ authState, checkAuthStatus, logout }}>
+        <AuthContext.Provider value={{
+            authState,
+            checkAuthStatus,
+            logout
+        }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext)
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+}
