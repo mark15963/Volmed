@@ -321,6 +321,13 @@ h2{
         width: 100%;
     }
 
+    .graph{
+        flex-grow: 1;
+        width: 100%;
+        /* max-width: 500px; */
+        /* min-width: 120px; */
+    }
+
     .itemsTable{
         max-width: 100%;
         width: 300px; 
