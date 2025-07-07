@@ -594,7 +594,7 @@ export const Tab2 = ({
     return (
         <div className={styles.info}>
             <div className={styles.bg}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100%', gap: '10px' }}>
+                <div className={styles.collapseContainer}>
                     <div>
                         <Collapse items={HrItems} />
                     </div>
