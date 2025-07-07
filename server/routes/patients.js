@@ -441,5 +441,39 @@ router.get("/api/patients/:id/pulse", isAuth, async (req, res) => {
     res.status(500).json({ error: "DB error", message: e.message });
   }
 });
+// Save O2 data
+router.post("/api/patients/:id/o2", isAuth, async (req, res) => {
+  const val = req.body.o2Value;
+  if (val == null || isNaN(val))
+    return res.status(400).json({ error: "Invalid O2 value" });
+  try {
+    const q =
+      "INSERT INTO patient_o2 (patient_id, o2_value) VALUES ($1,$2) RETURNING id";
+    const { rows } = await db.query(q, [req.params.id, val]);
+    res.json({ success: true, o2Id: rows[0].id });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error", message: e.message });
+  }
+});
+// Get O2 data
+router.get("/api/patients/:id/o2", isAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT o2_value, created_at FROM patient_o2 WHERE patient_id=$1 ORDER BY created_at ASC",
+      [req.params.id]
+    );
+    const formatted = rows.map((r) => ({
+      value: r.o2_value,
+      timestamp: r.created_at,
+      formattedTime: new Date(r.created_at).toLocaleTimeString(),
+      formattedDate: new Date(r.created_at).toLocaleDateString(),
+    }));
+    res.json(formatted);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "DB error", message: e.message });
+  }
+});
 
 module.exports = router;

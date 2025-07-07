@@ -57,6 +57,9 @@ export default {
     axios.post(`${apiUrl}/api/patients/${patientId}/pulse`, { pulseValue }),
   getPulseData: (patientId) =>
     axios.get(`${apiUrl}/api/patients/${patientId}/pulse`),
+  saveO2: (patientId, o2Value) =>
+    axios.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
+  getO2Data: (patientId) => axios.get(`${apiUrl}/api/patients/${patientId}/o2`),
 
   //Auth
   postLogin: (data) => axios.post(`${apiUrl}/login`, data),
