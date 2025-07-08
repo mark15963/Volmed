@@ -262,7 +262,7 @@ const O2Graph = memo(({ data }) => {
                         whiteSpace: 'nowrap',
                     }}
                 >
-                    <div>O2: {hover.val}</div>
+                    <div>SpO2: {hover.val}</div>
                     {hover.created_at && (
                         <div style={{ fontSize: 10, color: '#ccc' }}>
                             {new Date(hover.created_at).toLocaleString()}
@@ -488,7 +488,7 @@ export const Tab2 = ({
     const O2Items = [
         {
             key: '2',
-            label: 'O2',
+            label: 'SpO2',
             children: (
                 <>
                     <div className={styles.graphContainer}>
@@ -500,12 +500,12 @@ export const Tab2 = ({
                             value={o2Value}
                             onChange={(e) => setO2Value(e.target.value)}
                             onKeyDown={handleO2KeyPress}
-                            placeholder="O2"
+                            placeholder="SpO2"
                             className={styles.inputfield}
                         />
                     </div>
                     <div style={{ marginTop: '20px' }}>
-                        <h4>История изменений O2</h4>
+                        <h4>История изменений SpO2</h4>
                         <table className={styles.itemsTable}>
                             <thead>
                                 <tr style={{ backgroundColor: '#f0f0f0', color: 'black' }}>
