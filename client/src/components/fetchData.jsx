@@ -93,7 +93,7 @@ export const AllPatients = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className={styles.noData}>
+              <td className={styles.noData}>
                 No data found!
               </td>
             </tr>
