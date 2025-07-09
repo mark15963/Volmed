@@ -1,19 +1,13 @@
-button{
+.button{
     background: #f0ffff;
     color: #000;
-    margin-top: 10px;
-    margin: 0 5px;
-    border-radius: 10px;
-    padding: 5px 10px;
+    margin:  5px 10px;
     box-sizing: border-box;
- }
-
-.button{
-    cursor: pointer;
     width: fit-content;
-    padding: 6px 10px;
+    padding: 8px 14px;
     font-size: 15px;
     border-radius: 10px;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
@@ -45,6 +39,6 @@ button{
 @media screen and (orientation: portrait) {
     .button{
         font-size: 1em;
-        padding: 3px 5px;
+        padding: 5px 8px;
     }
 }

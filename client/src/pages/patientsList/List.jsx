@@ -15,19 +15,13 @@ export const List = () => {
         <div className={styles.container} style={{ maxWidth: '800px' }}>
             <div className={styles.list}>
                 <div className={styles.table}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}
-                    >
+                    <div className={styles.searchbar}>
                         <SearchBar />
                     </div>
-                    <AllPatients />
-                    <PatientCount />
 
+                    <AllPatients />
+
+                    <PatientCount />
                 </div>
                 <div className={styles.buttonContainer}>
                     <Button text='Главный экран' onClick={() => navigate('/')} />

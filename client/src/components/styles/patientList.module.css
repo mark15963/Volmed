@@ -2,12 +2,25 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 5px;
   color: aliceblue;
   background-color: #0065ad;
   padding: 5px;
   border-radius: 5px;
   margin: 10px 0;
+}
+
+.table {
+  width: 100%; 
+  table-layout: fixed;
+}
+
+.table:hover{
+  transition: all 0.3s;
+}
+
+.head .rows{
+  display: flex;
+  background-color: #0065ad;
 }
 
 .skeleton{
@@ -19,17 +32,33 @@
   width: 100%;
 }
 
+.tbody{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .rows{
   display: flex;
   width: 100%;
   justify-content: space-between;
   padding: 5px 10px;
+  background-color: #006fbe;
+
+}
+
+.rows:hover{
+  transition: all 0.3s;
+  background-color: #006ab6;
 }
 
 .rowsLoading{
   display: flex;
   width: 100%;
   justify-content: space-between;
+  background-color: #006fbe;
+  padding: 5px 10px;
+  overflow: hidden;
 }
   
 .react-loading-skeleton {
@@ -43,37 +72,18 @@
   100% { opacity: 0.6; }
 }
 
-.table {
-  background-color: #006fbe;
-  width: 100%; 
-  table-layout: fixed;
-}
-
-.table:hover{
-  transition: all 0.3s;
-  background-color: #006ab6;
-}
-
-.head{
-  display: flex;
-  background-color: #0065ad;
-}
-
 .first{
   display: flex;
-  /* align-items: center; */
   flex: 0.6;
 }
 
 .second{
   display: flex;
-  /* align-items: center; */
   flex: 2;
 }
 
 .third{
   display: flex;
-  /* align-items: center; */
   flex: 0.8;
 }
 
@@ -93,21 +103,30 @@
 }
 
 @media screen and (orientation: portrait) {
-    .head .rows{
-        font-size: 0.8em !important;
-    }
+  .head .rows{
+    font-size: 0.8em !important;
+  }
 
-    .first{
-        flex: 0.3;
-        font-size: 0.7em !important;
-    }
+  .tdLoad:nth-child(1){
+    padding: 5px;
+  }
 
-    .second{
-        font-size: 1em !important;
-    }
+  .tbody .rows{
+    display: flex;
+    align-items: center;
+  }
 
-    .third{
-        flex: 0.8;
-        font-size: 0.8em !important;
-    }
+  .first{
+    flex: 0.3;
+    font-size: 0.8em !important;
+  }
+
+  .second{
+    font-size: 1em !important;
+  }
+
+  .third{
+    flex: 0.8;
+    font-size: 0.8em !important;
+  }
 }
