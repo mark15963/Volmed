@@ -43,6 +43,7 @@ export const AllPatients = () => {
   return (
     <div className={styles.container}>
       <table className={styles.table}>
+
         <thead className={styles.head}>
           <tr className={styles.rows}>
             <th className={styles.first}>#</th>
@@ -50,13 +51,12 @@ export const AllPatients = () => {
             <th className={styles.third}>Дата рождения</th>
           </tr>
         </thead>
-      </table>
-      {loading ? (
-        <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <table key={i} className={styles.table}>
-              <tbody >
-                <tr className={styles.rowsLoading}>
+
+        <tbody className={styles.tbody}>
+          {loading ? (
+            <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className={styles.rowsLoading}>
                   <td style={{ padding: 5, flex: 0.6 }}>
                     <Skeleton borderRadius={5} width={90} />
                   </td>
@@ -67,22 +67,15 @@ export const AllPatients = () => {
                     <Skeleton borderRadius={5} width={140} />
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          ))}
-        </SkeletonTheme>
-      ) : patients.length > 0 ? (
-        patients.map(patient => (
-          <table
-            key={patient.id}
-            className={styles.table}
-            onClick={(e) => handlePatientClick(patient.id, e)}
-            onKeyDown={(e) => handlePatientClick(patient.id, e)}
-            style={{ cursor: 'pointer' }}
-          >
-            <tbody>
+              ))}
+            </SkeletonTheme>
+          ) : patients.length > 0 ? (
+            patients.map(patient => (
               <tr
+                key={patient.id}
                 className={styles.rows}
+                onClick={(e) => handlePatientClick(patient.id, e)}
+                onKeyDown={(e) => handlePatientClick(patient.id, e)}
                 tabIndex={0}
                 role="button"
                 aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
@@ -97,15 +90,16 @@ export const AllPatients = () => {
                   {moment(patient.birthDate).format('DD.MM.YYYY')}
                 </td>
               </tr>
-            </tbody>
-          </table>
-        ))
-      ) : (
-        <div className={styles.noData}>
-          No data found!
-        </div>
-      )}
-
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className={styles.noData}>
+                No data found!
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div >
   )
 }
