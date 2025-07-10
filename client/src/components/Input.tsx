@@ -4,7 +4,7 @@ import "./styles/Input.module.css";
 // import styles from "./styles/Input.module.css"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  type?: "text" | "password" | "email" | "tel" | "search";
+  type?: "text" | "password" | "email" | "tel" | "search" | "number";
   value?: string;
   placeholder?: string;
   name?: string;
