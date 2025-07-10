@@ -21,7 +21,7 @@
 }
 
 .mainBlock h2{
-    margin: 0;
+    margin: 0 0 10px 0;
     color: aliceblue;
     font-weight: 700;
 }
@@ -31,6 +31,7 @@
     flex-direction: column;
     margin: 0 20px;
     gap: 10px;
+    
 }
 
 .mainBlock label{

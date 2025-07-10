@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import api from "../services/api";
+import { useNavigate } from "react-router";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -15,11 +16,13 @@ const AuthContext = createContext({
         patr: '',
         status: ''
     },
-    checkAuthStatus: () => { }, // Add default function
+    checkAuthStatus: () => { },
     logout: () => { }
 });
 
 export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate()
+
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
         isAdmin: false,
@@ -32,6 +35,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     const checkAuthStatus = async () => {
+
         try {
             const response = await api.status({ withCredentials: true });
 
@@ -47,7 +51,15 @@ export const AuthProvider = ({ children }) => {
                 patr: response.data.user?.patr || '',
                 status: response.data.user?.status || '',
             });
-            return response.data.isAuthenticated;
+
+            if (response.data.isAuthenticated) {
+                return response.data.isAuthenticated
+            } else {
+                console.log('Please log in')
+                navigate('/login')
+                return false
+            }
+
         } catch (error) {
             console.error('Auth check error:', error);
             setAuthState({
