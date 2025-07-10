@@ -10,6 +10,7 @@ import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from './tab2.module.css'
 
 import api from '../../../services/api'
+import Input from '../../../components/Input';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -58,11 +59,13 @@ const HrGraph = memo(({ data }) => {
         );
     }
 
+    const minVal = 0
     const maxVal = Math.max(100, ...data.map(item => Number(item.val) || 0));
     const points = data.map((item, idx) => {
-        const val = Number(item.val) || 0
+        const val = Number(item.val) || minVal
+        const scaledVal = ((val - minVal) / (maxVal - minVal)) * 100;
         const x = padding + ((containerWidth - 2 * padding) / Math.max(1, data.length - 1)) * idx;
-        const y = height - padding - ((val / maxVal) * (height - 2 * padding));
+        const y = height - padding - ((scaledVal / maxVal) * (height - 2 * padding));
         return { x, y, val, created_at: item.created_at };
     });
 
@@ -122,6 +125,7 @@ const HrGraph = memo(({ data }) => {
                     y2={height - paddingTop}
                     stroke="#999"
                 />
+
                 {/* Y-axis */}
                 <line
                     x1={padding}
@@ -130,6 +134,7 @@ const HrGraph = memo(({ data }) => {
                     y2={height - paddingTop}
                     stroke="#999"
                 />
+                {/* Y-axis labels */}
                 <text
                     x={padding - 5}  // little left of the y-axis line
                     y={padding + 4}  // a bit below the top padding for alignment
@@ -138,6 +143,15 @@ const HrGraph = memo(({ data }) => {
                     textAnchor="end"
                 >
                     {maxVal}
+                </text>
+                <text
+                    x={padding - 5}  // little left of the y-axis line
+                    y={height - paddingTop + 2} // a bit below the top padding for alignment
+                    fontSize={12}
+                    fill="#666"
+                    textAnchor="end"
+                >
+                    {minVal}
                 </text>
 
                 {/* Horizontal grid lines */}
@@ -196,7 +210,6 @@ const O2Graph = memo(({ data }) => {
         };
 
         updateWidth(); // initial measurement
-
         const resizeObserver = new ResizeObserver(() => {
             updateWidth();
         });
@@ -220,11 +233,13 @@ const O2Graph = memo(({ data }) => {
         );
     }
 
+    const minVal = 60
     const maxVal = Math.max(100, ...data.map(item => Number(item.val) || 0));
     const points = data.map((item, idx) => {
-        const val = Number(item.val) || 0
+        const val = Number(item.val) || minVal
+        const scaledVal = ((val - minVal) / (maxVal - minVal)) * 100;
         const x = padding + ((containerWidth - 2 * padding) / Math.max(1, data.length - 1)) * idx;
-        const y = height - padding - ((val / maxVal) * (height - 2 * padding));
+        const y = height - padding - ((scaledVal / maxVal) * (height - 2 * padding));
         return { x, y, val, created_at: item.created_at };
     });
 
@@ -262,6 +277,7 @@ const O2Graph = memo(({ data }) => {
                         whiteSpace: 'nowrap',
                     }}
                 >
+                    {/* Points text*/}
                     <div>SpO2: {hover.val}</div>
                     {hover.created_at && (
                         <div style={{ fontSize: 10, color: '#ccc' }}>
@@ -271,6 +287,7 @@ const O2Graph = memo(({ data }) => {
                 </div>
             )}
 
+            {/* Graph */}
             <svg
                 width={containerWidth}
                 height={height}
@@ -284,6 +301,7 @@ const O2Graph = memo(({ data }) => {
                     y2={height - paddingTop}
                     stroke="#999"
                 />
+
                 {/* Y-axis */}
                 <line
                     x1={padding}
@@ -292,14 +310,27 @@ const O2Graph = memo(({ data }) => {
                     y2={height - paddingTop}
                     stroke="#999"
                 />
+
+                {/* Y-axis labels */}
+                {/* Max */}
                 <text
-                    x={padding - 5}  // little left of the y-axis line
-                    y={padding + 4}  // a bit below the top padding for alignment
+                    x={padding - 5}
+                    y={padding + 4}
                     fontSize={12}
                     fill="#666"
                     textAnchor="end"
                 >
                     {maxVal}
+                </text>
+                {/* Min */}
+                <text
+                    x={padding - 5}
+                    y={height - paddingTop + 2}
+                    fontSize={12}
+                    fill="#666"
+                    textAnchor="end"
+                >
+                    {minVal}
                 </text>
 
                 {/* Horizontal grid lines */}
@@ -315,13 +346,13 @@ const O2Graph = memo(({ data }) => {
                     />
                 ))}
 
+                {/* Points, line connecting them and filled area bellow */}
                 {points.length >= 2 && (
                     <>
                         <path d={areaPath} fill="#1CABE8" opacity={0.3} />
                         <path d={linePath} stroke="#1CABE8" strokeWidth={2} fill="none" />
                     </>
                 )}
-
                 {points.map((point, idx) => (
                     <circle
                         key={idx}
@@ -352,7 +383,7 @@ export const Tab2 = ({
     const [o2Value, setO2Value] = useState('');
     const [o2Values, setO2Values] = useState([]);
 
-    //-----PULSE-----
+    //-----PULSE DATA-----
     useEffect(() => {
         const fetchPulseData = async () => {
             try {
@@ -443,7 +474,7 @@ export const Tab2 = ({
         }
     ]
 
-    //-----O2-----
+    //-----O2 DATA-----
     useEffect(() => {
         const fetchO2Data = async () => {
             try {
@@ -495,12 +526,20 @@ export const Tab2 = ({
                         <div className={styles.graph}>
                             <O2Graph data={o2Values} />
                         </div>
-                        <input
+                        {/* <input
                             type="number"
                             value={o2Value}
                             onChange={(e) => setO2Value(e.target.value)}
                             onKeyDown={handleO2KeyPress}
                             placeholder="SpO2"
+                            className={styles.inputfield}
+                        /> */}
+                        <Input
+                            type='number'
+                            value={o2Value}
+                            onChange={(e) => setO2Value(e.target.value)}
+                            onKeyDown={handleO2KeyPress}
+                            placeholder='SpO2'
                             className={styles.inputfield}
                         />
                     </div>
@@ -510,7 +549,7 @@ export const Tab2 = ({
                             <thead>
                                 <tr style={{ backgroundColor: '#f0f0f0', color: 'black' }}>
                                     <th style={{ padding: '8px', border: '1px solid #ddd' }}>Дата</th>
-                                    <th style={{ padding: '8px', border: '1px solid #ddd' }}>O2</th>
+                                    <th style={{ padding: '8px', border: '1px solid #ddd' }}>SpO2</th>
                                 </tr>
                             </thead>
                             <tbody>
