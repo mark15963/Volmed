@@ -1,5 +1,5 @@
 .button{
-    background: #f0ffff;
+    background: aliceblue;
     color: #000;
     margin:  5px 10px;
     box-sizing: border-box;
@@ -17,11 +17,20 @@
     border: 2px solid #1677ff;
 }
 
-.button:disabled,
+.button.disabled{
+    cursor: not-allowed;
+    opacity: 0.8;
+    background: #b4b4b4;
+}
+
 .button.loading{
     cursor: wait;
-    opacity: 0.7;
-    background: #a4a4a4;
+    opacity: 0.8;
+    background: #b4b4b4;
+}
+
+.button.disabled.loading {
+    cursor: wait;
 }
 
 .button-text{
@@ -34,6 +43,7 @@
     min-width: 38px;
     min-height: 38px;
     border-radius: 50%;
+    padding: 0;
 }
 
 @media screen and (orientation: portrait) {

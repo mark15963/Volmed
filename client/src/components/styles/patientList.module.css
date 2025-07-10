@@ -76,18 +76,22 @@
   100% { opacity: 0.6; }
 }
 
-.first{
+.first,
+.second,
+.third{
   display: flex;
+  cursor: default;
+}
+
+.first{
   flex: 0.6;
 }
 
 .second{
-  display: flex;
   flex: 2;
 }
 
 .third{
-  display: flex;
   flex: 0.8;
 }
 

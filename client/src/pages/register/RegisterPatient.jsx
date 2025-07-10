@@ -223,9 +223,8 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         <IMaskInput
                                             mask="+7(000)000-00-00"
                                             definitions={{ '0': /[0-9]/ }}
-                                            value={form.getFieldValue('phone') || ''}
+                                            // value={form.getFieldValue('phone') || ''}
                                             onAccept={(value) => {
-                                                // prevent the lone "7" case
                                                 const cleaned = value === '7' ? '' : value;
                                                 form.setFieldsValue({ phone: cleaned });
                                             }}

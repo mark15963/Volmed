@@ -17,6 +17,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   style?: CSSProperties;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
   type?: "button" | "submit" | "reset";
 }
 
@@ -30,9 +31,16 @@ export const Button: FC<ButtonProps> = ({
   text,
   className,
   disabled,
+  loading,
   ...props
 }) => {
-  const buttonClass = ["button", shape, className, disabled ? "loading" : ""]
+  const buttonClass = [
+    "button",
+    shape,
+    className,
+    disabled ? "disabled" : "",
+    loading ? "loading" : "",
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -71,7 +79,7 @@ export const Button: FC<ButtonProps> = ({
     <button
       onClick={onClick}
       className={buttonClass}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
       style={style}
       {...props}

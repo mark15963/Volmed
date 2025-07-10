@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
+import axios from "axios"
 
 import { useAuth } from '../../context/AuthContext';
 
 import Button from "../../components/Buttons.tsx"
+import Input from "../../components/Input";
 
 import styles from './login.module.css'
-import axios from "axios"
+
 import api from "../../services/api";
 
 const environment = import.meta.env.VITE_ENV
@@ -78,7 +80,7 @@ export const Login = () => {
                     <label htmlFor="username">
                         Имя пользователя:
                     </label>
-                    <input
+                    <Input
                         name="username"
                         id="username"
                         type="text"
@@ -91,7 +93,7 @@ export const Login = () => {
                     <label htmlFor="password">
                         Пароль:
                     </label>
-                    <input
+                    <Input
                         name="password"
                         id="password"
                         type="password"
