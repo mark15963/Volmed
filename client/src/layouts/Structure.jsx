@@ -76,7 +76,7 @@ export const Header = (props) => {
                                 <Button
                                     icon="logout"
                                     onClick={() => { logout(); navigate('/'); }}
-                                    disabled={authState.isLoading}
+                                    loading={authState.isLoading}
                                 />
                             ) : (
                                 <Button
