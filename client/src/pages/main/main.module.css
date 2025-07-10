@@ -37,6 +37,11 @@
     display: flex;
 }
 
+.noData{
+    flex: 1;
+    justify-content: center;
+}
+
 @media screen and (orientation: portrait) {
     body{
         height: 100%;
