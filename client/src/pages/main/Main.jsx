@@ -40,6 +40,7 @@ export const Main = () => {
             </div>
         );
     }
+
     return (
         <div className={styles.container}>
             <div className={styles.mainBlock}>

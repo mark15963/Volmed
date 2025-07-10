@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
             if (response.data.isAuthenticated) {
                 return response.data.isAuthenticated
             } else {
-                console.log('Please log in')
+                console.warn('Please log in')
                 navigate('/login')
                 return false
             }
@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }) => {
                 patr: '',
                 status: '',
             });
+            navigate('/login')
         } catch {
             setAuthState(prev => ({ ...prev, isLoading: false }));
         }
