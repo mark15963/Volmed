@@ -55,16 +55,10 @@ export const AllPatients = () => {
         <tbody className={styles.tbody}>
           {loading ? (
             <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {Array.from({ length: 6 }).map((_, i) => (
                 <tr key={i} className={styles.rowsLoading}>
-                  <td style={{ padding: 5, flex: 0.6 }}>
-                    <Skeleton borderRadius={5} width={90} />
-                  </td>
-                  <td style={{ padding: 5, flex: 2 }}>
-                    <Skeleton borderRadius={5} width={340} />
-                  </td>
-                  <td style={{ padding: 5, flex: 0.8 }}>
-                    <Skeleton borderRadius={5} width={140} />
+                  <td>
+                    <Skeleton borderRadius={5} />
                   </td>
                 </tr>
               ))}

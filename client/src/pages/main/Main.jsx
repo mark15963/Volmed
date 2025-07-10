@@ -6,6 +6,7 @@ import Button from '../../components/Buttons.tsx';
 import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
+import Loader from '../../assets/images/Loader.gif'
 
 export const Main = () => {
     const { authState } = useAuth()
@@ -18,6 +19,11 @@ export const Main = () => {
                     <p className={styles.loadingTitle}>
                         Загрузка данных...
                     </p>
+                    <img
+                        src={Loader}
+                        alt='Loading...'
+                        className={styles.loadingImg}
+                    />
                 </div>
             </div>
         );
