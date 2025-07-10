@@ -3,8 +3,8 @@
   "short_name": "VolMed",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0073c7",
+  "background_color": "#a5c6e2",
+  "theme_color": "#3c97e6",
   "version":"1.0.1",
   "icons": [
     {

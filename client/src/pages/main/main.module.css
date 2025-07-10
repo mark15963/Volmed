@@ -27,6 +27,12 @@
     margin: 30px 50px;
 }
 
+.loadingImg{
+    height: 50px;
+    display: block;
+    margin: 20px auto;
+}
+
 .buttonsContainer{
     display: flex;
 }
@@ -46,16 +52,4 @@
         margin: 20px;
         width: 200px;
     }
-
-    /* .buttonsContainer{
-        gap: 0px;
-        margin: 0 15px;
-        gap: 10px;
-    } */
-
-    /* .button{
-        font-size: 1em;
-        padding: 3px 5px;
-        
-    } */
 }
