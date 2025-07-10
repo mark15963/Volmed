@@ -108,7 +108,7 @@ export const Login = () => {
                             text={isLoading ? 'Загрузка...' : 'Вход'}
                             type='submit'
                             icon='login'
-                            disabled={isLoading}
+                            loading={isLoading}
                         />
                     </div>
                 </form>

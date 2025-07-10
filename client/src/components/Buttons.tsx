@@ -79,7 +79,7 @@ export const Button: FC<ButtonProps> = ({
     <button
       onClick={onClick}
       className={buttonClass}
-      disabled={disabled || loading}
+      disabled={disabled}
       type={type}
       style={style}
       {...props}
