@@ -51,8 +51,9 @@ export const Login = () => {
             if (response.data.success) {
                 const isAuthenticated = await checkAuthStatus();
                 if (response.data.success) {
-                    await checkAuthStatus();
-                    navigate('/');
+                    await checkAuthStatus()
+                    console.log("%c Logged in", 'color: #1aff00; font-weight: bold;')
+                    navigate('/')
                 } else {
                     setErrors({
                         general: 'Authentication failed after login'
