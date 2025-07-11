@@ -57,7 +57,6 @@
 .rowsLoading td{
   flex: 1;
 }
-
   
 .react-loading-skeleton {
   animation: pulse 1.5s ease-in-out infinite;
@@ -160,6 +159,10 @@
 }
 
 @media screen and (orientation: portrait) {
+  .table:hover{
+    transition: all 0.25s;
+  }
+  
   .head .rows{
     display: none;
   }
