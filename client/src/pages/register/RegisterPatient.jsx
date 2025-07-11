@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip } from "antd"
+import { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascader } from "antd"
 import { IMaskInput } from 'react-imask';
 import dayjs, { datePickerLocale } from './dayjs.config'
 
@@ -139,6 +139,28 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     };
 
     const isPastCutoffDate = new Date() > new Date('2025-05-31');
+
+    const selectState = (
+        <Select
+            defaultValue='Стабильно'
+        >
+            <Option
+                value='Стабильно'
+            >
+                Стабильно
+            </Option>
+            <Option
+                value='Критическое'
+            >
+                Критическое
+            </Option>
+            <Option
+                value='Выписан'
+            >
+                Выписан
+            </Option>
+        </Select>
+    )
 
     return (
         <div className={styles.container}>
@@ -382,6 +404,13 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         placeholder="Рекомендации"
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label={<span className={styles.formLabel}>Статус</span>}
+                                    name='state'
+                                >
+                                    {selectState}
                                 </Form.Item>
 
                                 <div className={styles.buttons}>

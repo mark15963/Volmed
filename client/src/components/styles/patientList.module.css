@@ -78,20 +78,54 @@
 
 .first,
 .second,
-.third{
+.third,
+.fourth{
   display: flex;
   cursor: default;
 }
 
 .first{
-  flex: 0.6;
+  flex: 0.5;
 }
 
 .second{
-  flex: 2;
+  flex: 1.8;
 }
 
 .third{
+  flex: 0.8;
+  text-align: left;
+}
+
+.stable { 
+  background-color: #4CAF50BF; 
+  border-radius: 4px;
+  padding: 3px;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+} 
+
+.critical { 
+  background-color: #f44336BF; 
+  border-radius: 6px;
+  padding: 3px;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.leave { 
+  background-color: #ffffffbf; 
+  color: #000;
+  border-radius: 6px;
+  padding: 3px;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+} 
+
+.fourth{
   flex: 0.8;
 }
 
