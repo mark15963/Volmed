@@ -15,6 +15,17 @@ export const AllPatients = () => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
+  const getStateClass = (state) => {
+    switch (state) {
+      case 'Стабильно': return styles.stable;
+      case 'Критическое': return styles.critical;
+      case 'Выписан':
+      case 'Выписана':
+        return styles.leave;
+      default: return '';
+    }
+  }
+
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -49,6 +60,7 @@ export const AllPatients = () => {
             <th className={styles.first}>#</th>
             <th className={styles.second}>ФИО</th>
             <th className={styles.third}>Дата рождения</th>
+            <th className={styles.fourth}>Статус</th>
           </tr>
         </thead>
 
@@ -82,6 +94,9 @@ export const AllPatients = () => {
                 </td>
                 <td className={styles.third}>
                   {moment(patient.birthDate).format('DD.MM.YYYY')}
+                </td>
+                <td className={`${styles.fourth} ${getStateClass(patient.state)}`}>
+                  {patient.state}
                 </td>
               </tr>
             ))
