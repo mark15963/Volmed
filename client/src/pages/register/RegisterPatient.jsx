@@ -9,6 +9,7 @@ import Button from '../../components/Buttons.tsx';
 
 import { usePageTitle } from '../../components/PageTitle'
 import styles from './register.module.css'
+import api from '../../services/api';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -23,14 +24,14 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     const [mkbOptions, setMkbOptions] = useState([])
     const [mkbFetching, setMkbFetching] = useState(false)
 
-    const success = () => {
-        messageApi
+    const success = async () => {
+        await messageApi
             .open({
                 type: 'loading',
                 content: 'Данные сохраняются...',
-                duration: 2
+                duration: 1
             })
-            .then(() => messageApi.success('Данные сохранены!', 2.5))
+        messageApi.success('Данные сохранены!', 2.5)
     };
 
     // Fetch ICD(МКБ) API
@@ -101,25 +102,28 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
             let response
             if (isEditMode && patientId) {
-                response = await axios.put(`${apiUrl}/api/patients/${patientId}`, formattedValues);
+                response = await api.updatePatient(patientId, formattedValues)
             } else {
-                response = await axios.post(`${apiUrl}/api/patients`, formattedValues, {
+                response = await api.createPatient(formattedValues, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
             }
 
-            success()
+            await success()
 
             form.resetFields(['mkb'])
 
-            navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
-                state: {
-                    results: response.data,
-                    searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
-                }
-            });
+            setTimeout(() => {
+                navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
+                    state: {
+                        results: response.data,
+                        searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
+                    }
+                });
+            }, 1000)
+
 
         } catch (err) {
             setError(err.response?.data?.error || err.message);
@@ -311,7 +315,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                 >
                                     <Input.TextArea
                                         placeholder="Настоящее состояние больного"
-                                        autoSize={{ minRows: 2, maxRows: 6 }}
+                                        autoSize={{ minRows: 2, maxRows: 10 }}
                                     />
                                 </Form.Item>
 
