@@ -53,8 +53,14 @@ export default {
     }),
 
   // Vital Signs (Pulse)
-  savePulse: (patientId, pulseValue) =>
-    axios.post(`${apiUrl}/api/patients/${patientId}/pulse`, { pulseValue }),
+  savePulse: (patientId, pulseValue) => {
+    if (!patientId) {
+      throw new Error("Patient ID is required");
+    }
+    axios.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
+      pulseValue,
+    });
+  },
   getPulseData: (patientId) =>
     axios.get(`${apiUrl}/api/patients/${patientId}/pulse`),
   saveO2: (patientId, o2Value) =>

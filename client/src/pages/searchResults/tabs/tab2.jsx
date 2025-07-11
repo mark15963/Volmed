@@ -405,6 +405,11 @@ export const Tab2 = ({
 
     const handlePulseKeyPress = async (e) => {
         if (e.key === 'Enter' && pulseValue.trim() !== '') {
+            if (!id) {
+                console.error('Patient ID is missing');
+                return;
+            }
+
             const num = Number(pulseValue);
             if (!isNaN(num)) {
                 try {
