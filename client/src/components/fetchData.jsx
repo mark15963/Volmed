@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from 'moment';
 import { useNavigate } from "react-router";
+
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+
 import 'react-loading-skeleton/dist/skeleton.css';
 
 // import styles from './styles/Table.module.css'
@@ -57,10 +59,11 @@ export const AllPatients = () => {
 
         <thead className={styles.head}>
           <tr className={styles.rows}>
-            <th className={styles.first}>#</th>
-            <th className={styles.second}>ФИО</th>
-            <th className={styles.third}>Дата рождения</th>
-            <th className={styles.fourth}>Статус</th>
+            <th>#</th>
+            <th>ФИО</th>
+            <th>Дата рождения</th>
+            <th>Поступление</th>
+            <th>Статус</th>
           </tr>
         </thead>
 
@@ -86,16 +89,19 @@ export const AllPatients = () => {
                 role="button"
                 aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
               >
-                <td className={styles.first}>
+                <td>
                   {patient.id}
                 </td>
-                <td className={styles.second}>
+                <td>
                   {patient.lastName} {patient.firstName} {patient.patr}
                 </td>
-                <td className={styles.third}>
+                <td>
                   {moment(patient.birthDate).format('DD.MM.YYYY')}
                 </td>
-                <td className={`${styles.fourth} ${getStateClass(patient.state)}`}>
+                <td>
+                  {moment(patient.created_at).format('DD.MM.YYYY')}
+                </td>
+                <td className={`${getStateClass(patient.state)}`}>
                   {patient.state}
                 </td>
               </tr>

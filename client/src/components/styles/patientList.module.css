@@ -20,16 +20,8 @@
 
 .head .rows{
   display: flex;
+  text-align: center;
   background-color: #0065ad;
-}
-
-.skeleton{
-  margin-bottom: 10px;  
-}
-
-.skeletonItem {
-  margin-bottom: 10px;
-  width: 100%;
 }
 
 .tbody{
@@ -44,6 +36,8 @@
   justify-content: space-between;
   padding: 5px 10px;
   background-color: #006fbe;
+  cursor: default;
+  align-items: center;
 }
 
 .rows:hover{
@@ -76,58 +70,68 @@
   100% { opacity: 0.6; }
 }
 
-.first,
-.second,
-.third,
-.fourth{
-  display: flex;
-  cursor: default;
+.rows th:nth-child(1),
+.rows td:nth-child(1){
+  flex: 0.2;
+  text-align: center;
 }
 
-.first{
+.rows th:nth-child(2),
+.rows td:nth-child(2){
+  flex: 1;
+}
+
+.rows th:nth-child(3),
+.rows td:nth-child(3){
   flex: 0.5;
+  text-align: center;
 }
 
-.second{
-  flex: 1.8;
+.rows th:nth-child(4),
+.rows td:nth-child(4){
+  flex: 0.5;
+  text-align: center;
 }
 
-.third{
-  flex: 0.8;
-  text-align: left;
+.rows th:nth-child(5),
+.rows td:nth-child(5){
+  flex: 0.5;
+  text-align: center;
 }
 
 .stable { 
-  background-color: #4CAF50BF; 
+  height: fit-content;
+  width: fit-content;
+  background-color: #4caf50bf; 
   border-radius: 4px;
-  padding: 3px;
+  padding: 5px;
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
 } 
 
 .critical { 
-  background-color: #f44336BF; 
+  height: fit-content;
+  width: fit-content;
+  background-color: #f44336bf; 
   border-radius: 6px;
-  padding: 3px;
+  padding: 5px;
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .leave { 
+  height: fit-content;
+  width: fit-content;
   background-color: #ffffffbf; 
   color: #000;
   border-radius: 6px;
-  padding: 3px;
+  padding: 5px;
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
 } 
-
-.fourth{
-  flex: 0.8;
-}
 
 .noData {
   display: flex;
@@ -140,6 +144,15 @@
   background: #006fbe;
 }
 
+.skeleton{
+  margin-bottom: 10px;  
+}
+
+.skeletonItem {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .countContainer{
   background-color: #0073C7;
   color: aliceblue;
@@ -148,7 +161,7 @@
 
 @media screen and (orientation: portrait) {
   .head .rows{
-    font-size: 0.8em !important;
+    display: none;
   }
 
   .tdLoad:nth-child(1){
@@ -157,20 +170,47 @@
 
   .tbody .rows{
     display: flex;
-    align-items: center;
+    flex-direction: column;
   }
 
-  .first{
+  .rows{
+    background-color: aliceblue;
+    color: #000;
+    border-radius: 6px;
+    font-weight: 500;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .rows th:nth-child(1),
+  .rows td:nth-child(1){
     flex: 0.3;
     font-size: 0.8em !important;
   }
 
-  .second{
-    font-size: 1em !important;
+  .rows th:nth-child(2),
+  .rows td:nth-child(2){
+    font-size: 1.2em !important;
   }
 
-  .third{
+  .rows th:nth-child(3),
+  .rows td:nth-child(3){
     flex: 0.8;
     font-size: 0.8em !important;
+  }
+
+  .rows th:nth-child(4),
+  .rows td:nth-child(4){
+    flex: 0.7;
+    font-size: 0.8em;
+  }
+
+  .rows th:nth-child(5),
+  .rows td:nth-child(5){
+    flex: 0.5;
+  }
+
+  .leave{
+      background-color: #86e5ffbf; 
   }
 }
