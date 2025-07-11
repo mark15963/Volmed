@@ -11,6 +11,7 @@ import Loader from '../../assets/images/Loader.gif'
 export const Main = () => {
     const { authState } = useAuth()
     const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
 
     if (authState.isLoading) {
         return (
@@ -51,7 +52,11 @@ export const Main = () => {
                         text='Список пациентов'
                         icon='patients'
                         margin='0 0 0 5px'
-                        onClick={() => navigate('/patients')}
+                        onClick={() => {
+                            setIsLoading(true)
+                            navigate('/patients')
+                        }}
+                        loading={isLoading}
                     />
 
                     <Button
