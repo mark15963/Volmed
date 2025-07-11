@@ -382,9 +382,13 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
                                 <div className={styles.buttons}>
                                     <Button
-                                        text={isEditMode ? 'Сохранить изменения' : 'Зарегистрировать пациента'}
+                                        text={
+                                            isEditMode
+                                                ? 'Сохранить изменения'
+                                                : 'Зарегистрировать пациента'
+                                        }
                                         type='submit'
-
+                                        loading={isLoading}
                                     />
 
                                     <Button
