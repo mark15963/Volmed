@@ -19,7 +19,7 @@ import logo from '../assets/images/герб_ямала.png'
 import headerStyles from './header.module.css'
 import footerStyles from './footer.module.css'
 import SideMenu from "../components/admin/SideMenu.jsx";
-import styles from '../components/admin/sideMenu.module.css'
+import adminStyles from '../components/admin/sideMenu.module.css'
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 
 export const Header = (props) => {
@@ -98,7 +98,7 @@ export const Content = () => {
     return (
         <>
             {authState.isAdmin ?
-                <div className={styles.sideMenu}>
+                <div className={adminStyles.sideMenu}>
                     <SideMenu />
                 </div>
                 : null}

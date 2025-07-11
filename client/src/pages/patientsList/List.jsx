@@ -14,7 +14,7 @@ export const List = () => {
     return (
         <div className={styles.container} style={{ maxWidth: '800px' }}>
             <div className={styles.list}>
-                <div className={styles.table}>
+                <>
                     <div className={styles.searchbar}>
                         <SearchBar />
                     </div>
@@ -22,7 +22,7 @@ export const List = () => {
                     <AllPatients />
 
                     <PatientCount />
-                </div>
+                </>
                 <div className={styles.buttonContainer}>
                     <Button text='Главный экран' onClick={() => navigate('/')} />
                 </div>
