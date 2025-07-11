@@ -19,11 +19,15 @@ const PORT = process.env.PORT || 5000;
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: true,
+    ca:
+      process.env.NODE_ENV === "production"
+        ? fs.readFileSync("/etc/ssl/certs/ca-certificates.crt").toString()
+        : undefined,
   },
   connectionTimeoutMillis: 10000,
   idleTimeoutMillis: 30000,
-  max: 20,
+  max: 10,
   allowExitOnIdle: true,
 });
 
@@ -102,19 +106,23 @@ app.use(routes);
 
 // DB connection test
 async function testDbConnection() {
-  const retries = 5,
-    delay = 2000;
+  const retries = 5;
+  const delay = 2000;
+
   for (let i = 1; i <= retries; i++) {
+    let client;
     try {
-      // console.log(`Connection attempt ${i}/${retries}`);
-      const client = await db.connect();
-      await client.query("SELECT 1");
+      client = await db.connect();
+      const result = await client.query("SELECT version()");
+      console.log("Database version:", result.rows[0].version);
       client.release();
-      // console.log("Database connection verified");
       return;
     } catch (err) {
       console.error(`Attempt ${i} failed:`, err.message);
-      if (i < retries) await new Promise((r) => setTimeout(r, delay));
+      if (client) client.release();
+      if (i < retries) {
+        await new Promise((r) => setTimeout(r, delay * i)); // Exponential backoff
+      }
     }
   }
   throw new Error("Maximum DB connection attempts reached");
