@@ -95,9 +95,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 mkb: formValues.mkb || "",
                 sop_zab: formValues.sop_zab || "",
                 rec: formValues.rec || "",
-                statusReport: formValues.statusReport || "",
-                locStat: formValues.locStat || "",
-                report: formValues.report || "",
                 state: formValues.state || "",
 
             };
