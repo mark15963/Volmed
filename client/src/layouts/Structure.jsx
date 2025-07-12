@@ -41,11 +41,7 @@ export const Header = (props) => {
                 <img
                     src={logo}
                     alt="Logo"
-                    style={{
-                        cursor: 'pointer',
-                        height: 'calc(100% - 40px)',
-                        marginRight: '10px'
-                    }}
+                    className={headerStyles.logo}
                     onClick={handleClick}
                     loading='lazy'
                 />
@@ -70,7 +66,7 @@ export const Header = (props) => {
                             </span>
                         </div>
                     )}
-                    <div>
+                    <div className={headerStyles.authButton}>
                         {location.pathname !== '/login' && (
                             authState.isAuthenticated ? (
                                 <Button
