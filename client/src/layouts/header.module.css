@@ -1,6 +1,6 @@
 .container{
     margin: 0;
-    padding: 0 20px;    
+    padding: 0;    
     height: 120px;
     width: 100%;
     background-color: #3c97e6;
@@ -21,6 +21,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.logo{
+    cursor: pointer;
+    height: calc(100% - 40px);
+    margin: 0 10px;
 }
 
 h1.title{
@@ -63,6 +69,10 @@ h1.title{
         height: 100%;
     }
 
+    .content{
+        gap: 5px;
+    }
+
     h1.title {
         color: aliceblue;
         font-size: 0.75em;
@@ -71,6 +81,10 @@ h1.title{
         margin: 0 5px;
         flex-grow: 1;
         cursor: default;
+    }
+
+    .userContainer{
+        padding: 0;
     }
 
     .userContainer .userNameContainer .userNameText {

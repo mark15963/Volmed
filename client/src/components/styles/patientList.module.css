@@ -159,6 +159,10 @@
 }
 
 @media screen and (orientation: portrait) {
+  .container{
+    margin: 0;
+  }
+
   .table:hover{
     transition: all 0.25s;
   }
@@ -189,6 +193,7 @@
   .rows td:nth-child(1){
     flex: 0.3;
     font-size: 0.8em !important;
+    text-align: start;
   }
 
   .rows th:nth-child(2),
@@ -200,12 +205,14 @@
   .rows td:nth-child(3){
     flex: 0.8;
     font-size: 0.8em !important;
+    text-align: start;
   }
 
   .rows th:nth-child(4),
   .rows td:nth-child(4){
     flex: 0.7;
     font-size: 0.8em;
+    text-align: start;
   }
 
   .rows th:nth-child(5),

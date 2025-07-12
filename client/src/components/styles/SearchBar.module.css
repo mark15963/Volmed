@@ -63,8 +63,9 @@ input:focus::placeholder{
 
 @media screen and (orientation: portrait) {
     .container{
-        margin: 20px;
-        width: 300px;
+        margin: 10px;
+        width: 100%;
+        min-width: 350px;
     }
 
     .searchtitle{
