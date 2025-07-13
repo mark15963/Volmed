@@ -8,7 +8,7 @@ let socket
 
 export const Chat = () => {
     if (!socket) {
-        socket = io('http://localhost:5000')
+        socket = io('https://volmed-backend.onrender.com')
     }
 
     const { authState } = useAuth()
@@ -61,7 +61,7 @@ export const Chat = () => {
 
     const loadMessages = async (roomName) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/chat/room/${roomName}/messages`)
+            const res = await fetch(`https://volmed-backend.onrender.com/api/chat/room/${roomName}/messages`)
             const data = await res.json()
             const formatted = data.map(msg => ({
                 text: msg.message,
@@ -141,7 +141,7 @@ export const Chat = () => {
         })
         try {
 
-            await fetch('http://localhost:5000/api/chat/save-message', {
+            await fetch('https://volmed-backend.onrender.com/api/chat/save-message', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
