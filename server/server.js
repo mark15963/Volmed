@@ -12,7 +12,6 @@ const pgSession = require("connect-pg-simple")(session);
 const fs = require("fs");
 
 const routes = require("./routes/index");
-const { default: axios } = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
