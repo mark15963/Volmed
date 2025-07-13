@@ -71,4 +71,9 @@ export default {
   postLogin: (data) => axios.post(`${apiUrl}/login`, data),
   logout: () => axios.post(`${apiUrl}/logout`),
   status: () => axios.get(`${apiUrl}/status`),
+
+  //Chat
+  getChatHistory: (room) =>
+    axios.get(`${apiUrl}/api/chat/room/${room}/messages`),
+  saveMessage: (data) => axios.post(`${apiUrl}/api/chat/save-message`, data),
 };

@@ -11,6 +11,7 @@ const pgSession = require("connect-pg-simple")(session);
 const fs = require("fs");
 
 const routes = require("./routes/index");
+const { default: axios } = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,9 +40,7 @@ const allowedOrigins = [
   "http://192.168.0.104:5173",
   "http://localhost:5000",
 ];
-
 app.locals.allowedOrigins = allowedOrigins;
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -85,12 +84,12 @@ app.use(
 );
 
 // Debug session & cookies
-app.use((req, res, next) => {
-  console.log("Session ID:", req.sessionID);
-  console.log("Session data:", req.session);
-  console.log("Cookies:", req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Session ID:", req.sessionID);
+//   console.log("Session data:", req.session);
+//   console.log("Cookies:", req.cookies);
+//   next();
+// });
 
 //Static & Routing
 app.use(express.static(path.join(__dirname, "public")));
@@ -151,6 +150,49 @@ async function startServer() {
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
       server.headersTimeout = 65000;
+    });
+
+    const io = require("socket.io")(server, {
+      cors: {
+        origin: allowedOrigins,
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log("Socket ID", socket.id);
+
+      socket.on("join_room", (data) => {
+        console.log("Set room", data);
+        socket.join(data);
+      });
+
+      socket.on("leave_room", (data) => {
+        console.log(data);
+        socket.leave(data);
+      });
+
+      socket.on("send_message", async (data) => {
+        try {
+          const { room, sender, message, timestamp } = data;
+
+          if (data.room === "") {
+            socket.broadcast.emit("receive_message", data);
+          } else {
+            socket.to(room).emit("receive_message", data);
+          }
+
+          await axios.post(`${process.env.BACKEND_URL}/api/chat/save-message`, {
+            room,
+            sender,
+            message,
+            timestamp,
+          });
+        } catch (error) {
+          console.error("Failed to save message:", error.message);
+        }
+      });
     });
 
     process.on("SIGTERM", () => {
