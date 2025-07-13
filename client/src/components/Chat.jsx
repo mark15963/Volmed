@@ -137,7 +137,7 @@ export const Chat = () => {
             room,
             sender: userId,
             senderName: displayName,
-            timestamp: localTimestamp
+            timestamp,
         })
         try {
 
