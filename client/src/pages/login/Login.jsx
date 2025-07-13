@@ -39,8 +39,6 @@ export const Login = () => {
         setErrors({});
 
         try {
-            console.log("Attempting login with:", formData);
-
             const response = await api.postLogin(
                 formData,
                 {
@@ -50,7 +48,6 @@ export const Login = () => {
                     }
                 }
             )
-            console.log("Login response:", response.data);
 
             if (response.data.success) {
                 const isAuthenticated = await checkAuthStatus();
@@ -65,8 +62,6 @@ export const Login = () => {
             }
         } catch (error) {
             console.error("Login error:", error)
-            console.error("Error response:", error.response);
-
             setErrors({
                 general: error.response?.data?.error || 'Login failed'
             })
