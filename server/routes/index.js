@@ -1,11 +1,13 @@
 const { Router } = require("express");
 const authRouter = require("./auth");
 const patientsRouter = require("./patients");
+const chatRoutes = require("./chat");
 
 const router = Router();
 
 router.use(authRouter);
 router.use(patientsRouter);
+router.use("/api/chat", chatRoutes);
 
 router.get("/", (req, res) => {
   const sessionData = req.session

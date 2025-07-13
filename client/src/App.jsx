@@ -3,10 +3,12 @@ import { AuthProvider } from './context/AuthContext'
 
 import './App.css'
 
+
 export const App = () => {
   return (
     <>
       <AuthProvider>
+
         <header>
           <Header />
         </header>

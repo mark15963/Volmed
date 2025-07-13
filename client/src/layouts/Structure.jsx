@@ -1,5 +1,7 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
-import React, { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import React, { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { Dropdown } from "antd";
+
 import { useAuth } from "../context/AuthContext"
 
 //----- PAGES -----
@@ -14,6 +16,7 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 //----- COMPONENTS -----
 import Button from "../components/Buttons.tsx"
 import logo from '../assets/images/герб_ямала.png'
+import Chat from "../components/Chat";
 
 //----- STYLES -----
 import headerStyles from './header.module.css'
@@ -21,6 +24,8 @@ import footerStyles from './footer.module.css'
 import SideMenu from "../components/admin/SideMenu.jsx";
 import adminStyles from '../components/admin/sideMenu.module.css'
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+
+
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -91,23 +96,65 @@ export const Header = (props) => {
 
 export const Content = () => {
     const { authState } = useAuth()
+    const [chatVisible, setChatVisible] = useState(false)
+
+    const handleMenuClick = (e) => {
+        if (e.key === '1') {
+            setChatVisible(!chatVisible)
+        }
+    }
+
+    const items = [
+        {
+            label: chatVisible ? 'Close chat' : 'Open chat',
+            key: '1',
+        },
+        {
+            label: '2nd menu item',
+            key: '2',
+        },
+        {
+            label: '3rd menu item',
+            key: '3',
+        },
+    ];
+
     return (
         <>
+
             {authState.isAdmin ?
                 <div className={adminStyles.sideMenu}>
-                    <SideMenu />
+                    {/* <SideMenu /> */}
+
                 </div>
                 : null}
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path='/' element={<Main />} />
-                <Route path='/patients' element={<List />} />
-                <Route path="/search" loader element={<SearchResults />} />
-                <Route path="/search/:id" element={<SearchResults />} />
-                <Route path="/register" element={<RegisterPatient />} />
-                <Route path="/edit/:id" element={<EditPatient />} />
-                <Route path="/*" element={<NotFound />} />
-            </Routes>
+
+            {chatVisible && (
+                <div style={{ marginRight: '20px' }}>
+                    <Chat />
+                </div>
+            )}
+
+            <Dropdown
+                menu={{
+                    items,
+                    onClick: handleMenuClick,
+                }}
+                trigger={['contextMenu']}
+            >
+                <div>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path='/' element={<Main />} />
+                        <Route path='/patients' element={<List />} />
+                        <Route path="/search" loader element={<SearchResults />} />
+                        <Route path="/search/:id" element={<SearchResults />} />
+                        <Route path="/register" element={<RegisterPatient />} />
+                        <Route path="/edit/:id" element={<EditPatient />} />
+                        <Route path="/*" element={<NotFound />} />
+                    </Routes>
+                </div>
+            </Dropdown>
         </>
     )
 }
