@@ -99,6 +99,17 @@ export const Content = () => {
     const [chatVisible, setChatVisible] = useState(false)
     const [sideMenuVisible, setSideMenuVisible] = useState(false)
 
+    useEffect(() => {
+        if (sideMenuVisible) {
+            setChatVisible(false)
+        }
+    }, [sideMenuVisible])
+
+    useEffect(() => {
+        if (chatVisible) {
+            setSideMenuVisible(false)
+        }
+    }, [chatVisible])
 
     const handleMenuClick = (e) => {
         if (e.key === '1') {
@@ -124,16 +135,20 @@ export const Content = () => {
         <>
             {authState.isAdmin && (
                 sideMenuVisible && (
-                    <div className={adminStyles.sideMenu}>
-                        <SideMenu />
-                    </div>
+                    !chatVisible && (
+                        <div className={adminStyles.sideMenu} style={{ position: 'absolute', left: 0, marginRight: '20px' }}>
+                            <SideMenu />
+                        </div>
+                    )
                 )
             )}
 
             {chatVisible && (
-                <div style={{ marginRight: '20px' }}>
-                    <Chat />
-                </div>
+                !sideMenuVisible && (
+                    <div style={{ position: 'absolute', left: 0, marginRight: '20px' }}>
+                        <Chat />
+                    </div>
+                )
             )}
 
             <Dropdown
