@@ -38,11 +38,12 @@
   background-color: #006fbe;
   cursor: default;
   align-items: center;
+  border-radius: 6px;
 }
 
-.rows:hover{
+.tbody .rows:hover{
   transition: all 0.3s;
-  background-color: #006ab6;
+  background-color: #005693;
 }
 
 .rowsLoading{

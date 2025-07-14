@@ -1,6 +1,5 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router"
 import React, { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import { Dropdown } from "antd";
 
 import { useAuth } from "../context/AuthContext"
 
@@ -16,7 +15,6 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 //----- COMPONENTS -----
 import Button from "../components/Buttons.tsx"
 import logo from '../assets/images/герб_ямала.png'
-import Chat from "../components/Chat";
 
 //----- STYLES -----
 import headerStyles from './header.module.css'
@@ -24,8 +22,6 @@ import footerStyles from './footer.module.css'
 import SideMenu from "../components/admin/SideMenu.jsx";
 import adminStyles from '../components/admin/sideMenu.module.css'
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
-
-
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -95,80 +91,18 @@ export const Header = (props) => {
 }
 
 export const Content = () => {
-    const { authState } = useAuth()
-    const [chatVisible, setChatVisible] = useState(false)
-    const [sideMenuVisible, setSideMenuVisible] = useState(false)
-
-    useEffect(() => {
-        if (sideMenuVisible) {
-            setChatVisible(false)
-        }
-    }, [sideMenuVisible])
-
-    useEffect(() => {
-        if (chatVisible) {
-            setSideMenuVisible(false)
-        }
-    }, [chatVisible])
-
-    const handleMenuClick = (e) => {
-        if (e.key === '1') {
-            setChatVisible(!chatVisible)
-        }
-        if (e.key === '2') {
-            setSideMenuVisible(!sideMenuVisible)
-        }
-    }
-
-    const items = [
-        {
-            label: chatVisible ? 'Close chat' : 'Show chat',
-            key: '1',
-        },
-        {
-            label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
-            key: '2',
-        },
-    ];
-
     return (
         <>
-            {authState.isAdmin && (
-                sideMenuVisible && (
-                    !chatVisible && (
-                        <div className={adminStyles.sideMenu} style={{ position: 'absolute', left: 0, marginRight: '20px' }}>
-                            <SideMenu />
-                        </div>
-                    )
-                )
-            )}
-
-            {chatVisible && (
-                !sideMenuVisible && (
-                    <div style={{ position: 'absolute', left: 0, marginRight: '20px' }}>
-                        <Chat />
-                    </div>
-                )
-            )}
-
-            <Dropdown
-                menu={{
-                    items,
-                    onClick: handleMenuClick,
-                }}
-                trigger={['contextMenu']}
-            >
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path='/' element={<Main />} />
-                    <Route path='/patients' element={<List />} />
-                    <Route path="/search" loader element={<SearchResults />} />
-                    <Route path="/search/:id" element={<SearchResults />} />
-                    <Route path="/register" element={<RegisterPatient />} />
-                    <Route path="/edit/:id" element={<EditPatient />} />
-                    <Route path="/*" element={<NotFound />} />
-                </Routes>
-            </Dropdown>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path='/' element={<Main />} />
+                <Route path='/patients' element={<List />} />
+                <Route path="/search" loader element={<SearchResults />} />
+                <Route path="/search/:id" element={<SearchResults />} />
+                <Route path="/register" element={<RegisterPatient />} />
+                <Route path="/edit/:id" element={<EditPatient />} />
+                <Route path="/*" element={<NotFound />} />
+            </Routes>
         </>
     )
 }

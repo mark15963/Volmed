@@ -3,6 +3,7 @@ import { io } from 'socket.io-client'
 import { useAuth } from '../context/AuthContext'
 import Button from './Buttons'
 import Input from './Input'
+import debug from '../utils/debug'
 
 let socket
 
@@ -31,13 +32,13 @@ export const Chat = () => {
         ? `${authState.lastName}_${authState.firstName}_${authState.patr}`
         : socket.id
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+    // const scrollToBottom = () => {
+    //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    // useEffect(() => {
+    //     scrollToBottom();
+    // }, [messages]);
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -74,6 +75,7 @@ export const Chat = () => {
                 senderName: msg.sender_name || 'Unknown',
                 timestamp: new Date(msg.timestamp).toLocaleTimeString()
             }))
+            if (formatted) debug.log("Messages exist")
             setMessages(formatted)
         } catch (err) {
             console.error("Failed to load messages:", err)
