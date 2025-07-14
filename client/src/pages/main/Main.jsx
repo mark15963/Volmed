@@ -67,7 +67,6 @@ export const Main = () => {
                     />
 
                 </div>
-                <Table />
             </div>
         </div>
     )
