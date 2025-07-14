@@ -97,37 +97,36 @@ export const Header = (props) => {
 export const Content = () => {
     const { authState } = useAuth()
     const [chatVisible, setChatVisible] = useState(false)
+    const [sideMenuVisible, setSideMenuVisible] = useState(false)
+
 
     const handleMenuClick = (e) => {
         if (e.key === '1') {
             setChatVisible(!chatVisible)
         }
+        if (e.key === '2') {
+            setSideMenuVisible(!sideMenuVisible)
+        }
     }
 
     const items = [
         {
-            label: chatVisible ? 'Close chat' : 'Open chat',
+            label: chatVisible ? 'Close chat' : 'Show chat',
             key: '1',
         },
         {
-            label: '2nd menu item',
+            label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
             key: '2',
-        },
-        {
-            label: '3rd menu item',
-            key: '3',
         },
     ];
 
     return (
         <>
-
-            {authState.isAdmin ?
+            {authState.isAdmin &&
                 <div className={adminStyles.sideMenu}>
-                    {/* <SideMenu /> */}
-
+                    <SideMenu />
                 </div>
-                : null}
+            }
 
             {chatVisible && (
                 <div style={{ marginRight: '20px' }}>
@@ -155,6 +154,7 @@ export const Content = () => {
                     </Routes>
                 </div>
             </Dropdown>
+
         </>
     )
 }

@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
 import Loader from '../../assets/images/Loader.gif'
+import Table from '../../components/Tables';
 
 export const Main = () => {
     const { authState } = useAuth()
@@ -67,7 +68,7 @@ export const Main = () => {
                     />
 
                 </div>
-
+                <Table />
             </div>
         </div>
     )
