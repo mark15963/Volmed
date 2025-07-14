@@ -1,7 +1,6 @@
 import { InputHTMLAttributes, CSSProperties, FC } from "react";
 
 import "./styles/Input.module.css";
-// import styles from "./styles/Input.module.css"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: "text" | "password" | "email" | "tel" | "search" | "number";
@@ -11,7 +10,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   autoComplete?: string;
   style?: CSSProperties;
-  required?: boolean;
 }
 
 export const Input: FC<InputProps> = ({
@@ -19,7 +17,6 @@ export const Input: FC<InputProps> = ({
   type = "text",
   value,
   placeholder,
-  required,
   onChange,
   autoComplete,
   pattern,
@@ -35,7 +32,6 @@ export const Input: FC<InputProps> = ({
       type={type}
       placeholder={placeholder}
       value={value}
-      required={required}
       onChange={onChange}
       autoComplete={autoComplete}
       pattern={pattern}

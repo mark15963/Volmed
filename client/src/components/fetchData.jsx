@@ -11,6 +11,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import styles from './styles/patientList.module.css'
 
 import api from "../services/api";
+import debug from "../utils/debug";
 
 export const AllPatients = () => {
   const [patients, setPatients] = useState([])
@@ -33,6 +34,7 @@ export const AllPatients = () => {
       try {
         const response = await api.getPatients()
         const data = Array.isArray(response.data) ? response.data : [];
+        debug.table(data, ['id', 'lastName', 'firstName', 'patr', 'birthDate', 'created_at', 'state'])
         setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
@@ -49,6 +51,7 @@ export const AllPatients = () => {
       if (e.key === ' ') {
         e.preventDefault();
       }
+      debug.log(`Clicked on patient ID ${patientId}`)
       navigate(`/search/${patientId}`)
     }
   }
@@ -127,12 +130,12 @@ export const PatientCount = () => {
     const fetchCount = async () => {
       try {
         const response = await api.getPatientCount()
-        // Safely extract count with fallback
         const count = response.data?.count || 0;
+        debug.log(`patients - ${count}`)
         setCount(count);
       } catch (error) {
-        console.error("Error fetching count:", error);
-        setCount(0);
+        debug.error("Error fetching count:", error);
+        setCount('N/A');
       } finally {
         setLoading(false);
       }

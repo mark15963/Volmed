@@ -158,20 +158,17 @@ export const Content = () => {
                 }}
                 trigger={['contextMenu']}
             >
-                <div>
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path='/' element={<Main />} />
-                        <Route path='/patients' element={<List />} />
-                        <Route path="/search" loader element={<SearchResults />} />
-                        <Route path="/search/:id" element={<SearchResults />} />
-                        <Route path="/register" element={<RegisterPatient />} />
-                        <Route path="/edit/:id" element={<EditPatient />} />
-                        <Route path="/*" element={<NotFound />} />
-                    </Routes>
-                </div>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path='/' element={<Main />} />
+                    <Route path='/patients' element={<List />} />
+                    <Route path="/search" loader element={<SearchResults />} />
+                    <Route path="/search/:id" element={<SearchResults />} />
+                    <Route path="/register" element={<RegisterPatient />} />
+                    <Route path="/edit/:id" element={<EditPatient />} />
+                    <Route path="/*" element={<NotFound />} />
+                </Routes>
             </Dropdown>
-
         </>
     )
 }

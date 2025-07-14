@@ -8,6 +8,7 @@ import Input from './Input';
 import styles from './styles/SearchBar.module.css'
 
 import api from '../../src/services/api.js'
+import debug from '../utils/debug.js';
 
 export const SearchBar = () => {
     const [searchValue, setSearchValue] = useState('')
@@ -36,24 +37,14 @@ export const SearchBar = () => {
 
         try {
             const response = await api.getPatient(searchValue.trim())
-
-            if (response.status !== 200) {
-                if (response.status === 404) {
-                    throw new Error('Пациент не найден')
-                }
-                throw new Error('Failed to fetch patient data')
-            }
-
-            const patientData = await response.data
-
             navigate('/search', {
                 state: {
-                    results: [patientData],
+                    results: [response.data],
                     searchQuery: searchValue
                 }
             })
         } catch (err) {
-            setError(err.message || 'Ошибка при поиске')
+            setError(err.message)
         } finally {
             setIsLoading(false)
         }
@@ -67,19 +58,6 @@ export const SearchBar = () => {
                 </label>
                 <div className={styles.searchContainer}>
                     <div className={styles.space}></div>
-
-                    {/* <input
-                        className={styles.searchfield}
-                        id='searchfield'
-                        type='search'
-                        value={searchValue}
-                        onChange={handleChange}
-                        placeholder='№ карты'
-                        autoComplete='off'
-                        inputMode='numeric'
-                        pattern='[0-9]*'
-                        required
-                    /> */}
                     <Input
                         className={styles.searchfield}
                         id='searchfield'
@@ -90,12 +68,12 @@ export const SearchBar = () => {
                         autoComplete='off'
                         inputMode='numeric'
                         pattern='[0-9]*'
-                        required
                     />
                     <Button
                         type='submit'
                         shape='circle'
                         icon='search'
+                        onClick={() => debug.log("Clicked search")}
                     />
                 </div>
                 {error && (

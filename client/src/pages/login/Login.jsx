@@ -11,6 +11,8 @@ import styles from './login.module.css'
 
 import api from "../../services/api";
 
+import debug from '../../utils/debug'
+
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
@@ -53,6 +55,7 @@ export const Login = () => {
                 const isAuthenticated = await checkAuthStatus();
                 if (response.data.success) {
                     await checkAuthStatus()
+                    debug.log(`User ${response.data.user.username} logged in successfully`)
                     navigate('/')
                 } else {
                     setErrors({
@@ -61,7 +64,7 @@ export const Login = () => {
                 }
             }
         } catch (error) {
-            console.error("Login error:", error)
+            debug.error("Login error:", error)
             setErrors({
                 general: error.response?.data?.error || 'Login failed'
             })

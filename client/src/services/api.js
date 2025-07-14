@@ -13,39 +13,62 @@ const api = axios.create({
   },
 });
 
+//Global error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const status = error.response.status;
+      const messages = {
+        400: "Неверный запрос",
+        401: "Требуется авторизация",
+        403: "Доступ запрещен",
+        404: "Пациент не найден",
+        500: "Ошибка сервера",
+      };
+      return Promise.reject(new Error(messages[status] || `Ошибка: ${status}`));
+    } else if (error.request) {
+      // Request was made but no response
+      return Promise.reject(new Error("Нет ответа от сервера"));
+    } else {
+      // Other errors
+      return Promise.reject(new Error("Ошибка соединения"));
+    }
+  }
+);
+
 export default {
   //Patients
-  getPatients: () => axios.get(`${apiUrl}/api/patients`),
-  getPatient: (id) => axios.get(`${apiUrl}/api/patients/${id}`),
-  getPatientCount: () => axios.get(`${apiUrl}/api/patient-count`),
-  createPatient: (data) => axios.post(`${apiUrl}/api/patients`, data),
-  updatePatient: (id, data) => axios.put(`${apiUrl}/api/patients/${id}`, data),
-  deletePatient: (id) => axios.delete(`${apiUrl}/api/patients/${id}`),
+  getPatients: () => api.get(`${apiUrl}/api/patients`),
+  getPatient: (id) => api.get(`${apiUrl}/api/patients/${id}`),
+  getPatientCount: () => api.get(`${apiUrl}/api/patient-count`),
+  createPatient: (data) => api.post(`${apiUrl}/api/patients`, data),
+  updatePatient: (id, data) => api.put(`${apiUrl}/api/patients/${id}`, data),
+  deletePatient: (id) => api.delete(`${apiUrl}/api/patients/${id}`),
 
   // Medications
-  deleteMedication: (medId) =>
-    axios.delete(`${apiUrl}/api/medications/${medId}`),
+  deleteMedication: (medId) => api.delete(`${apiUrl}/api/medications/${medId}`),
   getMedications: (patientId) =>
-    axios.get(`${apiUrl}/api/patients/${patientId}/medications`),
+    api.get(`${apiUrl}/api/patients/${patientId}/medications`),
   createMedication: (patientId, data) =>
-    axios.post(`${apiUrl}/api/patients/${patientId}/medications`, data),
+    api.post(`${apiUrl}/api/patients/${patientId}/medications`, data),
   updateMedication: (medId, data) =>
-    axios.put(`${apiUrl}/api/medications/${medId}`, data),
+    api.put(`${apiUrl}/api/medications/${medId}`, data),
 
   // Files
   getPatientFiles: (patientId) =>
-    axios.get(`${apiUrl}/api/patients/${patientId}/files`),
+    api.get(`${apiUrl}/api/patients/${patientId}/files`),
   uploadFile: (patientId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    return axios.post(`${apiUrl}/api/patients/${patientId}/upload`, formData, {
+    return api.post(`${apiUrl}/api/patients/${patientId}/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   deleteFile: (filePath) =>
-    axios.delete(`${apiUrl}/api/files`, {
+    api.delete(`${apiUrl}/api/files`, {
       data: { filePath },
       headers: {
         "Content-Type": "application/json",
@@ -57,23 +80,22 @@ export default {
     if (!patientId) {
       throw new Error("Patient ID is required");
     }
-    axios.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
+    api.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
       pulseValue,
     });
   },
   getPulseData: (patientId) =>
-    axios.get(`${apiUrl}/api/patients/${patientId}/pulse`),
+    api.get(`${apiUrl}/api/patients/${patientId}/pulse`),
   saveO2: (patientId, o2Value) =>
-    axios.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
-  getO2Data: (patientId) => axios.get(`${apiUrl}/api/patients/${patientId}/o2`),
+    api.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
+  getO2Data: (patientId) => api.get(`${apiUrl}/api/patients/${patientId}/o2`),
 
   //Auth
-  postLogin: (data) => axios.post(`${apiUrl}/login`, data),
-  logout: () => axios.post(`${apiUrl}/logout`),
-  status: () => axios.get(`${apiUrl}/status`),
+  postLogin: (data) => api.post(`${apiUrl}/login`, data),
+  logout: () => api.post(`${apiUrl}/logout`),
+  status: () => api.get(`${apiUrl}/status`),
 
   //Chat
-  getChatHistory: (room) =>
-    axios.get(`${apiUrl}/api/chat/room/${room}/messages`),
-  saveMessage: (data) => axios.post(`${apiUrl}/api/chat/save-message`, data),
+  getChatHistory: (room) => api.get(`${apiUrl}/api/chat/room/${room}/messages`),
+  saveMessage: (data) => api.post(`${apiUrl}/api/chat/save-message`, data),
 };
