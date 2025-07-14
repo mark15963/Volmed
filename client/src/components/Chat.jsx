@@ -7,8 +7,11 @@ import Input from './Input'
 let socket
 
 export const Chat = () => {
+    const backendUrl = import.meta.env.VITE_API_URL
+    const debugMode = import.meta.env.VITE_DEBUG
+
     if (!socket) {
-        socket = io('https://volmed-backend.onrender.com')
+        socket = io(backendUrl)
     }
 
     const { authState } = useAuth()
@@ -38,7 +41,9 @@ export const Chat = () => {
 
     useEffect(() => {
         socket.on('connect', () => {
-            console.log(`Connected to Socket.IO with ID: ${socket.id}`)
+            if (debugMode) {
+                console.log(`Connected to Socket.IO with ID: ${socket.id}`)
+            }
             setSocketId(socket.id)
             socket.emit('join_room', 'general')
             loadMessages('general')
@@ -61,7 +66,7 @@ export const Chat = () => {
 
     const loadMessages = async (roomName) => {
         try {
-            const res = await fetch(`https://volmed-backend.onrender.com/api/chat/room/${roomName}/messages`)
+            const res = await fetch(`${backendUrl}/api/chat/room/${roomName}/messages`)
             const data = await res.json()
             const formatted = data.map(msg => ({
                 text: msg.message,
@@ -78,7 +83,6 @@ export const Chat = () => {
             }])
         }
     }
-
 
     const joinRoom = async () => {
         if (roomInput !== '') {
@@ -129,7 +133,6 @@ export const Chat = () => {
         }
         console.log("Sending as:", userId)
 
-
         setMessages(prev => [...prev, newMessage])
 
         socket.emit('send_message', {
@@ -141,7 +144,7 @@ export const Chat = () => {
         })
         try {
 
-            await fetch('https://volmed-backend.onrender.com/api/chat/save-message', {
+            await fetch(`${backendUrl}/api/chat/save-message`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
