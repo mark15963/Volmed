@@ -122,11 +122,13 @@ export const Content = () => {
 
     return (
         <>
-            {authState.isAdmin &&
-                <div className={adminStyles.sideMenu}>
-                    <SideMenu />
-                </div>
-            }
+            {authState.isAdmin && (
+                sideMenuVisible && (
+                    <div className={adminStyles.sideMenu}>
+                        <SideMenu />
+                    </div>
+                )
+            )}
 
             {chatVisible && (
                 <div style={{ marginRight: '20px' }}>
