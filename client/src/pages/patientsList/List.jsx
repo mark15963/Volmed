@@ -6,6 +6,7 @@ import { usePageTitle } from '../../components/PageTitle'
 import Button from '../../components/Buttons.tsx'
 
 import styles from './list.module.css'
+import debug from '../../utils/debug'
 
 export const List = () => {
     const navigate = useNavigate()
@@ -24,7 +25,13 @@ export const List = () => {
                     <PatientCount />
                 </>
                 <div className={styles.buttonContainer}>
-                    <Button text='Главный экран' onClick={() => navigate('/')} />
+                    <Button
+                        text='Главный экран'
+                        onClick={() => {
+                            debug.log("Clicked on Home page")
+                            navigate('/')
+                        }}
+                    />
                 </div>
             </div>
         </div>

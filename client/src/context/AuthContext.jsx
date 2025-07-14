@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import api from "../services/api";
 import { useNavigate } from "react-router";
+import debug from "../utils/debug";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
             if (response.data.isAuthenticated) {
                 return response.data.isAuthenticated
             } else {
-                console.warn('Please log in')
+                debug.warn('Not logged in')
                 navigate('/login')
                 return false
             }

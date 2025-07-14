@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
 import Loader from '../../assets/images/Loader.gif'
+import debug from '../../utils/debug';
 
 export const Main = () => {
     const { authState } = useAuth()
@@ -54,6 +55,7 @@ export const Main = () => {
                         margin='0 0 0 5px'
                         onClick={() => {
                             setIsLoading(true)
+                            debug.log("Clicked on patients list")
                             navigate('/patients')
                         }}
                         loading={isLoading}
@@ -63,7 +65,10 @@ export const Main = () => {
                         text='Новый пациент'
                         icon='newPatient'
                         margin='0 0 0 5px'
-                        onClick={() => navigate('/register')}
+                        onClick={() => {
+                            debug.log("Clicked on new patient")
+                            navigate('/register')
+                        }}
                     />
 
                 </div>

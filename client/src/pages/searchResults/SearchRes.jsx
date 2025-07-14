@@ -15,6 +15,7 @@ import Button from '../../components/Buttons.tsx'
 
 import api from '../../services/api'
 import { LoadingOutlined } from '@ant-design/icons'
+import debug from '../../utils/debug'
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -76,7 +77,6 @@ export const SearchResults = () => {
                 setLoading(false);
             }
         };
-
         fetchPatientData();
     }, [id, state]);
 
@@ -416,6 +416,9 @@ export const SearchResults = () => {
     }
     if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
     if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
+
+    //Debug
+    debug.log(`Search result of patient ${data.lastName} ${data.firstName} ${data.patr}`)
 
     return (
         <div className={styles.resultsContainer}>
