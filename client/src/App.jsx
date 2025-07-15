@@ -66,7 +66,7 @@ export const App = () => {
 
         {chatVisible && (
           !sideMenuVisible && (
-            <div style={{ position: 'fixed', left: 0, top: '100px', marginRight: '20px' }}>
+            <div style={{ position: 'fixed', left: '10px', top: '50%', transform: 'translateY(-50%)', marginRight: '20px' }}>
               <Chat />
             </div>
           )

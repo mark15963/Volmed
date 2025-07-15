@@ -32,38 +32,53 @@ export const Chat = () => {
         ? `${authState.lastName}_${authState.firstName}_${authState.patr}`
         : socket.id
 
-    // const scrollToBottom = () => {
-    //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    // };
-
     // useEffect(() => {
-    //     scrollToBottom();
+    //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // }, [messages]);
 
     useEffect(() => {
-        socket.on('connect', () => {
-            if (debugMode) {
-                console.log(`Connected to Socket.IO with ID: ${socket.id}`)
-            }
-            setSocketId(socket.id)
-            socket.emit('join_room', 'general')
-            loadMessages('general')
-        })
+        if (!socket.connected) {
+            socket.connect()
+        }
+        setSocketId(socket.id)
+        socket.emit('join_room', room)
+        loadMessages(room)
 
-        socket.on('receive_message', (data) => {
+        const handleConnect = () => {
+            debug.log(`Connected to Socket.IO with ID: ${socket.id}`)
+            setSocketId(socket.id)
+        }
+
+        // socket.on('connect', () => {
+        //     debug.log(`Connected to Socket.IO with ID: ${socket.id}`)    
+        //     setSocketId(socket.id)
+        //     socket.emit('join_room', 'general')
+        //     loadMessages('general')
+        // })
+
+        const handleReceiveMessage = (data) => {
             setMessages(prev => [...prev, {
                 text: data.message,
                 sender: data.sender,
                 senderName: data.senderName,
                 timestamp: data.timestamp
             }])
-        })
+        }
+
+        socket.on('connect', handleConnect)
+        socket.on('recieve_message', handleReceiveMessage)
 
         return () => {
-            socket.off('connect');
-            socket.off('receive_message')
+            socket.off('connect', handleConnect);
+            socket.off('receive_message', handleReceiveMessage)
         }
-    }, [])
+    }, [room])
+
+    useEffect(() => {
+        if (messages.length === 0) {
+            loadMessages(room)
+        }
+    }, [room])
 
     const loadMessages = async (roomName) => {
         try {
@@ -167,15 +182,13 @@ export const Chat = () => {
         <div
             style={{
                 border: '1px solid black',
-                height: '170px',
-                width: '150px',
+                height: '350px',
+                width: '200px',
                 position: 'relative',
-                left: 0,
                 background: '#ffffffaa',
                 borderRadius: '6px',
                 display: 'flex',
                 flexDirection: 'column',
-                top: '50%',
                 padding: '5px'
             }}
         >
@@ -294,30 +307,31 @@ export const Chat = () => {
                         }
                     }
                 />
-                <Button
-                    text='Join'
-                    style={{
-                        width: '40px',
-                        height: '20px',
-                        padding: '0 3px',
-                        fontSize: '0.6em',
-                        margin: '3px'
-                    }}
-                    onClick={joinRoom}
-                />
-            </div>
-            <div>
-                <Button
-                    text='Leave room'
-                    style={{
-                        width: 'fit-content',
-                        height: '20px',
-                        padding: '0 3px',
-                        fontSize: '0.6em',
-                        margin: '3px'
-                    }}
-                    onClick={leaveRoom}
-                />
+                {room === 'general' || room === '' ? (
+                    <Button
+                        text='Join'
+                        style={{
+                            width: '40px',
+                            height: '20px',
+                            padding: '0 3px',
+                            fontSize: '0.6em',
+                            margin: '3px'
+                        }}
+                        onClick={joinRoom}
+                    />
+                ) : (
+                    <Button
+                        text='Leave room'
+                        style={{
+                            width: 'fit-content',
+                            height: '20px',
+                            padding: '0 3px',
+                            fontSize: '0.6em',
+                            margin: '3px'
+                        }}
+                        onClick={leaveRoom}
+                    />
+                )}
             </div>
         </div>
     )
