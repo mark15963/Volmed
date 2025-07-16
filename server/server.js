@@ -40,7 +40,9 @@ const allowedOrigins = [
   "http://192.168.0.104:5173",
   "http://localhost:5000",
 ];
+
 app.locals.allowedOrigins = allowedOrigins;
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -120,7 +122,7 @@ async function testDbConnection() {
       console.error(`Attempt ${i} failed:`, err.message);
       if (client) client.release();
       if (i < retries) {
-        await new Promise((r) => setTimeout(r, delay * i)); // Exponential backoff
+        await new Promise((r) => setTimeout(r, delay * i));
       }
     }
   }
@@ -145,7 +147,6 @@ async function startServer() {
 
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
-      // console.log(`Database connected to: ${process.env.DB_HOST}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
