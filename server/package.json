@@ -18,6 +18,7 @@
   "dependencies": {
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
+    "combined-stream": "^1.0.8",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -25,6 +26,7 @@
     "express": "^5.1.0",
     "express-router": "^0.0.1",
     "express-session": "^1.18.1",
+    "form-data": "^2.5.0",
     "multer": "^2.0.0",
     "pg": "^8.16.3",
     "pipeline": "^0.1.3",
