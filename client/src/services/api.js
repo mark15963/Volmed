@@ -12,7 +12,6 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 //Global error handling
 api.interceptors.response.use(
   (response) => response,
