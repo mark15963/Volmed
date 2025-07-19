@@ -11,4 +11,9 @@ export default defineConfig({
     allowedHosts: ["volmed-o4s0.onrender.com", "localhost"],
   },
   envDir: "./",
+  server: {
+    host: true,
+    strictPort: true,
+    port: 5173,
+  }
 });
