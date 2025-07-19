@@ -616,10 +616,7 @@ export const Tab2 = ({
                     ? `(${(size / 1024).toFixed(2)}KB)`
                     : `(${(size / (1024 * 1024)).toFixed(2)}MB)`
                 return (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#cccccc' }}>{sizeText}</span>
-
-                    </div>
+                        <span style={{ marginLeft:'8px', color: '#cccccc' }}>{sizeText}</span>
                 );
             },
             showPreventIcon: true,
