@@ -1,4 +1,4 @@
 node_modules
 DB_Backup
 # Keep environment variables out of version control
-.env
+# .env
