@@ -16,4 +16,12 @@ export default defineConfig({
     port: 5173, // Dev server port
     strictPort: true, // Disable auto-fallback port
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
+  },
 });
