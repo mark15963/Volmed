@@ -15,13 +15,5 @@ export default defineConfig({
     host: true, // Allow external access (e.g., LAN)
     port: 5173, // Dev server port
     strictPort: true, // Disable auto-fallback port
-    proxy: {
-      // API proxy settings
-      "/api": {
-        target: "http://192.168.0.108", // Backend server
-        changeOrigin: true, // Needed for CORS
-        rewrite: (path) => path.replace(/^\/api/, ""), // Remove /api prefix
-      },
-    },
   },
 });
