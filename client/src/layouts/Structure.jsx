@@ -14,7 +14,7 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 //----- COMPONENTS -----
 import Button from "../components/Buttons.tsx"
-import logo from '../assets/images/герб_ямала.png'
+import logo from '../assets/images/logo.png'
 
 //----- STYLES -----
 import headerStyles from './header.module.css'
