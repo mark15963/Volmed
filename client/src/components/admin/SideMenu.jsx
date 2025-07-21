@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons'
 import { Button, Menu } from 'antd'
 import DesktopNotification from '../../services/DesktopNotification'
+import debug from '../../utils/debug'
 
 const items = [
     {
@@ -39,15 +40,15 @@ export const SideMenu = () => {
         switch (key) {
             case '1':
                 DesktopNotification.show("Testing", "Notification from button 1")
-                console.log('Testing", "Notification from button 1')
+                debug.log("Notification from button 1")
                 break
             case '2':
                 DesktopNotification.show("Testing", "Notification from button 1.1")
-                console.log('Testing", "Notification from button 2')
+                debug.log("Notification from button 1.1")
                 break
             case '3':
                 DesktopNotification.show("Testing", "Notification from button 1.2")
-                console.log('Testing", "Notification from button 3')
+                debug.log("Notification from button 1.2")
                 break
             default:
                 break

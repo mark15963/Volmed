@@ -1,97 +1,98 @@
-.container{
-    margin: 0;
-    padding: 0;    
-    height: 120px;
-    width: 100%;
-    background-color: #3c97e6;
-    color: #000;
-    display: flex;
-    justify-content: center;
-    vertical-align: middle;
-    align-items: center;
-    box-sizing: border-box;
-    contain: layout paint style;
+.container {
+  margin: 0;
+  padding: 0;
+  height: 120px;
+  width: 100%;
+  background-color: #3c97e6;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  box-sizing: border-box;
+  contain: layout paint style;
 }
 
-.content{
-    padding: 0;
-    margin: 0;
-    width: 100%;
+.content {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  cursor: pointer;
+  height: calc(100% - 40px);
+  margin: 0 10px;
+}
+
+h1.title {
+  color: aliceblue;
+  font-size: 1.2em;
+  font-weight: 600 !important;
+  font-display: swap;
+  text-align: left;
+  margin: 0 5px;
+  flex-grow: 1;
+  cursor: default;
+}
+
+.userContainer {
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: none;
+}
+.userContainer.auth {
+  background-color: #3482c7;
+  box-shadow: 0px 0px 18px 11px#3482c7;
+}
+
+.userContainer .userNameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userContainer .userNameContainer .userNameText {
+  margin: 0 10px;
+  color: aliceblue;
+  font-weight: 500;
+}
+
+@media screen and (orientation: portrait) {
+  .container {
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+  }
 
-.logo{
-    cursor: pointer;
-    height: calc(100% - 40px);
-    margin: 0 10px;
-}
+  .content {
+    gap: 5px;
+  }
 
-h1.title{
+  h1.title {
     color: aliceblue;
-    font-size: 1.2em;
+    font-size: 0.75em;
     font-weight: 600 !important;
     text-align: left;
     margin: 0 5px;
     flex-grow: 1;
     cursor: default;
-}
+  }
 
-.userContainer{
-    box-sizing: border-box;
-    padding: 10px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    box-shadow: none;
-}
-.userContainer.auth{
-    background-color: #3482c7;
-    box-shadow: 0px 0px 18px 11px#3482c7;
-}
+  .userContainer {
+    padding: 0;
+  }
 
-.userContainer .userNameContainer{
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
-}
-
-.userContainer .userNameContainer .userNameText{
-    margin: 0 10px; 
+  .userContainer .userNameContainer .userNameText {
+    margin: 0 10px;
     color: aliceblue;
     font-weight: 500;
-}
-
-@media screen and (orientation: portrait) {
-    .container {
-        height: 100%;
-    }
-
-    .content{
-        gap: 5px;
-    }
-
-    h1.title {
-        color: aliceblue;
-        font-size: 0.75em;
-        font-weight: 600 !important;
-        text-align: left;
-        margin: 0 5px;
-        flex-grow: 1;
-        cursor: default;
-    }
-
-    .userContainer{
-        padding: 0;
-    }
-
-    .userContainer .userNameContainer .userNameText {
-        margin: 0 10px; 
-        color: aliceblue;
-        font-weight: 500;
-        font-size: 0.7em;
-        text-align: center;
-    }
+    font-size: 0.7em;
+    text-align: center;
+  }
 }
