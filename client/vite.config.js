@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import * as sass from "sass";
 
 export default defineConfig({
   plugins: [react()],
@@ -16,12 +15,5 @@ export default defineConfig({
     host: true, // Allow external access (e.g., LAN)
     port: 5173, // Dev server port
     strictPort: true, // Disable auto-fallback port
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        implementation: sass,
-      },
-    },
   },
 });
