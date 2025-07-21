@@ -16,4 +16,11 @@ export default defineConfig({
     port: 5173, // Dev server port
     strictPort: true, // Disable auto-fallback port
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        implementation: require("sass"),
+      },
+    },
+  },
 });
