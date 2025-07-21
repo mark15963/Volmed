@@ -79,7 +79,6 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      secure: true,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
@@ -89,12 +88,13 @@ app.use(
 );
 
 // Debug session & cookies
-// app.use((req, res, next) => {
-//   console.log("Session ID:", req.sessionID);
-//   console.log("Session data:", req.session);
-//   console.log("Cookies:", req.cookies);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log("Environment:", process.env.NODE_ENV);
+  console.log("Session ID:", req.sessionID);
+  console.log("Session data:", req.session);
+  console.log("Cookies:", req.cookies);
+  next();
+});
 
 //Static & Routing
 app.use(express.static(path.join(__dirname, "public")));
