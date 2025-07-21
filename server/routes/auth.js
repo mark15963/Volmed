@@ -75,6 +75,7 @@ router.post("/login", async (req, res) => {
   const allowedOrigins = req.app.locals.allowedOrigins || [
     "http://localhost:5173",
     "https://volmed-o4s0.onrender.com",
+    "http://192.168.0.106",
   ];
 
   const origin = req.headers.origin;
@@ -251,7 +252,11 @@ router.post("/logout", isAuth, async (req, res) => {
 
 router.get("/status", async (req, res) => {
   const origin = req.headers.origin;
-  const allowedOrigins = req.app.locals.allowedOrigins || [];
+  const allowedOrigins = req.app.locals.allowedOrigins || [
+    "http://localhost:5173",
+    "https://volmed-o4s0.onrender.com",
+    "http://192.168.0.106",
+  ];
 
   if (origin && allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
