@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import * as sass from "sass";
 
 export default defineConfig({
   plugins: [react()],
@@ -19,7 +20,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        implementation: require("sass"),
+        implementation: sass,
       },
     },
   },
