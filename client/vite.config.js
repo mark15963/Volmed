@@ -16,8 +16,6 @@ export default defineConfig({
     host: true, // Allow external access (e.g., LAN)
     port: 5173, // Dev server port
     strictPort: true, // Disable auto-fallback port
-  },
-  server: {
     proxy: {
       "/api": {
         target: "https://localhost:5000",
