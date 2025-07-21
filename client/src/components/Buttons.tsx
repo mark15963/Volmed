@@ -6,6 +6,7 @@ import {
   TeamOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+import loader from "../assets/images/Loader.gif";
 import "./styles/Button.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -87,7 +88,11 @@ export const Button: FC<ButtonProps> = ({
       style={style || undefined}
       {...props}
     >
-      {renderIcon()}
+      {loading ? (
+        <img src={loader} style={{ height: "20px" }} alt="Loading..." />
+      ) : (
+        renderIcon()
+      )}
       {renderText() && (
         <span
           className="button-text"
