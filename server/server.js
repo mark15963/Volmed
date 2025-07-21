@@ -60,11 +60,6 @@ app.use(
   })
 );
 
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, "certs", "key.pem")),
-  cert: fs.readFileSync(path.join(__dirname, "certs", "cert.pem")),
-};
-
 //Trust Proxy & Middleware
 app.set("trust proxy", 1);
 app.use(cookieParser());
@@ -153,7 +148,7 @@ async function startServer() {
   try {
     await testDbConnection();
 
-    const server = https.createServer(sslOptions, app).listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
