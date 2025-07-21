@@ -5,15 +5,22 @@ export default defineConfig({
   plugins: [react()],
   base: "/",
   preview: {
-    host: "0.0.0.0", // Accessible on all network interfaces
-    port: 4173, // Preview server port
-    strictPort: true, // Disable auto-fallback port
-    allowedHosts: ["volmed-o4s0.onrender.com", "localhost"],
+    host: "0.0.0.0",
+    port: 4173,
+    strictPort: true,
+    allowedHosts: ["volmed-o4s0.onrender.com", "localhost", /\.onrender\.com$/],
   },
-  envDir: "./", // Path to .env files
+  envDir: "./",
   server: {
-    host: true, // Allow external access (e.g., LAN)
-    port: 5173, // Dev server port
-    strictPort: true, // Disable auto-fallback port
+    host: true,
+    port: 5173,
+    strictPort: true,
+    allowedHosts: ["volmed-o4s0.onrender.com", "localhost", /\.onrender\.com$/],
+    cors: true,
+  },
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    emptyOutDir: true,
   },
 });
