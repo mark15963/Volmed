@@ -44,9 +44,12 @@ export const Header = (props) => {
                     alt="Logo"
                     className={headerStyles.logo}
                     onClick={handleClick}
-                    loading='lazy'
+                    loading='eager'
                 />
-                <h1 className={headerStyles.title} onClick={handleClick}>
+                <h1
+                    className={headerStyles.title}
+                    onClick={handleClick}
+                >
                     <span className={headerStyles.title}>ГБУ «Городская больница</span>
                     <br />
                     <span className={headerStyles.title}>Волновахского района»</span>
