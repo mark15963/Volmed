@@ -47,6 +47,8 @@ const allowedOrigins = [
   "http://192.168.0.104:5173",
   "http://192.168.0.104",
   "http://localhost:5000",
+  "http://192.168.0.106",
+  "https://192.168.0.106",
 ];
 
 app.locals.allowedOrigins = allowedOrigins;

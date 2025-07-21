@@ -256,6 +256,7 @@ router.get("/status", async (req, res) => {
     "http://localhost:5173",
     "https://volmed-o4s0.onrender.com",
     "http://192.168.0.106",
+    "https://192.168.0.106",
   ];
 
   if (origin && allowedOrigins.includes(origin)) {
