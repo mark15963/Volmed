@@ -5,6 +5,7 @@ const axios = require("axios");
 
 const { Pool } = require("pg");
 const cors = require("cors");
+const https = require("https");
 
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -37,6 +38,8 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
   "http://localhost:5173",
+  "http://192.168.0.104:5173",
+  "http://192.168.0.104",
   "http://localhost:5000",
 ];
 
@@ -57,6 +60,11 @@ app.use(
   })
 );
 
+const sslOptions = {
+  key: fs.readFileSync(path.join(__dirname, "certs", "key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "certs", "cert.pem")),
+};
+
 //Trust Proxy & Middleware
 app.set("trust proxy", 1);
 app.use(cookieParser());
@@ -76,6 +84,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
@@ -144,7 +153,7 @@ async function startServer() {
   try {
     await testDbConnection();
 
-    const server = app.listen(PORT, () => {
+    const server = https.createServer(sslOptions, app).listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
