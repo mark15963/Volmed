@@ -9,11 +9,11 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
-    hmr: {
-      clientPort: 443, // Required for Render's HTTPS
-      protocol: "wss", // Force WebSocket secure
-      host: "volmed-o4s0.onrender.com",
-    },
+    // hmr: {
+    //   clientPort: 443, // Required for Render's HTTPS
+    //   protocol: "wss", // Force WebSocket secure
+    //   host: "volmed-o4s0.onrender.com",
+    // },
     allowedHosts: ["volmed-o4s0.onrender.com", "localhost", /\.onrender\.com$/],
     cors: true,
   },

@@ -30,12 +30,12 @@ export const App = () => {
 
   const handleMenuClick = (e) => {
     if (e.key === '1') {
+      debug.log(chatVisible ? "Chat hidden" : "Chat visible")
       setChatVisible(!chatVisible)
-      debug.log("Chat visible")
     }
     if (e.key === '2') {
+      debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
       setSideMenuVisible(!sideMenuVisible)
-      debug.log("Menu visible")
     }
   }
 

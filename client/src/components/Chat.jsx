@@ -32,10 +32,6 @@ export const Chat = () => {
         ? `${authState.lastName}_${authState.firstName}_${authState.patr}`
         : socket.id
 
-    // useEffect(() => {
-    //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    // }, [messages]);
-
     useEffect(() => {
         if (!socket.connected) {
             socket.connect()
@@ -48,13 +44,6 @@ export const Chat = () => {
             debug.log(`Connected to Socket.IO with ID: ${socket.id}`)
             setSocketId(socket.id)
         }
-
-        // socket.on('connect', () => {
-        //     debug.log(`Connected to Socket.IO with ID: ${socket.id}`)    
-        //     setSocketId(socket.id)
-        //     socket.emit('join_room', 'general')
-        //     loadMessages('general')
-        // })
 
         const handleReceiveMessage = (data) => {
             setMessages(prev => [...prev, {
@@ -90,7 +79,7 @@ export const Chat = () => {
                 senderName: msg.sender_name || 'Unknown',
                 timestamp: new Date(msg.timestamp).toLocaleTimeString()
             }))
-            if (formatted) debug.log("Messages exist")
+            if (formatted) debug.log("Messages loaded")
             setMessages(formatted)
         } catch (err) {
             console.error("Failed to load messages:", err)
