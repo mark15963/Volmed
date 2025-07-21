@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
   const allowedOrigins = req.app.locals.allowedOrigins || [
     "http://localhost:5173",
     "https://volmed-o4s0.onrender.com",
-    "http://192.168.0.106",
+    "https://192.168.0.106",
   ];
 
   const origin = req.headers.origin;
