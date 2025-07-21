@@ -3,9 +3,7 @@
     color: #000;
     margin:  5px 10px;
     box-sizing: border-box;
-    width: fit-content;
-    padding: 8px 14px;
-    font-size: 15px;
+    
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -44,6 +42,26 @@
     min-height: 38px;
     border-radius: 50%;
     padding: 0;
+}
+
+/* SIZE */
+.s{
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 11px;
+}
+.m{
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+.l{
+    width: fit-content;
+    padding: 8px 14px;
+    font-size: 15px;
+}
+.xl{
+
 }
 
 @media screen and (orientation: portrait) {

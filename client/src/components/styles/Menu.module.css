@@ -32,7 +32,7 @@
 .menuCard.active{
     background-color: #0086e6;
     border-color: black;
-    margin-bottom: -3px;
+    margin-bottom: -2px;
     z-index: 2;
     position: relative;
 }
@@ -47,9 +47,6 @@
     h3{
         font-size: 0.9em;
         line-height: 10px;
-    }
-
-    .menuContainer{
     }
 
     .menuCard{

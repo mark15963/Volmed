@@ -8,7 +8,7 @@ import Button from '../../../components/Buttons';
 
 import styles from '../searchResults.module.css';
 import tableStyles from '../../../components/styles/Table.module.css';
-import medStyles from './tab3.module.css'
+import medStyles from './tab3.module.scss'
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
 axios.defaults.withCredentials = true;
@@ -28,39 +28,21 @@ export const Tab3 = ({
                     <p>Нет назначений</p>
                 )}
 
-                {/* NEW MED */}
-                {isEditingAssignments && (
-                    <Button
-                        text='Добавить'
-                        onClick={() => {
-                            setAssignments([...assignments, {
-                                name: '',
-                                dosage: '',
-                                frequency: '',
-                                createdAt: new Date().toISOString()
-                            }])
-                        }}
-                        style={{ marginBottom: '10px', marginLeft: 0 }}
-                    />
-                )}
-
                 {/* MED LIST */}
                 {(assignments.length > 0 || isEditingAssignments) && (
-
                     <div className={medStyles.listContainer}>
                         <table className={medStyles.table}>
-                            <thead className={tableStyles.head}>
-                                <tr className={tableStyles.rows} style={{ fontSize: '13px' }}>
-                                    <th style={{ width: '20%', textAlign: 'center' }}>Время назначения</th>
-                                    <th style={{ width: '30%', textAlign: 'center' }}>Препарат / Манипуляция</th>
-                                    <th style={{ width: '15%', textAlign: 'center' }}>Дозировка</th>
-                                    <th style={{ width: '10%', textAlign: 'center' }}>Частота</th>
+                            <thead className={medStyles.head}>
+                                <tr className={medStyles.rows}>
+                                    <th>Время назначения</th>
+                                    <th>Препарат / Манипуляция</th>
+                                    <th>Дозировка</th>
+                                    <th>Частота</th>
                                     {isEditingAssignments && <th style={{ width: '15%' }}>Удалить</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {assignments.map((item, index) => (
-
                                     <tr
                                         key={index}
                                         className={medStyles.rows}
@@ -77,8 +59,7 @@ export const Tab3 = ({
                                         </td>
                                         <td>
                                             {isEditingAssignments ? (
-                                                <input
-                                                    style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                <Input
                                                     value={item.name}
                                                     onChange={(e) => {
                                                         const newList = [...assignments];
@@ -101,8 +82,7 @@ export const Tab3 = ({
                                         </td>
                                         <td>
                                             {isEditingAssignments ? (
-                                                <input
-                                                    style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
+                                                <Input
                                                     value={item.dosage}
                                                     onChange={(e) => {
                                                         const newList = [...assignments];
@@ -127,15 +107,6 @@ export const Tab3 = ({
                                             <div style={{ display: 'flex' }}>
                                                 <div style={{ width: '100px', display: 'flex', justifyContent: 'center' }}>
                                                     {isEditingAssignments ? (
-                                                        // <input
-                                                        //     style={{ width: '100%', borderRadius: '5px', paddingLeft: '5px' }}
-                                                        //     value={item.frequency}
-                                                        //     onChange={(e) => {
-                                                        //         const newList = [...assignments];
-                                                        //         newList[index].frequency = e.target.value;
-                                                        //         setAssignments(newList);
-                                                        //     }}
-                                                        // />
                                                         <Input
                                                             value={item.frequency}
                                                             onChange={(e) => {
@@ -149,9 +120,10 @@ export const Tab3 = ({
                                             </div>
                                         </td>
                                         {isEditingAssignments && (
-                                            <td style={{ width: '15%' }}>
-                                                <button
-                                                    style={{ width: 'fit-content', height: 'fit-content', padding: '1px 5px' }}
+                                            <td style={{ width: '15%', verticalAlign: 'middle' }}>
+                                                <Button
+                                                    text='Удалить'
+                                                    size='s'
                                                     onClick={async () => {
                                                         const itemToDelete = assignments[index];
                                                         try {
@@ -171,7 +143,7 @@ export const Tab3 = ({
                                                             });
                                                             alert(`Не удалось удалить назначение: ${err.message}`);
                                                         }
-                                                    }}> Удалить</button>
+                                                    }} />
                                             </td>
                                         )}
                                     </tr>
@@ -179,6 +151,22 @@ export const Tab3 = ({
                             </tbody>
                         </table>
                     </div>
+                )}
+
+                {/* NEW MED */}
+                {isEditingAssignments && (
+                    <Button
+                        text='Добавить'
+                        onClick={() => {
+                            setAssignments([...assignments, {
+                                name: '',
+                                dosage: '',
+                                frequency: '',
+                                createdAt: new Date().toISOString()
+                            }])
+                        }}
+                        style={{ marginBottom: '10px', marginLeft: 0 }}
+                    />
                 )}
             </div>
         </div >

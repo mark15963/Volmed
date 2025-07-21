@@ -91,6 +91,7 @@ export const AuthProvider = ({ children }) => {
                 patr: '',
                 status: '',
             });
+            debug.log("Logged out successfully")
             navigate('/login')
         } catch {
             setAuthState(prev => ({ ...prev, isLoading: false }));

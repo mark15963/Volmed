@@ -1,5 +1,24 @@
 const path = require("path");
+
 require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("dotenv").config({
+  path: path.join(
+    __dirname,
+    process.env.NODE_ENV === "production"
+      ? ".env.production"
+      : ".env.development"
+  ),
+});
+
+console.log("Loaded environment variables:", {
+  NODE_ENV: process.env.NODE_ENV,
+  FRONTEND_URL: process.env.FRONTEND_URL,
+  BACKEND_URL: process.env.BACKEND_URL,
+  DATABASE_URL: process.env.DATABASE_URL ? "exists" : "missing",
+});
+
+const debug = require("./utils/debug");
+
 const express = require("express");
 const axios = require("axios");
 
@@ -33,12 +52,6 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
-// SSL files
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, "certs", "key.pem")),
-  cert: fs.readFileSync(path.join(__dirname, "certs", "cert.pem")),
-};
-
 //CORS setup
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -47,11 +60,10 @@ const allowedOrigins = [
   "http://192.168.0.104:5173",
   "http://192.168.0.104",
   "http://localhost:5000",
-  "http://192.168.0.106",
-  "https://192.168.0.106",
 ];
 
 app.locals.allowedOrigins = allowedOrigins;
+app.locals.debug = debug;
 
 app.use(
   cors({
@@ -156,8 +168,8 @@ async function startServer() {
   try {
     await testDbConnection();
 
-    const server = https.createServer(sslOptions, app).listen(PORT, () => {
-      console.log(`HTTPS Server running on port ${PORT}`);
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
