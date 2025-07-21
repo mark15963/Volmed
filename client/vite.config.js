@@ -5,15 +5,23 @@ export default defineConfig({
   plugins: [react()],
   base: "/",
   preview: {
-    host: "0.0.0.0",
-    port: 4173,
-    strictPort: true,
+    host: "0.0.0.0", // Accessible on all network interfaces
+    port: 4173, // Preview server port
+    strictPort: true, // Disable auto-fallback port
     allowedHosts: ["volmed-o4s0.onrender.com", "localhost"],
   },
-  envDir: "./",
+  envDir: "./", // Path to .env files
   server: {
-    host: true,
-    strictPort: true,
-    port: 5173,
-  }
+    host: true, // Allow external access (e.g., LAN)
+    port: 5173, // Dev server port
+    strictPort: true, // Disable auto-fallback port
+    proxy: {
+      // API proxy settings
+      "/api": {
+        target: "http://192.168.0.108", // Backend server
+        changeOrigin: true, // Needed for CORS
+        rewrite: (path) => path.replace(/^\/api/, ""), // Remove /api prefix
+      },
+    },
+  },
 });
