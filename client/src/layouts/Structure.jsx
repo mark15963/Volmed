@@ -56,14 +56,14 @@ export const Header = (props) => {
                     {authState.isAuthenticated && (
                         <div className={headerStyles.userNameContainer}>
                             <span className={headerStyles.userNameText}>
-                                {authState.isAuthenticated ? (
-                                    `${authState.status}`
-                                ) : ''}
+                                {authState.isAuthenticated
+                                    ? (`${authState.status}`)
+                                    : ''}
                             </span>
                             <span className={headerStyles.userNameText}>
-                                {authState.isAuthenticated ? (
-                                    `${authState.lastName} ${authState.firstName} ${authState.patr}`
-                                ) : ''}
+                                {authState.isAuthenticated
+                                    ? (`${authState.lastName} ${authState.firstName} ${authState.patr}`)
+                                    : ''}
                             </span>
                         </div>
                     )}
@@ -72,7 +72,10 @@ export const Header = (props) => {
                             authState.isAuthenticated ? (
                                 <Button
                                     icon="logout"
-                                    onClick={() => { logout(); navigate('/'); }}
+                                    onClick={() => {
+                                        logout();
+                                        navigate('/');
+                                    }}
                                     loading={authState.isLoading}
                                 />
                             ) : (

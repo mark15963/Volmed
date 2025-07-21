@@ -16,6 +16,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   style?: CSSProperties;
   className?: string;
+  size?: "s" | "m" | "l" | "xl";
   disabled?: boolean;
   loading?: boolean;
   type?: "button" | "submit" | "reset";
@@ -24,18 +25,20 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button: FC<ButtonProps> = ({
   onClick,
   shape,
-  type = "button",
-  style,
   icon,
   margin,
   text,
+  style,
   className,
+  size = "l",
   disabled,
   loading,
+  type = "button",
   ...props
 }) => {
   const buttonClass = [
     "button",
+    size,
     shape,
     className,
     disabled ? "disabled" : "",
@@ -81,7 +84,7 @@ export const Button: FC<ButtonProps> = ({
       className={buttonClass}
       disabled={disabled}
       type={type}
-      style={style}
+      style={style || undefined}
       {...props}
     >
       {renderIcon()}

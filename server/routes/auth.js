@@ -6,6 +6,7 @@ const saltRounds = 10;
 
 const User = require("../models/User");
 const { Pool } = require("pg");
+const originMiddleware = require("../middleware/originMiddleware");
 
 const router = Router();
 
@@ -71,21 +72,9 @@ router.get("/login", (req, res) => {
   `);
 });
 
-router.post("/login", async (req, res) => {
-  const allowedOrigins = req.app.locals.allowedOrigins || [
-    "http://localhost:5173",
-    "https://volmed-o4s0.onrender.com",
-    "https://192.168.0.106",
-  ];
-
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-
+router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
-
+  req.app.locals.debug.log(`Logging in user ${username}`);
   if (!username || !password) {
     return res.status(400).json({ error: "Username and password required" });
   }
@@ -141,7 +130,7 @@ router.post("/login", async (req, res) => {
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1000 * 60 * 60 * 24,
         });
-        // Send success response with redirect info
+
         res.status(200).json({
           success: true,
           message: "Logged in successfully",
@@ -225,45 +214,44 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", isAuth, async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Logout error:", err);
+  req.session.destroy((error) => {
+    if (error) {
+      console.error("Logout error:", error);
+      if (req.app.locals.debug?.error) {
+        req.app.locals.debug.error("Logout error:", error);
+      }
       return res.status(500).json({ error: "Logout failed" });
     }
 
-    // Clear session cookie
-    res.clearCookie("volmed.sid", {
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-    });
+    try {
+      // Clear session cookie
+      res.clearCookie("volmed.sid", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+      });
 
-    // Clear user cookie
-    res.clearCookie("user", {
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
-
-    res.status(200).json({ success: true, message: "Logged out successfully" });
+      // Clear user cookie
+      res.clearCookie("user", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    } catch (clearCookieError) {
+      console.error("Clear cookie error:", clearCookieError);
+      res.status(500).json({
+        error: "Logout failed during cookie cleanup",
+      });
+    }
   });
 });
 
-router.get("/status", async (req, res) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = req.app.locals.allowedOrigins || [
-    "http://localhost:5173",
-    "https://volmed-o4s0.onrender.com",
-    "http://192.168.0.106",
-    "https://192.168.0.106",
-  ];
-
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-  }
-
+router.get("/status", originMiddleware, async (req, res) => {
   try {
     res.json({
       isAuthenticated: !!req.session.isAuth,
