@@ -33,6 +33,12 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
+// SSL files
+const sslOptions = {
+  key: fs.readFileSync(path.join(__dirname, "certs", "key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "certs", "cert.pem")),
+};
+
 //CORS setup
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -148,8 +154,8 @@ async function startServer() {
   try {
     await testDbConnection();
 
-    const server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+    const server = https.createServer(sslOptions, app).listen(PORT, () => {
+      console.log(`HTTPS Server running on port ${PORT}`);
       console.log(`Website link: ${process.env.FRONTEND_URL}`);
       console.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
