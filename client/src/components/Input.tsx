@@ -8,17 +8,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   name?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  autoComplete?: string;
   style?: CSSProperties;
 }
 
 export const Input: FC<InputProps> = ({
   name,
   type = "text",
-  value,
   placeholder,
   onChange,
-  autoComplete,
   pattern,
   inputMode,
   className,
@@ -31,9 +28,7 @@ export const Input: FC<InputProps> = ({
       name={name}
       type={type}
       placeholder={placeholder}
-      value={value}
       onChange={onChange}
-      autoComplete={autoComplete}
       pattern={pattern}
       inputMode={inputMode}
       className={inputClass}
