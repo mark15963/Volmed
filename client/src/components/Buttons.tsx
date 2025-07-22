@@ -11,9 +11,8 @@ import "./styles/Button.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
-  shape?: string;
-  icon?: "login" | "logout" | "newPatient" | "patients" | "search" | string;
-  margin?: string;
+  shape?: "default" | "circle";
+  icon?: "none" | "login" | "logout" | "newPatient" | "patients" | "search";
   text?: string;
   style?: CSSProperties;
   className?: string;
@@ -25,9 +24,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button: FC<ButtonProps> = ({
   onClick,
-  shape,
-  icon,
-  margin,
+  shape = "default",
+  icon = "none",
   text,
   style,
   className,
@@ -50,6 +48,8 @@ export const Button: FC<ButtonProps> = ({
 
   const renderIcon = () => {
     switch (icon) {
+      case "none":
+        return null;
       case "login":
         return <LoginOutlined />;
       case "logout":
@@ -96,7 +96,7 @@ export const Button: FC<ButtonProps> = ({
       {renderText() && (
         <span
           className="button-text"
-          style={margin ? { margin: margin } : undefined}
+          style={icon ? { marginLeft: "3px" } : undefined}
         >
           {renderText()}
         </span>

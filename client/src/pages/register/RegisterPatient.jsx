@@ -6,8 +6,8 @@ import { IMaskInput } from 'react-imask';
 import dayjs, { datePickerLocale } from './dayjs.config'
 
 import Button from '../../components/Buttons.tsx';
-
 import { usePageTitle } from '../../components/PageTitle'
+
 import styles from './register.module.css'
 import api from '../../services/api';
 
@@ -15,7 +15,6 @@ const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
-
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
@@ -141,24 +140,22 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     const isPastCutoffDate = new Date() > new Date('2025-05-31');
 
     const selectState = (
-        <Select
-            defaultValue='Стабильно'
-        >
-            <Option
+        <Select>
+            <Select.Option
                 value='Стабильно'
             >
                 Стабильно
-            </Option>
-            <Option
+            </Select.Option>
+            <Select.Option
                 value='Критическое'
             >
                 Критическое
-            </Option>
-            <Option
+            </Select.Option>
+            <Select.Option
                 value='Выписан'
             >
                 Выписан
-            </Option>
+            </Select.Option>
         </Select>
     )
 
@@ -170,7 +167,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
             </h2>
             <div className={styles.info}>
                 <div className={styles.bg}>
-
                     <div className={styles.title}>
                         <p>Заполните ниформацию:</p>
                     </div>
@@ -185,7 +181,10 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                             onFinishFailed={(info) => {
                                 console.log('Validation Failed:', info);
                             }}
-                            initialValues={{ sex: 'Мужской' }}
+                            initialValues={{
+                                sex: 'Мужской',
+                                state: 'Стабильно'
+                            }}
                         >
                             <div className={styles.topForms}>
                                 <div className={styles.topFormsA}>
@@ -194,7 +193,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         name="lastName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите фамилию' }]}
                                     >
-                                        <Input />
+                                        <Input placeholder='Фамилия' />
                                     </Form.Item>
 
                                     <Form.Item
@@ -202,14 +201,14 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         name="firstName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите имя' }]}
                                     >
-                                        <Input />
+                                        <Input placeholder='Имя' />
                                     </Form.Item>
 
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Отчество</span>}
                                         name="patr"
                                     >
-                                        <Input />
+                                        <Input placeholder='Отчество' />
                                     </Form.Item>
                                 </div>
 
@@ -228,7 +227,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         name="birthDate"
                                         rules={[{ required: true, message: 'Пожалуйста, выберите дату рождения' }]}
                                     >
-
                                         <DatePicker
                                             style={{ width: '100%' }}
                                             format="DD.MM.YYYY"
@@ -258,7 +256,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                                 fontSize: '14px',
                                                 lineHeight: '1.5',
                                                 border: '1px solid #d9d9d9',
-                                                borderRadius: '6px'
+                                                borderRadius: '6px',
                                             }}
                                             onBlur={(e) => {
                                                 const val = e.target.value;
@@ -291,7 +289,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         ]}
                                     >
                                         <Input
-                                            placeholder=""
+                                            placeholder="E-Mail"
                                             autoComplete='off'
                                         />
                                     </Form.Item>
@@ -305,7 +303,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="complaint"
                                 >
                                     <Input.TextArea
-                                        placeholder="Жалобы при поступлении"
                                         autoSize={{ minRows: 2, maxRows: 6 }}
                                         style={{ width: '100%' }}
                                     />
@@ -316,7 +313,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="anam"
                                 >
                                     <Input.TextArea
-                                        placeholder="История настоящего заболевания"
                                         autoSize={{ minRows: 2, maxRows: 6 }}
                                     />
                                 </Form.Item>
@@ -326,7 +322,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="life"
                                 >
                                     <Input.TextArea
-                                        placeholder="Анамнез жизни"
                                         autoSize={{ minRows: 2, maxRows: 6 }}
                                     />
                                 </Form.Item>
@@ -336,7 +331,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="status"
                                 >
                                     <Input.TextArea
-                                        placeholder="Настоящее состояние больного"
                                         autoSize={{ minRows: 2, maxRows: 10 }}
                                     />
                                 </Form.Item>
@@ -391,7 +385,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="sop_zab"
                                 >
                                     <Input.TextArea
-                                        placeholder="Сопутствующие заболевания"
                                         autoSize={{ minRows: 2, maxRows: 4 }}
                                     />
                                 </Form.Item>
@@ -401,7 +394,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     name="rec"
                                 >
                                     <Input.TextArea
-                                        placeholder="Рекомендации"
                                         autoSize={{ minRows: 1, maxRows: 5 }}
                                     />
                                 </Form.Item>

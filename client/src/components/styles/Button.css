@@ -1,72 +1,75 @@
-.button{
-    background: aliceblue;
-    color: #000;
-    margin:  5px 10px;
-    box-sizing: border-box;
-    
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.button {
+  background: aliceblue;
+  color: #000;
+  margin: 5px 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
 }
 
-.button:hover{
-    transition: all 0.2s;
-    color:#1677ff;
-    border: 2px solid #1677ff;
+.button:hover {
+  transition: all 0.2s;
+  color: #1677ff;
+  border: 2px solid #1677ff;
 }
 
-.button.disabled{
-    cursor: not-allowed;
-    opacity: 0.8;
-    background: #b4b4b4;
+.button.disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  background: #b4b4b4;
 }
 
-.button.loading{
-    cursor: wait;
-    opacity: 0.8;
-    background: #b4b4b4;
+.button.loading {
+  cursor: wait;
+  opacity: 0.8;
+  background: #b4b4b4;
 }
 
 .button.disabled.loading {
-    cursor: wait;
+  cursor: wait;
 }
 
-.button-text{
-    font-style: normal;
-    line-height: 1;
+.button-text {
+  font-style: normal;
+  /* line-height: 1; */
 }
 
 /* SHAPE */
-.button.circle{
-    min-width: 38px;
-    min-height: 38px;
-    border-radius: 50%;
-    padding: 0;
+.button.circle {
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 50%;
+  padding: 0;
 }
 
 /* SIZE */
-.s{
-    width: fit-content;
-    padding: 5px 10px;
-    font-size: 11px;
+.s {
+  width: fit-content;
+  padding: 4px 7px;
+  font-size: 11px;
 }
-.m{
-    width: fit-content;
-    padding: 5px 10px;
-    font-size: 13px;
+.m {
+  width: fit-content;
+  padding: 5px 10px;
+  font-size: 13px;
 }
-.l{
-    width: fit-content;
-    padding: 8px 14px;
-    font-size: 15px;
+.l {
+  width: fit-content;
+  padding: 6px 12px;
+  font-size: 15px;
 }
-.xl{
-
+.xl {
+  width: fit-content;
+  padding: 10px 15px;
+  font-size: 17px;
 }
 
 @media screen and (orientation: portrait) {
-    .button{
-        font-size: 1em;
-        padding: 5px 8px;
-    }
+  .button {
+    font-size: 1em;
+    padding: 5px 8px;
+  }
 }
