@@ -1,6 +1,6 @@
 import { InputHTMLAttributes, CSSProperties, FC } from "react";
 
-import "./styles/Input.module.css";
+import "./styles/Input.css";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: "text" | "password" | "email" | "tel" | "search" | "number";

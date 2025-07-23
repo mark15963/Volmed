@@ -1,4 +1,4 @@
-input {
+.input {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -8,14 +8,14 @@ input {
   font-size: 15px;
 }
 
-input:hover {
+.input:hover {
   border: 2px solid #1677ff;
 }
 
-input::placeholder {
+.input::placeholder {
   align-items: center;
 }
 
-input:focus::placeholder {
+.input:focus::placeholder {
   opacity: 0;
 }
