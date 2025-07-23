@@ -12,7 +12,7 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-//Global error handling
+// Global error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -37,7 +37,7 @@ api.interceptors.response.use(
 );
 
 export default {
-  //Patients
+  // Patients
   getPatients: () => api.get(`${apiUrl}/api/patients`),
   getPatient: (id) => api.get(`${apiUrl}/api/patients/${id}`),
   getPatientCount: () => api.get(`${apiUrl}/api/patient-count`),
@@ -89,12 +89,15 @@ export default {
     api.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
   getO2Data: (patientId) => api.get(`${apiUrl}/api/patients/${patientId}/o2`),
 
-  //Auth
+  // Auth
   postLogin: (data) => api.post(`${apiUrl}/login`, data),
   logout: () => api.post(`${apiUrl}/logout`),
   status: () => api.get(`${apiUrl}/status`),
 
-  //Chat
+  // Chat
   getChatHistory: (room) => api.get(`${apiUrl}/api/chat/room/${room}/messages`),
   saveMessage: (data) => api.post(`${apiUrl}/api/chat/save-message`, data),
+
+  // Users
+  getUsers: () => api.get(`${apiUrl}/api/users`),
 };

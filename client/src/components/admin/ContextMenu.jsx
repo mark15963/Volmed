@@ -7,10 +7,12 @@ import Chat from "./Chat"
 import SideMenu from "./SideMenu"
 
 import styles from './styles/sideMenu.module.css'
+import { useNavigate } from "react-router"
 
 export const ContextMenu = ({ authState, children }) => {
     const [chatVisible, setChatVisible] = useState(false)
     const [sideMenuVisible, setSideMenuVisible] = useState(false)
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (sideMenuVisible) {
@@ -26,10 +28,13 @@ export const ContextMenu = ({ authState, children }) => {
 
     const handleMenuClick = (e) => {
         if (e.key === '1') {
+            navigate('/dashboard')
+        }
+        if (e.key === '2') {
             debug.log(chatVisible ? "Chat hidden" : "Chat visible")
             setChatVisible(!chatVisible)
         }
-        if (e.key === '2') {
+        if (e.key === '3') {
             debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
             setSideMenuVisible(!sideMenuVisible)
         }
@@ -37,12 +42,16 @@ export const ContextMenu = ({ authState, children }) => {
 
     const items = [
         {
-            label: chatVisible ? 'Close chat' : 'Show chat',
+            label: 'Dashboard',
             key: '1',
         },
         {
-            label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
+            label: chatVisible ? 'Close chat' : 'Show chat',
             key: '2',
+        },
+        {
+            label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
+            key: '3',
         },
     ];
 

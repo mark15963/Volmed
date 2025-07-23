@@ -39,7 +39,6 @@ export const Header = (props) => {
                 />
                 <h1
                     className={styles.title}
-                    onClick={handleClick}
                 >
                     <span className={styles.title}>ГБУ «Городская больница</span>
                     <br />
