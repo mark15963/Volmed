@@ -193,7 +193,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                         name="lastName"
                                         rules={[{ required: true, message: 'Пожалуйста, введите фамилию' }]}
                                     >
-                                        <Input placeholder='Фамилия' />
+                                        <Input placeholder='Фамилия' style={{ textAlign: 'left' }} />
                                     </Form.Item>
 
                                     <Form.Item

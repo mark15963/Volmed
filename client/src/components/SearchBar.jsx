@@ -59,7 +59,6 @@ export const SearchBar = () => {
                 <div className={styles.searchContainer}>
                     <div className={styles.space}></div>
                     <Input
-                        className={styles.searchfield}
                         id='searchfield'
                         type='search'
                         value={searchValue}
