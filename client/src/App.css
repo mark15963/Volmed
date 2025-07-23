@@ -1,94 +1,94 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body{
+html,
+body {
   height: 100vh;
   width: 100vw;
 }
 
-#root{
+#root {
   min-height: 100%;
   display: grid;
-  grid-template-areas: 
+  grid-template-areas:
     "head"
     "content"
     "foot";
   grid-template-rows: 120px 1fr 60px;
 }
 
-header{
+header {
+  height: 120px;
   width: 100vw;
   grid-area: head;
+
+  margin: 0;
+  padding: 0;
+  background-color: #3c97e6;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  box-sizing: border-box;
+  contain: layout paint style;
 }
 
-.container{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 40px 0;
-}
-
-.mainBlock {
-    height: fit-content;
-    padding: 20px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #0073C7;
-    border-style: solid;
-    border-radius: 15px;
-    gap:20px;
-}
-
-main{
-  background-color: #a5c6e2;
+main {
+  height: 100%;
+  width: 100vw;
   grid-area: content;
+
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #a5c6e2;
+}
+
+footer {
+  width: 100vw;
   height: 100%;
-  width: 100vw;
-}
-
-footer{
   grid-area: foot;
-  width: 100vw;
+
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: rgb(75, 79, 82);
+  color: #fff;
 }
 
-@media print{
+@media print {
   @page {
     margin: 0;
     /* Removes default header/footer */
     size: auto;
   }
 
-  #root{
+  #root {
     display: block;
   }
 
-  .header, .footer {
+  .header,
+  .footer {
     display: none !important;
   }
 }
 
 @media screen and (orientation: portrait) {
-  html, body{
+  html,
+  body {
     overflow-x: hidden;
     width: 100vw;
     height: 100%;
   }
 
-  #root{
+  #root {
     min-height: 100%;
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
       "head"
       "content"
       "foot";
@@ -100,7 +100,7 @@ footer{
     width: 100%;
   }
 
-  main{
+  main {
     padding: 5px;
   }
 }
