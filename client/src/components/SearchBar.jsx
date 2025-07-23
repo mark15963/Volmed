@@ -67,6 +67,7 @@ export const SearchBar = () => {
                         autoComplete='off'
                         inputMode='numeric'
                         pattern='[0-9]*'
+                        className={styles.searchfield}
                     />
                     <Button
                         type='submit'
