@@ -1,6 +1,7 @@
 {
   "postman.settings.dotenv-detection-notification-visibility": false,
   "git.ignoredRepositories": [],
+  "explorer.decorations.badges": true,
   "explorer.decorations.colors": true,
   "git.decorations.enabled": true
 }
