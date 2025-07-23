@@ -192,15 +192,23 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Фамилия</span>}
                                         name="lastName"
-                                        rules={[{ required: true, message: 'Пожалуйста, введите фамилию' }]}
+                                        rules={[{
+                                            required: true,
+                                            message: ''
+                                        }]}
                                     >
-                                        <Input placeholder='Фамилия' style={{ textAlign: 'left' }} />
+                                        <Input
+                                            placeholder='Фамилия'
+                                        />
                                     </Form.Item>
 
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Имя</span>}
                                         name="firstName"
-                                        rules={[{ required: true, message: 'Пожалуйста, введите имя' }]}
+                                        rules={[{
+                                            required: true,
+                                            message: ''
+                                        }]}
                                     >
                                         <Input placeholder='Имя' />
                                     </Form.Item>
@@ -226,7 +234,10 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                                     <Form.Item
                                         label={<span className={styles.formLabel}>Дата рождения</span>}
                                         name="birthDate"
-                                        rules={[{ required: true, message: 'Пожалуйста, выберите дату рождения' }]}
+                                        rules={[{
+                                            required: true,
+                                            message: ''
+                                        }]}
                                     >
                                         <DatePicker
                                             style={{ width: '100%' }}

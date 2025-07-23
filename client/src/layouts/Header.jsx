@@ -52,16 +52,16 @@ export const Header = (props) => {
                             {authState.isAdmin && (
                                 <ContextMenu authState={authState}>
                                     <div className={styles.userNameContainer}>
-                                        <span className={styles.userNameText}>
+                                        <div className={styles.userNameText}>
                                             {authState.isAuthenticated
                                                 ? (`${authState.status}`)
                                                 : ''}
-                                        </span>
-                                        <span className={styles.userNameText}>
+                                        </div>
+                                        <div className={styles.userNameText}>
                                             {authState.isAuthenticated
                                                 ? (`${authState.lastName} ${authState.firstName} ${authState.patr}`)
                                                 : ''}
-                                        </span>
+                                        </div>
                                     </div>
                                 </ContextMenu>
                             )}

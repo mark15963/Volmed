@@ -29,10 +29,6 @@
   width: 100%;
 }
 
-input::placeholder {
-  text-align: center;
-}
-
 .submit {
   cursor: pointer;
   width: fit-content;
