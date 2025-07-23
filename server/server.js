@@ -109,10 +109,10 @@ app.use(
 
 // Debug session & cookies
 app.use((req, res, next) => {
-  console.log("Environment:", process.env.NODE_ENV);
-  console.log("Session ID:", req.sessionID);
-  console.log("Session data:", req.session);
-  console.log("Cookies:", req.cookies);
+  debug.log("Environment:", process.env.NODE_ENV);
+  debug.log("Session ID:", req.sessionID);
+  debug.log("Session data:", req.session);
+  debug.log("Cookies:", req.cookies);
   next();
 });
 
