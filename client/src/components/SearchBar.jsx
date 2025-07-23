@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router'
 import Button from './Buttons.tsx';
 import Input from './Input';
 
-import styles from './styles/SearchBar.module.css'
+import styles from './styles/searchBar.module.css'
 
 import api from '../../src/services/api.js'
 import debug from '../utils/debug.js';

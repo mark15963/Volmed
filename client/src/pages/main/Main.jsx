@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
+import { useAuth } from '../../context/AuthContext'
+import debug from '../../utils/debug';
+
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
-import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
 import Loader from '../../assets/images/Loader.gif'
-import debug from '../../utils/debug';
 
 export const Main = () => {
     const { authState } = useAuth()
