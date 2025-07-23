@@ -5,17 +5,16 @@
   "display": "standalone",
   "background_color": "#a5c6e2",
   "theme_color": "#3c97e6",
-  "version": "1.0.1",
   "icons": [
     {
-      "src": "/icons/icon-orig.webp",
+      "src": "/icons/icon-192.webp",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/webp"
     },
     {
-      "src": "/icons/icon-orig.webp",
+      "src": "/icons/icon-512.webp",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/webp"
     }
   ]
 }
