@@ -8,7 +8,7 @@ import Button from "../components/Buttons.tsx"
 import Chat from "../components/admin/Chat";
 import SideMenu from "../components/admin/SideMenu";
 import { ContextMenu } from "../components/admin/ContextMenu";
-import logo from '../assets/images/logo.png'
+import logo from '../assets/images/logo.webp'
 
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import styles from './styles/header.module.css'
