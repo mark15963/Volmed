@@ -10,7 +10,7 @@ require("dotenv").config({
   ),
 });
 
-console.log("Loaded environment variables:", {
+debug.log("Loaded environment variables:", {
   NODE_ENV: process.env.NODE_ENV,
   FRONTEND_URL: process.env.FRONTEND_URL,
   BACKEND_URL: process.env.BACKEND_URL,
@@ -138,11 +138,11 @@ async function testDbConnection() {
     try {
       client = await db.connect();
       const result = await client.query("SELECT version()");
-      console.log("Database version:", result.rows[0].version);
+      debug.log("Database version:", result.rows[0].version);
       client.release();
       return;
     } catch (err) {
-      console.error(`Attempt ${i} failed:`, err.message);
+      debug.error(`Attempt ${i} failed:`, err.message);
       if (client) client.release();
       if (i < retries) {
         await new Promise((r) => setTimeout(r, delay * i));
@@ -169,9 +169,9 @@ async function startServer() {
     await testDbConnection();
 
     const server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Website link: ${process.env.FRONTEND_URL}`);
-      console.log(`Backend link: ${process.env.BACKEND_URL}`);
+      debug.log(`Server running on port ${PORT}`);
+      debug.log(`Website link: ${process.env.FRONTEND_URL}`);
+      debug.log(`Backend link: ${process.env.BACKEND_URL}`);
       server.keepAliveTimeout = 60000;
       server.headersTimeout = 65000;
     });
@@ -185,15 +185,15 @@ async function startServer() {
     });
 
     io.on("connection", (socket) => {
-      console.log("Socket ID", socket.id);
+      debug.log("Socket ID", socket.id);
 
       socket.on("join_room", (data) => {
-        console.log("Set room", data);
+        debug.log("Set room", data);
         socket.join(data);
       });
 
       socket.on("leave_room", (data) => {
-        console.log(data);
+        debug.log(data);
         socket.leave(data);
       });
 
@@ -220,7 +220,7 @@ async function startServer() {
     });
 
     process.on("SIGTERM", () => {
-      console.log("Shutting down gracefully...");
+      debug.log("Shutting down gracefully...");
       server.close(() => {
         db.end();
         process.exit(0);
