@@ -1,5 +1,5 @@
 import { fn } from "storybook/internal/test";
-import Input from "./Input";
+import Input from "../Input";
 
 export default {
     title: 'Components/Input',

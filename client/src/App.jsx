@@ -1,92 +1,18 @@
-import { Dropdown } from "antd";
+import Content from './layouts/Content'
+import Header from './layouts/Header'
+import Footer from './layouts/Footer'
 
-import Chat from "./components/Chat";
-import SideMenu from "./components/admin/SideMenu";
-
-import { Header, Content, Footer } from './layouts/Structure'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
 
 import './App.css'
-import { useEffect, useState } from "react";
-import debug from "./utils/debug";
-
 
 export const App = () => {
-  const { authState } = useAuth()
-  const [chatVisible, setChatVisible] = useState(false)
-  const [sideMenuVisible, setSideMenuVisible] = useState(false)
-
-  useEffect(() => {
-    if (sideMenuVisible) {
-      setChatVisible(false)
-    }
-  }, [sideMenuVisible])
-
-  useEffect(() => {
-    if (chatVisible) {
-      setSideMenuVisible(false)
-    }
-  }, [chatVisible])
-
-  const handleMenuClick = (e) => {
-    if (e.key === '1') {
-      debug.log(chatVisible ? "Chat hidden" : "Chat visible")
-      setChatVisible(!chatVisible)
-    }
-    if (e.key === '2') {
-      debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
-      setSideMenuVisible(!sideMenuVisible)
-    }
-  }
-
-  const items = [
-    {
-      label: chatVisible ? 'Close chat' : 'Show chat',
-      key: '1',
-    },
-    {
-      label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
-      key: '2',
-    },
-  ];
   return (
     <>
       <AuthProvider>
-        <header>
-          <Header />
-        </header>
-
-        {sideMenuVisible && (
-          !chatVisible && (
-            <div style={{ position: 'absolute', top: '130px', left: 0 }}>
-              <SideMenu />
-            </div>
-          )
-        )}
-
-        {chatVisible && (
-          !sideMenuVisible && (
-            <div style={{ position: 'fixed', left: '10px', top: '50%', transform: 'translateY(-50%)', marginRight: '20px' }}>
-              <Chat />
-            </div>
-          )
-        )}
-        <Dropdown
-          menu={{
-            items,
-            onClick: handleMenuClick,
-          }}
-          trigger={['contextMenu']}
-        >
-          <main>
-            <Content />
-          </main>
-        </Dropdown>
-
-        <footer>
-          <Footer />
-        </footer>
-
+        <Header />
+        <Content />
+        <Footer />
       </AuthProvider>
     </>
   )

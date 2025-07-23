@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
-import { useAuth } from '../context/AuthContext'
-import Button from './Buttons'
-import Input from './Input'
-import debug from '../utils/debug'
+import { useAuth } from '../../context/AuthContext'
+import Button from '../Buttons'
+import Input from '../Input'
+import debug from '../../utils/debug'
 
 let socket
 

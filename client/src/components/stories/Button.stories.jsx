@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "./Buttons";
+import Button from "../Buttons";
 import { fn } from "storybook/internal/test";
 import { action } from 'storybook/actions';
 
@@ -26,6 +26,5 @@ export const Primary = {
     icon: 'none',
     disabled: false,
     loading: false,
-    // onClick: (() => { console.log("clicked") }),
   }
 }
