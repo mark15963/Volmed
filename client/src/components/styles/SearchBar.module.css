@@ -29,6 +29,10 @@
   width: 100%;
 }
 
+.searchfield::placeholder {
+  text-align: center;
+}
+
 .submit {
   cursor: pointer;
   width: fit-content;
