@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascader } from "antd"
-import { IMaskInput } from 'react-imask';
-import dayjs, { datePickerLocale } from './dayjs.config'
+
+const { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascader } = await import('antd/es')
+const { IMaskInput } = await import('react-imask')
+const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 import Button from '../../components/Buttons.tsx';
 import { usePageTitle } from '../../components/PageTitle'
