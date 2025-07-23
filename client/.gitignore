@@ -20,10 +20,10 @@ lerna-debug.log*
 *.sw?
 
 #Node
-node_modules/
+node_modules
 
 #Build
-dist/
+dist
 dist-ssr
 
 #Environment
