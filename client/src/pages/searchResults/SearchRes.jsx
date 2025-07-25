@@ -1,7 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router'
-import axios from 'axios'
-import { useEffect, useState, lazy, Suspense } from 'react'
-import { usePageTitle } from '../../components/PageTitle'
+import { useEffect, useState, lazy, Suspense, useCallback } from 'react'
 import { Menu } from '../../components/Menu'
 import { message, Spin } from "antd"
 
@@ -20,56 +18,19 @@ import debug from '../../utils/debug'
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
-export const SearchResults = () => {
-    const { state } = useLocation();
-    const { id } = useParams();
-    const navigate = useNavigate();
+const usePageData = (id, state) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState(0)
-    const [files, setFiles] = useState([]);
-    const [assignments, setAssignments] = useState([]);
-    const [isEditingAssignments, setIsEditingAssignments] = useState(false);
-    const [fileList, setFileList] = useState([]);
-    const [isEditingFiles, setIsEditingFiles] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-    const [uploadStatus, setUploadStatus] = useState(null);
 
-    // Patient's name in title
-    let title
-    if (loading) {
-        title = "Загрузка..."
-    } else if (error) {
-        title = "Ошибка"
-    } else if (!data) {
-        title = "Пациент не найден"
-    } else {
-        title = `Карта пациента: ${data.lastName} ${data.firstName} ${data.patr}`
-    }
-    usePageTitle(title)
-
-    // Fetch patient's data
     useEffect(() => {
         const fetchPatientData = async () => {
             try {
-                let patientData;
+                let patientData = state?.patientData ||
+                    (state?.results?.length > 0 && state.results[0]) ||
+                    (id && await api.getPatient(id).then(res => res.data))
 
-                if (state?.patientData) {
-                    patientData = state.patientData;
-                }
-                else if (state?.results?.length > 0) {
-                    patientData = state.results[0];
-                }
-                else if (id) {
-                    const response = await api.getPatient(id)
-                    patientData = response.data
-                }
-
-                if (!patientData) {
-                    throw new Error('Данные пациента не найдены');
-                }
-
+                if (!patientData) throw new Error('Данные пациента не найдены');
                 setData(patientData);
             } catch (err) {
                 setError(err.message);
@@ -79,41 +40,56 @@ export const SearchResults = () => {
         };
         fetchPatientData();
     }, [id, state]);
+    return { data, loading, error }
+}
 
-    // Page title
+const usePageTitleEffect = (loading, error, data) => {
     useEffect(() => {
-        if (loading) {
-            document.title = "Загрузка данных пациента...";
-        } else if (error) {
-            document.title = "Ошибка загрузки";
-        } else if (!data) {
-            document.title = "Пациент не найден";
-        } else {
-            document.title = `Карта пациента: ${data.lastName} ${data.firstName}${data.patr ? ` ${data.patr}` : ''}`;
-        }
+        const title = loading ? "Загрузка данных пациента..." :
+            error ? "Ошибка загрузки" :
+                !data ? "Пациент не найден" :
+                    `Карта пациента: ${data.lastName} ${data.firstName}${data.patr ? ` ${data.patr}` : ''}`
 
+        document.title = title
         return () => {
             document.title = "ГБУ «Городская больница Волновахского района»";
         };
     }, [loading, error, data]);
+}
 
-    // Fetch patient's files
-    useEffect(() => {
-        const fetchFiles = async () => {
-            if (data?.id) {
-                try {
-                    const response = await api.getPatientFiles(data.id)
-                    setFiles(response.data);
-                } catch (error) {
-                    console.error('Error fetching files:', error);
-                }
-            }
-        };
-        fetchFiles();
-    }, [data?.id]);
+const SearchResults = () => {
+    const { state } = useLocation();
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    //states
+    const { data, loading, error } = usePageData(id, state)
+    const [activeTab, setActiveTab] = useState(0)
+    const [files, setFiles] = useState([]);
+    const [assignments, setAssignments] = useState([]);
+    const [isEditingAssignments, setIsEditingAssignments] = useState(false);
+    const [fileList, setFileList] = useState([]);
+    const [isEditingFiles, setIsEditingFiles] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState(null);
+
+    usePageTitleEffect(loading, error, data)
+
+
+    const fetchFiles = useCallback(async () => {
+        if (!data?.id) return
+        try {
+            const response = await api.getPatientFiles(data.id)
+            setFiles(response.data);
+        } catch (error) {
+            console.error('Error fetching files:', error);
+        }
+    }, [data?.id])
+
+    useEffect(() => { fetchFiles() }, [fetchFiles])
 
     // Function to refresh file list
-    const refreshFileList = async () => {
+    const refreshFileList = useCallback(async () => {
         if (!id) return;
 
         try {
@@ -126,65 +102,53 @@ export const SearchResults = () => {
                 response: { path: file.path }
             })));
         } catch (error) {
-            setTimeout(() => {
-                messageApi.error('Ошибка загрузки списка файлов');
-            }, 0)
-
+            setTimeout(() => messageApi.error('Ошибка загрузки списка файлов'), 0)
         }
-    };
+    }, [id, messageApi])
 
-    // Load files on mount and when patientId changes
-    useEffect(() => {
-        refreshFileList();
-    }, [id]);
+    useEffect(() => { refreshFileList() }, [refreshFileList])
 
-    const handleSaveFiles = async () => {
+    const handleSaveFiles = useCallback(async () => {
         try {
             await refreshFileList();
-
             const response = await api.getPatientFiles(id)
             setFiles(response.data);
-
             setIsEditingFiles(false);
             messageApi.success('Файлы успешно сохранены');
         } catch (error) {
             console.error("Error saving files:", error);
             messageApi.error('Ошибка при сохранении файлов');
         }
-    };
+    }, [id, messageApi, refreshFileList])
 
-    const handleRemoveFile = async (file) => {
+    const handleRemoveFile = useCallback(async (file) => {
         try {
-            if (file.response?.path) {
-                const filePath = file.response.path
-                    .replace(/^\/?uploads\//, '')
-                    .replace(/^\/?public\//, '')
-                    .replace(/^\/?/, '')
-                    .replace(/\\/g, '/')
+            if (!file.response?.path) return false
 
-                console.log('Sending file:', filePath);
+            const filePath = file.response.path
+                .replace(/^\/?uploads\//, '')
+                .replace(/^\/?public\//, '')
+                .replace(/^\/?/, '')
+                .replace(/\\/g, '/')
 
-                const response = await api.deleteFile(filePath)
+            const response = await api.deleteFile(filePath)
 
-                if (response.data.success) {
-                    setFileList(prev => prev.filter(f => f.uid !== file.uid));
-                    setFiles(prev => prev.filter(f => f.path !== file.response.path));
-                    setUploadStatus({
-                        status: 'removed',
-                        fileName: file.name
-                    });
-                    return true;
-                }
-                throw new Error(response.data.message || 'Неизвестная ошибка');
-            }
-            return false;
+            if (!response.data.success) throw new Error(response.data.message || 'Неизвестная ошибка')
+
+            setFileList(prev => prev.filter(f => f.uid !== file.uid));
+            setFiles(prev => prev.filter(f => f.path !== file.response.path));
+            setUploadStatus({
+                status: 'removed',
+                fileName: file.name
+            })
+            return true;
         } catch (error) {
             setUploadStatus({
                 status: 'remove_error',
                 fileName: file.name,
                 error: error.response?.data?.message || error.message || 'Ошибка удаления файла'
             });
-            console.error("Delete error:", {
+            debug.error("Delete error:", {
                 error: error.message,
                 response: error.response?.data
             });
@@ -194,93 +158,63 @@ export const SearchResults = () => {
                 }`);
             return false;
         }
-    };
+    }, [messageApi])
 
     useEffect(() => {
-        if (uploadStatus) {
-            switch (uploadStatus.status) {
-                case 'done':
-                    messageApi.success(`${uploadStatus.fileName} файл успешно загружен.`);
-                    break;
-                case 'error':
-                    messageApi.error(`${uploadStatus.fileName} ошибка загрузки файла.`);
-                    break;
-                case 'removed':
-                    messageApi.success(`${uploadStatus.fileName} успешно удален`);
-                    break;
-                case 'remove_error':
-                    messageApi.error(`${uploadStatus.error}: ${uploadStatus.fileName}`);
-                    break;
-            }
-            setUploadStatus(null);
+        if (!uploadStatus) return
+
+        const messages = {
+            done: `${uploadStatus.fileName} файл успешно загружен.`,
+            error: `${uploadStatus.fileName} ошибка загрузки файла.`,
+            removed: `${uploadStatus.fileName} успешно удален`,
+            remove_error: `${uploadStatus.error}: ${uploadStatus.fileName}`,
         }
-    }, [uploadStatus]);
 
-    // reset the editing states when tab change
-    useEffect(() => {
-        setIsEditingAssignments(false);
-        setIsEditingFiles(false);
-    }, [activeTab]);
+        messageApi[uploadStatus.status.includes('error') ? 'error' : 'success'](
+            messages[uploadStatus.status.replace('_', '')]
+        )
+        setUploadStatus(null);
+    }, [uploadStatus, messageApi]);
 
     // Fetch medications
-    useEffect(() => {
+    const fetchMedications = useCallback(async () => {
         if (!data?.id) return;
-        const fetchMedications = async () => {
-            try {
-                const response = await api.getMedications(data.id)
-                const formattedAssignments = response.data.map(med => ({
-                    ...med,
-                    createdAt: med.createdAt || new Date().toISOString()
-                }));
-                setAssignments(formattedAssignments);
-
-            } catch (error) {
-                console.error('Ошибка при получении назначений:', error);
-            }
-        };
-        fetchMedications();
-    }, [data?.id]);
-
-
-    const handleSaveAssignments = async () => {
         try {
-            for (const item of assignments) {
+            const response = await api.getMedications(data.id)
+            setAssignments(response.data.map(med => ({
+                ...med,
+                createdAt: med.createdAt || new Date().toISOString()
+            })))
+        } catch (error) {
+            console.error('Ошибка при получении назначений:', error);
+        }
+    }, [data?.id])
+
+    useEffect(() => { fetchMedications() }, [fetchMedications])
+
+    const handleSaveAssignments = useCallback(async () => {
+        try {
+            await Promise.all(assignments.map(async (item) => {
                 const payload = {
                     name: item.name,
                     dosage: item.dosage,
                     frequency: item.frequency,
                 };
-                try {
-                    if (item.id) {
-                        const response = await api.updateMedication(item.id, payload)
-                    } else {
-                        const response = await api.createMedication(data.id, payload)
-                        const createdAssignment = response.data;
-                        setAssignments(prev =>
-                            prev.map(a =>
-                                !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency
-                                    ? { ...a, id: createdAssignment.id }
-                                    : a
-                            )
-                        );
-                    }
-                } catch (error) {
-                    console.error("Детальная ошибка назначений:", {
-                        url: error.config?.url,
-                        method: error.config?.method,
-                        payload: error.config?.data,
-                        status: error.response?.status,
-                        statusText: error.response?.statusText,
-                        responseData: error.response?.data,
-                        errorMessage: error.message
-                    });
-                    throw error;
+
+                if (item.id) {
+                    await api.updateMedication(item.id, payload)
+                } else {
+                    const response = await api.createMedication(data.id, payload)
+                    setAssignments(prev => prev.map(a =>
+                        !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency
+                            ? { ...a, id: response.data.id }
+                            : a
+                    ));
                 }
-            }
+            }))
 
             setIsEditingAssignments(false);
             messageApi.success('Назначения успешно сохранены');
-
         } catch (error) {
             console.error("Ошибка при сохранении назначений:", {
                 error: error,
@@ -288,13 +222,19 @@ export const SearchResults = () => {
             });
             messageApi.error('Ошибка при сохранении назначений: ' + (error.response?.data?.message || error.message));
         }
-    };
+    }, [assignments, data?.id, messageApi])
 
-    const handlePrint = () => {
-        window.print()
-    }
 
-    const handleEdit = () => {
+    // reset the editing states when tab change
+    useEffect(() => {
+        setIsEditingAssignments(false);
+        setIsEditingFiles(false);
+    }, [activeTab]);
+
+    // Handlers
+    const handlePrint = () => window.print()
+
+    const handleEdit = useCallback(() => {
         if (activeTab === 2) {
             setIsEditingAssignments(prev => !prev);
         } else if (activeTab === 1) {
@@ -307,30 +247,41 @@ export const SearchResults = () => {
             })
 
         }
-    }
+    }, [activeTab, data, navigate])
 
-    const tabContents = [
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+
+
+    const renderLoader = () => (
+        <div className={styles.info}>
+            <div className={styles.bg}>
+                <SpinContainer />
+            </div>
+        </div>
+    )
+
+    const renderContent = () => {
+        if (loading && !data) {
+            return (
+                <div className={styles.info}>
+                    <div className={styles.bg}>
+                        <SpinContainer />
                     </div>
                 </div>
-            </div>
-        }>
+            );
+        }
+
+        if (error) return <ErrorState error={error} />;
+        if (!data) return <NotFoundState />;
+
+        return null;
+    };
+
+    const tabContents = [
+        <Suspense fallback={renderLoader()}>
             <Tab1 data={data} />
         </Suspense>,
 
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                    </div>
-                </div>
-            </div>
-        }>
+        <Suspense fallback={renderLoader()}>
             <Tab2
                 files={files}
                 fileList={fileList}
@@ -346,15 +297,7 @@ export const SearchResults = () => {
             />
         </Suspense>,
 
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                    </div>
-                </div>
-            </div>
-        }>
+        <Suspense fallback={renderLoader()}>
             <Tab3
                 assignments={assignments}
                 isEditingAssignments={isEditingAssignments}
@@ -363,70 +306,16 @@ export const SearchResults = () => {
         </Suspense>
     ]
 
-    //Main block state
-    if (loading && !data) {
-        return (
-            <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>
-                <h2>
-                    {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
-                </h2>
-
-                <Menu
-                    items={[
-                        { name: 'Основное' },
-                        { name: 'Анализы' },
-                        { name: 'Назначения' }
-                    ]}
-                    activeTab={activeTab}
-                    onTabChange={setActiveTab}
-                />
-                <div className={styles.info}>
-                    <div className={styles.bg}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.buttonsContainer}>
-                    <div style={{ display: 'flex' }}>
-                        <Button
-                            text={isEditingAssignments || isEditingFiles ?
-                                `Сохранить` : `Редактировать`
-                            }
-                            onClick={(e) => {
-                                handleEdit(e)
-                                {
-                                    isEditingAssignments && (
-                                        handleSaveAssignments(e)
-                                    )
-                                    isEditingFiles && (
-                                        handleSaveFiles(e)
-                                    )
-                                }
-                            }}
-                        />
-
-                        <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
-                    </div>
-
-                    <Button text="Назад на главную" onClick={() => navigate('/')} />
-                </div>
-            </div>
-        );
-    }
-    if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
-    if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
-
     //Debug
-    debug.log(`Search result of patient ${data.lastName} ${data.firstName} ${data.patr}`)
+    debug.log(`Search result of patient ${data?.lastName} ${data?.firstName} ${data?.patr}`)
 
+    //Render
     return (
         <div className={styles.resultsContainer}>
             {contextHolder}
             <h2>
                 {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
             </h2>
-
             <Menu
                 items={[
                     { name: 'Основное' },
@@ -437,34 +326,69 @@ export const SearchResults = () => {
                 onTabChange={setActiveTab}
             />
 
-            {tabContents[activeTab]}
 
-            <div className={styles.buttonsContainer}>
-                <div style={{ display: 'flex' }}>
-                    <Button
-                        text={isEditingAssignments || isEditingFiles ?
-                            `Сохранить` : `Редактировать`
-                        }
-                        onClick={(e) => {
-                            handleEdit(e)
-                            {
-                                isEditingAssignments && (
-                                    handleSaveAssignments(e)
-                                )
-                                isEditingFiles && (
-                                    handleSaveFiles(e)
-                                )
-                            }
-                        }}
-                    />
+            {renderContent() || tabContents[activeTab]}
 
-                    <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
-                </div>
-
-                <Button text="Назад на главную" onClick={() => navigate('/')} />
-            </div>
+            <ActionButtons
+                isEditingAssignments={isEditingAssignments}
+                isEditingFiles={isEditingFiles}
+                handleEdit={handleEdit}
+                handleSaveAssignments={handleSaveAssignments}
+                handleSaveFiles={handleSaveFiles}
+                handlePrint={handlePrint}
+                navigate={navigate}
+            />
         </div >
     );
 };
+const SpinContainer = () => (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
+    </div>
+);
+
+const ErrorState = ({ error }) => (
+    <div className={styles.resultsContainer}>Ошибка: {error}</div>
+);
+
+const NotFoundState = () => (
+    <div className={styles.resultsContainer}>Пациент не найден.</div>
+);
+
+const ActionButtons = ({
+    isEditingAssignments,
+    isEditingFiles,
+    handleEdit,
+    handleSaveAssignments,
+    handleSaveFiles,
+    handlePrint,
+    navigate
+}) => (
+    <div className={styles.buttonsContainer}>
+        <div style={{ display: 'flex' }}>
+            <Button
+                text={
+                    isEditingAssignments || isEditingFiles
+                        ? `Сохранить`
+                        : `Редактировать`
+                }
+                onClick={(e) => {
+                    handleEdit(e);
+                    isEditingAssignments && handleSaveAssignments(e);
+                    isEditingFiles && handleSaveFiles(e);
+                }}
+            />
+            <Button
+                text="Печать"
+                className={styles.printButton}
+                onClick={handlePrint}
+            />
+        </div>
+        <Button
+            text="Назад на главную"
+            onClick={() => navigate('/')}
+        />
+    </div>
+);
 
 export default SearchResults

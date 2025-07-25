@@ -71,9 +71,8 @@ footer {
     display: block;
   }
 
-  .header,
-  .footer {
-    display: none !important;
+  main {
+    background-color: white;
   }
 }
 

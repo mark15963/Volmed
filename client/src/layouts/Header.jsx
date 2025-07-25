@@ -11,7 +11,7 @@ import { ContextMenu } from "../components/admin/ContextMenu";
 import logo from '../assets/images/logo.webp'
 
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
-import styles from './styles/header.module.css'
+import styles from './styles/header.module.scss'
 
 
 export const Header = (props) => {
@@ -37,14 +37,20 @@ export const Header = (props) => {
                     onClick={handleClick}
                     loading='eager'
                 />
-                <h1
+                <div
                     className={styles.title}
                 >
-                    <span className={styles.title}>ГБУ «Городская больница</span>
+                    <span className={styles.titleTop}>ГБУ «Городская больница</span>
+                    <span className={styles.titleBottom}>Волновахского района»</span>
+                </div>
+                <div
+                    className={styles.titlePrint}
+                >
+                    <span className={styles.titlePrintText}>ГБУ «Городская больница</span>
+                    <span className={styles.titlePrintText}>Волновахского района»</span>
                     <br />
-                    <span className={styles.title}>Волновахского района»</span>
-                </h1>
-
+                    <span className={styles.titleStreetPrint}>Волноваха, Железнодорожный переулок</span>
+                </div>
                 <div className={userContainerClass}>
                     {authState.isAuthenticated && (
                         <>

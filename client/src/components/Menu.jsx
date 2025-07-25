@@ -1,4 +1,4 @@
-import styles from './styles/Menu.module.css'
+import styles from './styles/Menu.module.scss'
 
 export const Card = ({ name, isActive, onClick }) => {
     return (

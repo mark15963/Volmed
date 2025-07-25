@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router';
-import styles from './styles/footer.module.css'
+import styles from './styles/footer.module.scss'
 
 export const Footer = () => {
     const year = new Date().getFullYear()

@@ -96,12 +96,6 @@
   gap: 10px;
 }
 
-.updbut:hover,
-.backButton:hover,
-.printbut:hover {
-  background-color: #e0e0e0;
-}
-
 .items {
   max-width: 100%;
   min-width: 300px;
@@ -280,9 +274,5 @@
     width: 300px;
     border-collapse: collapse;
     font-size: 14px;
-  }
-
-  .printButton {
-    display: none;
   }
 }
