@@ -6,10 +6,11 @@ import api from '../../../services/api';
 import Input from '../../../components/Input';
 import Button from '../../../components/Buttons';
 
-// import styles from '../searchResults.module.css';
 import tableStyles from '../../../components/styles/Table.module.css';
 import styles from './tab3.module.scss'
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
+import { useState } from 'react';
+import debug from '../../../utils/debug';
 
 axios.defaults.withCredentials = true;
 
@@ -18,6 +19,50 @@ export const Tab3 = ({
     isEditingAssignments,
     setAssignments,
 }) => {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleAdd = async () => {
+        setAssignments([...assignments, {
+            name: '',
+            dosage: '',
+            frequency: '',
+            createdAt: new Date().toISOString()
+        }])
+    }
+
+    const handleDelete = async (index) => {
+        const itemToDelete = assignments[index];
+        setIsLoading(true)
+        debug.log(`Deleting assignment: ${itemToDelete.name}`)
+
+        if (!itemToDelete) {
+            alert('Не удалось найти назначение для удаления');
+            return;
+        }
+
+        if (!window.confirm('Вы уверены, что хотите удалить это назначение?')) {
+            return;
+        }
+        try {
+            if (itemToDelete.id) {
+                const response = await api.deleteMedication(itemToDelete.id)
+                if (!response.data.success) {
+                    throw new Error(response.data.message || "API returned unsuccessful");
+                }
+            }
+            const newList = assignments.filter((_, i) => i !== index);
+            setAssignments(newList);
+            debug.log("Deleted successfully")
+            setIsLoading(false)
+        } catch (err) {
+            debug.error("Full delete error:", {
+                error: err,
+                response: err.response?.data
+            });
+            alert(`Не удалось удалить назначение: ${err.message}`);
+        }
+    }
+
     return (
         <div className={styles.info}>
             <div className={styles.bg}>
@@ -122,26 +167,9 @@ export const Tab3 = ({
                                                 <Button
                                                     text='Удалить'
                                                     size='s'
-                                                    onClick={async () => {
-                                                        const itemToDelete = assignments[index];
-                                                        try {
-                                                            if (itemToDelete.id) {
-                                                                const response = await api.deleteMedication(itemToDelete.id)
-                                                                if (!response.data.success) {
-                                                                    throw new Error(response.data.message || "API returned unsuccessful");
-                                                                }
-                                                            }
-                                                            const newList = assignments.filter((_, i) => i !== index);
-                                                            setAssignments(newList);
-
-                                                        } catch (err) {
-                                                            console.error("Full delete error:", {
-                                                                error: err,
-                                                                response: err.response?.data
-                                                            });
-                                                            alert(`Не удалось удалить назначение: ${err.message}`);
-                                                        }
-                                                    }} />
+                                                    onClick={() => handleDelete(index)}
+                                                    loading={isLoading}
+                                                />
                                             </td>
                                         )}
                                     </tr>
@@ -155,14 +183,7 @@ export const Tab3 = ({
                 {isEditingAssignments && (
                     <Button
                         text='Добавить'
-                        onClick={() => {
-                            setAssignments([...assignments, {
-                                name: '',
-                                dosage: '',
-                                frequency: '',
-                                createdAt: new Date().toISOString()
-                            }])
-                        }}
+                        onClick={handleAdd}
                         style={{ marginBottom: '10px', marginLeft: 0 }}
                     />
                 )}

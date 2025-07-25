@@ -6,9 +6,7 @@ import { useNavigate } from "react-router";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import 'react-loading-skeleton/dist/skeleton.css';
-
-// import styles from './styles/Table.module.css'
-import styles from './styles/patientList.module.css'
+import styles from './styles/patientList.module.scss'
 
 import api from "../services/api";
 import debug from "../utils/debug";

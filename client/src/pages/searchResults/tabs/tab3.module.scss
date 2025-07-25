@@ -194,3 +194,24 @@ hr {
     }
   }
 }
+
+@media print {
+  * {
+    background-color: white;
+  }
+  .info {
+    background-color: white;
+    border-width: 1px 0;
+    border-radius: 0;
+    .bg {
+      background-color: white;
+      .listContainer {
+        background-color: white;
+        .rows {
+          background-color: white !important;
+          border: 1px solid black !important;
+        }
+      }
+    }
+  }
+}
