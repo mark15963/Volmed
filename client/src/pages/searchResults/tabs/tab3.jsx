@@ -6,9 +6,9 @@ import api from '../../../services/api';
 import Input from '../../../components/Input';
 import Button from '../../../components/Buttons';
 
-import styles from '../searchResults.module.css';
+// import styles from '../searchResults.module.css';
 import tableStyles from '../../../components/styles/Table.module.css';
-import medStyles from './tab3.module.scss'
+import styles from './tab3.module.scss'
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
 axios.defaults.withCredentials = true;
@@ -19,8 +19,8 @@ export const Tab3 = ({
     setAssignments,
 }) => {
     return (
-        <div className={medStyles.info}>
-            <div className={medStyles.bg}>
+        <div className={styles.info}>
+            <div className={styles.bg}>
                 <h2>Назначения</h2>
 
                 {/* EMPTY LIST */}
@@ -30,10 +30,10 @@ export const Tab3 = ({
 
                 {/* MED LIST */}
                 {(assignments.length > 0 || isEditingAssignments) && (
-                    <div className={medStyles.listContainer}>
-                        <table className={medStyles.table}>
-                            <thead className={medStyles.head}>
-                                <tr className={medStyles.rows}>
+                    <div className={styles.listContainer}>
+                        <table className={styles.table}>
+                            <thead className={styles.head}>
+                                <tr className={styles.rows}>
                                     <th>Время назначения</th>
                                     <th>Препарат / Манипуляция</th>
                                     <th>Дозировка</th>
@@ -41,22 +41,20 @@ export const Tab3 = ({
                                     {isEditingAssignments && <th style={{ width: '15%' }}>Удалить</th>}
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className={styles.body}>
                                 {assignments.map((item, index) => (
                                     <tr
                                         key={index}
-                                        className={medStyles.rows}
+                                        className={styles.rows}
                                     >
+                                        {/* Created At */}
                                         <td>
-                                            <div style={{ display: 'flex' }}>
-                                                <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
-                                                    <CalendarTwoTone />
-                                                </div>
-                                                <div>
-                                                    {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
-                                                </div>
+                                            <CalendarTwoTone className={styles.icon} />
+                                            <div style={{ display: 'inline-block' }}>
+                                                {item.createdAt ? moment(item.createdAt).format(' DD.MM.YYYY HH:mm') : ' Н/Д'}
                                             </div>
                                         </td>
+                                        {/* Name */}
                                         <td>
                                             {isEditingAssignments ? (
                                                 <Input
@@ -67,19 +65,16 @@ export const Tab3 = ({
                                                         setAssignments(newList);
                                                     }}
                                                 />
-                                            ) :
+                                            ) : (
                                                 <>
-                                                    <div style={{ display: 'flex' }}>
-                                                        <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
-                                                            <MedicineBoxTwoTone />
-                                                        </div>
-                                                        <div>
-                                                            {' ' + item.name}
-                                                        </div>
+                                                    <MedicineBoxTwoTone className={styles.icon} />
+                                                    <div style={{ display: 'inline-block' }}>
+                                                        {item.name}
                                                     </div>
                                                 </>
-                                            }
+                                            )}
                                         </td>
+                                        {/* Dosage */}
                                         <td>
                                             {isEditingAssignments ? (
                                                 <Input
@@ -90,35 +85,38 @@ export const Tab3 = ({
                                                         setAssignments(newList);
                                                     }}
                                                 />
-                                            ) :
+                                            ) : (
                                                 <>
-                                                    <div style={{ display: 'flex' }}>
-                                                        <div style={{ width: '30px', display: 'flex', justifyContent: 'center' }}>
-                                                            <FieldTimeOutlined />
-                                                        </div>
-                                                        <div>
-                                                            {' ' + item.dosage}
-                                                        </div>
+                                                    <FieldTimeOutlined className={styles.icon} />
+                                                    <div className={styles.desktop} style={{ display: 'inline-block' }}>
+                                                        {item.dosage}
+                                                    </div>
+                                                    <div className={styles.mobile}>
+                                                        {item.dosage} {item.frequency}
                                                     </div>
                                                 </>
-                                            }
+                                            )}
                                         </td>
+                                        {/* Frequency*/}
                                         <td>
-                                            <div style={{ display: 'flex' }}>
-                                                <div style={{ width: '100px', display: 'flex', justifyContent: 'center' }}>
-                                                    {isEditingAssignments ? (
-                                                        <Input
-                                                            value={item.frequency}
-                                                            onChange={(e) => {
-                                                                const newList = [...assignments];
-                                                                newList[index].frequency = e.target.value;
-                                                                setAssignments(newList);
-                                                            }}
-                                                        />
-                                                    ) : item.frequency}
-                                                </div>
+                                            <div style={{ display: 'inline-block' }}>
+                                                {isEditingAssignments ? (
+                                                    <Input
+                                                        value={item.frequency}
+                                                        onChange={(e) => {
+                                                            const newList = [...assignments];
+                                                            newList[index].frequency = e.target.value;
+                                                            setAssignments(newList);
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <div className={styles.desktop}>
+                                                        {item.frequency}
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
+                                        {/* Delete Button*/}
                                         {isEditingAssignments && (
                                             <td style={{ width: '15%', verticalAlign: 'middle' }}>
                                                 <Button
