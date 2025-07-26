@@ -490,8 +490,8 @@ const ActionButtons = ({
                 />
             </div>
             <Button
-                text="Назад на главную"
-                onClick={() => navigate('/')}
+                text="Назад в список"
+                onClick={() => navigate('/list')}
             />
         </div>
     )
