@@ -59,6 +59,23 @@ export const Graph = ({
     const paddingLeft = 30;
     const paddingRight = 20;
 
+    // Handle container resizing
+    useEffect(() => {
+        const updateWidth = () => {
+            if (containerRef.current) {
+                const width = containerRef.current.offsetWidth;
+            }
+        };
+
+        updateWidth();
+
+        const resizeObserver = new ResizeObserver(updateWidth);
+        if (containerRef.current)
+            resizeObserver.observe(containerRef.current);
+
+        return () => resizeObserver.disconnect();
+    }, []);
+
     // Early return for invalid data
     if (!Array.isArray(data)) {
         return (
@@ -84,23 +101,6 @@ export const Graph = ({
             </div>
         );
     }
-
-    // Handle container resizing
-    useEffect(() => {
-        const updateWidth = () => {
-            if (containerRef.current) {
-                const width = containerRef.current.offsetWidth;
-            }
-        };
-
-        updateWidth();
-
-        const resizeObserver = new ResizeObserver(updateWidth);
-        if (containerRef.current)
-            resizeObserver.observe(containerRef.current);
-
-        return () => resizeObserver.disconnect();
-    }, []);
 
     // Calculate min and max values
     const minVal = propMinVal ?? 0

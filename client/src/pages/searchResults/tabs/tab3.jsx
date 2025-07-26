@@ -22,12 +22,22 @@ export const Tab3 = ({
     const [isLoading, setIsLoading] = useState(false)
 
     const handleAdd = async () => {
-        setAssignments([...assignments, {
-            name: '',
-            dosage: '',
-            frequency: '',
-            createdAt: new Date().toISOString()
-        }])
+        if (assignments.length === 0 || assignments[assignments.length - 1].name.trim()) {
+            debug.log(`Adding new assignment`)
+            setAssignments(prev => [...prev, {
+                name: '',
+                dosage: '',
+                frequency: '',
+                createdAt: new Date().toISOString()
+            }])
+        } else {
+            // Focus on the empty field in the last row
+            const lastRowInput = document.querySelector(`.${styles.table} tr:last-child td:nth-child(2) input`);
+            if (lastRowInput) {
+                lastRowInput.focus();
+                message.warning('Пожалуйста, заполните текущее назначение перед добавлением нового');
+            }
+        }
     }
 
     const handleDelete = async (index) => {
@@ -41,8 +51,10 @@ export const Tab3 = ({
         }
 
         if (!window.confirm('Вы уверены, что хотите удалить это назначение?')) {
+            setIsLoading(false)
             return;
         }
+
         try {
             if (itemToDelete.id) {
                 const response = await api.deleteMedication(itemToDelete.id)
@@ -50,16 +62,17 @@ export const Tab3 = ({
                     throw new Error(response.data.message || "API returned unsuccessful");
                 }
             }
-            const newList = assignments.filter((_, i) => i !== index);
-            setAssignments(newList);
+
+            setAssignments(prev => prev.filter((_, i) => i !== index));
             debug.log("Deleted successfully")
-            setIsLoading(false)
         } catch (err) {
             debug.error("Full delete error:", {
                 error: err,
                 response: err.response?.data
             });
             alert(`Не удалось удалить назначение: ${err.message}`);
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -168,7 +181,6 @@ export const Tab3 = ({
                                                     text='Удалить'
                                                     size='s'
                                                     onClick={() => handleDelete(index)}
-                                                    loading={isLoading}
                                                 />
                                             </td>
                                         )}

@@ -63,7 +63,6 @@ footer {
 @media print {
   @page {
     margin: 0;
-    /* Removes default header/footer */
     size: auto;
   }
 

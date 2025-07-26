@@ -1,32 +1,51 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import api from '../services/api'
 
 const PatientDataContext = createContext()
 
 export const PatientDataProvider = ({ children }) => {
-    const [patients, setPatients] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [state, setState] = useState({
+        patients: [],
+        isLoading: true,
+        error: null
+    })
 
-    const fetchPatients = async () => {
+    const fetchPatients = useCallback(async () => {
         try {
-            const response = await api.getPatients()
-            setPatients(response.data || [])
+            setState(prev => ({ ...prev, isLoading: true }))
+            const { data } = await api.getPatients()
+            setState({
+                patients: data || [],
+                isLoading: false,
+                error: null
+            })
         } catch (error) {
-            console.log("Error fetching patients: ", error.message)
-        } finally {
-            setLoading(false)
+            setState({
+                patients: [],
+                isLoading: false,
+                error: error.message
+            })
         }
-    }
+    }, [])
 
     useEffect(() => {
         fetchPatients()
     }, [])
 
     return (
-        <PatientDataContext.Provider value={{ patients, loading, refresh: fetchPatients }}>
+        <PatientDataContext.Provider value={{
+            ...state,
+            refresh: fetchPatients
+        }}>
             {children}
         </PatientDataContext.Provider>
     )
 }
 
-export const usePatients = () => useContext(PatientDataContext)
+export const usePatients = () => {
+    const context = useContext(PatientDataContext)
+    if (!context) {
+        throw new Error('usePatients must be used within PatientDataProvider');
+    }
+    return context;
+}

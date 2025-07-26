@@ -25,7 +25,14 @@ const isAuth = (req, res, next) => {
   if (req.session.isAuth) {
     next();
   } else {
-    res.redirect("/login");
+    if (req.accepts("json") || req.xhr) {
+      return res.status(401).json({
+        error: "Session expired or invalid",
+        redirect: "/login",
+        redirectToFrontend: true,
+      });
+    }
+    res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
 

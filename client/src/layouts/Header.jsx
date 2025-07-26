@@ -59,12 +59,12 @@ export const Header = (props) => {
                                     <div className={styles.userNameContainer}>
                                         <div className={styles.userNameText}>
                                             {authState.isAuthenticated
-                                                ? (`${authState.status}`)
+                                                ? (`${authState.user.status}`)
                                                 : ''}
                                         </div>
                                         <div className={styles.userNameText}>
                                             {authState.isAuthenticated
-                                                ? (`${authState.lastName} ${authState.firstName} ${authState.patr}`)
+                                                ? (`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`)
                                                 : ''}
                                         </div>
                                     </div>

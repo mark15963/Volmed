@@ -94,7 +94,7 @@ app.use(
       pool: db,
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || "your-strong-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -104,6 +104,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24,
     },
     proxy: true,
+    unset: "destroy",
   })
 );
 
@@ -155,6 +156,12 @@ async function testDbConnection() {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
+  if (req.accepts("json")) {
+    return res
+      .status(500)
+      .json({ error: "Server error", message: err.message });
+  }
+  res.status(500).send("Server error");
   res.status(500).json({
     error: "Internal Server Error",
     message:

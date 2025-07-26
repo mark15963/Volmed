@@ -1,4 +1,6 @@
 import axios from "axios";
+import debug from "../utils/debug";
+import { useNavigate } from "react-router";
 
 const environment = import.meta.env.VITE_ENV;
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -14,8 +16,27 @@ const api = axios.create({
 });
 // Global error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    debug.log("API success:", response.config.url, response.data);
+    return response;
+  },
   (error) => {
+    debug.error("API error:", {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+
+    if (error.response?.status === 401) {
+      // Check if this is a session expiration case
+      if (error.response.data?.redirectToFrontend) {
+        // Use your auth context or react-router to redirect
+        useNavigate = "/login"; // Or use your router navigation
+      }
+      return Promise.reject(new Error("Session expired. Please login again."));
+    }
+
     if (error.response) {
       const status = error.response.status;
       const messages = {

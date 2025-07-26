@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router'
-import { useEffect, useState, lazy, Suspense, useCallback } from 'react'
+import React, { useEffect, useState, lazy, Suspense, useCallback, useMemo } from 'react'
 import { Menu } from '../../components/Menu'
 import { message, Spin } from "antd"
 
@@ -24,22 +24,34 @@ const usePageData = (id, state) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchPatientData = async () => {
             try {
+                if (!isMounted) return
+
                 let patientData = state?.patientData ||
                     (state?.results?.length > 0 && state.results[0]) ||
                     (id && await api.getPatient(id).then(res => res.data))
 
+                if (!isMounted) return
+
                 if (!patientData) throw new Error('Данные пациента не найдены');
+
                 setData(patientData);
             } catch (err) {
-                setError(err.message);
+                if (isMounted) setError(err.message);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
+
         fetchPatientData();
+        return () => {
+            isMounted = false
+        }
     }, [id, state]);
+
     return { data, loading, error }
 }
 
@@ -57,7 +69,7 @@ const usePageTitleEffect = (loading, error, data) => {
     }, [loading, error, data]);
 }
 
-const SearchResults = () => {
+const SearchResults = React.memo(() => {
     const { state } = useLocation();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -66,8 +78,13 @@ const SearchResults = () => {
     //states
     const { data, loading, error } = usePageData(id, state)
     const [activeTab, setActiveTab] = useState(0)
+
     const [files, setFiles] = useState([]);
     const [assignments, setAssignments] = useState([]);
+    const [editing, setEditing] = useState({
+        files: false,
+        assignments: false
+    })
     const [isEditingAssignments, setIsEditingAssignments] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [isEditingFiles, setIsEditingFiles] = useState(false);
@@ -106,14 +123,22 @@ const SearchResults = () => {
         }
     }, [id, messageApi])
 
-    useEffect(() => { refreshFileList() }, [refreshFileList])
+    useEffect(() => {
+        let isMounted = true
+
+        refreshFileList().then(() => {
+            if (!isMounted) return
+        })
+
+        return () => { isMounted = false }
+    }, [refreshFileList])
 
     const handleSaveFiles = useCallback(async () => {
         try {
             await refreshFileList();
             const response = await api.getPatientFiles(id)
             setFiles(response.data);
-            setIsEditingFiles(false);
+            setEditing(prev => ({ ...prev, files: false }));
             messageApi.success('Файлы успешно сохранены');
         } catch (error) {
             console.error("Error saving files:", error);
@@ -192,19 +217,63 @@ const SearchResults = () => {
 
     useEffect(() => { fetchMedications() }, [fetchMedications])
 
+    const handleSave = () => {
+        debug.log("Checking for empty spaces")
+
+        const hasEmptyNames = assignments.some((item, index) => {
+            // Only validate non-empty rows that aren't the last row
+            if (index < assignments.length - 1) {
+                return !item.name.trim();
+            }
+            // For the last row, only validate if it's not completely empty
+            return item.name || item.dosage || item.frequency ? !item.name.trim() : false
+        })
+
+        if (hasEmptyNames) {
+            messageApi.error('Пожалуйста, заполните названия всех препаратов');
+            debug.log("Empty spaces")
+            return;
+        }
+
+        // If last row is completely empty, remove it before saving
+        const lastItem = assignments[assignments.length - 1]
+        if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
+            setAssignments(prev => prev.slice(0, -1))
+        }
+        debug.log("No empty spaces")
+        handleSaveAssignments();
+    };
+
     const handleSaveAssignments = useCallback(async () => {
         try {
-            await Promise.all(assignments.map(async (item) => {
+            debug.log("Saving assignments")
+            const validAssignments = assignments.filter(item => item.name?.trim());
+
+            if (validAssignments.length !== assignments.length) {
+                throw new Error('Название препарата не может быть пустым');
+            }
+
+            if (validAssignments.length === 0) {
+                setEditing(prev => ({ ...prev, assignments: false }));
+                return;
+            }
+
+            await Promise.all(validAssignments.map(async (item) => {
                 const payload = {
-                    name: item.name,
-                    dosage: item.dosage,
-                    frequency: item.frequency,
+                    name: item.name.trim(),
+                    dosage: item.dosage?.trim() || '',
+                    frequency: item.frequency?.trim() || '',
+                    createdAt: item.createdAt || new Date().toISOString()
                 };
 
                 if (item.id) {
                     await api.updateMedication(item.id, payload)
                 } else {
+                    if (!data?.id) throw new Error('Отсутствует ID пациента');
                     const response = await api.createMedication(data.id, payload)
+
+                    debug.log('Create response:', response.data);
+
                     setAssignments(prev => prev.map(a =>
                         !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency
                             ? { ...a, id: response.data.id }
@@ -213,22 +282,28 @@ const SearchResults = () => {
                 }
             }))
 
-            setIsEditingAssignments(false);
+            setEditing(prev => ({ ...prev, assignments: false }));
             messageApi.success('Назначения успешно сохранены');
         } catch (error) {
-            console.error("Ошибка при сохранении назначений:", {
-                error: error,
-                response: error.response?.data
+            debug.error("Full error details:", {
+                error: error.response?.data || error.message,
+                request: error.config
             });
-            messageApi.error('Ошибка при сохранении назначений: ' + (error.response?.data?.message || error.message));
+            messageApi.error('Ошибка при сохранении назначений: ' + error.message);
         }
     }, [assignments, data?.id, messageApi])
 
 
     // reset the editing states when tab change
     useEffect(() => {
-        setIsEditingAssignments(false);
-        setIsEditingFiles(false);
+        // Clean up empty assignment rows when switching tabs
+        if (activeTab !== 2 && assignments.length > 0) {
+            const lastItem = assignments[assignments.length - 1]
+            if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
+                setAssignments(prev => prev.slice(0, -1));
+            }
+        }
+        setEditing({ files: false, assignments: false })
     }, [activeTab]);
 
     // Handlers
@@ -236,9 +311,17 @@ const SearchResults = () => {
 
     const handleEdit = useCallback(() => {
         if (activeTab === 2) {
-            setIsEditingAssignments(prev => !prev);
+            setEditing(prev => ({
+                ...prev,
+                assignments: !prev.assignments,
+                files: false
+            }));
         } else if (activeTab === 1) {
-            setIsEditingFiles(prev => !prev);
+            setEditing(prev => ({
+                ...prev,
+                files: !prev.files,
+                assignments: false,
+            }));
         } else if (data?.id) {
             navigate(`/edit/${data.id}`, {
                 state: {
@@ -276,7 +359,7 @@ const SearchResults = () => {
         return null;
     };
 
-    const tabContents = [
+    const tabContents = useMemo(() => [
         <Suspense fallback={renderLoader()}>
             <Tab1 data={data} />
         </Suspense>,
@@ -286,8 +369,8 @@ const SearchResults = () => {
                 files={files}
                 fileList={fileList}
                 setFileList={setFileList}
-                isEditingFiles={isEditingFiles}
-                setIsEditingFiles={setIsEditingFiles}
+                isEditingFiles={editing.files}
+                setIsEditingFiles={(value) => setEditing(prev => ({ ...prev, files: value }))}
                 handleSaveFiles={handleSaveFiles}
                 handleRemoveFile={handleRemoveFile}
                 uploadStatus={uploadStatus}
@@ -300,14 +383,18 @@ const SearchResults = () => {
         <Suspense fallback={renderLoader()}>
             <Tab3
                 assignments={assignments}
-                isEditingAssignments={isEditingAssignments}
+                isEditingAssignments={editing.assignments}
                 setAssignments={setAssignments}
             />
         </Suspense>
-    ]
+    ], [data, files, fileList, assignments, editing.files, editing.assignments])
 
     //Debug
-    debug.log(`Search result of patient ${data?.lastName} ${data?.firstName} ${data?.patr}`)
+    useEffect(() => {
+        if (data) {
+            debug.log(`Search result of patient ${data?.lastName} ${data?.firstName} ${data?.patr}`)
+        }
+    }, [data])
 
     //Render
     return (
@@ -330,17 +417,19 @@ const SearchResults = () => {
             {renderContent() || tabContents[activeTab]}
 
             <ActionButtons
-                isEditingAssignments={isEditingAssignments}
-                isEditingFiles={isEditingFiles}
+                isEditingAssignments={editing.assignments}
+                isEditingFiles={editing.files}
                 handleEdit={handleEdit}
-                handleSaveAssignments={handleSaveAssignments}
+                handleSaveAssignments={handleSave}
                 handleSaveFiles={handleSaveFiles}
                 handlePrint={handlePrint}
                 navigate={navigate}
+                assignments={assignments}
             />
         </div >
     );
-};
+})
+
 const SpinContainer = () => (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
@@ -362,33 +451,50 @@ const ActionButtons = ({
     handleSaveAssignments,
     handleSaveFiles,
     handlePrint,
-    navigate
-}) => (
-    <div className={styles.buttonsContainer}>
-        <div style={{ display: 'flex' }}>
+    navigate,
+    assignments = [],
+}) => {
+    const handleSaveClick = (e) => {
+        if (isEditingAssignments) {
+            // First check for empty fields
+            const hasEmptyNames = assignments.some(item => !item.name.trim());
+
+            if (hasEmptyNames) {
+                message.error('Пожалуйста, заполните все поля');
+
+                return;
+            }
+            handleSaveAssignments(e);
+
+        } else if (isEditingFiles) {
+            handleSaveFiles(e);
+        } else {
+            handleEdit(e);
+        }
+    };
+    return (
+        <div className={styles.buttonsContainer}>
+            <div style={{ display: 'flex' }}>
+                <Button
+                    text={
+                        isEditingAssignments || isEditingFiles
+                            ? `Сохранить`
+                            : `Редактировать`
+                    }
+                    onClick={handleSaveClick}
+                />
+                <Button
+                    text="Печать"
+                    className={styles.printButton}
+                    onClick={handlePrint}
+                />
+            </div>
             <Button
-                text={
-                    isEditingAssignments || isEditingFiles
-                        ? `Сохранить`
-                        : `Редактировать`
-                }
-                onClick={(e) => {
-                    handleEdit(e);
-                    isEditingAssignments && handleSaveAssignments(e);
-                    isEditingFiles && handleSaveFiles(e);
-                }}
-            />
-            <Button
-                text="Печать"
-                className={styles.printButton}
-                onClick={handlePrint}
+                text="Назад на главную"
+                onClick={() => navigate('/')}
             />
         </div>
-        <Button
-            text="Назад на главную"
-            onClick={() => navigate('/')}
-        />
-    </div>
-);
+    )
+}
 
 export default SearchResults
