@@ -30,12 +30,8 @@ api.interceptors.response.use(
     });
 
     if (error.response?.status === 401) {
-      // Check if this is a session expiration case
       if (error.response.data?.redirectToFrontend) {
-        const navigate = useNavigate();
-
-        // Use your auth context or react-router to redirect
-        navigate = "/login"; // Or use your router navigation
+        window.location.href = "/login";
       }
       return Promise.reject(new Error("Session expired. Please login again."));
     }
