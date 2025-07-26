@@ -12,6 +12,7 @@ import Graph from '../../../components/Graph';
 
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from './tab2.module.css'
+import debug from '../../../utils/debug';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -224,6 +225,7 @@ export const Tab2 = ({
 
     //-----FILES-----
     const openFile = (filePath) => {
+        debug.log(`Opening file from: ${filePath}`)
         window.open(`${apiUrl}${filePath}`, '_blank');
     };
 
@@ -297,11 +299,11 @@ export const Tab2 = ({
                             <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
                         )}
 
-                        {!isEditingFiles && (
+                        {!isEditingFiles ? (
                             <ul>
                                 {files.map((file, index) => (
-                                    <li key={index} className={styles.fileItem}>
-                                        <span onClick={() => openFile(file.path)}>
+                                    <li key={index} className={styles.fileItem} onClick={() => openFile(file.path)}>
+                                        <span>
                                             {file.originalname || file.filename}
                                         </span>
                                         <span className={styles.fileSize}>
@@ -310,9 +312,7 @@ export const Tab2 = ({
                                     </li>
                                 ))}
                             </ul>
-                        )}
-
-                        {isEditingFiles && (
+                        ) : (
                             <Form.Item className={styles.uploadArea}>
                                 <Dragger {...uploadProps} className={styles.uploadListText}>
                                     <p className="ant-upload-drag-icon">
