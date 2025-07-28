@@ -1,3 +1,4 @@
+//#region =====IMPORTS=====
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
@@ -14,7 +15,7 @@ import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 
 import styles from './register.module.css'
 import api from '../../services/api';
-
+//#endregion
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
