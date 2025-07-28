@@ -1,5 +1,6 @@
 import moment from 'moment';
 import axios from 'axios';
+import { message } from 'antd';
 
 import api from '../../../services/api';
 
@@ -15,16 +16,16 @@ import debug from '../../../utils/debug';
 axios.defaults.withCredentials = true;
 
 export const Tab3 = ({
-    assignments,
-    isEditingAssignments,
-    setAssignments,
+    medications,
+    isEditingMedications,
+    setMedications,
 }) => {
     const [isLoading, setIsLoading] = useState(false)
 
     const handleAdd = async () => {
-        if (assignments.length === 0 || assignments[assignments.length - 1].name.trim()) {
+        if (medications.length === 0 || medications[medications.length - 1].name.trim()) {
             debug.log(`Adding new assignment`)
-            setAssignments(prev => [...prev, {
+            setMedications(prev => [...prev, {
                 name: '',
                 dosage: '',
                 frequency: '',
@@ -41,7 +42,7 @@ export const Tab3 = ({
     }
 
     const handleDelete = async (index) => {
-        const itemToDelete = assignments[index];
+        const itemToDelete = medications[index];
         setIsLoading(true)
         debug.log(`Deleting assignment: ${itemToDelete.name}`)
 
@@ -57,18 +58,18 @@ export const Tab3 = ({
 
         try {
             if (itemToDelete.id) {
-                const response = await api.deleteMedication(itemToDelete.id)
-                if (!response.data.success) {
-                    throw new Error(response.data.message || "API returned unsuccessful");
+                const res = await api.deleteMedication(itemToDelete.id)
+                if (!res.data.success) {
+                    throw new Error(res.data.message || "API returned unsuccessful");
                 }
             }
 
-            setAssignments(prev => prev.filter((_, i) => i !== index));
+            setMedications(prev => prev.filter((_, i) => i !== index));
             debug.log("Deleted successfully")
         } catch (err) {
             debug.error("Full delete error:", {
                 error: err,
-                response: err.response?.data
+                response: err.res?.data
             });
             alert(`Не удалось удалить назначение: ${err.message}`);
         } finally {
@@ -82,12 +83,12 @@ export const Tab3 = ({
                 <h2>Назначения</h2>
 
                 {/* EMPTY LIST */}
-                {assignments.length === 0 && !isEditingAssignments && (
+                {medications.length === 0 && !isEditingMedications && (
                     <p>Нет назначений</p>
                 )}
 
                 {/* MED LIST */}
-                {(assignments.length > 0 || isEditingAssignments) && (
+                {(medications.length > 0 || isEditingMedications) && (
                     <div className={styles.listContainer}>
                         <table className={styles.table}>
                             <thead className={styles.head}>
@@ -96,11 +97,11 @@ export const Tab3 = ({
                                     <th>Препарат / Манипуляция</th>
                                     <th>Дозировка</th>
                                     <th>Частота</th>
-                                    {isEditingAssignments && <th style={{ width: '15%' }}>Удалить</th>}
+                                    {isEditingMedications && <th style={{ width: '15%' }}>Удалить</th>}
                                 </tr>
                             </thead>
                             <tbody className={styles.body}>
-                                {assignments.map((item, index) => (
+                                {medications.map((item, index) => (
                                     <tr
                                         key={index}
                                         className={styles.rows}
@@ -114,13 +115,13 @@ export const Tab3 = ({
                                         </td>
                                         {/* Name */}
                                         <td>
-                                            {isEditingAssignments ? (
+                                            {isEditingMedications ? (
                                                 <Input
                                                     value={item.name}
                                                     onChange={(e) => {
-                                                        const newList = [...assignments];
+                                                        const newList = [...medications];
                                                         newList[index].name = e.target.value;
-                                                        setAssignments(newList);
+                                                        setMedications(newList);
                                                     }}
                                                 />
                                             ) : (
@@ -134,13 +135,13 @@ export const Tab3 = ({
                                         </td>
                                         {/* Dosage */}
                                         <td>
-                                            {isEditingAssignments ? (
+                                            {isEditingMedications ? (
                                                 <Input
                                                     value={item.dosage}
                                                     onChange={(e) => {
-                                                        const newList = [...assignments];
+                                                        const newList = [...medications];
                                                         newList[index].dosage = e.target.value;
-                                                        setAssignments(newList);
+                                                        setMedications(newList);
                                                     }}
                                                 />
                                             ) : (
@@ -158,13 +159,13 @@ export const Tab3 = ({
                                         {/* Frequency*/}
                                         <td>
                                             <div style={{ display: 'inline-block' }}>
-                                                {isEditingAssignments ? (
+                                                {isEditingMedications ? (
                                                     <Input
                                                         value={item.frequency}
                                                         onChange={(e) => {
-                                                            const newList = [...assignments];
+                                                            const newList = [...medications];
                                                             newList[index].frequency = e.target.value;
-                                                            setAssignments(newList);
+                                                            setMedications(newList);
                                                         }}
                                                     />
                                                 ) : (
@@ -175,7 +176,7 @@ export const Tab3 = ({
                                             </div>
                                         </td>
                                         {/* Delete Button*/}
-                                        {isEditingAssignments && (
+                                        {isEditingMedications && (
                                             <td style={{ width: '15%', verticalAlign: 'middle' }}>
                                                 <Button
                                                     text='Удалить'
@@ -192,7 +193,7 @@ export const Tab3 = ({
                 )}
 
                 {/* NEW MED */}
-                {isEditingAssignments && (
+                {isEditingMedications && (
                     <Button
                         text='Добавить'
                         onClick={handleAdd}
