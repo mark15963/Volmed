@@ -18,16 +18,16 @@ const api = axios.create({
 // Global error handling
 api.interceptors.response.use(
   (response) => {
-    debug.log("API success:", response.config.url, response.data);
+    // debug.log("API success:", response.config.url, response.data);
     return response;
   },
   (error) => {
-    debug.error("API error:", {
-      url: error.config?.url,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    });
+    // debug.error("API error:", {
+    //   url: error.config?.url,
+    //   status: error.response?.status,
+    //   data: error.response?.data,
+    //   message: error.message,
+    // });
 
     if (error.response?.status === 401) {
       if (error.response.data?.redirectToFrontend) {

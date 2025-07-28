@@ -65,20 +65,6 @@ export const Button: FC<ButtonProps> = ({
     }
   };
 
-  const renderText = () => {
-    if (icon === "login" || icon === "logout") {
-      if (!text) return (text = "");
-      if (text) return " " + text;
-    }
-
-    if (icon !== "login" || "logout") {
-      if (text) {
-        return " " + text;
-      }
-      return "";
-    }
-  };
-
   return (
     <button
       onClick={onClick}
@@ -93,12 +79,12 @@ export const Button: FC<ButtonProps> = ({
       ) : (
         renderIcon()
       )}
-      {renderText() && (
+      {text && (
         <span
           className="button-text"
-          style={icon ? { marginLeft: "3px" } : undefined}
+          style={icon !== "none" ? { marginLeft: "3px" } : undefined}
         >
-          {renderText()}
+          {text}
         </span>
       )}
     </button>

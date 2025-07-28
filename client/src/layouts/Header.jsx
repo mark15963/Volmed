@@ -58,14 +58,10 @@ export const Header = (props) => {
                                 <ContextMenu authState={authState}>
                                     <div className={styles.userNameContainer}>
                                         <div className={styles.userNameText}>
-                                            {authState.isAuthenticated
-                                                ? (`${authState.user.status}`)
-                                                : ''}
+                                            {authState.user.status}
                                         </div>
                                         <div className={styles.userNameText}>
-                                            {authState.isAuthenticated
-                                                ? (`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`)
-                                                : ''}
+                                            {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
                                         </div>
                                     </div>
                                 </ContextMenu>
@@ -74,14 +70,10 @@ export const Header = (props) => {
                             {!authState.isAdmin && (
                                 <div className={styles.userNameContainer}>
                                     <span className={styles.userNameText}>
-                                        {authState.isAuthenticated
-                                            ? (`${authState.status}`)
-                                            : ''}
+                                        {authState.user.status}
                                     </span>
                                     <span className={styles.userNameText}>
-                                        {authState.isAuthenticated
-                                            ? (`${authState.lastName} ${authState.firstName} ${authState.patr}`)
-                                            : ''}
+                                        {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
                                     </span>
                                 </div>
                             )}

@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Client + Server",
+      "configurations": ["Launch Client", "Launch Server"]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Launch Client",
+      "type": "node-terminal",
+      "request": "launch",
+      "presentation": {
+        "group": "new"
+      },
+      "command": "npm run dev --prefix client"
+    },
+    {
+      "name": "Launch Server",
+      "type": "node-terminal",
+      "request": "launch",
+      "presentation": {
+        "group": "new"
+      },
+      "command": "npm run dev --prefix server"
+    }
+  ]
+}
