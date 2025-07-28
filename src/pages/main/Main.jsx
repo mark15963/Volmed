@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
+import { useAuth } from '../../context/AuthContext'
+import debug from '../../utils/debug';
+
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
-import { useAuth } from '../../context/AuthContext'
 
 import styles from './main.module.css'
-import Loader from '../../assets/images/Loader.gif'
-import debug from '../../utils/debug';
+import Loader from '../../components/Loader';
 
 export const Main = () => {
     const { authState } = useAuth()
@@ -16,18 +17,7 @@ export const Main = () => {
 
     if (authState.isLoading) {
         return (
-            <div className={styles.container}>
-                <div className={styles.mainBlock}>
-                    <p className={styles.loadingTitle}>
-                        Загрузка данных...
-                    </p>
-                    <img
-                        src={Loader}
-                        alt='Loading...'
-                        className={styles.loadingImg}
-                    />
-                </div>
-            </div>
+            <Loader />
         );
     }
 

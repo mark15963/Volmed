@@ -72,4 +72,30 @@
     font-size: 1em;
     padding: 5px 8px;
   }
+
+  .button-text {
+    margin: 0;
+  }
+
+  /* SIZE */
+  .s {
+    width: fit-content;
+    padding: 4px 7px;
+    font-size: 11px;
+  }
+  .m {
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+  .l {
+    width: fit-content;
+    padding: 6px 12px;
+    font-size: 15px;
+  }
+  .xl {
+    width: fit-content;
+    padding: 10px 15px;
+    font-size: 17px;
+  }
 }

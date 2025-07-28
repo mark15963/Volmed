@@ -1,4 +1,6 @@
 import axios from "axios";
+import debug from "../utils/debug";
+import { useNavigate } from "react-router";
 
 const environment = import.meta.env.VITE_ENV;
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -12,10 +14,28 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-//Global error handling
+
+// Global error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // debug.log("API success:", response.config.url, response.data);
+    return response;
+  },
   (error) => {
+    // debug.error("API error:", {
+    //   url: error.config?.url,
+    //   status: error.response?.status,
+    //   data: error.response?.data,
+    //   message: error.message,
+    // });
+
+    if (error.response?.status === 401) {
+      if (error.response.data?.redirectToFrontend) {
+        window.location.href = "/login";
+      }
+      return Promise.reject(new Error("Session expired. Please login again."));
+    }
+
     if (error.response) {
       const status = error.response.status;
       const messages = {
@@ -37,7 +57,7 @@ api.interceptors.response.use(
 );
 
 export default {
-  //Patients
+  // Patients
   getPatients: () => api.get(`${apiUrl}/api/patients`),
   getPatient: (id) => api.get(`${apiUrl}/api/patients/${id}`),
   getPatientCount: () => api.get(`${apiUrl}/api/patient-count`),
@@ -89,12 +109,15 @@ export default {
     api.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
   getO2Data: (patientId) => api.get(`${apiUrl}/api/patients/${patientId}/o2`),
 
-  //Auth
+  // Auth
   postLogin: (data) => api.post(`${apiUrl}/login`, data),
   logout: () => api.post(`${apiUrl}/logout`),
   status: () => api.get(`${apiUrl}/status`),
 
-  //Chat
+  // Chat
   getChatHistory: (room) => api.get(`${apiUrl}/api/chat/room/${room}/messages`),
   saveMessage: (data) => api.post(`${apiUrl}/api/chat/save-message`, data),
+
+  // Users
+  getUsers: () => api.get(`${apiUrl}/api/users`),
 };

@@ -23,6 +23,12 @@ export default defineConfig({
     assetsDir: "assets",
     emptyOutDir: true,
     manifest: true,
-    assetsInlineLimit: 4096,
+    assetsInlineLimit: 4096, // kB
+    chunkSizeWarningLimit: 1000, // kB
+  },
+  css: {
+    modules: {
+      localsConvention: "camelCase",
+    },
   },
 });

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
-import axios from "axios"
 
 import { useAuth } from '../../context/AuthContext';
 
@@ -9,12 +8,7 @@ import Input from "../../components/Input";
 
 import styles from './login.module.css'
 
-import api from "../../services/api";
-
 import debug from '../../utils/debug'
-
-const environment = import.meta.env.VITE_ENV
-const apiUrl = import.meta.env.VITE_API_URL
 
 export const Login = () => {
     const navigate = useNavigate()
@@ -24,8 +18,7 @@ export const Login = () => {
         username: '',
         password: ''
     })
-    const { authState, checkAuthStatus } = useAuth();
-
+    const { login } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -41,32 +34,16 @@ export const Login = () => {
         setErrors({});
 
         try {
-            const response = await api.postLogin(
-                formData,
-                {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            )
+            const result = await login(formData)
 
-            if (response.data.success) {
-                const isAuthenticated = await checkAuthStatus();
-                if (response.data.success) {
-                    await checkAuthStatus()
-                    debug.log(`User ${response.data.user.username} logged in successfully`)
-                    navigate('/')
-                } else {
-                    setErrors({
-                        general: 'Authentication failed after login'
-                    });
-                }
+            if (result.success) {
+                debug.log(`User ${result.user.username} logged in successfully`)
+                navigate('/')
             }
         } catch (error) {
-            debug.error("Login error:", error)
+            console.error("Login error:", error)
             setErrors({
-                general: error.response?.data?.error || 'Login failed'
+                general: error.response?.data?.error || error.message || 'Login failed. Please check your credentials.'
             })
         } finally {
             setIsLoading(false)
@@ -113,6 +90,7 @@ export const Login = () => {
                             type='submit'
                             icon='login'
                             loading={isLoading}
+                            disabled={isLoading}
                         />
                     </div>
                 </form>

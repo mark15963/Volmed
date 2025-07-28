@@ -1,26 +1,25 @@
-.container{
+.container {
   height: fit-content;
   width: 90%;
   box-sizing: border-box;
-  background: #0073C7;
+  background: #0073c7;
   border: 3px solid black;
   border-radius: 15px;
   margin: 20px 0;
 }
 
-.searchbar{
+.searchbar {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-                        
 }
 
-.list{
+.list {
   height: fit-content;
   width: 100%;
   margin: 0;
-  padding: 20px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,20 +27,20 @@
   box-sizing: border-box;
 }
 
-.buttonContainer{
-  width:100%;
+.buttonContainer {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 @media screen and (orientation: portrait) {
-  .container{
+  .container {
     width: calc(100% - 10px);
     padding: 0 10px;
   }
 
-  .list{
+  .list {
     height: fit-content;
     width: 100%;
     margin: 0;
@@ -53,7 +52,7 @@
     box-sizing: border-box;
   }
 
-  .buttonContainer{
+  .buttonContainer {
     margin: 10px 0;
   }
 }

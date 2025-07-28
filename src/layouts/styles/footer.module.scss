@@ -8,12 +8,21 @@
 }
 
 @media screen and (orientation: portrait) {
-  .footer {
+  footer {
     font-size: 0.7em;
     padding: 0 10px;
+    .content {
+      font-size: 1.3em;
+      padding: 0px;
+    }
   }
+}
 
-  .footer span {
-    font-size: 1.3em;
+@media print {
+  footer {
+    display: none;
+  }
+  .content {
+    display: none;
   }
 }

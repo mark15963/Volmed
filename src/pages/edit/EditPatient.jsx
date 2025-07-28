@@ -1,12 +1,13 @@
 import { useParams } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy } from 'react';
 import axios from 'axios';
 
-import { RegisterPatient } from '../register/RegisterPatient';
+const RegisterPatient = lazy(() => import('../register/RegisterPatient'))
 
 import { usePageTitle } from '../../components/PageTitle';
 
 import api from '../../services/api';
+import Loader from '../../components/Loader';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -45,9 +46,7 @@ export const EditPatient = () => {
 
     if (loading) {
         return (
-            <div className="spinner-border text-light" style={{ width: '3rem', height: '3rem' }} role="status">
-                <span className="visually-hidden">Загрузка данных...</span>
-            </div>
+            <Loader />
         )
     }
     if (error) return <div>Ошибка: {error}</div>;

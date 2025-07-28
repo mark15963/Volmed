@@ -1,0 +1,252 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: aliceblue;
+  background-color: #0065ad;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+  &:hover {
+    transition: all 0.3s;
+  }
+
+  .head {
+    .rows {
+      display: flex;
+      text-align: center;
+      background-color: #0065ad;
+      align-items: center;
+      padding-bottom: 5px;
+
+      th:nth-child(1) {
+        flex: 0.2;
+        text-align: center;
+      }
+
+      th:nth-child(2) {
+        flex: 1;
+      }
+
+      th:nth-child(3) {
+        flex: 0.5;
+        text-align: center;
+      }
+
+      th:nth-child(4) {
+        flex: 0.5;
+        text-align: center;
+      }
+
+      th:nth-child(5) {
+        flex: 0.5;
+        text-align: center;
+        margin: 0 5px;
+      }
+    }
+  }
+
+  .tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .rows {
+      display: flex;
+      width: 100%;
+      padding: 5px 0;
+      justify-content: space-between;
+      background-color: #006fbe;
+      cursor: default;
+      align-items: center;
+      border-radius: 6px;
+      &:hover {
+        transition: all 0.3s;
+        background-color: #005fa2;
+      }
+      &:active {
+        transition: all 0.3s;
+        background-color: #005491;
+      }
+
+      td {
+        &:nth-child(1) {
+          flex: 0.2;
+          text-align: left;
+          position: relative;
+          left: 10px;
+        }
+
+        &:nth-child(2) {
+          flex: 1;
+        }
+
+        &:nth-child(3) {
+          flex: 0.5;
+          text-align: center;
+        }
+
+        &:nth-child(4) {
+          flex: 0.5;
+          text-align: center;
+        }
+
+        &:nth-child(5) {
+          flex: 0.5;
+          text-align: center;
+          font-weight: 600;
+          font-size: 0.9em;
+          margin: 0 5px;
+          &.stable {
+            background-color: #4caf50bf;
+            border-radius: 6px;
+            padding: 5px 0;
+            align-content: center;
+          }
+          &.critical {
+            background-color: #f44336bf;
+            border-radius: 6px;
+            padding: 5px 0;
+            align-content: center;
+          }
+          &.leave {
+            background-color: #ffffffbf;
+            color: #000;
+            border-radius: 6px;
+            padding: 5px 0;
+            align-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+.rowsLoading {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  background-color: #006fbe;
+  padding: 5px 10px;
+  overflow: hidden;
+
+  td {
+    flex: 1;
+  }
+}
+
+.react-loading-skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  color: #488ab9;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.noData {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  color: aliceblue;
+  font-size: 1em;
+  border-radius: 5px;
+  background: #006fbe;
+}
+
+.skeleton {
+  margin-bottom: 10px;
+}
+
+.skeletonItem {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.countContainer {
+  background-color: #0073c7;
+  color: aliceblue;
+  cursor: default;
+}
+
+@media screen and (orientation: portrait) {
+  .container {
+    margin: 0;
+
+    .table {
+      &:hover {
+        transition: all 0.25s;
+      }
+      .head {
+        .rows {
+          display: none;
+        }
+      }
+      .tbody {
+        .rows {
+          padding: 5px;
+          display: flex;
+          flex-direction: column;
+          background-color: aliceblue;
+          color: #000;
+          border-radius: 6px;
+          font-weight: 500;
+          align-items: flex-start;
+          gap: 5px;
+
+          td {
+            &:nth-child(1) {
+              flex: 0.3;
+              font-size: 0.8em !important;
+              text-align: start;
+            }
+
+            &:nth-child(2) {
+              font-size: 1.2em !important;
+            }
+
+            &:nth-child(3) {
+              flex: 0.8;
+              font-size: 0.8em !important;
+              text-align: start;
+            }
+
+            &:nth-child(4) {
+              flex: 0.7;
+              font-size: 0.8em;
+              text-align: start;
+            }
+
+            &:nth-child(5) {
+              &.stable,
+              &.critical,
+              &.leave {
+                padding: 5px;
+              }
+              &.leave {
+                background-color: #86e5ffbf !important;
+              }
+            }
+          }
+        }
+      }
+      .tdLoad:nth-child(1) {
+        padding: 5px;
+      }
+    }
+  }
+}

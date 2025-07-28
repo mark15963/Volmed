@@ -1,432 +1,202 @@
+//#region ===== Imports =====
+// React, Router
 import { useLocation, useNavigate, useParams } from 'react-router'
-import axios from 'axios'
-import { useEffect, useState, lazy, Suspense } from 'react'
-import { usePageTitle } from '../../components/PageTitle'
-import { Menu } from '../../components/Menu'
-import { message, Spin } from "antd"
+import React, { useEffect, useState, lazy, Suspense, useCallback, useMemo, useRef } from 'react'
 
+// UI & Icons
+import { message } from "antd"
+
+// Tabs
 import { Tab1 } from './tabs/tab1'
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
 
-import styles from './searchResults.module.css'
+// Custom Hooks
+import { usePatientFiles } from '../../hooks/usePatientFiles'
+import { usePatientData, } from '../../hooks/usePatientData'
+import { usePatientMedications } from '../../hooks/usePatientMedications'
 
+// Components
 import Button from '../../components/Buttons.tsx'
+import ActionButtons from './tabs/Components/ActionButton'
+import { Menu } from '../../components/Menu'
+import ErrorState from './tabs/Components/States/ErrorState'
+import NotFoundState from './tabs/Components/States/NotFoundState'
 
+// Styles & Utils
 import api from '../../services/api'
-import { LoadingOutlined } from '@ant-design/icons'
 import debug from '../../utils/debug'
+import styles from './searchResults.module.css'
+import { SpinLoader } from './tabs/Components/Loading/SpinLoader'
 
+//#endregion
+
+//#region ===== Constants =====
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
+const TAB_MAIN = 0;
+const TAB_FILES = 1;
+const TAB_MEDS = 2;
+//#endregion
 
-export const SearchResults = () => {
+// ===== Main Component =====
+const SearchResults = React.memo(() => {
+    //#region ===== Router, Message, States =====
     const { state } = useLocation();
     const { id } = useParams();
     const navigate = useNavigate();
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState(0)
-    const [files, setFiles] = useState([]);
-    const [assignments, setAssignments] = useState([]);
-    const [isEditingAssignments, setIsEditingAssignments] = useState(false);
-    const [fileList, setFileList] = useState([]);
-    const [isEditingFiles, setIsEditingFiles] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
-    const [uploadStatus, setUploadStatus] = useState(null);
-
-    // Patient's name in title
-    let title
-    if (loading) {
-        title = "Загрузка..."
-    } else if (error) {
-        title = "Ошибка"
-    } else if (!data) {
-        title = "Пациент не найден"
-    } else {
-        title = `Карта пациента: ${data.lastName} ${data.firstName} ${data.patr}`
-    }
-    usePageTitle(title)
-
-    // Fetch patient's data
-    useEffect(() => {
-        const fetchPatientData = async () => {
-            try {
-                let patientData;
-
-                if (state?.patientData) {
-                    patientData = state.patientData;
-                }
-                else if (state?.results?.length > 0) {
-                    patientData = state.results[0];
-                }
-                else if (id) {
-                    const response = await api.getPatient(id)
-                    patientData = response.data
-                }
-
-                if (!patientData) {
-                    throw new Error('Данные пациента не найдены');
-                }
-
-                setData(patientData);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPatientData();
-    }, [id, state]);
-
-    // Page title
-    useEffect(() => {
-        if (loading) {
-            document.title = "Загрузка данных пациента...";
-        } else if (error) {
-            document.title = "Ошибка загрузки";
-        } else if (!data) {
-            document.title = "Пациент не найден";
-        } else {
-            document.title = `Карта пациента: ${data.lastName} ${data.firstName}${data.patr ? ` ${data.patr}` : ''}`;
-        }
-
-        return () => {
-            document.title = "ГБУ «Городская больница Волновахского района»";
-        };
-    }, [loading, error, data]);
-
-    // Fetch patient's files
-    useEffect(() => {
-        const fetchFiles = async () => {
-            if (data?.id) {
-                try {
-                    const response = await api.getPatientFiles(data.id)
-                    setFiles(response.data);
-                } catch (error) {
-                    console.error('Error fetching files:', error);
-                }
-            }
-        };
-        fetchFiles();
-    }, [data?.id]);
-
-    // Function to refresh file list
-    const refreshFileList = async () => {
-        if (!id) return;
-
-        try {
-            const response = await api.getPatientFiles(id)
-            setFileList(response.data.map(file => ({
-                uid: file.path,
-                name: file.originalname,
-                status: 'done',
-                url: `${apiUrl}${file.path}`,
-                response: { path: file.path }
-            })));
-        } catch (error) {
-            setTimeout(() => {
-                messageApi.error('Ошибка загрузки списка файлов');
-            }, 0)
-
-        }
+    const messageApiRef = {
+        api: messageApi,
+        holder: contextHolder,
     };
+    const [activeTab, setActiveTab] = useState(TAB_MAIN)
+    //#endregion
 
-    // Load files on mount and when patientId changes
+    //#region ===== Patient data =====
+    const { data, loading, error } = usePatientData(id, state)
+    const {
+        files,
+        fileList,
+        setFileList,
+        isEditing: isEditingFiles,
+        setIsEditing: setIsEditingFiles,
+        handleSaveFiles,
+    } = usePatientFiles(data?.id, messageApiRef);
+    const {
+        medications,
+        setMedications,
+        isEditing: isEditingMedications,
+        setIsEditing: setIsEditingMedications,
+        handleSave,
+    } = usePatientMedications(data?.id, messageApiRef);
+    const filesHook = {
+        files,
+        fileList,
+        setFileList,
+        isEditingFiles,
+        setIsEditingFiles,
+        handleSaveFiles,
+    };
+    const medsHook = {
+        medications,
+        setMedications,
+        isEditingMedications,
+        setIsEditingMedications,
+        handleSave,
+    }
+    //#endregion
+
+    //#region ===== Effects =====
+    // Sync list of files
     useEffect(() => {
-        refreshFileList();
-    }, [id]);
-
-    const handleSaveFiles = async () => {
-        try {
-            await refreshFileList();
-
-            const response = await api.getPatientFiles(id)
-            setFiles(response.data);
+        if (isEditingFiles && files.length > 0 && (!fileList || fileList.length === 0)) {
+            setFileList(
+                files.map(file => ({
+                    uid: file.path,
+                    name: file.originalname,
+                    status: "done",
+                    url: `${apiUrl}${file.path}`,
+                    response: { path: file.path },
+                }))
+            );
+        }
+    }, [isEditingFiles, files, fileList.length, setFileList]);
+    // Reset the editing states when tab change    
+    useEffect(() => {
+        const prevTab = prevTabRef.current;
+        if (activeTab !== prevTab) {
 
             setIsEditingFiles(false);
-            messageApi.success('Файлы успешно сохранены');
-        } catch (error) {
-            console.error("Error saving files:", error);
-            messageApi.error('Ошибка при сохранении файлов');
-        }
-    };
+            setIsEditingMedications(false);
 
-    const handleRemoveFile = async (file) => {
-        try {
-            if (file.response?.path) {
-                const filePath = file.response.path
-                    .replace(/^\/?uploads\//, '')
-                    .replace(/^\/?public\//, '')
-                    .replace(/^\/?/, '')
-                    .replace(/\\/g, '/')
-
-                console.log('Sending file:', filePath);
-
-                const response = await api.deleteFile(filePath)
-
-                if (response.data.success) {
-                    setFileList(prev => prev.filter(f => f.uid !== file.uid));
-                    setFiles(prev => prev.filter(f => f.path !== file.response.path));
-                    setUploadStatus({
-                        status: 'removed',
-                        fileName: file.name
-                    });
-                    return true;
+            if (activeTab !== 2 && medications.length > 0) {
+                const lastItem = medications[medications.length - 1]
+                if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
+                    setMedications(prev => prev.slice(0, -1));
                 }
-                throw new Error(response.data.message || 'Неизвестная ошибка');
             }
-            return false;
-        } catch (error) {
-            setUploadStatus({
-                status: 'remove_error',
-                fileName: file.name,
-                error: error.response?.data?.message || error.message || 'Ошибка удаления файла'
-            });
-            console.error("Delete error:", {
-                error: error.message,
-                response: error.response?.data
-            });
-            messageApi.error(`Ошибка при удалении ${file.name}: ${error.response?.data?.error ||
-                error.response?.data?.message ||
-                error.message
-                }`);
-            return false;
+            prevTabRef.current = activeTab
         }
-    };
-
-    useEffect(() => {
-        if (uploadStatus) {
-            switch (uploadStatus.status) {
-                case 'done':
-                    messageApi.success(`${uploadStatus.fileName} файл успешно загружен.`);
-                    break;
-                case 'error':
-                    messageApi.error(`${uploadStatus.fileName} ошибка загрузки файла.`);
-                    break;
-                case 'removed':
-                    messageApi.success(`${uploadStatus.fileName} успешно удален`);
-                    break;
-                case 'remove_error':
-                    messageApi.error(`${uploadStatus.error}: ${uploadStatus.fileName}`);
-                    break;
-            }
-            setUploadStatus(null);
-        }
-    }, [uploadStatus]);
-
-    // reset the editing states when tab change
-    useEffect(() => {
-        setIsEditingAssignments(false);
-        setIsEditingFiles(false);
     }, [activeTab]);
-
-    // Fetch medications
+    // Sets edit of other tabs off when one is on
     useEffect(() => {
-        if (!data?.id) return;
-        const fetchMedications = async () => {
-            try {
-                const response = await api.getMedications(data.id)
-                const formattedAssignments = response.data.map(med => ({
-                    ...med,
-                    createdAt: med.createdAt || new Date().toISOString()
-                }));
-                setAssignments(formattedAssignments);
-
-            } catch (error) {
-                console.error('Ошибка при получении назначений:', error);
-            }
-        };
-        fetchMedications();
-    }, [data?.id]);
-
-
-    const handleSaveAssignments = async () => {
-        try {
-            for (const item of assignments) {
-                const payload = {
-                    name: item.name,
-                    dosage: item.dosage,
-                    frequency: item.frequency,
-                };
-                try {
-                    if (item.id) {
-                        const response = await api.updateMedication(item.id, payload)
-                    } else {
-                        const response = await api.createMedication(data.id, payload)
-                        const createdAssignment = response.data;
-                        setAssignments(prev =>
-                            prev.map(a =>
-                                !a.id && a.name === item.name && a.dosage === item.dosage && a.frequency === item.frequency
-                                    ? { ...a, id: createdAssignment.id }
-                                    : a
-                            )
-                        );
-                    }
-                } catch (error) {
-                    console.error("Детальная ошибка назначений:", {
-                        url: error.config?.url,
-                        method: error.config?.method,
-                        payload: error.config?.data,
-                        status: error.response?.status,
-                        statusText: error.response?.statusText,
-                        responseData: error.response?.data,
-                        errorMessage: error.message
-                    });
-                    throw error;
-                }
-            }
-
-            setIsEditingAssignments(false);
-            messageApi.success('Назначения успешно сохранены');
-
-        } catch (error) {
-            console.error("Ошибка при сохранении назначений:", {
-                error: error,
-                response: error.response?.data
-            });
-            messageApi.error('Ошибка при сохранении назначений: ' + (error.response?.data?.message || error.message));
+        if (isEditingFiles) {
+            setIsEditingMedications(false);
         }
-    };
+        if (isEditingMedications) {
+            setIsEditingFiles(false);
+        }
+    }, [isEditingFiles, isEditingMedications]);
+    //#endregion
 
-    const handlePrint = () => {
-        window.print()
-    }
+    //#region ===== Handlers =====
+    const handlePrint = () => window.print()
 
-    const handleEdit = () => {
-        if (activeTab === 2) {
-            setIsEditingAssignments(prev => !prev);
-        } else if (activeTab === 1) {
-            setIsEditingFiles(prev => !prev);
+    const handleEdit = useCallback(() => {
+        const isMedTab = activeTab === TAB_MEDS;
+        const isFileTab = activeTab === TAB_FILES;
+
+        if (isMedTab) {
+            setIsEditingMedications(prev => !prev);
+            setIsEditingFiles(false)
+        } else if (isFileTab) {
+            setIsEditingFiles(prev => !prev)
+            setIsEditingMedications(false);
         } else if (data?.id) {
             navigate(`/edit/${data.id}`, {
                 state: {
                     patientData: data
                 }
             })
-
         }
-    }
+    }, [activeTab, data, navigate, isEditingFiles, isEditingMedications])
+    //#endregion
 
-    const tabContents = [
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                    </div>
-                </div>
+    //#region ===== Renders =====
+    const renderLoader = () => (
+        <div className={styles.info}>
+            <div className={styles.bg}>
+                <SpinLoader />
             </div>
-        }>
+        </div>
+    )
+    const renderContent = () => {
+        if (loading && !data) {
+            return renderLoader();
+        }
+
+        if (error) return <ErrorState error={error} />;
+        if (!data) return <NotFoundState />;
+
+        return null;
+    };
+    //#endregion
+
+    //#region ===== Refs & Memorized Values =====
+    const prevTabRef = useRef(activeTab);
+    const tabContents = useMemo(() => [
+        <Suspense fallback={renderLoader()}>
             <Tab1 data={data} />
         </Suspense>,
 
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                    </div>
-                </div>
-            </div>
-        }>
-            <Tab2
-                files={files}
-                fileList={fileList}
-                setFileList={setFileList}
-                isEditingFiles={isEditingFiles}
-                setIsEditingFiles={setIsEditingFiles}
-                handleSaveFiles={handleSaveFiles}
-                handleRemoveFile={handleRemoveFile}
-                uploadStatus={uploadStatus}
-                setUploadStatus={setUploadStatus}
-                id={id}
-                messageApi={messageApi}
-            />
+        <Suspense fallback={renderLoader()}>
+            <Tab2 {...filesHook} />
         </Suspense>,
 
-        <Suspense fallback={
-            <div className={styles.info}>
-                <div className={styles.bg}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                    </div>
-                </div>
-            </div>
-        }>
-            <Tab3
-                assignments={assignments}
-                isEditingAssignments={isEditingAssignments}
-                setAssignments={setAssignments}
-            />
+        <Suspense fallback={renderLoader()}>
+            <Tab3 {...medsHook} />
         </Suspense>
-    ]
+    ], [data, files, fileList, medications, isEditingFiles, isEditingMedications])
+    //#endregion
 
-    //Main block state
-    if (loading && !data) {
-        return (
-            <div className={styles.resultsContainer} style={{ display: "flex", justifyContent: 'center', width: 'fit-content' }}>
-                <h2>
-                    {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
-                </h2>
-
-                <Menu
-                    items={[
-                        { name: 'Основное' },
-                        { name: 'Анализы' },
-                        { name: 'Назначения' }
-                    ]}
-                    activeTab={activeTab}
-                    onTabChange={setActiveTab}
-                />
-                <div className={styles.info}>
-                    <div className={styles.bg}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Spin indicator={<LoadingOutlined spin style={{ color: 'aliceblue', fontSize: '50px' }} />} />
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.buttonsContainer}>
-                    <div style={{ display: 'flex' }}>
-                        <Button
-                            text={isEditingAssignments || isEditingFiles ?
-                                `Сохранить` : `Редактировать`
-                            }
-                            onClick={(e) => {
-                                handleEdit(e)
-                                {
-                                    isEditingAssignments && (
-                                        handleSaveAssignments(e)
-                                    )
-                                    isEditingFiles && (
-                                        handleSaveFiles(e)
-                                    )
-                                }
-                            }}
-                        />
-
-                        <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
-                    </div>
-
-                    <Button text="Назад на главную" onClick={() => navigate('/')} />
-                </div>
-            </div>
-        );
-    }
-    if (error) return <div className={styles.resultsContainer}>Ошибка: {error}</div>;
-    if (!data) return <div className={styles.resultsContainer}>Пациент не найден.</div>;
-
-    //Debug
-    debug.log(`Search result of patient ${data.lastName} ${data.firstName} ${data.patr}`)
-
+    //#region ===== JSX =====
     return (
         <div className={styles.resultsContainer}>
             {contextHolder}
             <h2>
                 {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
             </h2>
-
             <Menu
                 items={[
                     { name: 'Основное' },
@@ -437,34 +207,23 @@ export const SearchResults = () => {
                 onTabChange={setActiveTab}
             />
 
-            {tabContents[activeTab]}
 
-            <div className={styles.buttonsContainer}>
-                <div style={{ display: 'flex' }}>
-                    <Button
-                        text={isEditingAssignments || isEditingFiles ?
-                            `Сохранить` : `Редактировать`
-                        }
-                        onClick={(e) => {
-                            handleEdit(e)
-                            {
-                                isEditingAssignments && (
-                                    handleSaveAssignments(e)
-                                )
-                                isEditingFiles && (
-                                    handleSaveFiles(e)
-                                )
-                            }
-                        }}
-                    />
+            {renderContent() || tabContents[activeTab]}
 
-                    <Button text="Печать" className={styles.printButton} onClick={handlePrint} />
-                </div>
-
-                <Button text="Назад на главную" onClick={() => navigate('/')} />
-            </div>
+            <ActionButtons
+                activeTab={activeTab}
+                isEditingMedications={isEditingMedications}
+                isEditingFiles={isEditingFiles}
+                handleEdit={handleEdit}
+                handleSaveMedications={handleSave}
+                handleSaveFiles={handleSaveFiles}
+                handlePrint={handlePrint}
+                navigate={navigate}
+                medications={medications}
+            />
         </div >
     );
-};
+    //#endregion
+})
 
 export default SearchResults

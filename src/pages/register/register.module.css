@@ -76,11 +76,6 @@ form {
   font-weight: 700;
 }
 
-span {
-  font-size: 15px;
-  font-weight: 400;
-}
-
 .buttons {
   display: flex;
   flex-direction: column;
@@ -97,18 +92,19 @@ span {
   cursor: pointer;
 }
 
+::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
 .backButton:hover {
   background-color: #e0e0e0;
 }
 
 .formLabel {
   color: aliceblue;
+  font-size: 15px;
   font-weight: 500;
   width: 100%;
-}
-
-.requiredLabel {
-  color: #ff4d4f;
 }
 
 .dragger {

@@ -9,6 +9,7 @@ import { ConfigProvider } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
 import './index.css'
 
+// Axios global config
 axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')).render(
@@ -16,12 +17,8 @@ createRoot(document.getElementById('root')).render(
     locale={ruRU}
     theme={{
       components: {
-        Collapse: {
-          headerBg: '#fff'
-        },
-        Select: {
-          colorBgContainerDisabled: '#bbb'
-        }
+        Collapse: { headerBg: '#fff' },
+        Select: { colorBgContainerDisabled: '#bbb' }
       }
     }}
   >
