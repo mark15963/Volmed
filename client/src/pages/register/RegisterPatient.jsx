@@ -1,4 +1,5 @@
 //#region =====IMPORTS=====
+// React, Router, Axios
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
@@ -7,18 +8,19 @@ const { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascade
 const { IMaskInput } = await import('react-imask')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
+// Components
 import Button from '../../components/Buttons.tsx';
 import { usePageTitle } from '../../components/PageTitle'
 import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
 import { Buttons } from './Components/Buttons.jsx'
 import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 
+// UI & Services
 import styles from './register.module.css'
 import api from '../../services/api';
-//#endregion
-
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
+//#endregion
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
     const navigate = useNavigate()
@@ -63,10 +65,10 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 state: formValues.state || "",
             };
 
-            let res 
-            if (isEditMode && patientId){
+            let res
+            if (isEditMode && patientId) {
                 res = await api.updatePatient(patientId, formattedValues)
-            } else{
+            } else {
                 res = await api.createPatient(formattedValues, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -132,7 +134,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                         {error && <Alert message={error} type='error' showIcon />}
 
                         <div className={styles.form}>
-
                             <PersonalInfoFields form={form} />
                             <MedHistoryFields form={form} />
                             <Buttons form={form} />

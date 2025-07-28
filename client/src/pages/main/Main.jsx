@@ -7,7 +7,7 @@ import debug from '../../utils/debug';
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
 
-import styles from './main.module.css'
+import styles from './main.module.scss'
 import Loader from '../../components/Loader';
 
 export const Main = () => {
@@ -15,12 +15,7 @@ export const Main = () => {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
 
-    if (authState.isLoading) {
-        return (
-            <Loader />
-        );
-    }
-
+    if (authState.isLoading) return <Loader />
     if (!authState.isAuthenticated) {
         return (
             <div className={styles.container}>
@@ -38,7 +33,6 @@ export const Main = () => {
             <div className={styles.mainBlock}>
                 <SearchBar />
                 <div className={styles.buttonsContainer}>
-
                     <Button
                         text='Список пациентов'
                         icon='patients'
@@ -50,7 +44,6 @@ export const Main = () => {
                         }}
                         loading={isLoading}
                     />
-
                     <Button
                         text='Новый пациент'
                         icon='newPatient'
@@ -60,7 +53,6 @@ export const Main = () => {
                             navigate('/register')
                         }}
                     />
-
                 </div>
             </div>
         </div>
