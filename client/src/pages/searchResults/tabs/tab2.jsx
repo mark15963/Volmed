@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, memo } from 'react';
 import axios from 'axios';
 
 import api from '../../../services/api'
+import debug from '../../../utils/debug';
 
 import { Upload, Form, Collapse } from "antd"
 const { Dragger } = Upload;
@@ -12,17 +13,17 @@ import Graph from '../../../components/Graph';
 
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from './tab2.module.css'
-import debug from '../../../utils/debug';
 import { SpinLoader } from '../../../components/Loading/SpinLoader';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
-export const Tab2 = ({
+export const Tab2 = memo(({
     files,
     fileList,
     setFileList,
-    isEditingFiles,
+    isLoading,
+    isEditing,
     handleRemoveFile,
     setUploadStatus,
     id,
@@ -305,8 +306,6 @@ export const Tab2 = ({
         }
     }
 
-    // if (loadingO2 || loadingPulse) return <SpinLoader />
-
     return (
         <div className={styles.info}>
             <div className={styles.bg}>
@@ -324,14 +323,22 @@ export const Tab2 = ({
                         Документы
                     </h3>
                     <div className={styles.fileList}>
-                        {files.length === 0 && !isEditingFiles && (
-                            <p style={{ cursor: 'default' }}>Нет загруженных документов</p>
-                        )}
-
-                        {!isEditingFiles ? (
+                        {isLoading ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                                <SpinLoader size="30px" />
+                            </div>
+                        ) : files.length === 0 && !isEditing ? (
+                            <p style={{ cursor: 'default' }}>
+                                Нет загруженных документов
+                            </p>
+                        ) : !isEditing ? (
                             <ul>
                                 {files.map((file, index) => (
-                                    <li key={index} className={styles.fileItem} onClick={() => openFile(file.path)}>
+                                    <li
+                                        key={index}
+                                        className={styles.fileItem}
+                                        onClick={() => openFile(file.path)}
+                                    >
                                         <span>
                                             {file.originalname || file.filename}
                                         </span>
@@ -356,6 +363,6 @@ export const Tab2 = ({
             </div>
         </div>
     )
-}
+})
 
 export default Tab2
