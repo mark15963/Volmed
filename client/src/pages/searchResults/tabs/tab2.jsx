@@ -13,6 +13,7 @@ import Graph from '../../../components/Graph';
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from './tab2.module.css'
 import debug from '../../../utils/debug';
+import { SpinLoader } from '../../../components/Loading/SpinLoader';
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
@@ -26,6 +27,8 @@ export const Tab2 = ({
     setUploadStatus,
     id,
 }) => {
+    const [loadingPulse, setLoadingPulse] = useState(true);
+    const [loadingO2, setLoadingO2] = useState(true);
     const [pulseValue, setPulseValue] = useState('');
     const [pulseValues, setPulseValues] = useState([]);
     const [o2Value, setO2Value] = useState('');
@@ -34,21 +37,28 @@ export const Tab2 = ({
     //-----PULSE DATA-----
     useEffect(() => {
         const fetchPulseData = async () => {
+            if (!id) {
+                debug.log('Skipping pulse fetch - no patient ID');
+                setPulseValues([]); // Clear previous data
+                return;
+            }
+            setLoadingPulse(true);
             try {
+                debug.log('Fetching pulse data for patient:', id);
                 const response = await api.getPulseData(id)
+                debug.log('Pulse data response:', response.data);
                 const values = response.data.map(item => ({
-                    val: item.value,
+                    val: Number(item.value),
                     created_at: item.timestamp,
                 }));
                 setPulseValues(values);
             } catch (error) {
                 console.error('Error fetching pulse data:', error);
+            } finally {
+                setLoadingPulse(false);
             }
         };
-
-        if (id) {
-            fetchPulseData();
-        }
+        fetchPulseData();
     }, [id]);
 
     const handlePulseKeyPress = async (e) => {
@@ -85,10 +95,16 @@ export const Tab2 = ({
             children: (
                 <>
                     <div className={styles.graphContainer}>
-                        <Graph
-                            data={pulseValues}
-                            lineColor='#ff0f0f'
-                        />
+                        {loadingPulse ? (
+                            <div>Загрузка данных ЧСС...</div>
+                        ) : pulseValues.length > 0 ? (
+                            <Graph
+                                data={pulseValues}
+                                lineColor='#ff0f0f'
+                            />
+                        ) : (
+                            <div>Нет данных ЧСС</div>
+                        )}
                         <Input
                             type='number'
                             value={pulseValue}
@@ -132,15 +148,20 @@ export const Tab2 = ({
     //-----O2 DATA-----
     useEffect(() => {
         const fetchO2Data = async () => {
+            setLoadingO2(true)
             try {
+                debug.log('Fetching O2 data for patient:', id);
                 const response = await api.getO2Data(id)
+                debug.log('O2 data response:', response.data);
                 const values = response.data.map(item => ({
-                    val: item.value,
+                    val: Number(item.value),
                     created_at: item.timestamp,
                 }));
                 setO2Values(values);
             } catch (error) {
                 console.error('Error fetching O2 data:', error);
+            } finally {
+                setLoadingO2(false)
             }
         };
 
@@ -179,10 +200,16 @@ export const Tab2 = ({
                 <>
                     <div className={styles.graphContainer}>
                         <div className={styles.graph}>
-                            <Graph
-                                data={o2Values}
-                                lineColor='#1CABE8'
-                            />
+                            {loadingO2 ? (
+                                <div>Загрузка данных O2...</div>
+                            ) : o2Values.length > 0 ? (
+                                <Graph
+                                    data={o2Values}
+                                    lineColor='#1CABE8'
+                                />
+                            ) : (
+                                <div>Нет данных O2</div>
+                            )}
                         </div>
                         <Input
                             type='number'
@@ -277,6 +304,8 @@ export const Tab2 = ({
 
         }
     }
+
+    // if (loadingO2 || loadingPulse) return <SpinLoader />
 
     return (
         <div className={styles.info}>

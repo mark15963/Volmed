@@ -1,28 +1,38 @@
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router"
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 import { useAuth } from '../../context/AuthContext';
 
-import Button from "../../components/Buttons.tsx"
+import Button from "../../components/Buttons.tsx";
 import Input from "../../components/Input";
 
-import styles from './login.module.css'
+import styles from './login.module.css';
 
-import debug from '../../utils/debug'
+import debug from '../../utils/debug';
+import Loader from "../../components/Loader";
 
 export const Login = () => {
-    const navigate = useNavigate()
-    const [errors, setErrors] = useState({})
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
+    const navigate = useNavigate();
+    const { authState, login } = useAuth();
+    const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [credentials, setCredentials] = useState({
         username: '',
         password: ''
-    })
-    const { login } = useAuth();
+    });
+
+    // Additional defensive authState check 
+    useEffect(() => {
+        if (authState.isAuthenticated) {
+            navigate('/');
+        }
+    }, [authState, navigate])
+    if (authState.isLoading) return <Loader />
+    if (authState.isAuthenticated) return null
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        setFormData(prev => ({
+        setCredentials(prev => ({
             ...prev,
             [name]: value
         }))
@@ -34,12 +44,10 @@ export const Login = () => {
         setErrors({});
 
         try {
-            const result = await login(formData)
+            await login(credentials)
 
-            if (result.success) {
-                debug.log(`User ${result.user.username} logged in successfully`)
-                navigate('/')
-            }
+            debug.log(`Login successful`)
+            navigate('/')
         } catch (error) {
             console.error("Login error:", error)
             setErrors({
@@ -66,7 +74,7 @@ export const Login = () => {
                         id="username"
                         type="text"
                         placeholder="Имя пользователя"
-                        value={formData.username}
+                        value={credentials.username}
                         onChange={handleChange}
                         required
                         autoComplete="username"
@@ -79,7 +87,7 @@ export const Login = () => {
                         id="password"
                         type="password"
                         placeholder="Пароль"
-                        value={formData.password}
+                        value={credentials.password}
                         onChange={handleChange}
                         required
                         autoComplete="current-password"

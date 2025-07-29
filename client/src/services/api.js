@@ -18,41 +18,69 @@ const api = axios.create({
 // Global error handling
 api.interceptors.response.use(
   (response) => {
-    // debug.log("API success:", response.config.url, response.data);
+    const { method, url } = response.config;
+    const { status } = response;
+
+    debug.log(`Success: ${method?.toUpperCase()} ${url} (${status})`, {
+      data: response.data,
+      headers: response.headers,
+    });
     return response;
   },
   (error) => {
-    // debug.error("API error:", {
-    //   url: error.config?.url,
-    //   status: error.response?.status,
-    //   data: error.response?.data,
-    //   message: error.message,
-    // });
+    const errorDetails = {
+      code: error.code,
+      data: error.response?.status,
+      message: error.message,
+      stack: environment === "development" ? error.stack : undefined,
+      status: error.response?.status,
+      url: error.config?.url,
+    };
 
-    if (error.response?.status === 401) {
-      if (error.response.data?.redirectToFrontend) {
-        window.location.href = "/login";
+    debug.error("API Error:", errorDetails);
+
+    // Handle specific error cases
+    if (error.code === "ECONNABORTED") {
+      return Promise.reject(
+        new Error("Server timeout. Please try again later.")
+      );
+    }
+
+    if (!error.response) {
+      if (error.message === "Network Error") {
+        return Promise.reject(
+          new Error("Network error. Please check your internet connection.")
+        );
       }
-      return Promise.reject(new Error("Session expired. Please login again."));
+      return Promise.reject(new Error("No response from server"));
     }
 
-    if (error.response) {
-      const status = error.response.status;
-      const messages = {
-        400: "Неверный запрос",
-        401: "Требуется авторизация",
-        403: "Доступ запрещен",
-        404: "Пациент не найден",
-        500: "Ошибка сервера",
-      };
-      return Promise.reject(new Error(messages[status] || `Ошибка: ${status}`));
-    } else if (error.request) {
-      // Request was made but no response
-      return Promise.reject(new Error("Нет ответа от сервера"));
-    } else {
-      // Other errors
-      return Promise.reject(new Error("Ошибка соединения"));
+    const status = error.response.status;
+    const defaultMessage = `Server error (${status})`;
+
+    const statusMessages = {
+      400: error.response.data?.message || "Некорректный запрос",
+      401: "Не авторизован",
+      403: "Доступ запрещен",
+      404: "Не найдено",
+      408: "Истекло время ожидания",
+      500: "Ошибка сервера",
+      502: "Ошибочный шлюз",
+      503: "Сервис недоступен",
+      504: "Шлюз не отвечает",
+    };
+
+    if (status === 401 && error.response.data?.redirectToFrontend) {
+      if (typeof window !== "undefined") {
+        window.location.href =
+          "/login?redirect=" + encodeURIComponent(window.location.pathname);
+      }
+      return Promise.reject(new Error("Session expired"));
     }
+    const errorMessage =
+      error.response.data?.message || statusMessages[status] || defaultMessage;
+
+    return Promise.reject(new Error(errorMessage));
   }
 );
 
@@ -95,18 +123,16 @@ export default {
     }),
 
   // Vital Signs (Pulse)
-  savePulse: (patientId, pulseValue) => {
-    if (!patientId) {
-      throw new Error("Patient ID is required");
-    }
-    api.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
-      pulseValue,
+  savePulse: (patientId, value) => {
+    if (!patientId) throw new Error("Patient ID is required");
+    return api.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
+      value,
     });
   },
   getPulseData: (patientId) =>
     api.get(`${apiUrl}/api/patients/${patientId}/pulse`),
-  saveO2: (patientId, o2Value) =>
-    api.post(`${apiUrl}/api/patients/${patientId}/o2`, { o2Value }),
+  saveO2: (patientId, value) =>
+    api.post(`${apiUrl}/api/patients/${patientId}/o2`, { value }),
   getO2Data: (patientId) => api.get(`${apiUrl}/api/patients/${patientId}/o2`),
 
   // Auth

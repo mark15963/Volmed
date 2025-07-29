@@ -5,6 +5,7 @@ import React, { useEffect, useState, lazy, Suspense, useCallback, useMemo, useRe
 
 // UI & Icons
 import { message } from "antd"
+import { SpinLoader } from '../../components/Loading/SpinLoader.tsx'
 
 // Tabs
 import { Tab1 } from './tabs/tab1'
@@ -27,7 +28,6 @@ import NotFoundState from './tabs/Components/States/NotFoundState'
 import api from '../../services/api'
 import debug from '../../utils/debug'
 import styles from './searchResults.module.css'
-import { SpinLoader } from './tabs/Components/Loading/SpinLoader'
 
 //#endregion
 
@@ -55,44 +55,21 @@ const SearchResults = React.memo(() => {
 
     //#region ===== Patient data =====
     const { data, loading, error } = usePatientData(id, state)
-    const {
-        files,
-        fileList,
-        setFileList,
-        isEditing: isEditingFiles,
-        setIsEditing: setIsEditingFiles,
-        handleSaveFiles,
-    } = usePatientFiles(data?.id, messageApiRef);
-    const {
-        medications,
-        setMedications,
-        isEditing: isEditingMedications,
-        setIsEditing: setIsEditingMedications,
-        handleSave,
-    } = usePatientMedications(data?.id, messageApiRef);
-    const filesHook = {
-        files,
-        fileList,
-        setFileList,
-        isEditingFiles,
-        setIsEditingFiles,
-        handleSaveFiles,
-    };
-    const medsHook = {
-        medications,
-        setMedications,
-        isEditingMedications,
-        setIsEditingMedications,
-        handleSave,
-    }
+    const patientId = data?.id || id;
+
+    const filesHook = usePatientFiles(patientId, messageApiRef, activeTab === TAB_FILES)
+    filesHook.id = patientId
+
+    const medsHook = usePatientMedications(patientId, messageApiRef);
+
     //#endregion
 
     //#region ===== Effects =====
     // Sync list of files
     useEffect(() => {
-        if (isEditingFiles && files.length > 0 && (!fileList || fileList.length === 0)) {
-            setFileList(
-                files.map(file => ({
+        if (filesHook.isEditing && filesHook.files.length > 0 && (!filesHook.fileList || filesHook.fileList.length === 0)) {
+            filesHook.setFileList(
+                filesHook.files.map(file => ({
                     uid: file.path,
                     name: file.originalname,
                     status: "done",
@@ -101,19 +78,19 @@ const SearchResults = React.memo(() => {
                 }))
             );
         }
-    }, [isEditingFiles, files, fileList.length, setFileList]);
+    }, [filesHook.isEditingFiles, filesHook.files, filesHook.fileList.length, filesHook.setFileList]);
     // Reset the editing states when tab change    
     useEffect(() => {
         const prevTab = prevTabRef.current;
         if (activeTab !== prevTab) {
 
-            setIsEditingFiles(false);
-            setIsEditingMedications(false);
+            filesHook.setIsEditing(false);
+            medsHook.setIsEditing(false);
 
-            if (activeTab !== 2 && medications.length > 0) {
-                const lastItem = medications[medications.length - 1]
+            if (activeTab !== 2 && medsHook.medications.length > 0) {
+                const lastItem = medsHook.medications[medsHook.medications.length - 1]
                 if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
-                    setMedications(prev => prev.slice(0, -1));
+                    medsHook.setMedications(prev => prev.slice(0, -1));
                 }
             }
             prevTabRef.current = activeTab
@@ -121,13 +98,13 @@ const SearchResults = React.memo(() => {
     }, [activeTab]);
     // Sets edit of other tabs off when one is on
     useEffect(() => {
-        if (isEditingFiles) {
-            setIsEditingMedications(false);
+        if (filesHook.isEditingFiles) {
+            medsHook.setIsEditing(false);
         }
-        if (isEditingMedications) {
-            setIsEditingFiles(false);
+        if (medsHook.isEditingMedications) {
+            filesHook.setIsEditing(false);
         }
-    }, [isEditingFiles, isEditingMedications]);
+    }, [filesHook.isEditingFiles, filesHook.isEditingMedications]);
     //#endregion
 
     //#region ===== Handlers =====
@@ -138,11 +115,11 @@ const SearchResults = React.memo(() => {
         const isFileTab = activeTab === TAB_FILES;
 
         if (isMedTab) {
-            setIsEditingMedications(prev => !prev);
-            setIsEditingFiles(false)
+            medsHook.setIsEditing(prev => !prev);
+            filesHook.setIsEditing(false)
         } else if (isFileTab) {
-            setIsEditingFiles(prev => !prev)
-            setIsEditingMedications(false);
+            filesHook.setIsEditing(prev => !prev)
+            medsHook.setIsEditing(false);
         } else if (data?.id) {
             navigate(`/edit/${data.id}`, {
                 state: {
@@ -150,7 +127,7 @@ const SearchResults = React.memo(() => {
                 }
             })
         }
-    }, [activeTab, data, navigate, isEditingFiles, isEditingMedications])
+    }, [activeTab, data, navigate, filesHook.isEditing, medsHook.isEditing])
     //#endregion
 
     //#region ===== Renders =====
@@ -187,7 +164,7 @@ const SearchResults = React.memo(() => {
         <Suspense fallback={renderLoader()}>
             <Tab3 {...medsHook} />
         </Suspense>
-    ], [data, files, fileList, medications, isEditingFiles, isEditingMedications])
+    ], [data, filesHook.files, filesHook.fileList, filesHook.isEditing, medsHook.medications, medsHook.isEditing])
     //#endregion
 
     //#region ===== JSX =====
@@ -212,14 +189,14 @@ const SearchResults = React.memo(() => {
 
             <ActionButtons
                 activeTab={activeTab}
-                isEditingMedications={isEditingMedications}
-                isEditingFiles={isEditingFiles}
+                isEditingMedications={medsHook.isEditing}
+                isEditingFiles={filesHook.isEditing}
                 handleEdit={handleEdit}
-                handleSaveMedications={handleSave}
-                handleSaveFiles={handleSaveFiles}
+                handleSaveMedications={medsHook.handleSave}
+                handleSaveFiles={filesHook.handleSave}
                 handlePrint={handlePrint}
                 navigate={navigate}
-                medications={medications}
+                medications={medsHook.medications}
             />
         </div >
     );

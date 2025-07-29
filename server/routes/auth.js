@@ -28,7 +28,6 @@ const isAuth = (req, res, next) => {
     if (req.accepts("json") || req.xhr) {
       return res.status(401).json({
         error: "Session expired or invalid",
-        redirect: "/login",
         redirectToFrontend: true,
       });
     }
@@ -36,52 +35,57 @@ const isAuth = (req, res, next) => {
   }
 };
 
-router.get("/login", (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>VolMed Server</title>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { color: #2c3e50; }
-        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-      </style>
-    </head>
-    <body>
-      <h1>VolMed API Server - LOGIN</h1>
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <form action="/login" method="POST">
-          <label htmlFor="username">
-            Username:
-          </label>
-          <input 
-            name="username" 
-            type="text"                                             
-            placeholder="Username"
-          />
-          <br/>
-          <label htmlFor="password">
-            Password:
-          </label>
-          <input 
-            name="password" 
-            type="password"                                             
-            placeholder="Password"
-          />
-          <br/>
-         <button type="submit">Login</button>
-        </form>
-        <a href="/register">Register</a>
-      </div>
-    </body>
-    </html>
-  `);
-});
+// router.get("/login", (req, res) => {
+//   res.send(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>VolMed Server</title>
+//       <style>
+//         body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+//         h1 { color: #2c3e50; }
+//         .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+//       </style>
+//     </head>
+//     <body>
+//       <h1>VolMed API Server - LOGIN</h1>
+//       <div style="display:flex; flex-direction:column; align-items:center;">
+//         <form action="/login" method="POST">
+//           <label htmlFor="username">
+//             Username:
+//           </label>
+//           <input
+//             name="username"
+//             type="text"
+//             placeholder="Username"
+//           />
+//           <br/>
+//           <label htmlFor="password">
+//             Password:
+//           </label>
+//           <input
+//             name="password"
+//             type="password"
+//             placeholder="Password"
+//           />
+//           <br/>
+//          <button type="submit">Login</button>
+//         </form>
+//         <a href="/register">Register</a>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+// });
 
 router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
-  req.app.locals.debug.log(`Logging in user ${username}`);
+
+  req.app.locals.debug.log(`Login attempt for username: ${username}`);
+  req.app.locals.debug.log(
+    `Password received (length): ${password ? password.length : 0}`
+  );
+
   if (!username || !password) {
     return res.status(400).json({ error: "Username and password required" });
   }
@@ -92,19 +96,22 @@ router.post("/login", originMiddleware, async (req, res) => {
     ]);
 
     if (!rows.length) {
+      req.app.locals.debug.log("User not found");
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const user = await User.findByUsername(username);
-
     if (!user) {
       return res.redirect("/login");
     }
 
     const match = await bcrypt.compare(password, rows[0].password);
     if (!match) {
+      req.app.locals.debug.log("Wrong password");
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    req.app.locals.debug.log(`Logging in user ${username}`);
 
     req.session.regenerate((error) => {
       if (error) {

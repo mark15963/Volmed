@@ -7,11 +7,12 @@ const fs = require("fs");
 const fsp = fs.promises;
 const router = Router();
 
-const isAuth = (req, res, next) => {
-  if (req.session.isAuth) {
-    next();
-  } else {
-    res.redirect("/login");
+const isAuth = async (req, res, next) => {
+  try {
+    if (req.session.isAuth) next();
+  } catch (error) {
+    req.app.locals.debug.log("Not authorized");
+    res.status(401).json(error.message);
   }
 };
 

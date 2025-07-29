@@ -3,6 +3,7 @@ import { lazy, Suspense, useContext, useEffect } from 'react'
 
 import { useAuth } from '../context/AuthContext'
 import debug from "../utils/debug";
+import ProtectedRoute from './ProtectedRoute'
 
 //----- PAGES -----
 const Main = lazy(() => import('../pages/main/Main.jsx'));
@@ -17,36 +18,51 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
 
-const AdminRoute = ({ children }) => {
-    const { authState } = useAuth()
-
-    if (authState.isLoading) return <Loader />
-    if (!authState.isAuthenticated) return <Navigate to="/login" replace />
-    if (!authState.isAdmin) return <Navigate to="/" replace />
-
-    return children
-}
-
 const Content = () => {
     return (
         <main>
             <Suspense fallback={<Loader />}>
                 <Routes>
-                    <Route path='/patients' element={<List />} />
-                    <Route path="/search" loader element={<SearchResults />} />
-                    <Route path="/search/:id" element={<SearchResults />} />
-                    <Route path="/register" element={<RegisterPatient />} />
-                    <Route path="/edit/:id" element={<EditPatient />} />
-
-                    {/*-----AUTH-----*/}
+                    {/* Public */}
                     <Route path="/login" element={<Login />} />
-                    <Route path='/' element={<Main />} />
+
+                    {/* Protected */}
+                    <Route path='/' element={
+                        <ProtectedRoute>
+                            <Main />
+                        </ProtectedRoute>
+                    } />
+                    <Route path='/patients' element={
+                        <ProtectedRoute>
+                            <List />
+                        </ProtectedRoute>
+                    } />
+                    {/* <Route path="/search" loader element={
+                        <ProtectedRoute>
+                            <SearchResults />
+                        </ProtectedRoute>
+                    } /> */}
+                    <Route path="/search/:id" element={
+                        <ProtectedRoute>
+                            <SearchResults />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/register" element={
+                        <ProtectedRoute>
+                            <RegisterPatient />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/edit/:id" element={
+                        <ProtectedRoute>
+                            <EditPatient />
+                        </ProtectedRoute>
+                    } />
 
                     {/*-----ADMIN-----*/}
                     <Route path="/dashboard" element={
-                        <AdminRoute>
+                        <ProtectedRoute adminOnly>
                             <Dashboard />
-                        </AdminRoute>
+                        </ProtectedRoute>
                     } />
 
                     {/*----- 404 -----*/}
