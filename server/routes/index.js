@@ -1,10 +1,23 @@
 const { Router } = require("express");
+const { Pool } = require("pg");
+
+const router = Router();
+
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: 20,
+  allowExitOnIdle: true,
+});
+
 const authRouter = require("./auth");
 const patientsRouter = require("./patients");
 const usersRouter = require("./users");
 const chatRoutes = require("./chat");
-
-const router = Router();
 
 router.use(authRouter);
 router.use(patientsRouter);

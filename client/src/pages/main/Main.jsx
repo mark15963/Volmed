@@ -16,17 +16,8 @@ export const Main = () => {
     const [isLoading, setIsLoading] = useState(false)
 
     if (authState.isLoading) return <Loader />
-    if (!authState.isAuthenticated) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.mainBlock}>
-                    <p className={styles.loadingTitle}>
-                        Нет доступа
-                    </p>
-                </div>
-            </div>
-        );
-    }
+
+    if (!authState.isAuthenticated) return null
 
     return (
         <div className={styles.container}>

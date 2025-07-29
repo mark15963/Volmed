@@ -1,4 +1,5 @@
 const { Pool } = require("pg");
+const debug = require("../utils/debug");
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -26,7 +27,6 @@ const User = {
         "SELECT * FROM users WHERE username = $1",
         [username]
       );
-
       return rows[0] || null;
     } catch (err) {
       console.error("Database error in findByUsername:", err);

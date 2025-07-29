@@ -16,23 +16,18 @@ export const AuthProvider = ({ children }) => {
     });
     const navigate = useNavigate()
 
+    // Check if user authenticated. If not -> login page
     const checkAuthStatus = useCallback(async () => {
-        setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
             const { data } = await api.status();
-
             const isAdmin = ['admin', 'Администратор'].includes(data.user?.status)
 
             setAuthState({
                 isAuthenticated: data.isAuthenticated,
-                isAdmin: data.isAdmin,
+                isAdmin,
                 isLoading: false,
                 user: data.user
             });
-
-            if (!data.isAuthenticated) {
-                navigate('/login');
-            }
 
             return data.isAuthenticated
         } catch (error) {
@@ -43,24 +38,31 @@ export const AuthProvider = ({ children }) => {
                 isLoading: false,
                 user: null
             });
-            navigate('/login');
             return false
         }
-    }, [navigate])
+    }, [])
+    useEffect(() => {
+        const checkAndRedirect = async () => {
+            const isAuthenticated = await checkAuthStatus()
+            if (!isAuthenticated) navigate('/login');
+        }
+        checkAndRedirect();
+    }, [checkAuthStatus, navigate]);
 
+    // Login function
     const login = useCallback(async (credentials) => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
-            const { data } = await api.postLogin(credentials);
-            const isAuthenticated = await checkAuthStatus();
+            await api.postLogin(credentials);
+            const isAuth = await checkAuthStatus();
 
-            if (isAuthenticated) {
-                return { success: true, user: data.user };
+            if (!isAuth) {
+                throw new Error('Authentication failed after login');
             }
-            throw new Error('Authentication failed after login');
+
         } catch (error) {
             setAuthState(prev => ({ ...prev, isLoading: false }));
-            throw error;
+            throw error;  // Let the Login component handle the error
         }
     }, [checkAuthStatus]);
 
@@ -68,18 +70,7 @@ export const AuthProvider = ({ children }) => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
             await api.logout()
-            setAuthState({
-                isAuthenticated: false,
-                isAdmin: false,
-                isLoading: false,
-                user: null,
-            });
-            debug.log("Logged out successfully")
-            navigate('/login')
-        } catch (error) {
-            console.error('Logout error:', error);
-            setAuthState(prev => ({ ...prev, isLoading: false }));
-            // Even if logout API fails, clear local auth state
+        } finally {
             setAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
@@ -90,13 +81,9 @@ export const AuthProvider = ({ children }) => {
         }
     }, [navigate])
 
-    useEffect(() => {
-        checkAuthStatus();
-    }, [checkAuthStatus]);
-
     // Periodic auth check
     useEffect(() => {
-        const interval = setInterval(checkAuthStatus, 300000); // 5 minutes
+        const interval = setInterval(checkAuthStatus, 1000 * 60 * 10);
         return () => clearInterval(interval);
     }, [checkAuthStatus]);
 
