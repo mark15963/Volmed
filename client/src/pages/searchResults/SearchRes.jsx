@@ -79,6 +79,7 @@ const SearchResults = React.memo(() => {
             );
         }
     }, [filesHook.isEditingFiles, filesHook.files, filesHook.fileList.length, filesHook.setFileList]);
+
     // Reset the editing states when tab change    
     useEffect(() => {
         const prevTab = prevTabRef.current;
@@ -96,6 +97,7 @@ const SearchResults = React.memo(() => {
             prevTabRef.current = activeTab
         }
     }, [activeTab]);
+
     // Sets edit of other tabs off when one is on
     useEffect(() => {
         if (filesHook.isEditingFiles) {
@@ -150,7 +152,7 @@ const SearchResults = React.memo(() => {
     };
     //#endregion
 
-    //#region ===== Refs & Memorized Values =====
+    //#region ===== Refs & Tabs =====
     const prevTabRef = useRef(activeTab);
     const tabContents = useMemo(() => [
         <Suspense fallback={renderLoader()}>
@@ -158,13 +160,13 @@ const SearchResults = React.memo(() => {
         </Suspense>,
 
         <Suspense fallback={renderLoader()}>
-            <Tab2 {...filesHook} />
+            <Tab2 {...filesHook} isLoading={filesHook.isLoading} />
         </Suspense>,
 
         <Suspense fallback={renderLoader()}>
             <Tab3 {...medsHook} />
         </Suspense>
-    ], [data, filesHook.files, filesHook.fileList, filesHook.isEditing, medsHook.medications, medsHook.isEditing])
+    ], [data, filesHook, medsHook])
     //#endregion
 
     //#region ===== JSX =====

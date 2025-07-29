@@ -41,10 +41,14 @@
 }
 
 .fileList {
-  color: aliceblue;
-  text-decoration: none;
+  width: 70%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
+  color: aliceblue;
+  text-decoration: none;
 }
 
 .fileItem {
