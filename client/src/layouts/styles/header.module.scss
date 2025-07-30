@@ -74,28 +74,37 @@
 @media screen and (orientation: portrait) {
   .content {
     gap: 5px;
-  }
+    padding: 0 20px 0 5px;
 
-  .title {
-    color: aliceblue;
-    font-size: 0.75em;
-    font-weight: 600 !important;
-    text-align: left;
-    margin: 0 5px;
-    flex-grow: 1;
-    cursor: default;
-  }
+    .title {
+      color: aliceblue;
+      font-size: 0.75em;
+      font-weight: 600 !important;
+      text-align: left;
+      margin: 0;
+      flex-grow: 1;
+      cursor: default;
+    }
 
-  .userContainer {
-    padding: 0;
+    .userContainerHidden {
+      display: none;
+    }
 
-    .userNameContainer {
-      .userNameText {
-        margin: 0 10px;
-        color: aliceblue;
-        font-weight: 500;
-        font-size: 0.7em;
-        text-align: center;
+    .userContainer {
+      padding: 5px 5px 5px 10px !important;
+      border-radius: 20px;
+      background-color: #3584c9;
+      height: fit-content;
+      box-shadow: 0 0 10px 5px #3584c9 !important;
+
+      .userNameContainer {
+        .userNameText {
+          margin: 0;
+          color: aliceblue;
+          font-weight: 500;
+          font-size: 0.6em;
+          text-align: center;
+        }
       }
     }
   }

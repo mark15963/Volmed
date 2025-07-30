@@ -25,7 +25,7 @@ export const Header = (props) => {
 
     const isLoginPage = useMemo(() => location.pathname === '/login', [location.pathname]);
 
-    const userContainerClass = `${styles.userContainer} ${authState.isAuthenticated ? styles.auth : ''}`
+    const userContainerClass = `${styles.userContainer} ${!authState.isAuthenticated ? styles.userContainerHidden : ''}`.trim()
 
     return (
         <header>
