@@ -57,9 +57,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
   "http://localhost:5173",
-  "http://192.168.0.104:5173",
-  "http://192.168.0.104",
-  "http://localhost:5000",
+  "http://192.168.0.103:5173",
 ];
 
 app.locals.allowedOrigins = allowedOrigins;
