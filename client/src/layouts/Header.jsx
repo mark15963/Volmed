@@ -13,7 +13,6 @@ import logo from '../assets/images/logo.webp'
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import styles from './styles/header.module.scss'
 
-
 export const Header = (props) => {
     const navigate = useNavigate();
     const { authState, logout } = useAuth();
