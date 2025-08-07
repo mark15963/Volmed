@@ -55,7 +55,6 @@ const db = new Pool({
 //CORS setup
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  process.env.BACKEND_URL,
   "http://localhost:5173",
   "http://192.168.0.103:5173",
 ];
@@ -125,7 +124,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(routes);
+app.use("/api", routes);
 
 // DB connection test
 async function testDbConnection() {

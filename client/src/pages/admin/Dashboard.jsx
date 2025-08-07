@@ -7,19 +7,20 @@ import debug from "../../utils/debug"
 
 // import Loader from "../../components/Loader"
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
+import { Divider } from "antd"
+import InDev from "../../components/inDev"
 
 import styles from './styles/dashboard.module.scss'
-
 
 export const Dashboard = () => {
     const { patients, loading: patientsLoading } = usePatients()
     const { users, loading: usersLoading } = useUsers()
 
-    const count = patients.length
-    const stable = patients.filter(patient => patient.state === 'Выписан').length
-
     const countUsers = users.length
     const countDoctors = users.filter(user => user.status === 'Врач').length
+    const countPatients = patients.length
+    const stablePatients = patients.filter(patient => patient.state === 'Выписан').length
+
     debug.log(users)
 
     // if (usersLoading || patientsLoading) return <Loader />
@@ -27,6 +28,11 @@ export const Dashboard = () => {
     return (
         <div className={styles.container}>
             <div className={styles.mainBlock}>
+
+                <InDev />
+
+                <Divider style={{ background: 'black' }} />
+
                 <div className={styles.row}>
                     <div className={styles.block}>
                         <div className={styles.blockTitle}>
@@ -42,10 +48,10 @@ export const Dashboard = () => {
                         ) : (
                             <>
                                 <div className={styles.blockContent}>
-                                    Всего пациентов: {count}
+                                    Всего пациентов: {countPatients}
                                 </div>
                                 <div className={styles.blockContent}>
-                                    Стабильные: {stable}
+                                    Стабильные: {stablePatients}
                                 </div>
                             </>
                         )}

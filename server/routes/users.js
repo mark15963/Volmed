@@ -19,7 +19,7 @@ const db = new Pool({
   allowExitOnIdle: true,
 });
 
-router.get("/api/users", async (req, res) => {
+router.get("/users", async (req, res) => {
   try {
     const client = await db.connect();
     try {

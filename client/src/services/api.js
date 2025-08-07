@@ -85,37 +85,42 @@ api.interceptors.response.use(
 );
 
 export default {
+  //General
+  getHospitalName: () => api.get(`${apiUrl}/general-data`),
+  setHospitalName: (hospitalName, backgroundColor) =>
+    api.put(`${apiUrl}/general-data`),
+
   // Patients
-  getPatients: () => api.get(`${apiUrl}/api/patients`),
-  getPatient: (id) => api.get(`${apiUrl}/api/patients/${id}`),
-  getPatientCount: () => api.get(`${apiUrl}/api/patient-count`),
-  createPatient: (data) => api.post(`${apiUrl}/api/patients`, data),
-  updatePatient: (id, data) => api.put(`${apiUrl}/api/patients/${id}`, data),
-  deletePatient: (id) => api.delete(`${apiUrl}/api/patients/${id}`),
+  getPatients: () => api.get(`${apiUrl}/patients`),
+  getPatient: (id) => api.get(`${apiUrl}/patients/${id}`),
+  getPatientCount: () => api.get(`${apiUrl}/patient-count`),
+  createPatient: (data) => api.post(`${apiUrl}/patients`, data),
+  updatePatient: (id, data) => api.put(`${apiUrl}/patients/${id}`, data),
+  deletePatient: (id) => api.delete(`${apiUrl}/patients/${id}`),
 
   // Medications
-  deleteMedication: (medId) => api.delete(`${apiUrl}/api/medications/${medId}`),
+  deleteMedication: (medId) => api.delete(`${apiUrl}/medications/${medId}`),
   getMedications: (patientId) =>
-    api.get(`${apiUrl}/api/patients/${patientId}/medications`),
+    api.get(`${apiUrl}/patients/${patientId}/medications`),
   createMedication: (patientId, data) =>
-    api.post(`${apiUrl}/api/patients/${patientId}/medications`, data),
+    api.post(`${apiUrl}/patients/${patientId}/medications`, data),
   updateMedication: (medId, data) =>
-    api.put(`${apiUrl}/api/medications/${medId}`, data),
+    api.put(`${apiUrl}/medications/${medId}`, data),
 
   // Files
   getPatientFiles: (patientId) =>
-    api.get(`${apiUrl}/api/patients/${patientId}/files`),
+    api.get(`${apiUrl}/patients/${patientId}/files`),
   uploadFile: (patientId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    return api.post(`${apiUrl}/api/patients/${patientId}/upload`, formData, {
+    return api.post(`${apiUrl}/patients/${patientId}/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   deleteFile: (filePath) =>
-    api.delete(`${apiUrl}/api/files`, {
+    api.delete(`${apiUrl}/files`, {
       data: { filePath },
       headers: {
         "Content-Type": "application/json",
@@ -125,15 +130,14 @@ export default {
   // Vital Signs (Pulse)
   savePulse: (patientId, value) => {
     if (!patientId) throw new Error("Patient ID is required");
-    return api.post(`${apiUrl}/api/patients/${patientId}/pulse`, {
+    return api.post(`${apiUrl}/patients/${patientId}/pulse`, {
       value,
     });
   },
-  getPulseData: (patientId) =>
-    api.get(`${apiUrl}/api/patients/${patientId}/pulse`),
+  getPulseData: (patientId) => api.get(`${apiUrl}/patients/${patientId}/pulse`),
   saveO2: (patientId, value) =>
-    api.post(`${apiUrl}/api/patients/${patientId}/o2`, { value }),
-  getO2Data: (patientId) => api.get(`${apiUrl}/api/patients/${patientId}/o2`),
+    api.post(`${apiUrl}/patients/${patientId}/o2`, { value }),
+  getO2Data: (patientId) => api.get(`${apiUrl}/patients/${patientId}/o2`),
 
   // Auth
   postLogin: (data) => api.post(`${apiUrl}/login`, data),
@@ -141,9 +145,9 @@ export default {
   status: () => api.get(`${apiUrl}/status`),
 
   // Chat
-  getChatHistory: (room) => api.get(`${apiUrl}/api/chat/room/${room}/messages`),
-  saveMessage: (data) => api.post(`${apiUrl}/api/chat/save-message`, data),
+  getChatHistory: (room) => api.get(`${apiUrl}/chat/room/${room}/messages`),
+  saveMessage: (data) => api.post(`${apiUrl}/chat/save-message`, data),
 
   // Users
-  getUsers: () => api.get(`${apiUrl}/api/users`),
+  getUsers: () => api.get(`${apiUrl}/users`),
 };
