@@ -5,21 +5,11 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const User = require("../models/User");
-const { Pool } = require("pg");
+const { db } = require("../services/db-connection");
 const originMiddleware = require("../middleware/originMiddleware");
+const debug = require("../utils/debug");
 
 const router = Router();
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  max: 20,
-  allowExitOnIdle: true,
-});
 
 const isAuth = (req, res, next) => {
   if (req.session.isAuth) {
@@ -81,10 +71,8 @@ const isAuth = (req, res, next) => {
 router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
 
-  req.app.locals.debug.log(`Login attempt for username: ${username}`);
-  req.app.locals.debug.log(
-    `Password received (length): ${password ? password.length : 0}`
-  );
+  debug.log(`Login attempt for username: ${username}`);
+  debug.log(`Password received (length): ${password ? password.length : 0}`);
 
   if (!username || !password) {
     return res.status(400).json({ error: "Username and password required" });
@@ -96,7 +84,7 @@ router.post("/login", originMiddleware, async (req, res) => {
     ]);
 
     if (!rows.length) {
-      req.app.locals.debug.log("User not found");
+      debug.log("User not found");
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
@@ -107,11 +95,11 @@ router.post("/login", originMiddleware, async (req, res) => {
 
     const match = await bcrypt.compare(password, rows[0].password);
     if (!match) {
-      req.app.locals.debug.log("Wrong password");
+      debug.log("Wrong password");
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    req.app.locals.debug.log(`Logging in user ${username}`);
+    debug.log(`Logging in user ${username}`);
 
     req.session.regenerate((error) => {
       if (error) {

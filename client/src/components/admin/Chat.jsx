@@ -26,10 +26,10 @@ export const Chat = () => {
 
     const isAuthenticated = authState.isAuthenticated
     const displayName = isAuthenticated
-        ? `${authState.lastName} ${authState.firstName} ${authState.patr}`
+        ? `${authState.user?.lastName || ''} ${authState.user?.firstName || ''} ${authState.user?.patr || ''}`.trim()
         : "Unauthorized person";
     const userId = isAuthenticated
-        ? `${authState.lastName}_${authState.firstName}_${authState.patr}`
+        ? `${authState.user?.lastName}_${authState.user?.firstName}_${authState.user?.patr}` || socket.id
         : socket.id
 
     useEffect(() => {
@@ -71,7 +71,7 @@ export const Chat = () => {
 
     const loadMessages = async (roomName) => {
         try {
-            const res = await fetch(`${backendUrl}/api/chat/room/${roomName}/messages`)
+            const res = await fetch(`${backendUrl}/chat/room/${roomName}/messages`)
             const data = await res.json()
             const formatted = data.map(msg => ({
                 text: msg.message,
@@ -126,16 +126,14 @@ export const Chat = () => {
     }
 
     const sendMessage = async () => {
-        if (!message || message == '') return
+        if (!message.trim()) return
 
         const timestamp = new Date().toISOString()
-        const localTimestamp = new Date().toLocaleTimeString()
-
         const newMessage = {
             text: message,
             sender: userId,
             senderName: displayName,
-            timestamp: localTimestamp
+            timestamp: new Date().toLocaleTimeString()
         }
         console.log("Sending as:", userId)
 
@@ -150,7 +148,7 @@ export const Chat = () => {
         })
         try {
 
-            await fetch(`${backendUrl}/api/chat/save-message`, {
+            await fetch(`${backendUrl}/chat/save-message`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

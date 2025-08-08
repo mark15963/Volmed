@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     });
     const navigate = useNavigate()
 
-    // Check if user authenticated. If not -> login page
+    // Check if user authenticated. If not => login page
     const checkAuthStatus = useCallback(async () => {
         try {
             const { data } = await api.status();
@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, [checkAuthStatus]);
 
+    // Logout function
     const logout = useCallback(async () => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
@@ -81,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, [navigate])
 
-    // Periodic auth check
+    // Auth check every 10 min
     useEffect(() => {
         const interval = setInterval(checkAuthStatus, 1000 * 60 * 10);
         return () => clearInterval(interval);

@@ -1,5 +1,4 @@
 const path = require("path");
-
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config({
   path: path.join(
@@ -10,58 +9,26 @@ require("dotenv").config({
   ),
 });
 
-const debug = require("./utils/debug");
-
-debug.log("Loaded environment variables:", {
-  NODE_ENV: process.env.NODE_ENV,
-  FRONTEND_URL: process.env.FRONTEND_URL,
-  BACKEND_URL: process.env.BACKEND_URL,
-  DATABASE_URL: process.env.DATABASE_URL ? "exists" : "missing",
-});
-
 const express = require("express");
 const axios = require("axios");
-
-const { Pool } = require("pg");
 const cors = require("cors");
-const https = require("https");
 
+const { db, testDbConnection } = require("./services/db-connection");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
-const fs = require("fs");
-
 const routes = require("./routes/index");
+const debug = require("./utils/debug");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-//DB setup
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: true,
-    ca:
-      process.env.NODE_ENV === "production"
-        ? fs.readFileSync("/etc/ssl/certs/ca-certificates.crt").toString()
-        : undefined,
-  },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  max: 10,
-  allowExitOnIdle: true,
-});
-
-//CORS setup
+// CORS setup
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
   "http://192.168.0.103:5173",
 ];
-
-app.locals.allowedOrigins = allowedOrigins;
-app.locals.debug = debug;
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -77,13 +44,16 @@ app.use(
   })
 );
 
-//Trust Proxy & Middleware
+app.locals.allowedOrigins = allowedOrigins;
+app.locals.debug = debug;
+
+// Trust Proxy & Middleware
 app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//Session config
+// Session config
 app.use(
   session({
     name: "volmed.sid",
@@ -105,50 +75,33 @@ app.use(
   })
 );
 
-// Debug session & cookies
-app.use((req, res, next) => {
-  debug.log("Environment:", process.env.NODE_ENV);
-  debug.log("Session ID:", req.sessionID);
-  debug.log("Session data:", req.session);
-  debug.log("Cookies:", req.cookies);
-  next();
-});
-
-//Static & Routing
+// Static & Routing
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("uploads"));
 
+// Use routes
+app.use("/api", routes);
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
   next();
 });
-app.use("/api", routes);
 
-// DB connection test
-async function testDbConnection() {
-  const retries = 5;
-  const delay = 2000;
-
-  for (let i = 1; i <= retries; i++) {
-    let client;
-    try {
-      client = await db.connect();
-      const result = await client.query("SELECT version()");
-      debug.log("Database version:", result.rows[0].version);
-      client.release();
-      return;
-    } catch (err) {
-      debug.error(`Attempt ${i} failed:`, err.message);
-      if (client) client.release();
-      if (i < retries) {
-        await new Promise((r) => setTimeout(r, delay * i));
-      }
-    }
+// Debug session & cookies on start
+app.use((req, res, next) => {
+  if (
+    process.env.NODE_ENV === "development" &&
+    !req.app.locals.sessionDebugged
+  ) {
+    debug.log("Environment:", process.env.NODE_ENV);
+    debug.log("Session ID:", req.sessionID);
+    debug.log("Session data:", req.session);
+    debug.log("Cookies:", req.cookies);
+    req.app.locals.sessionDebugged = true;
   }
-  throw new Error("Maximum DB connection attempts reached");
-}
+  next();
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -174,10 +127,11 @@ async function startServer() {
 
     const server = app.listen(PORT, () => {
       debug.log(`Server running on port ${PORT}`);
+      debug.log(`Enviroment: ${process.env.NODE_ENV}`);
       debug.log(`Website link: ${process.env.FRONTEND_URL}`);
       debug.log(`Backend link: ${process.env.BACKEND_URL}`);
-      server.keepAliveTimeout = 60000;
-      server.headersTimeout = 65000;
+      server.keepAliveTimeout = 1000 * 60;
+      server.headersTimeout = 1000 * 65;
     });
 
     const io = require("socket.io")(server, {

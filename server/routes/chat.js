@@ -1,19 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Pool } = require("pg");
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? {
-          rejectUnauthorized: true,
-          ca: require("fs")
-            .readFileSync("/etc/ssl/certs/ca-certificates.crt")
-            .toString(),
-        }
-      : false,
-});
+const { db } = require("../services/db-connection");
 
 router.post("/save-message", async (req, res) => {
   const { room, sender, senderName, message, timestamp } = req.body;
@@ -29,7 +16,6 @@ router.post("/save-message", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
 router.get("/room/:room/messages", async (req, res) => {
   const room = req.params.room;
   try {
