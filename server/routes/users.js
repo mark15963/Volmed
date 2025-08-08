@@ -1,23 +1,8 @@
 const { Router } = require("express");
-const router = Router();
 const fs = require("fs");
+const { db } = require("../services/db-connection");
 
-const { Pool } = require("pg");
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    ca:
-      process.env.NODE_ENV === "production"
-        ? fs.readFileSync("/etc/ssl/certs/ca-certificates.crt").toString()
-        : undefined,
-  },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  max: 20,
-  allowExitOnIdle: true,
-});
+const router = Router();
 
 router.get("/users", async (req, res) => {
   try {
@@ -29,7 +14,7 @@ router.get("/users", async (req, res) => {
       client.release();
     }
   } catch (e) {
-    console.error("Detailed error fetching userss:", e.stack);
+    console.error("Detailed error fetching users:", e.stack);
     res
       .status(500)
       .json({ error: "Failed to fetch users", details: e.message });

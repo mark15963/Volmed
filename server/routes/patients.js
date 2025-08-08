@@ -1,54 +1,21 @@
-const path = require("path");
-
 const { Router } = require("express");
-const { Pool } = require("pg");
 const multer = require("multer");
+const path = require("path");
 const fs = require("fs");
 const fsp = fs.promises;
-const router = Router();
-
 const debug = require("../utils/debug");
+const { db } = require("../services/db-connection");
+
+const router = Router();
 
 const isAuth = async (req, res, next) => {
   try {
     if (req.session.isAuth) next();
   } catch (error) {
-    req.app.locals.debug.log("Not authorized");
+    debug.log("Not authorized");
     res.status(401).json(error.message);
   }
 };
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    ca:
-      process.env.NODE_ENV === "production"
-        ? fs.readFileSync("/etc/ssl/certs/ca-certificates.crt").toString()
-        : undefined,
-  },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  max: 20,
-  allowExitOnIdle: true,
-});
-
-//-----DATABASE DEBUG-----
-db.on("error", (err) => {
-  debug.error("Database error:", err);
-});
-db.on("connect", () => {
-  debug.log("Database connected");
-});
-db.on("remove", () => {
-  debug.log("Database connection removed");
-});
-db.on("acquire", (client) => {
-  debug.log("Client checked out from pool");
-});
-db.on("release", (client) => {
-  debug.log("Client returned to pool");
-});
 
 const uploadDir = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) {

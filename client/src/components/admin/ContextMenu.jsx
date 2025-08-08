@@ -1,25 +1,26 @@
-import { Dropdown } from "antd"
 import { useState, useEffect } from "react"
-
-import debug from "../../utils/debug"
+import { useNavigate } from "react-router"
+import { createPortal } from "react-dom"
 
 import Chat from "./Chat"
 import SideMenu from "./SideMenu"
 
+import debug from "../../utils/debug"
+
+import { Dropdown } from "antd"
 import styles from './styles/sideMenu.module.css'
-import { useNavigate } from "react-router"
 
 export const ContextMenu = ({ authState, children }) => {
     const [chatVisible, setChatVisible] = useState(false)
     const [sideMenuVisible, setSideMenuVisible] = useState(false)
     const navigate = useNavigate()
 
+    // Hide components when anotherone is choosen
     useEffect(() => {
         if (sideMenuVisible) {
             setChatVisible(false)
         }
     }, [sideMenuVisible])
-
     useEffect(() => {
         if (chatVisible) {
             setSideMenuVisible(false)
@@ -57,16 +58,27 @@ export const ContextMenu = ({ authState, children }) => {
 
     return (
         <>
-            {sideMenuVisible && !chatVisible && (
-                <div style={{ position: 'absolute', top: '130px', left: 0 }}>
+            {sideMenuVisible && !chatVisible && createPortal(
+                <div style={{ position: 'absolute', top: '50%', left: 0, zIndex: 1000 }}>
                     <SideMenu />
-                </div>
+                </div>,
+                document.body
             )}
 
-            {chatVisible && !sideMenuVisible && (
-                <div style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', marginRight: '20px' }}>
+            {chatVisible && !sideMenuVisible && createPortal(
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: '10px',
+                        top: '200px',
+                        transform: 'translateY(-50%)',
+                        marginRight: '20px',
+                        zIndex: 1000
+                    }}
+                >
                     <Chat />
-                </div>
+                </div>,
+                document.body
             )}
 
             <Dropdown
