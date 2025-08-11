@@ -137,7 +137,7 @@ router.post("/login", originMiddleware, async (req, res) => {
         if (process.env.NODE_ENV === "development") {
           res.redirect("/api/dashboard");
         } else {
-          if (res.accepts("json")) {
+          if (req.accepts("json")) {
             res.status(200).json({
               success: true,
               message: "Logged in successfully",
