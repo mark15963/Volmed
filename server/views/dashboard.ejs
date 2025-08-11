@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+
+<h1>VolMed API Server - DASHBOARD</h1>
+
+<p>Server is running successfully in "<%= NODE_ENV %>" mode</p>
+<p>Authenticated: <%- sessionAuth %></p>
+<p>User: <%- sessionUser %></p>
+<p>Name: <%= lastName %> <%= firstName %> <%= patr %></p>
+<p>Status: <%= status %></p>
+
+<div>
+  <details>
+    <summary>Session data:</summary>
+    <pre><code><%- sessionData %></code></pre>
+  </details>
+</div>
+
+<br>
+<div style="display: flex; gap: 10px; align-items: baseline;">
+  <button onClick="window.location.href='/api'">
+    Home
+  </button>
+  <form action="/api/logout" method="POST">
+    <button type="submit">
+      Logout
+    </button>
+  </form>
+
+  <button onClick="window.location.href='<%- FRONTEND_URL %>'">
+    Main Website
+  </button>
+</div>
+
+
+<%- include('partials/footer') %>

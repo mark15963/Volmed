@@ -28,16 +28,26 @@ export const ContextMenu = ({ authState, children }) => {
     }, [chatVisible])
 
     const handleMenuClick = (e) => {
-        if (e.key === '1') {
-            navigate('/dashboard')
-        }
-        if (e.key === '2') {
-            debug.log(chatVisible ? "Chat hidden" : "Chat visible")
-            setChatVisible(!chatVisible)
-        }
-        if (e.key === '3') {
-            debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
-            setSideMenuVisible(!sideMenuVisible)
+        switch (e.key) {
+            case '1':
+                navigate('/dashboard')
+                break;
+            case '2':
+                debug.log(chatVisible ? "Chat hidden" : "Chat visible")
+                setChatVisible(!chatVisible)
+                break;
+            case '3':
+                debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
+                setSideMenuVisible(!sideMenuVisible)
+                break;
+            case '4':
+                const serverUrl = import.meta.env.VITE_ENV === 'production'
+                    ? 'https://volmed-backend.onrender.com/api/dashboard'
+                    : 'http://localhost:5000/api/dashboard';
+                window.location.href = serverUrl;
+                break;
+            default:
+                break;
         }
     }
 
@@ -53,6 +63,10 @@ export const ContextMenu = ({ authState, children }) => {
         {
             label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
             key: '3',
+        },
+        {
+            label: 'Server page',
+            key: '4',
         },
     ];
 

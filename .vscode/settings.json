@@ -3,5 +3,11 @@
   "git.ignoredRepositories": [],
   "explorer.decorations.badges": true,
   "explorer.decorations.colors": true,
-  "git.decorations.enabled": true
+  "git.decorations.enabled": true,
+  "emmet.includeLanguages": {
+    "ejs": "html"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "j69.ejs-beautify"
+  }
 }
