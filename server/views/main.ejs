@@ -5,16 +5,15 @@
   <p>Server is running successfully in "<%= NODE_ENV %>" mode</p>
 
   <p>
-    Frontend:
+    Главный сайт:
     <a href="<%= FRONTEND_URL %>"> <%= FRONTEND_URL %> </a>
   </p>
 
   <% if (sessionAuth && cookiesUser) {%>
-  <p>Logged in: <%= sessionAuth %></p>
-  <p>Logged user: <%= cookiesUser %></p>
+  <p>Выполнен вход: <%= sessionAuth %></p>
+  <p>Аккаунт: <%= cookiesUser %></p>
   <% } else { %>
-  <p>Logged in: false</p>
-  <p>Logged user: None</p>
+  <p>Выполнен вход: Нет</p>
   <% } %>
 
   <% if (!sessionAuth) { %>

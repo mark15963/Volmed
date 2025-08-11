@@ -318,52 +318,28 @@ router.get("/dashboard", isAuth, async (req, res) => {
       return res.redirect("/login");
     }
 
-    // res.send(`
-    // <!DOCTYPE html>
-    // <html>
-    // <head>
-    //   <title>VolMed Server</title>
-    //   <style>
-    //     body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-    //     h1 { color: #2c3e50; }
-    //     .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-    //   </style>
-    // </head>
-    // <body>
-    //   <h1>VolMed API Server - DASHBOARD</h1>
-
-    //   <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
-
-    //   <p>Authentication: ${req.session.isAuth}</p>
-
-    //   <p>User: ${req.session.user}</p>
-
-    //   <p>Name: ${req.session.lastName} ${req.session.firstName}</p>
-
-    //   <p>Status: ${req.session.status}</p>
-
-    //   <p>Session data: ${sessionData}</p>
-
-    //   <button onClick="window.location='/'">Home</button>
-    //   <form action="/logout" method="POST">
-    //     <button type="submit">Logout</button>
-    //   </form>
-    //   <button onClick="window.location='https://volmed-o4s0.onrender.com/'">Website</button>
-    //   </body>
-    // </html>
-    // `);
-
-    res.render("dashboard", {
-      NODE_ENV: process.env.NODE_ENV,
-      FRONTEND_URL: process.env.FRONTEND_URL,
-      sessionAuth: req.session.isAuth,
-      sessionUser: req.session.user,
-      lastName: req.session.lastName,
-      firstName: req.session.firstName,
-      patr: req.session.patr,
-      status: req.session.status,
-      sessionData,
-    });
+    const client = await db.connect();
+    try {
+      const { rows: users } = await db.query("SELECT * FROM users ORDER BY id");
+      const { rows: patients } = await db.query(
+        "SELECT * FROM patients ORDER BY id"
+      );
+      res.render("dashboard", {
+        NODE_ENV: process.env.NODE_ENV,
+        FRONTEND_URL: process.env.FRONTEND_URL,
+        sessionAuth: req.session.isAuth,
+        sessionUser: req.session.user,
+        lastName: req.session.lastName,
+        firstName: req.session.firstName,
+        patr: req.session.patr,
+        status: req.session.status,
+        sessionData,
+        users,
+        patients,
+      });
+    } finally {
+      client.release();
+    }
   } catch (err) {
     console.error("Dashboard error:", err);
     res.redirect("/login");
