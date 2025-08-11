@@ -22,16 +22,16 @@ lerna-debug.log*
 node_modules
 
 #Build
-dist
-dist-ssr
+dist/*
+!dist/manifest.webmanifest
 
 #Environment
 .env*
 *.local
 
 #Storybook
+.storybook
 *storybook.log
 storybook-static
 src/stories
-.storybook
 src/components/stories
