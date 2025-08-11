@@ -93,7 +93,7 @@ export default {
     api.put(`${apiUrl}/general-data`),
 
   // Patients
-  getPatients: () => api.get(`${apiUrl}/patients`),
+  getPatients: () => api.get(`/patients`),
   getPatient: (id) => api.get(`${apiUrl}/patients/${id}`),
   getPatientCount: () => api.get(`${apiUrl}/patient-count`),
   createPatient: (data) => api.post(`${apiUrl}/patients`, data),
@@ -142,14 +142,14 @@ export default {
   getO2Data: (patientId) => api.get(`${apiUrl}/patients/${patientId}/o2`),
 
   // Auth
-  postLogin: (data) => api.post(`${apiUrl}/login`, data),
+  postLogin: (data) => api.post(`/login`, data),
   logout: () => api.post(`${apiUrl}/logout`),
-  status: () => api.get(`${apiUrl}/status`),
+  status: () => api.get(`/status`),
 
   // Chat
   getChatHistory: (room) => api.get(`${apiUrl}/chat/room/${room}/messages`),
   saveMessage: (data) => api.post(`${apiUrl}/chat/save-message`, data),
 
   // Users
-  getUsers: () => api.get(`${apiUrl}/users`),
+  getUsers: () => api.get(`/users`),
 };
