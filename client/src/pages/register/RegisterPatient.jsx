@@ -2,13 +2,11 @@
 // React, Router, Axios
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import axios from 'axios'
 
-const { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascader } = await import('antd/es')
+const { Form, Alert, message } = await import('antd/es')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 // Components
-import Button from '../../components/Buttons.tsx';
 import { usePageTitle } from '../../components/PageTitle'
 import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
 import { Buttons } from './Components/Buttons.jsx'
@@ -17,8 +15,6 @@ import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 // UI & Services
 import styles from './register.module.css'
 import api from '../../services/api';
-const environment = import.meta.env.VITE_ENV
-const apiUrl = import.meta.env.VITE_API_URL
 //#endregion
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
