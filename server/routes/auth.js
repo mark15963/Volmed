@@ -138,7 +138,7 @@ router.post("/login", originMiddleware, async (req, res) => {
           res.redirect("/api/dashboard");
         } else {
           if (req.accepts("json")) {
-            res.status(200).json({
+            return res.status(200).json({
               success: true,
               message: "Logged in successfully",
               redirect: "/",
