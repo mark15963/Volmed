@@ -27,12 +27,6 @@ lerna-debug.log*
 client/node_modules
 server/node_modules
 
-# Docker
-client/Dockerfile
-server/Dockerfile
-client/.dockerignore
-server/.dockerignore
-
 # Build
 client/dist/
 !client/dist/manifest.webmanifest
@@ -49,4 +43,3 @@ client/src/components/stories
 
 # Server specific
 server/DB_Backup
-server/.dockerignore
