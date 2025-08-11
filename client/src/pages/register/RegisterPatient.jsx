@@ -60,7 +60,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 state: formValues.state || "",
             };
 
-            let res
+            let response
             if (isEditMode && patientId) {
                 response = await api.updatePatient(patientId, formattedValues)
             } else {
