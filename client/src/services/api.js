@@ -143,7 +143,7 @@ export default {
   postLogin: (data) => {
     debug.log("Environment:", environment);
     debug.log("API URL:", apiUrl);
-    return api.post(`${apiUrl}/login`, data);
+    return api.post(`${apiUrl}/api/login`, data);
   },
   logout: () => api.post(`${apiUrl}/logout`),
   status: () => {
