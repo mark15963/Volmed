@@ -1,0 +1,21 @@
+<% include('partials/header') %>
+
+<h1>VolMed API Server - LOGIN</h1>
+<div style="display:flex; flex-direction:column; align-items:center;">
+  <form action="/api/login" method="POST">
+    <label htmlFor="username">
+      Username:
+    </label>
+    <input name="username" type="text" placeholder="Username" />
+    <br />
+    <label htmlFor="password">
+      Password:
+    </label>
+    <input name="password" type="password" placeholder="Password" />
+    <br />
+    <button type="submit">Login</button>
+  </form>
+  <a href="/api/register">Register</a>
+</div>
+
+<% include('partials/footer') %>

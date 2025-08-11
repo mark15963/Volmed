@@ -1,0 +1,27 @@
+  <%- include('partials/header')%>
+
+
+  <h1>VolMed API Server</h1>
+  <p>Server is running successfully in "<%= NODE_ENV %>" mode</p>
+
+  <p>
+    Frontend:
+    <a href="<%= FRONTEND_URL %>"> <%= FRONTEND_URL %> </a>
+  </p>
+
+  <% if (sessionAuth && cookiesUser) {%>
+  <p>Logged in: <%= sessionAuth %></p>
+  <p>Logged user: <%= cookiesUser %></p>
+  <% } else { %>
+  <p>Logged in: false</p>
+  <p>Logged user: None</p>
+  <% } %>
+
+  <% if (!sessionAuth) { %>
+  <button onClick="window.location.href='/api/login'">Dashboard</button>
+  <% } else { %>
+  <button onClick="window.location.href='/api/dashboard'">Dashboard</button>
+  <% } %>
+
+
+  <%- include('partials/footer')%>

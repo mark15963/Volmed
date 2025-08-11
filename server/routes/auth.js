@@ -25,48 +25,49 @@ const isAuth = (req, res, next) => {
   }
 };
 
-// router.get("/login", (req, res) => {
-//   res.send(`
-//     <!DOCTYPE html>
-//     <html>
-//     <head>
-//       <title>VolMed Server</title>
-//       <style>
-//         body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-//         h1 { color: #2c3e50; }
-//         .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-//       </style>
-//     </head>
-//     <body>
-//       <h1>VolMed API Server - LOGIN</h1>
-//       <div style="display:flex; flex-direction:column; align-items:center;">
-//         <form action="/login" method="POST">
-//           <label htmlFor="username">
-//             Username:
-//           </label>
-//           <input
-//             name="username"
-//             type="text"
-//             placeholder="Username"
-//           />
-//           <br/>
-//           <label htmlFor="password">
-//             Password:
-//           </label>
-//           <input
-//             name="password"
-//             type="password"
-//             placeholder="Password"
-//           />
-//           <br/>
-//          <button type="submit">Login</button>
-//         </form>
-//         <a href="/register">Register</a>
-//       </div>
-//     </body>
-//     </html>
-//   `);
-// });
+router.get("/login", (req, res) => {
+  // res.send(`
+  //   <!DOCTYPE html>
+  //   <html>
+  //   <head>
+  //     <title>VolMed Server</title>
+  //     <style>
+  //       body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+  //       h1 { color: #2c3e50; }
+  //       .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+  //     </style>
+  //   </head>
+  //   <body>
+  //     <h1>VolMed API Server - LOGIN</h1>
+  //     <div style="display:flex; flex-direction:column; align-items:center;">
+  //       <form action="/login" method="POST">
+  //         <label htmlFor="username">
+  //           Username:
+  //         </label>
+  //         <input
+  //           name="username"
+  //           type="text"
+  //           placeholder="Username"
+  //         />
+  //         <br/>
+  //         <label htmlFor="password">
+  //           Password:
+  //         </label>
+  //         <input
+  //           name="password"
+  //           type="password"
+  //           placeholder="Password"
+  //         />
+  //         <br/>
+  //        <button type="submit">Login</button>
+  //       </form>
+  //       <a href="/register">Register</a>
+  //     </div>
+  //   </body>
+  //   </html>
+  // `);
+  res.render("login");
+});
 
 router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
@@ -133,18 +134,25 @@ router.post("/login", originMiddleware, async (req, res) => {
           maxAge: 1000 * 60 * 60 * 24,
         });
 
-        res.status(200).json({
-          success: true,
-          message: "Logged in successfully",
-          redirect: "/",
-          user: {
-            username: user.username,
-            lastName: user.lastName,
-            firstName: user.firstName,
-            patr: user.patr,
-            status: user.status,
-          },
-        });
+        if (process.env.NODE_ENV === "development") {
+          res.redirect("/api/dashboard");
+        } else {
+          if (res.accepts("json")) {
+            res.status(200).json({
+              success: true,
+              message: "Logged in successfully",
+              redirect: "/",
+              user: {
+                username: user.username,
+                lastName: user.lastName,
+                firstName: user.firstName,
+                patr: user.patr,
+                status: user.status,
+              },
+            });
+          }
+          return res.redirect("/api/dashboard");
+        }
       });
     });
   } catch (error) {
@@ -240,10 +248,19 @@ router.post("/logout", isAuth, async (req, res) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       });
-      res.status(200).json({
-        success: true,
-        message: "Logged out successfully",
-      });
+
+      if (process.env.NODE_ENV === "development") {
+        res.redirect("/api");
+      } else {
+        if (req.accepts("json")) {
+          return res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+            redirect: `${process.env.FRONTEND_URL}/login`,
+          });
+        }
+        return res.redirect(`${process.env.FRONTEND_URL}/login`);
+      }
     } catch (clearCookieError) {
       console.error("Clear cookie error:", clearCookieError);
       res.status(500).json({
@@ -280,47 +297,59 @@ router.get("/status", originMiddleware, async (req, res) => {
 router.get("/dashboard", isAuth, async (req, res) => {
   try {
     const sessionData = req.session
-      ? JSON.stringify(req.session, null, 2) // Pretty-print JSON
+      ? JSON.stringify(req.session, null, 2)
       : "null";
 
     if (!req.cookies.user) {
       return res.redirect("/login");
     }
 
-    res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>VolMed Server</title>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { color: #2c3e50; }
-        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-      </style>
-    </head>
-    <body>
-      <h1>VolMed API Server - DASHBOARD</h1>
-      
-      <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
-      
-      <p>Authentication: ${req.session.isAuth}</p>
-      
-      <p>User: ${req.session.user}</p>
-      
-      <p>Name: ${req.session.lastName} ${req.session.firstName}</p>
-      
-      <p>Status: ${req.session.status}</p>
+    // res.send(`
+    // <!DOCTYPE html>
+    // <html>
+    // <head>
+    //   <title>VolMed Server</title>
+    //   <style>
+    //     body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+    //     h1 { color: #2c3e50; }
+    //     .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    //   </style>
+    // </head>
+    // <body>
+    //   <h1>VolMed API Server - DASHBOARD</h1>
 
-      <p>Session data: ${sessionData}</p>
-      
-      <button onClick="window.location='/'">Home</button>
-      <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-      </form>
-      <button onClick="window.location='https://volmed-o4s0.onrender.com/'">Website</button>
-      </body>
-    </html>
-  `);
+    //   <p>Server is running successfully in ${process.env.NODE_ENV} mode</p>
+
+    //   <p>Authentication: ${req.session.isAuth}</p>
+
+    //   <p>User: ${req.session.user}</p>
+
+    //   <p>Name: ${req.session.lastName} ${req.session.firstName}</p>
+
+    //   <p>Status: ${req.session.status}</p>
+
+    //   <p>Session data: ${sessionData}</p>
+
+    //   <button onClick="window.location='/'">Home</button>
+    //   <form action="/logout" method="POST">
+    //     <button type="submit">Logout</button>
+    //   </form>
+    //   <button onClick="window.location='https://volmed-o4s0.onrender.com/'">Website</button>
+    //   </body>
+    // </html>
+    // `);
+
+    res.render("dashboard", {
+      NODE_ENV: process.env.NODE_ENV,
+      FRONTEND_URL: process.env.FRONTEND_URL,
+      sessionAuth: req.session.isAuth,
+      sessionUser: req.session.user,
+      lastName: req.session.lastName,
+      firstName: req.session.firstName,
+      patr: req.session.patr,
+      status: req.session.status,
+      sessionData,
+    });
   } catch (err) {
     console.error("Dashboard error:", err);
     res.redirect("/login");

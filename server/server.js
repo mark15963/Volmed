@@ -10,6 +10,7 @@ require("dotenv").config({
 });
 
 const express = require("express");
+const ejs = require("ejs");
 const axios = require("axios");
 const cors = require("cors");
 
@@ -28,6 +29,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
   "http://192.168.0.103:5173",
+  process.env.BACKEND_URL,
 ];
 app.use(
   cors({
@@ -52,6 +54,8 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.set("view engine", "ejs");
 
 // Session config
 app.use(
