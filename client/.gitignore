@@ -33,5 +33,4 @@ dist/*
 .storybook
 *storybook.log
 storybook-static
-src/stories
 src/components/stories
