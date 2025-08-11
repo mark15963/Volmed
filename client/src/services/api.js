@@ -14,7 +14,7 @@ const api = axios.create({
   },
 });
 
-console.log("API URL:", import.meta.env.VITE_API_URL);
+debug.log("API URL:", import.meta.env.VITE_API_URL);
 
 // Global error handling
 api.interceptors.response.use(

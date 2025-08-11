@@ -29,8 +29,8 @@ export const AuthProvider = ({ children }) => {
                 isLoading: false,
                 user: data.user
             });
-
             return data.isAuthenticated
+
         } catch (error) {
             console.error('Auth check error:', error);
             setAuthState({
