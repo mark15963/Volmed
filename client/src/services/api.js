@@ -73,7 +73,7 @@ api.interceptors.response.use(
     if (status === 401 && error.response.data?.redirectToFrontend) {
       if (typeof window !== "undefined") {
         window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
+          "/api/login?redirect=" + encodeURIComponent(window.location.pathname);
       }
       return Promise.reject(new Error("Session expired"));
     }
