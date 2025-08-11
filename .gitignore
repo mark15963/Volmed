@@ -1,7 +1,5 @@
 # YAML config files
 *.yaml
-*.yml
-
 
 # Logs
 logs
@@ -28,7 +26,7 @@ client/node_modules
 server/node_modules
 
 # Build
-client/dist/
+client/dist/*
 !client/dist/manifest.webmanifest
 
 # Environment
