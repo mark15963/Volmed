@@ -33,7 +33,6 @@ api.interceptors.response.use(
       data: error.response?.status,
       message: error.message,
       stack: environment === "development" ? error.stack : undefined,
-      stack: environment === "development" ? error.stack : error.stack,
       status: error.response?.status,
       url: error.config?.url,
     };

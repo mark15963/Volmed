@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
             return data.isAuthenticated
         } catch (error) {
-            console.error('Auth check error:', error);
+            console.error('Auth check error:', error.stack);
             setAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
