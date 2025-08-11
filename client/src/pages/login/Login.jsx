@@ -47,6 +47,7 @@ export const Login = () => {
             await login(credentials)
 
             debug.log(`Login successful`)
+
             navigate('/')
         } catch (error) {
             console.error("Login error:", error)
