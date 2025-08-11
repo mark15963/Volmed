@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router'
 import axios from 'axios'
 
 const { Input, Form, Alert, Radio, DatePicker, Select, message, Tooltip, Cascader } = await import('antd/es')
-const { IMaskInput } = await import('react-imask')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 // Components
