@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = useCallback(async () => {
         try {
             const { data } = await api.status();
-            debug.log(data)
             // make it hidden from browser dev console 
             const isAdmin = ['admin', 'Администратор'].includes(data.user?.status)
 
@@ -33,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
             return data.isAuthenticated
         } catch (error) {
-            console.error('Auth check error:', error.stack);
+            console.error('Auth check error:', error);
             setAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
