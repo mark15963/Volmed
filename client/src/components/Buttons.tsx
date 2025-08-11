@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
+import debug from "../utils/debug";
 import {
   LoginOutlined,
   LogoutOutlined,
@@ -65,9 +66,13 @@ export const Button: FC<ButtonProps> = ({
     }
   };
 
+  const handleClick = () => {
+    debug.log(`Button clicked: ${text || "(empty)"}`);
+    if (onClick) onClick();
+  };
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={buttonClass}
       disabled={disabled}
       type={type}

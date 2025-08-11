@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '../../context/AuthContext'
-import debug from '../../utils/debug';
 
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
@@ -30,7 +29,6 @@ export const Main = () => {
                         margin='0 0 0 5px'
                         onClick={() => {
                             setIsLoading(true)
-                            debug.log("Clicked on patients list")
                             navigate('/patients')
                         }}
                         loading={isLoading}
@@ -40,7 +38,6 @@ export const Main = () => {
                         icon='newPatient'
                         margin='0 0 0 5px'
                         onClick={() => {
-                            debug.log("Clicked on new patient")
                             navigate('/register')
                         }}
                     />

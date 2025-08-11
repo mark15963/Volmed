@@ -3,9 +3,6 @@ import { useState } from "react"
 import { usePatients } from "../../context/PatientDataContext"
 import { useUsers } from "../../context/UsersDataContext"
 
-import debug from "../../utils/debug"
-
-// import Loader from "../../components/Loader"
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 import { Divider } from "antd"
 import InDev from "../../components/inDev"
@@ -20,10 +17,6 @@ export const Dashboard = () => {
     const countDoctors = users.filter(user => user.status === 'Врач').length
     const countPatients = patients.length
     const stablePatients = patients.filter(patient => patient.state === 'Выписан').length
-
-    debug.log(users)
-
-    // if (usersLoading || patientsLoading) return <Loader />
 
     return (
         <div className={styles.container}>

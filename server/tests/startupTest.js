@@ -1,0 +1,56 @@
+const axios = require("axios");
+const debug = require("../utils/debug");
+
+const BASE_URL = process.env.BACKEND_URL;
+const username = "test";
+const password = "test321";
+
+async function runStartupTests() {
+  try {
+    debug.log("Running startup tests...");
+    debug.log("========================");
+
+    // HEALTH
+    const healthRes = await axios.get(`${BASE_URL}/api/health`);
+    debug.log("API Health check:", healthRes.data.status);
+
+    // LOGIN
+    const loginRes = await axios.post(
+      `${BASE_URL}/api/login`,
+      { username, password },
+      { withCredentials: true }
+    );
+    debug.log("Login:", loginRes.data.message);
+    const cookies = loginRes.headers["set-cookie"];
+
+    // PATIENTS
+    const patientsRes = await axios.get(`${BASE_URL}/api/patients`, {
+      headers: { Cookie: cookies.join("; ") },
+    });
+    debug.log(`Patients fetched: ${patientsRes.data.length || 0}`);
+
+    // USERS
+    const usersRes = await axios.get(`${BASE_URL}/api/users`, {
+      headers: { Cookie: cookies.join("; ") },
+    });
+    debug.log(`Users fetched: ${usersRes.data.length || 0}`);
+
+    // CHAT
+    const chatHealthRes = await axios.get(`${BASE_URL}/api/chat/health`);
+    debug.log(`Chat health: ${chatHealthRes.data.status}`);
+
+    debug.log("=========================");
+    debug.log("All startup tests PASSED.");
+  } catch (error) {
+    debug.error("startup test failed:");
+    if (error.response) {
+      debug.error("Status:", error.response.status);
+      debug.error("Data:", error.response.data);
+    } else {
+      debug.error("Error:", error.message);
+    }
+    process.exit(1);
+  }
+}
+
+runStartupTests();

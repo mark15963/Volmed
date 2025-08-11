@@ -1,7 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../config/db-connection");
+const debug = require("../utils/debug");
 
+router.get("/health", async (req, res) => {
+  try {
+    await db.query("SELECT 1");
+    res.status(200).json({ status: "healthy", db: "connected" });
+  } catch (error) {
+    debug.error("Chat health check failed:", error.message);
+    res.status(500).json({ status: "error", db: "unreachable" });
+  }
+});
 router.post("/save-message", async (req, res) => {
   const { room, sender, senderName, message, timestamp } = req.body;
 
