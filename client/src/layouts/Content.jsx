@@ -1,3 +1,4 @@
+//#region ===== IMPORTS =====
 import { Routes, Route, Navigate, useNavigate } from "react-router"
 import { lazy, Suspense, useContext, useEffect } from 'react'
 
@@ -17,6 +18,7 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
+//#endregion
 
 const Content = () => {
     return (

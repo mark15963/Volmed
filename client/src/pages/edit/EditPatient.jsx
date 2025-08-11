@@ -1,6 +1,5 @@
 import { useParams } from 'react-router';
 import { useEffect, useState, lazy } from 'react';
-import axios from 'axios';
 
 const RegisterPatient = lazy(() => import('../register/RegisterPatient'))
 
@@ -8,9 +7,6 @@ import { usePageTitle } from '../../components/PageTitle';
 
 import api from '../../services/api';
 import Loader from '../../components/Loader';
-
-const environment = import.meta.env.VITE_ENV
-const apiUrl = import.meta.env.VITE_API_URL
 
 export const EditPatient = () => {
     const { id } = useParams();

@@ -73,7 +73,6 @@ export const SearchBar = () => {
                         type='submit'
                         shape='circle'
                         icon='search'
-                        onClick={() => debug.log("Clicked search")}
                     />
                 </div>
                 {error && (

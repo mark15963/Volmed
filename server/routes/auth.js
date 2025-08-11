@@ -70,9 +70,6 @@ router.get("/login", (req, res) => {
 router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
 
-  debug.log(`Login attempt for username: ${username}`);
-  debug.log(`Password received (length): ${password ? password.length : 0}`);
-
   if (!username || !password) {
     return res.status(400).json({ error: "Username and password required" });
   }
@@ -97,8 +94,6 @@ router.post("/login", originMiddleware, async (req, res) => {
       debug.log("Wrong password");
       return res.status(401).json({ error: "Invalid credentials" });
     }
-
-    debug.log(`Logging in user ${username}`);
 
     req.session.regenerate((error) => {
       if (error) {

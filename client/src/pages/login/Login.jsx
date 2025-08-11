@@ -7,8 +7,6 @@ import Button from "../../components/Buttons.tsx";
 import Input from "../../components/Input";
 
 import styles from './login.module.css';
-
-import debug from '../../utils/debug';
 import Loader from "../../components/Loader";
 
 export const Login = () => {
@@ -45,9 +43,6 @@ export const Login = () => {
 
         try {
             await login(credentials)
-
-            debug.log(`Login successful`)
-
             navigate('/')
         } catch (error) {
             console.error("Login error:", error)

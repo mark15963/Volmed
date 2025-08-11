@@ -93,8 +93,11 @@ async function startServer() {
       debug.log(`Enviroment: ${process.env.NODE_ENV}`);
       debug.log(`Website link: ${process.env.FRONTEND_URL}`);
       debug.log(`Backend link: ${process.env.BACKEND_URL}`);
+
       server.keepAliveTimeout = 1000 * 60;
       server.headersTimeout = 1000 * 65;
+
+      require(path.join(__dirname, "tests", "startupTest.js"));
     });
 
     const io = require("socket.io")(server, {

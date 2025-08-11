@@ -19,13 +19,13 @@ debug.log("API URL:", import.meta.env.VITE_API_URL);
 // Global error handling
 api.interceptors.response.use(
   (response) => {
-    const { method, url } = response.config;
-    const { status } = response;
+    // const { method, url } = response.config;
+    // const { status } = response;
 
-    debug.log(`Success: ${method?.toUpperCase()} ${url} (${status})`, {
-      data: response.data,
-      headers: response.headers,
-    });
+    // debug.log(`Success: ${method?.toUpperCase()} ${url} (${status})`, {
+    //   data: response.data,
+    //   headers: response.headers,
+    // });
     return response;
   },
   (error) => {
