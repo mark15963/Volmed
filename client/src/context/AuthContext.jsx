@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = useCallback(async () => {
         try {
             const { data } = await api.status();
+            debug.log(data)
             // make it hidden from browser dev console 
             const isAdmin = ['admin', 'Администратор'].includes(data.user?.status)
 
