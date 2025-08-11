@@ -62,9 +62,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
             let res
             if (isEditMode && patientId) {
-                res = await api.updatePatient(patientId, formattedValues)
+                response = await api.updatePatient(patientId, formattedValues)
             } else {
-                res = await api.createPatient(formattedValues, {
+                response = await api.createPatient(formattedValues, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
