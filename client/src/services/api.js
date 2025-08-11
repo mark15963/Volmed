@@ -3,17 +3,19 @@ import debug from "../utils/debug";
 import { useNavigate } from "react-router";
 
 const environment = import.meta.env.VITE_ENV;
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiBase = import.meta.env.VITE_API_URL || "/api";
 
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiBase,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+console.log("API URL:", import.meta.env.VITE_API_URL);
 
 // Global error handling
 api.interceptors.response.use(
@@ -88,41 +90,37 @@ api.interceptors.response.use(
 
 export default {
   //General
-  getHospitalName: () => api.get(`${apiUrl}/general-data`),
-  setHospitalName: (hospitalName, backgroundColor) =>
-    api.put(`${apiUrl}/general-data`),
+  getHospitalName: () => api.get(`/general-data`),
+  setHospitalName: (hospitalName, backgroundColor) => api.put(`/general-data`),
 
   // Patients
   getPatients: () => api.get(`/patients`),
-  getPatient: (id) => api.get(`${apiUrl}/patients/${id}`),
-  getPatientCount: () => api.get(`${apiUrl}/patient-count`),
-  createPatient: (data) => api.post(`${apiUrl}/patients`, data),
-  updatePatient: (id, data) => api.put(`${apiUrl}/patients/${id}`, data),
-  deletePatient: (id) => api.delete(`${apiUrl}/patients/${id}`),
+  getPatient: (id) => api.get(`/patients/${id}`),
+  getPatientCount: () => api.get(`/patient-count`),
+  createPatient: (data) => api.post(`/patients`, data),
+  updatePatient: (id, data) => api.put(`/patients/${id}`, data),
+  deletePatient: (id) => api.delete(`/patients/${id}`),
 
   // Medications
-  deleteMedication: (medId) => api.delete(`${apiUrl}/medications/${medId}`),
-  getMedications: (patientId) =>
-    api.get(`${apiUrl}/patients/${patientId}/medications`),
+  deleteMedication: (medId) => api.delete(`/medications/${medId}`),
+  getMedications: (patientId) => api.get(`/patients/${patientId}/medications`),
   createMedication: (patientId, data) =>
-    api.post(`${apiUrl}/patients/${patientId}/medications`, data),
-  updateMedication: (medId, data) =>
-    api.put(`${apiUrl}/medications/${medId}`, data),
+    api.post(`/patients/${patientId}/medications`, data),
+  updateMedication: (medId, data) => api.put(`/medications/${medId}`, data),
 
   // Files
-  getPatientFiles: (patientId) =>
-    api.get(`${apiUrl}/patients/${patientId}/files`),
+  getPatientFiles: (patientId) => api.get(`/patients/${patientId}/files`),
   uploadFile: (patientId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    return api.post(`${apiUrl}/patients/${patientId}/upload`, formData, {
+    return api.post(`/patients/${patientId}/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   deleteFile: (filePath) =>
-    api.delete(`${apiUrl}/files`, {
+    api.delete(`/files`, {
       data: { filePath },
       headers: {
         "Content-Type": "application/json",
@@ -132,23 +130,23 @@ export default {
   // Vital Signs (Pulse)
   savePulse: (patientId, value) => {
     if (!patientId) throw new Error("Patient ID is required");
-    return api.post(`${apiUrl}/patients/${patientId}/pulse`, {
+    return api.post(`/patients/${patientId}/pulse`, {
       value,
     });
   },
-  getPulseData: (patientId) => api.get(`${apiUrl}/patients/${patientId}/pulse`),
+  getPulseData: (patientId) => api.get(`/patients/${patientId}/pulse`),
   saveO2: (patientId, value) =>
-    api.post(`${apiUrl}/patients/${patientId}/o2`, { value }),
-  getO2Data: (patientId) => api.get(`${apiUrl}/patients/${patientId}/o2`),
+    api.post(`/patients/${patientId}/o2`, { value }),
+  getO2Data: (patientId) => api.get(`/patients/${patientId}/o2`),
 
   // Auth
   postLogin: (data) => api.post(`/login`, data),
-  logout: () => api.post(`${apiUrl}/logout`),
+  logout: () => api.post(`/logout`),
   status: () => api.get(`/status`),
 
   // Chat
-  getChatHistory: (room) => api.get(`${apiUrl}/chat/room/${room}/messages`),
-  saveMessage: (data) => api.post(`${apiUrl}/chat/save-message`, data),
+  getChatHistory: (room) => api.get(`/chat/room/${room}/messages`),
+  saveMessage: (data) => api.post(`/chat/save-message`, data),
 
   // Users
   getUsers: () => api.get(`/users`),
