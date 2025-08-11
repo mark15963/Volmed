@@ -1,8 +1,6 @@
 import { AuthProvider } from "./AuthContext";
 import { UsersDataProvider } from "./UsersDataContext";
 import { PatientDataProvider } from "./PatientDataContext";
-import Loader from "../components/Loader";
-import { useEffect, useState } from "react";
 
 export const AppProviders = ({ children }) => {
   return (
