@@ -140,7 +140,11 @@ export default {
   getO2Data: (patientId) => api.get(`${apiUrl}/patients/${patientId}/o2`),
 
   // Auth
-  postLogin: (data) => api.post(`${apiUrl}/login`, data),
+  postLogin: (data) => {
+    debug.log("Environment:", environment);
+    debug.log("API URL:", apiUrl);
+    return api.post(`${apiUrl}/login`, data);
+  },
   logout: () => api.post(`${apiUrl}/logout`),
   status: () => {
     debug.log("Environment:", environment);
