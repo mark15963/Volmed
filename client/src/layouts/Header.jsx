@@ -12,6 +12,7 @@ import logo from '../assets/images/logo.webp'
 
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import styles from './styles/header.module.scss'
+import debug from "../utils/debug";
 
 export const Header = (props) => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ export const Header = (props) => {
     const location = useLocation()
 
     const handleClick = useCallback(() => {
+        debug.log("Clicked on logo")
         navigate('/');
     }, [navigate])
 

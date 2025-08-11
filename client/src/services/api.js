@@ -142,7 +142,10 @@ export default {
   // Auth
   postLogin: (data) => api.post(`${apiUrl}/login`, data),
   logout: () => api.post(`${apiUrl}/logout`),
-  status: () => api.get(`${apiUrl}/status`),
+  status: () => {
+    debug.log(apiUrl);
+    return api.get(`${apiUrl}/status`);
+  },
 
   // Chat
   getChatHistory: (room) => api.get(`${apiUrl}/chat/room/${room}/messages`),
