@@ -3,12 +3,11 @@ import debug from "../utils/debug";
 import { useNavigate } from "react-router";
 
 const environment = import.meta.env.VITE_ENV;
-const apiBase = import.meta.env.VITE_API_URL || "/api";
 
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: apiBase,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
