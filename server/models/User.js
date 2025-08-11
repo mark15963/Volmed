@@ -1,15 +1,5 @@
-const { Pool } = require("pg");
 const debug = require("../utils/debug");
-
-const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 30000,
-  max: 10,
-});
+const { db } = require("../config/db-connection");
 
 const User = {
   async create(username, password) {

@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { db } = require("../services/db-connection");
+const { db } = require("../config/db-connection");
 
 const authRouter = require("./auth");
 const patientsRouter = require("./patients");
@@ -60,7 +60,6 @@ router.get("/", (req, res) => {
 });
 
 // Health Check
-
 router.get("/health", (req, res) => {
   res.status(200).json({
     status: "healthy",

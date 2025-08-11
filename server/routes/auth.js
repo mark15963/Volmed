@@ -1,11 +1,9 @@
 const { Router } = require("express");
-const session = require("express-session");
-const pgSession = require("connect-pg-simple")(session);
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const User = require("../models/User");
-const { db } = require("../services/db-connection");
+const { db } = require("../config/db-connection");
 const originMiddleware = require("../middleware/originMiddleware");
 const debug = require("../utils/debug");
 
@@ -241,8 +239,8 @@ router.post("/logout", isAuth, async (req, res) => {
   req.session.destroy((error) => {
     if (error) {
       console.error("Logout error:", error);
-      if (req.app.locals.debug?.error) {
-        req.app.locals.debug.error("Logout error:", error);
+      if (debug?.error) {
+        debug.error("Logout error:", error);
       }
       return res.status(500).json({ error: "Logout failed" });
     }

@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const fsp = fs.promises;
 const debug = require("../utils/debug");
-const { db } = require("../services/db-connection");
+const { db } = require("../config/db-connection");
 
 const router = Router();
 
@@ -57,7 +57,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-//-----PATIENTS-----
+//#region ===== PATIENTS =====
 //Get all patients
 router.get("/patients", isAuth, async (req, res) => {
   try {
@@ -175,8 +175,9 @@ router.delete("/patients/:id", isAuth, async (req, res) => {
     res.status(500).json({ error: "Delete failed", message: e.message });
   }
 });
+//#endregion
 
-//-----FILES-----
+//#region ===== FILES =====
 // Upload files to a specific patient
 router.post(
   "/patients/:id/upload",
@@ -263,8 +264,9 @@ router.delete("/files", isAuth, async (req, res) => {
       .json({ error: "Internal server error", message: e.message });
   }
 });
+//#endregion
 
-//-----MEDS-----
+//#region ===== MEDS =====
 // Show patient's medications
 router.get("/patients/:id/medications", isAuth, async (req, res) => {
   try {
@@ -379,8 +381,9 @@ router.delete("/medications/:medId", isAuth, async (req, res) => {
     });
   }
 });
+//#endregion
 
-//-----VITALS------
+//#region ===== VITALS =====
 // Save pulse data
 router.post("/patients/:id/pulse", isAuth, async (req, res) => {
   const val = req.body.pulseValue;
@@ -449,5 +452,6 @@ router.get("/patients/:id/o2", isAuth, async (req, res) => {
     res.status(500).json({ error: "DB error", message: e.message });
   }
 });
+//#endregion
 
 module.exports = router;

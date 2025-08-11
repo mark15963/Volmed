@@ -37,6 +37,7 @@ server/.env*
 client/.storybook
 client/*storybook.log
 client/storybook-static
+client/src/stories
 client/src/components/stories
 
 # Server specific
