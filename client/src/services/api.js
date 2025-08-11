@@ -80,7 +80,9 @@ api.interceptors.response.use(
     const errorMessage =
       error.response.data?.message || statusMessages[status] || defaultMessage;
 
-    return Promise.reject(new Error("Global error message:", errorMessage));
+    return Promise.reject(
+      new Error("Global error message:", errorMessage, errorDetails)
+    );
   }
 );
 
