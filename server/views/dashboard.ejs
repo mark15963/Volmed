@@ -20,16 +20,21 @@
   <details>
     <summary>Пользователи:</summary>
     <% users.forEach(user => { %>
+    <% if (user.username === sessionUser) { %>
+    <p style="font-weight: bold;">
+      ID <%- user.id %>:
+      <%= user.lastName %>
+      <%= user.firstName %>
+      <%= user.patr %> - <%= user.status %>
+    </p>
+    <% } else {%>
     <p>
       ID <%- user.id %>:
       <%= user.lastName %>
       <%= user.firstName %>
       <%= user.patr %> - <%= user.status %>
-      <% if (user.username === sessionUser) { %>
-      ***Данный аккаунт***
-      <% } %>
     </p>
-    <% }) %>
+    <% }}) %>
   </details>
 </div>
 
