@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }) => {
 
     // Login function
     const login = useCallback(async (credentials) => {
+        debug.log("Trying to login...")
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
             await api.postLogin(credentials);
