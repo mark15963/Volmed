@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { db } = require("../services/db-connection");
+const { db } = require("../config/db-connection");
 
 router.post("/save-message", async (req, res) => {
   const { room, sender, senderName, message, timestamp } = req.body;

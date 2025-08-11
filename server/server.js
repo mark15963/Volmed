@@ -1,3 +1,4 @@
+//#region ===== REQUIRES =====
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config({
@@ -10,90 +11,51 @@ require("dotenv").config({
 });
 
 const express = require("express");
-const ejs = require("ejs");
 const axios = require("axios");
-const cors = require("cors");
-
-const { db, testDbConnection } = require("./services/db-connection");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const pgSession = require("connect-pg-simple")(session);
+
+const { db, testDbConnection } = require("./config/db-connection");
+const { corsOptions, allowedOrigins } = require("./config/cors");
+const sessionConfig = require("./config/session");
 const routes = require("./routes/index");
 const debug = require("./utils/debug");
+//#endregion
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS setup
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "http://localhost:5173",
-  "http://192.168.0.103:5173",
-  process.env.BACKEND_URL,
-];
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      console.log("Not allowed by CORS:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["set-cookie"],
-  })
-);
+const cors = require("cors");
+app.use(cors(corsOptions));
 
 app.locals.allowedOrigins = allowedOrigins;
 app.locals.debug = debug;
 
-// Trust Proxy & Middleware
+// Middleware
 app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.set("view engine", "ejs");
 
-// Session config
-app.use(
-  session({
-    name: "volmed.sid",
-    store: new pgSession({
-      pool: db,
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 1000 * 60 * 60 * 24,
-    },
-    proxy: true,
-    unset: "destroy",
-  })
-);
+// Session setup
+app.use(sessionConfig);
 
-// Static & Routing
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("uploads"));
 
-// Use routes
+// Routes
 app.get("/", (req, res) => {
   res.redirect("/api");
 });
-app.use("/api", routes);
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
   next();
 });
+app.use("/api", routes);
 
 // Debug session & cookies on start
 app.use((req, res, next) => {
@@ -117,15 +79,9 @@ app.use((err, req, res, next) => {
     return res
       .status(500)
       .json({ error: "Server error", message: err.message });
+  } else {
+    res.status(500).send("Server error");
   }
-  res.status(500).send("Server error");
-  res.status(500).json({
-    error: "Internal Server Error",
-    message:
-      process.env.NODE_ENV === "development"
-        ? err.message
-        : "Something went wrong",
-  });
 });
 
 async function startServer() {
@@ -143,7 +99,13 @@ async function startServer() {
 
     const io = require("socket.io")(server, {
       cors: {
-        origin: allowedOrigins,
+        origin: (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
         methods: ["GET", "POST"],
         credentials: true,
       },
