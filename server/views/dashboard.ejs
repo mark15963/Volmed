@@ -4,10 +4,10 @@
 <h1>VolMed API Server - DASHBOARD</h1>
 
 <p>Server is running successfully in "<%= NODE_ENV %>" mode</p>
-<p>Authenticated: <%- sessionAuth %></p>
-<p>User: <%- sessionUser %></p>
-<p>Name: <%= lastName %> <%= firstName %> <%= patr %></p>
-<p>Status: <%= status %></p>
+<p>Авторизован: <%- sessionAuth %></p>
+<p>Аккаунт: <%- sessionUser %></p>
+<p>ФИО: <%= lastName %> <%= firstName %> <%= patr %></p>
+<p>Должность: <%= status %></p>
 
 <div>
   <details>
@@ -16,19 +16,45 @@
   </details>
 </div>
 
+<div>
+  <details>
+    <summary>Пользователи:</summary>
+    <% users.forEach(user => { %>
+    <p>
+      ID <%- user.id %>:
+      <%= user.lastName %>
+      <%= user.firstName %>
+      <%= user.patr %> - <%= user.status %>
+      <% if (user.username === sessionUser) { %>
+      ***Данный аккаунт***
+      <% } %>
+    </p>
+    <% }) %>
+  </details>
+</div>
+
+<div>
+  <details>
+    <summary>Пациенты:</summary>
+    <% patients.forEach(patient => { %>
+    <p>ID <%- patient.id %>: <%= patient.lastName %> <%= patient.firstName %> <%= patient.patr %></p>
+    <% }) %>
+  </details>
+</div>
+
 <br>
 <div style="display: flex; gap: 10px; align-items: baseline;">
   <button onClick="window.location.href='/api'">
-    Home
+    Домашняя страница
   </button>
   <form action="/api/logout" method="POST">
     <button type="submit">
-      Logout
+      Выйти
     </button>
   </form>
 
   <button onClick="window.location.href='<%- FRONTEND_URL %>'">
-    Main Website
+    Главный сайт
   </button>
 </div>
 
