@@ -23,22 +23,30 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-#Node
+# Node
 client/node_modules
 server/node_modules
 
-#Build
+# Docker
+client/Dockerfile
+server/Dockerfile
+client/.dockerignore
+server/.dockerignore
+
+# Build
 client/dist/
 !client/dist/manifest.webmanifest
 
-#Environment
+# Environment
 client/.env*
 server/.env*
 
-#Storybook
+# Storybook
 client/.storybook
 client/*storybook.log
 client/storybook-static
 client/src/components/stories
 
+# Server specific
 server/DB_Backup
+server/.dockerignore
