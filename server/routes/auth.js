@@ -135,8 +135,6 @@ router.post("/login", originMiddleware, async (req, res) => {
         });
 
         if (process.env.NODE_ENV === "development") {
-          res.redirect("/api/dashboard");
-        } else {
           if (req.accepts("json")) {
             return res.status(200).json({
               success: true,
@@ -153,6 +151,22 @@ router.post("/login", originMiddleware, async (req, res) => {
           }
           return res.redirect("/api/dashboard");
         }
+
+        if (req.accepts("json")) {
+          return res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            redirect: "/",
+            user: {
+              username: user.username,
+              lastName: user.lastName,
+              firstName: user.firstName,
+              patr: user.patr,
+              status: user.status,
+            },
+          });
+        }
+        return res.redirect(process.env.FRONTEND_URL || "/");
       });
     });
   } catch (error) {
