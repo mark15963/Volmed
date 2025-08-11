@@ -13,7 +13,7 @@ services:
         value: volmed_db_admin
       - key: DB_PASSWORD
         fromDatabase:
-          name: volmed-db  # Reference your Render PostgreSQL database name
+          name: volmed-db # Reference your Render PostgreSQL database name
           property: password
       - key: DB_NAME
         value: volmed_db
@@ -21,7 +21,20 @@ services:
         value: 5432
       - key: DATABASE_URL
         fromDatabase:
-          name: volmed-db  # Reference your Render PostgreSQL database name
+          name: volmed-db # Reference your Render PostgreSQL database name
           property: connectionString
       - key: FRONTEND_URL
         value: https://volmed-o4s0.onrender.com
+
+  - type: web
+    name: volmed_frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://volmed-backend.onrender.com/api
+      - key: VITE_ENV
+        value: production
+      - key: VITE_DEBUG
+        value: "false"
