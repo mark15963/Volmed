@@ -114,7 +114,9 @@ async function startServer() {
       server.keepAliveTimeout = 1000 * 60;
       server.headersTimeout = 1000 * 65;
 
-      // require(path.join(__dirname, "tests", "startupTest.js"));
+      if (process.env.NODE_ENV === "development") {
+        require(path.join(__dirname, "tests", "startupTest.js"));
+      }
     });
 
     const io = require("socket.io")(server, {
