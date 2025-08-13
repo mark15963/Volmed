@@ -8,7 +8,7 @@ import {
   UserAddOutlined,
 } from "@ant-design/icons";
 import loader from "../assets/images/Loader.gif";
-import "./styles/Button.css";
+import "./styles/Button.scss";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;

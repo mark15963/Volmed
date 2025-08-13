@@ -6,16 +6,15 @@
   border-radius: 10px;
   padding: 0 5px;
   font-size: 15px;
-}
+  &:hover {
+    border: 2px solid #1677ff;
+  }
 
-.input:hover {
-  border: 2px solid #1677ff;
-}
+  &::placeholder {
+    align-items: center;
+  }
 
-.input::placeholder {
-  align-items: center;
-}
-
-.input:focus::placeholder {
-  opacity: 0;
+  &:focus::placeholder {
+    opacity: 0;
+  }
 }
