@@ -1,11 +1,11 @@
 const axios = require("axios");
 const debug = require("../utils/debug");
 
-const BASE_URL = process.env.BACKEND_URL;
-const username = "test";
-const password = "test321";
-
 async function runStartupTests() {
+  const BASE_URL = process.env.BACKEND_URL;
+  const username = "test";
+  const password = "test321";
+
   try {
     debug.log("Running startup tests...");
     debug.log("========================");
@@ -13,6 +13,9 @@ async function runStartupTests() {
     // HEALTH
     const healthRes = await axios.get(`${BASE_URL}/api/health`);
     debug.log("API Health check:", healthRes.data.status);
+
+    // ENV
+    debug.log("Mode:", process.env.NODE_ENV);
 
     // LOGIN
     const loginRes = await axios.post(
