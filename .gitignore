@@ -30,8 +30,8 @@ client/dist/*
 !client/dist/manifest.webmanifest
 
 # Environment
-client/.env*
-server/.env*
+# client/.env*
+# server/.env*
 
 # Storybook
 client/.storybook
@@ -42,4 +42,4 @@ client/src/components/stories
 
 # Server specific
 server/DB_Backup
-server/tests
+# server/tests
