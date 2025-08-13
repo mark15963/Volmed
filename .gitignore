@@ -30,8 +30,8 @@ client/dist/*
 !client/dist/manifest.webmanifest
 
 # Environment
-client/.env*
-server/.env*
+# client/.env*
+# server/.env*
 
 # Storybook
 client/.storybook
