@@ -10,6 +10,8 @@ async function runStartupTests() {
     debug.log("Running startup tests...");
     debug.log("========================");
 
+    debug.log(BASE_URL);
+
     // HEALTH
     const healthRes = await axios.get(`${BASE_URL}/api/health`);
     debug.log("API Health check:", healthRes.data.status);
