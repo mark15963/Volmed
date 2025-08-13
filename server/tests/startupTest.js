@@ -1,4 +1,6 @@
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 const debug = require("../utils/debug");
 
 async function runStartupTests() {
@@ -18,6 +20,14 @@ async function runStartupTests() {
 
     // ENV
     debug.log("Mode:", process.env.NODE_ENV);
+    const envFilePath = path.join(__dirname, "..", ".env");
+    const envFileContent = fs.readFileSync(envFilePath, "utf8");
+    const envKeys = Object.keys(process.env);
+    const envFileKeys = envFileContent
+      .split("\n")
+      .filter((line) => line.trim() && !line.startsWith("#"))
+      .map((line) => line.split("=")[0].trim());
+    debug.log("Loaded server environment file variables:", envFileKeys);
 
     // LOGIN
     const loginRes = await axios.post(

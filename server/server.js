@@ -22,21 +22,6 @@ const routes = require("./routes/index");
 const debug = require("./utils/debug");
 //#endregion
 
-// ===== REQUIRED ENV VARIABLES =====
-const requiredEnv = [
-  "NODE_ENV",
-  "DATABASE_URL",
-  "SESSION_SECRET",
-  "FRONTEND_URL",
-  "BACKEND_URL",
-];
-
-const missingVars = requiredEnv.filter((key) => !process.env[key]);
-if (missingVars.length > 0) {
-  console.error("❌ Missing required environment variables:", missingVars);
-  process.exit(1);
-}
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
