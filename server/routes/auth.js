@@ -24,46 +24,6 @@ const isAuth = (req, res, next) => {
 };
 
 router.get("/login", (req, res) => {
-  // res.send(`
-  //   <!DOCTYPE html>
-  //   <html>
-  //   <head>
-  //     <title>VolMed Server</title>
-  //     <style>
-  //       body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-  //       h1 { color: #2c3e50; }
-  //       .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-  //     </style>
-  //   </head>
-  //   <body>
-  //     <h1>VolMed API Server - LOGIN</h1>
-  //     <div style="display:flex; flex-direction:column; align-items:center;">
-  //       <form action="/login" method="POST">
-  //         <label htmlFor="username">
-  //           Username:
-  //         </label>
-  //         <input
-  //           name="username"
-  //           type="text"
-  //           placeholder="Username"
-  //         />
-  //         <br/>
-  //         <label htmlFor="password">
-  //           Password:
-  //         </label>
-  //         <input
-  //           name="password"
-  //           type="password"
-  //           placeholder="Password"
-  //         />
-  //         <br/>
-  //        <button type="submit">Login</button>
-  //       </form>
-  //       <a href="/register">Register</a>
-  //     </div>
-  //   </body>
-  //   </html>
-  // `);
   res.render("login");
 });
 
@@ -306,7 +266,6 @@ router.get("/dashboard", isAuth, async (req, res) => {
     const sessionData = req.session
       ? JSON.stringify(req.session, null, 2)
       : "null";
-
     if (!req.cookies.user) {
       return res.redirect("/login");
     }
