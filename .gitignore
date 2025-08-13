@@ -42,4 +42,4 @@ client/src/components/stories
 
 # Server specific
 server/DB_Backup
-server/tests/*
+# server/tests/*
