@@ -1,5 +1,6 @@
 //#region ===== REQUIRES =====
 const path = require("path");
+
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config({
   path: path.join(
@@ -20,6 +21,21 @@ const sessionConfig = require("./config/session");
 const routes = require("./routes/index");
 const debug = require("./utils/debug");
 //#endregion
+
+// ===== REQUIRED ENV VARIABLES =====
+const requiredEnv = [
+  "NODE_ENV",
+  "DATABASE_URL",
+  "SESSION_SECRET",
+  "FRONTEND_URL",
+  "BACKEND_URL",
+];
+
+const missingVars = requiredEnv.filter((key) => !process.env[key]);
+if (missingVars.length > 0) {
+  console.error("❌ Missing required environment variables:", missingVars);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -84,6 +100,7 @@ app.use((err, req, res, next) => {
   }
 });
 
+// ===== START SERVER =====
 async function startServer() {
   try {
     await testDbConnection();
