@@ -14,12 +14,19 @@ router.use(usersRouter);
 router.use("/chat", chatRoutes);
 
 router.get("/", (req, res) => {
-  res.render("main", {
-    NODE_ENV: process.env.NODE_ENV,
-    FRONTEND_URL: process.env.FRONTEND_URL,
-    sessionAuth: req.session.isAuth,
-    cookiesUser: req.cookies.user,
-  });
+  try {
+    console.log("Attempting to render main.ejs");
+    res.type("html");
+    res.render("main", {
+      NODE_ENV: process.env.NODE_ENV,
+      FRONTEND_URL: process.env.FRONTEND_URL,
+      sessionAuth: req.session.isAuth,
+      cookiesUser: req.cookies.user,
+    });
+  } catch (error) {
+    console.error("View rendering error:", err);
+    res.status(500).send("Error rendering view");
+  }
 });
 
 // Health Check

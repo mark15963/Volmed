@@ -24,6 +24,7 @@ const isAuth = (req, res, next) => {
 };
 
 router.get("/login", (req, res) => {
+  res.type("html");
   res.render("login");
 });
 
@@ -88,11 +89,11 @@ router.post("/login", originMiddleware, async (req, res) => {
         });
 
         if (process.env.NODE_ENV === "development") {
-          if (req.accepts("json")) {
+          if (req.accepts("html")) {
             return res.status(200).json({
               success: true,
               message: "Logged in successfully",
-              redirect: "/",
+              redirect: "/api/dashboard",
               user: {
                 username: user.username,
                 lastName: user.lastName,
@@ -263,6 +264,7 @@ router.get("/status", originMiddleware, async (req, res) => {
 
 router.get("/dashboard", isAuth, async (req, res) => {
   try {
+    res.type("html");
     const sessionData = req.session
       ? JSON.stringify(req.session, null, 2)
       : "null";
