@@ -14,7 +14,7 @@ const Tab3 = lazy(() => import('./tabs/tab3'))
 
 // Custom Hooks
 import { usePatientFiles } from '../../hooks/usePatientFiles'
-import { usePatientData, } from '../../hooks/usePatientData'
+import { usePatientData } from '../../hooks/usePatientData'
 import { usePatientMedications } from '../../hooks/usePatientMedications'
 
 // Components
@@ -60,7 +60,7 @@ const SearchResults = React.memo(() => {
     const filesHook = usePatientFiles(patientId, messageApiRef, activeTab === TAB_FILES)
     filesHook.id = patientId
 
-    const medsHook = usePatientMedications(patientId, messageApiRef);
+    const medsHook = usePatientMedications(patientId, messageApiRef, activeTab === TAB_MEDS);
 
     //#endregion
 
