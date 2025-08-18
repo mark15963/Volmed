@@ -6,7 +6,7 @@ import { useAuth } from "../../../../context/AuthContext";
 
 export const ActionButtons = ({
     activeTab,
-    isEditingMedications,
+    isEditing,
     isEditingFiles,
     handleEdit,
     handleSaveMedications,
