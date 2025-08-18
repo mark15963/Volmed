@@ -19,12 +19,12 @@ export const ActionButtons = ({
     const { authState } = useAuth()
 
     const handleSaveClick = (e) => {
-        if (activeTab === 2 && isEditingMedications) {
-            const hasEmptyNames = medications.some(item => !item.name.trim());
-            if (hasEmptyNames) {
-                message.error('Пожалуйста, заполните все поля');
-                return;
-            }
+        if (activeTab === 2 && isEditing) {
+            //const hasEmptyNames = medications.some(item => !item.name.trim());
+            //if (hasEmptyNames) {
+            //    message.error('Пожалуйста, заполните все поля');
+            //    return;
+            //}
             handleSaveMedications(e);
         } else if (activeTab === 1 && isEditingFiles) {
             handleSaveFiles(e);
@@ -38,7 +38,7 @@ export const ActionButtons = ({
             <div style={{ display: 'flex' }}>
                 <Button
                     text={
-                        isEditingMedications || isEditingFiles
+                        isEditing || isEditingFiles
                             ? `Сохранить`
                             : `Редактировать`
                     }
