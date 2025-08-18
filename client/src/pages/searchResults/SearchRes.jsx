@@ -191,7 +191,7 @@ const SearchResults = React.memo(() => {
 
             <ActionButtons
                 activeTab={activeTab}
-                isEditingMedications={medsHook.isEditing}
+                isEditing={medsHook.isEditing}
                 isEditingFiles={filesHook.isEditing}
                 handleEdit={handleEdit}
                 handleSaveMedications={medsHook.handleSave}
