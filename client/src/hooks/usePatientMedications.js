@@ -26,6 +26,10 @@ export function usePatientMedications(patientId, messageApiRef) {
   }, [patientId]);
 
   useEffect(() => {
+    setIsEditing(false);  // Reset edit mode when patient changes
+  }, [patientId]);
+
+  useEffect(() => {
     fetchMedications();
   }, [fetchMedications]);
 
@@ -113,6 +117,7 @@ export function usePatientMedications(patientId, messageApiRef) {
   return {
     medications,
     setMedications,
+    isEditingMedications: isEditing,
     isEditing,
     setIsEditing,
     handleSave,
