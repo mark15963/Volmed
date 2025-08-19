@@ -177,7 +177,7 @@ export const Tab3 = ({
                                         </td>
                                         {/* Delete Button*/}
                                         {isEditingMedications && (
-                                            <td style={{ width: '15%', verticalAlign: 'middle' }}>
+                                            <td className={styles.deleteButton}>
                                                 <Button
                                                     text='Удалить'
                                                     size='s'
