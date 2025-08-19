@@ -41,8 +41,8 @@ export const Header = (props) => {
                 <div
                     className={styles.title}
                 >
-                    <span className={styles.titleTop}>ГБУ «Городская больница</span>
-                    <span className={styles.titleBottom}>Волновахского района»</span>
+                    <span className={styles.titleTop}>ГБУ ДНР «Волновахская</span>
+                    <span className={styles.titleBottom}>районная больница»</span>
                 </div>
                 <div
                     className={styles.titlePrint}
