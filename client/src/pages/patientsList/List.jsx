@@ -20,8 +20,9 @@ export const List = () => {
                     </div>
 
                     <AllPatients />
-
-                    <PatientCount />
+                    <div style={{ marginTop: '10px' }}>
+                        <PatientCount />
+                    </div>
                 </>
                 <div className={styles.buttonContainer}>
                     <Button
