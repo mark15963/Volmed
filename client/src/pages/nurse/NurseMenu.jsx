@@ -1,7 +1,11 @@
+import styles from "./nurseMenu.module.css"
+
 const NurseMenu = () => {
     return (
-        <div>
-            МЕНЮ МЕДСЕСТЕР
+        <div className={styles.container}>
+            <div className={styles.mainBlock}>
+                МЕНЮ МЕДСЕСТЕР
+            </div>
         </div>
     )
 }
