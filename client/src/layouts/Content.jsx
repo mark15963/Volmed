@@ -28,6 +28,7 @@ const Content = () => {
                     {/* Public */}
                     <Route path="/login" element={<Login />} />
 
+                    {/* Nurses */}
                     {/* Protected */}
                     <Route path='/' element={
                         <ProtectedRoute>
