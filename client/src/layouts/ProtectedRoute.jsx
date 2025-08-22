@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../context";
 import Loader from "../components/Loader";
 
-const ProtectedRoute = ({ children, adminOnly = false }) => {
+const ProtectedRoute = ({ children, adminOnly = false, nurse = false }) => {
   const { authState } = useAuth();
   const location = useLocation();
 
@@ -17,6 +17,8 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     return <Navigate to="/" replace />;
   }
 
+  if (nurse && authState.user.status!=='nurse') return <Navigate to="/login" state={{ from: location }} replace />
+  
   return children;
 };
 
