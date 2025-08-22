@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children, adminOnly = false, nurse = false }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (nurse && authState.user.status!=='nurse') return <Navigate to="/login" state={{ from: location }} replace />
+  if (nurse && authState.user.status!=='Сестра' || authState.user.status!=='nurse') return <Navigate to="/login" state={{ from: location }} replace />
   
   return children;
 };
