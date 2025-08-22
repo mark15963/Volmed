@@ -18,3 +18,9 @@
     border-style: solid;
     border-radius: 15px;
 }
+
+@media screen and (orientation: portrait) {
+  body {
+    height: 100%;
+  }
+}
