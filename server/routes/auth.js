@@ -130,46 +130,8 @@ router.post("/login", originMiddleware, async (req, res) => {
 });
 
 router.get("/register", (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>VolMed Server</title>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { color: #2c3e50; }
-        .endpoint { background: #f4f4f4; padding: 10px; border-radius: 5px; margin: 10px 0; }
-      </style>
-    </head>
-    <body>
-      <h1>VolMed API Server - REGISTER</h1>
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <form action="/register" method="POST">
-          <label htmlFor="username">
-            Username:
-          </label>
-          <input 
-            type="text"
-            placeholder="Username"
-            name="username"
-          />
-          <br/>
-          <label htmlFor="password">
-            Password:
-          </label>
-          <input 
-            type="password"    
-            placeholder="Password"
-            name="password"
-          />
-          <br/>
-         <button type="submit">Register</button>
-        </form>
-        <a href="/login">Login</a>
-      </div>
-    </body>
-    </html>
-  `);
+  res.type("html");
+  res.render("register");
 });
 
 router.post("/register", async (req, res) => {
