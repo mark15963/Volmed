@@ -13,9 +13,9 @@ const List = lazy(() => import('../pages/patientsList/List.jsx'));
 const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient.jsx'));
 const EditPatient = lazy(() => import('../pages/edit/EditPatient.jsx'));
 const Login = lazy(() => import('../pages/login/Login.jsx'));
-const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
+const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
 const NotFound = lazy(() => import('../pages/NotFound.jsx'));
-const NurseMenu = lazy(() => import('../pages/nurse/NurseMenu');
+const NurseMenu = lazy(() => import('../pages/nurse/NurseMenu'));
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
