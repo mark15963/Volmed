@@ -150,7 +150,7 @@ router.post("/register", async (req, res) => {
   const user = await User.create(username, hashedPass);
 
   // req.session.userId = user.id;
-  res.redirect("/login");
+  res.redirect("/api/login");
 });
 
 router.post("/logout", isAuth, async (req, res) => {
