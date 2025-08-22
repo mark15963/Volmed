@@ -15,6 +15,7 @@ const EditPatient = lazy(() => import('../pages/edit/EditPatient.jsx'));
 const Login = lazy(() => import('../pages/login/Login.jsx'));
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
 const NotFound = lazy(() => import('../pages/NotFound.jsx'));
+const NurseMenu = lazy(() => import('../pages/nurse/NurseMenu');
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
@@ -28,8 +29,13 @@ const Content = () => {
                     {/* Public */}
                     <Route path="/login" element={<Login />} />
 
-                    {/* Nurses */}
-                    {/* Protected */}
+                    {/* ----- Nurses ----- */}
+                    <Route path='/nurse-menu' element={
+                        <ProtectedRoute nurse>
+                            <NurseMenu />
+                        </ProtectedRoute>
+                    } />
+                    {/* Doctors */}
                     <Route path='/' element={
                         <ProtectedRoute>
                             <Main />
