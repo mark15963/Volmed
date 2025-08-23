@@ -11,12 +11,11 @@
   align-items: center;
   width: 100%;
   min-width: fit-content;
+  -webkit-tap-highlight-color: transparent;
   &:hover {
-    @media (hover: hover){
-      transition: all 0.2s;
-      color: #1677ff;
-      border: 2px solid #1677ff;
-    }
+    transition: all 0.2s;
+    color: #1677ff;
+    border: 2px solid #1677ff;
   }
   &:active {
     color: #1677ff;
@@ -88,22 +87,18 @@
 
     /* SIZE */
     &.s {
-      width: fit-content;
       padding: 4px 7px;
       font-size: 11px;
     }
     &.m {
-      width: fit-content;
       padding: 5px 10px;
       font-size: 13px;
     }
     &.l {
-      width: fit-content;
       padding: 6px 12px;
       font-size: 15px;
     }
     &.xl {
-      width: fit-content;
       padding: 10px 15px;
       font-size: 17px;
     }
