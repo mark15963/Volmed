@@ -10,11 +10,11 @@ const NurseMenu = () => {
                 <div className={styles.buttonsContainer}>
                   <Button 
                       text="Поступившие"
-                      styles={{width: '100px'}}
+                      styles={{width: '150px'}}
                   />
                   <Button 
                       text="Выписанные"
-                      styles={{width: '100px'}}
+                      styles={{width: '150px'}}
                   />
                 </div>
             </div>
