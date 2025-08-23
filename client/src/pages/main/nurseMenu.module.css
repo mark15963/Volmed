@@ -8,22 +8,25 @@
   margin: 40px 0;
   padding: 20%;
 }
-  .mainBlock {
-    height: fit-content;
-    width: 100%;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #0073c7;
-    border-style: solid;
-    border-radius: 15px;
+.mainBlock {
+  height: fit-content;
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0073c7;
+  border-style: solid;
+  border-radius: 15px;
 }
 
 @media screen and (orientation: portrait) {
   body {
     height: 100%;
+  }
+  .container{
+    padding: 10px;
   }
   .buttonsContainer{
     /*
@@ -37,5 +40,6 @@
   .button{
     width: 200px;
     height: 100px;
+    vertical-align: middle;
   }
 }
