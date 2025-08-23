@@ -43,7 +43,7 @@ export const Login = () => {
 
         try {
             await login(credentials)
-            if (authState.user.status==='Сестра'){
+            if (authState.user.status === 'Сестра'){
                 navigate('/nurse-menu')
             } else {
                 navigate('/')
