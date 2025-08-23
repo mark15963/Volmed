@@ -29,13 +29,10 @@
     padding: 10px;
   }
   .buttonsContainer{
-    /*
     display: grid;
     grid-template-column: 1fr 1fr;
-    gap: 5px;
-    */
-    display: flex;
-    gap: 5px;
+    gap: 10px;
+    width: 100%;
   }
   .button{
     width: 300px;
@@ -43,5 +40,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
   }
 }
