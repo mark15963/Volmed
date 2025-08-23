@@ -45,6 +45,9 @@
         
         .buttonsContainer {
           gap: 0;
+          .button{
+            margin: 10px 0;
+          }
         }
       }
     }
