@@ -45,7 +45,9 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkAndRedirect = async () => {
             const isAuthenticated = await checkAuthStatus()
-            if (!isAuthenticated) navigate('/login');
+            if (!isAuthenticated && window.location.pathname !== '/login') {
+                navigate('/login');
+            }
         }
         checkAndRedirect();
     }, [checkAuthStatus, navigate]);
@@ -55,13 +57,13 @@ export const AuthProvider = ({ children }) => {
         debug.log("Trying to login...")
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
-            await api.postLogin(credentials);
+            const response = await api.postLogin(credentials);
             const isAuth = await checkAuthStatus();
 
             if (!isAuth) {
                 throw new Error('Authentication failed after login');
             }
-
+            return response
         } catch (error) {
             setAuthState(prev => ({ ...prev, isLoading: false }));
             throw error;  // Let the Login component handle the error
