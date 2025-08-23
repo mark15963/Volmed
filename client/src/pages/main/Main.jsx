@@ -7,7 +7,7 @@ import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
 
 import styles from './main.module.scss'
-import nurseStyles from './nurseStyles.module.css'
+import nurseStyles from './nurseMenu.module.css'
 import Loader from '../../components/Loader';
 
 export const Main = () => {
