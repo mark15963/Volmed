@@ -34,6 +34,16 @@ export const Main = () => {
                 className={nurseStyles.button}
               />
             </div>
+            <div className={nurseStyles.buttonsContainer}>
+              <Button 
+                text="TEST"
+                className={nurseStyles.button}
+              />
+              <Button 
+                text="TEST"
+                className={nurseStyles.button}
+              />
+            </div>
           </div>
         </div>
       )
