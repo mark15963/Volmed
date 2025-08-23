@@ -30,12 +30,10 @@
   }
   .buttonsContainer{
     /*
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    */
     display: flex;
     gap: 5px;
     width: 100%;
+    */
   }
   .button{
     width: 100%;
