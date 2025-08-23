@@ -9,8 +9,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
+  /*
   width: 100%;
   min-width: fit-content;
+  */
   -webkit-tap-highlight-color: transparent;
   &:hover {
     transition: all 0.2s;
