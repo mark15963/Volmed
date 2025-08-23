@@ -42,8 +42,10 @@ export const Login = () => {
         setErrors({});
 
         try {
-            await login(credentials)
-            navigate('/')
+            const response = await login(credentials)
+
+            const redirectUrl = response.data.redirect || '/';
+            navigate(redirectUrl)
         } catch (error) {
             console.error("Login error:", error)
             setErrors({
