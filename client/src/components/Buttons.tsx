@@ -36,6 +36,14 @@ export const Button: FC<ButtonProps> = ({
   type = "button",
   ...props
 }) => {
+  const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    // Force blur to remove active state
+    e.currentTarget.blur();
+    
+    // Call the original onClick if provided
+    if (onClick) onClick();
+  }
+  
   const buttonClass = [
     "button",
     size,
@@ -72,6 +80,7 @@ export const Button: FC<ButtonProps> = ({
   };
   return (
     <button
+      onTouchEnd={handleTouchEnd}
       onClick={handleClick}
       className={buttonClass}
       disabled={disabled}
