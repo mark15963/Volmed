@@ -29,13 +29,16 @@
     padding: 10px;
   }
   .buttonsContainer{
+    /*
     display: grid;
     grid-template-columns: 1fr 1fr;
+    */
+    display: flex;
     gap: 5px;
     width: 100%;
   }
   .button{
-    /*width: 300px;*/
+    width: 300px;
     height: 100px;
     margin: 0;
     display: flex;
