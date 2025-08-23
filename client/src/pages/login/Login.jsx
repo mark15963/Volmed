@@ -43,7 +43,11 @@ export const Login = () => {
 
         try {
             await login(credentials)
-            navigate('/')
+            if (authState.user.status==='Сестра'){
+                navigate('/nurse-menu')
+            } else {
+                navigate('/')
+            }
         } catch (error) {
             console.error("Login error:", error)
             setErrors({
