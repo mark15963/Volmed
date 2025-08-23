@@ -18,8 +18,7 @@
   align-items: center;
   /*justify-content: center;*/
   background-color: #0073c7;
-  border-style: solid;
-  border-color: black;
+  border: 2px solid black;
   border-radius: 15px;
 }
 
