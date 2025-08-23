@@ -11,32 +11,32 @@ import nurseStyles from './nurseStyles.module.css'
 import Loader from '../../components/Loader';
 
 export const Main = () => {
-    const { authState } = useAuth()
-    const navigate = useNavigate()
-    const [isLoading, setIsLoading] = useState(false)
+  const { authState } = useAuth()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
 
-    if (authState.isLoading) return <Loader />
+  if (authState.isLoading) return <Loader />
 
-    if (!authState.isAuthenticated) return null
+  if (!authState.isAuthenticated) return null
 
     if (authState.user.status==='Сестра') {
-        return (
-            <div className={nurseStyles.container}>
-            <div className={nurseStyles.mainBlock}>
-                МЕНЮ МЕДСЕСТЕР
-                <div className={nurseStyles.buttonsContainer}>
-                  <Button 
-                      text="Поступившие"
-                      className={nurseStyles.button}
-                  />
-                  <Button 
-                      text="Выписанные"
-                      className={nurseStyles.button}
-                  />
-                </div>
+      return (
+        <div className={nurseStyles.container}>
+          <div className={nurseStyles.mainBlock}>
+            МЕНЮ МЕДСЕСТЕР
+            <div className={nurseStyles.buttonsContainer}>
+              <Button 
+                text="Поступившие"
+                className={nurseStyles.button}
+              />
+              <Button 
+                text="Выписанные"
+                className={nurseStyles.button}
+              />
             </div>
+          </div>
         </div>
-        )
+      )
     }
     if (authState.user.status!=='Сестра'){
       return (
@@ -67,7 +67,6 @@ export const Main = () => {
         </div>
         ) 
       }
-    )
 }
 
 export default Main
