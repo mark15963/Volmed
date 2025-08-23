@@ -106,11 +106,16 @@ router.post("/login", originMiddleware, async (req, res) => {
           return res.redirect("/api/dashboard");
         }
 
+        let redirectUrl = "/";
+        if (user.status === 'Сестра' || user.status === 'Nurse') {
+          redirectUrl = "/nurse-menu";
+        }
+        
         if (req.accepts("json")) {
           return res.status(200).json({
             success: true,
             message: "Logged in successfully",
-            redirect: "/",
+            redirect: redirectUrl,
             user: {
               username: user.username,
               lastName: user.lastName,
@@ -120,11 +125,8 @@ router.post("/login", originMiddleware, async (req, res) => {
             },
           });
         }
-        if (user.status ==='Сестра') {
-          return res.redirect(process.env.FRONTEND_URL || "/nurse-menu");
-        } else {
-          return res.redirect(process.env.FRONTEND_URL || "/");
-        }
+        const frontendBase = process.env.FRONTEND_URL || "";
+        return res.redirect(`${frontendBase}${redirectUrl}`);
       });
     });
   } catch (error) {
