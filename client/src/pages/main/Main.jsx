@@ -22,7 +22,9 @@ export const Main = () => {
     return (
       <div className={nurseStyles.container}>
         <div className={nurseStyles.mainBlock}>
-          МЕНЮ МЕДСЕСТЕР
+          <div style={{ margin: 10px 0 }}>
+            МЕНЮ МЕДСЕСТЕР
+          </div>
           <div className={nurseStyles.buttonsContainer}>
             <Button 
               text="Поступившие"
