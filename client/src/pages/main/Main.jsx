@@ -16,67 +16,77 @@ export const Main = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   if (authState.isLoading) return <Loader />
-
   if (!authState.isAuthenticated) return null
-
-    if (authState.user.status==='Сестра') {
-      return (
-        <div className={nurseStyles.container}>
-          <div className={nurseStyles.mainBlock}>
-            МЕНЮ МЕДСЕСТЕР
-            <div className={nurseStyles.buttonsContainer}>
-              <Button 
-                text="Поступившие"
-                className={nurseStyles.button}
-              />
-              <Button 
-                text="Выписанные"
-                className={nurseStyles.button}
-              />
-            </div>
-            <div className={nurseStyles.buttonsContainer}>
-              <Button 
-                text="TEST"
-                className={nurseStyles.button}
-              />
-              <Button 
-                text="TEST"
-                className={nurseStyles.button}
-              />
-            </div>
+  
+  if (authState.user.status==='Сестра') {
+    return (
+      <div className={nurseStyles.container}>
+        <div className={nurseStyles.mainBlock}>
+          МЕНЮ МЕДСЕСТЕР
+          <div className={nurseStyles.buttonsContainer}>
+            <Button 
+              text="Поступившие"
+              className={nurseStyles.button}
+              onClick={() => {
+                console.log('Clicked')
+              }}
+            />
+            <Button 
+              text="Выписанные"
+              className={nurseStyles.button}
+              onClick={() => {
+                console.log('Clicked')
+              }}
+            />
+          </div>
+          <div className={nurseStyles.buttonsContainer}>
+            <Button 
+              text="TEST"
+              className={nurseStyles.button}
+              onClick={() => {
+                console.log('Clicked')
+              }}
+            />
+            <Button 
+              text="TEST"
+              className={nurseStyles.button}
+              onClick={() => {
+                console.log('Clicked')
+              }}
+            />
           </div>
         </div>
-      )
-    }
-    if (authState.user.status!=='Сестра'){
-      return (
-        <div className={styles.container}>
-          <div className={styles.mainBlock}>
-            <SearchBar />
-            <div className={styles.buttonsContainer}>
-              <Button
-                text='Список пациентов'
-                icon='patients'
-                margin='0 0 0 5px'
-                onClick={() => {
-                  setIsLoading(true)
-                  navigate('/patients')
-                }}
-                loading={isLoading}
-              />
-              <Button
-                text='Новый пациент'
-                icon='newPatient'
-                margin='0 0 0 5px'
-                onClick={() => {
-                  navigate('/register')
-                }}
-              />
-            </div>
+      </div>
+    )
+  }
+              
+  if (authState.user.status!=='Сестра') {
+    return (
+      <div className={styles.container}>
+        <div className={styles.mainBlock}>
+          <SearchBar />
+          <div className={styles.buttonsContainer}>
+            <Button
+              text='Список пациентов'
+              icon='patients'
+              margin='0 0 0 5px'
+              onClick={() => {
+                navigate('/patients')
+              }}
+            />
+            <Button
+              text='Новый пациент'
+              icon='newPatient'
+              margin='0 0 0 5px'
+              onClick={() => {
+                navigate('/register')
+              }}
+            />
           </div>
         </div>
-        ) 
-      }
+      </div>
+    ) 
+  }
 }
 
 export default Main
