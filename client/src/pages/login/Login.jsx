@@ -20,11 +20,11 @@ export const Login = () => {
     });
 
     // Additional defensive authState check 
-    //useEffect(() => {
-    //    if (authState.isAuthenticated) {
-    //        navigate('/');
-    //    }
-    //}, [authState, navigate])
+    useEffect(() => {
+        if (authState.isAuthenticated) {
+            navigate('/');
+        }
+    }, [authState, navigate])
     if (authState.isLoading) return <Loader />
     if (authState.isAuthenticated) return null
 
