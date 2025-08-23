@@ -37,7 +37,7 @@
   }
   .button{
     height: 100px;
-    width: 100% !important;
+    width: 100px !important;
     margin: 5px 0;
     display: flex;
     justify-content: center;
