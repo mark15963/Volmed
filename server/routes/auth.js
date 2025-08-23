@@ -121,9 +121,10 @@ router.post("/login", originMiddleware, async (req, res) => {
           });
         }
         if (user.status ==='Сестра') {
-        return res.redirect(process.env.FRONTEND_URL || "/nurse-menu");
+          return res.redirect(process.env.FRONTEND_URL || "/nurse-menu");
         } else {
-        return res.redirect(process.env.FRONTEND_URL || "/");
+          return res.redirect(process.env.FRONTEND_URL || "/");
+        }
       });
     });
   } catch (error) {
