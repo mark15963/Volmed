@@ -12,9 +12,19 @@
   width: 100%;
   min-width: fit-content;
   &:hover {
-    transition: all 0.2s;
+    @media (hover: hover){
+      transition: all 0.2s;
+      color: #1677ff;
+      border: 2px solid #1677ff;
+    }
+  }
+  &:active {
     color: #1677ff;
     border: 2px solid #1677ff;
+    background-color: #e6f7ff;
+  }
+  &:focus {
+    outline: none;
   }
 
   &.disabled {
