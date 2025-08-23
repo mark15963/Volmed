@@ -6,11 +6,12 @@
   align-items: center;
   justify-content: center;
   margin: 40px 0;
+  padding: 20%;
 }
   .mainBlock {
     height: fit-content;
     width: 100%;
-    padding: 20px 10px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,5 +36,6 @@
   }
   .button{
     width: 200px;
+    height: 100px;
   }
 }
