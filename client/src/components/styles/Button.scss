@@ -8,6 +8,9 @@
   transition: all 0.3s ease;
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: fit-content;
   &:hover {
     transition: all 0.2s;
     color: #1677ff;
@@ -43,22 +46,22 @@
 
   /* SIZE */
   &.s {
-    width: fit-content;
+    width: 100%;
     padding: 4px 7px;
     font-size: 11px;
   }
   &.m {
-    width: fit-content;
+    width: 100%;
     padding: 5px 10px;
     font-size: 13px;
   }
   &.l {
-    width: fit-content;
+    width: 100%;
     padding: 6px 12px;
     font-size: 15px;
   }
   &.xl {
-    width: fit-content;
+    width: 100%;
     padding: 10px 15px;
     font-size: 17px;
   }
