@@ -7,14 +7,15 @@ import debug from "../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
 
 //----- PAGES -----
-const Main = lazy(() => import('../pages/main/Main.jsx'));
-const SearchResults = lazy(() => import('../pages/searchResults/SearchRes.jsx'));
-const List = lazy(() => import('../pages/patientsList/List.jsx'));
-const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient.jsx'));
-const EditPatient = lazy(() => import('../pages/edit/EditPatient.jsx'));
-const Login = lazy(() => import('../pages/login/Login.jsx'));
+const Main = lazy(() => import('../pages/main/Main'));
+const SearchResults = lazy(() => import('../pages/searchResults/SearchRes'));
+const List = lazy(() => import('../pages/patientsList/List'));
+const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
+const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
+const Login = lazy(() => import('../pages/login/Login'));
+const Administered = lazy (() => import('../pages/nurse/Administered'))
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
-const NotFound = lazy(() => import('../pages/NotFound.jsx'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
@@ -25,10 +26,10 @@ const Content = () => {
         <main>
             <Suspense fallback={<Loader />}>
                 <Routes>
-                    {/* Public */}
+                    {/*----- PUBLIC ROUTE -----*/}
                     <Route path="/login" element={<Login />} />
 
-                    {/* Protected*/}
+                    {/*----- DOCTOR ROUTES -----*/}
                     <Route path='/' element={
                         <ProtectedRoute>
                             <Main />
@@ -39,11 +40,6 @@ const Content = () => {
                             <List />
                         </ProtectedRoute>
                     } />
-                    {/* <Route path="/search" loader element={
-                        <ProtectedRoute>
-                            <SearchResults />
-                        </ProtectedRoute>
-                    } /> */}
                     <Route path="/search/:id" element={
                         <ProtectedRoute>
                             <SearchResults />
@@ -59,8 +55,13 @@ const Content = () => {
                             <EditPatient />
                         </ProtectedRoute>
                     } />
-
-                    {/*-----ADMIN-----*/}
+                    {/*----- NURSE ROUTES -----*/}
+                    <Route path="/administered" element={
+                      <ProtectedRoute>
+                        <Administered />
+                      </ProtectedRoute>
+                    } />
+                    {/*----- ADMIN ONLY ROUTE-----*/}
                     <Route path="/dashboard" element={
                         <ProtectedRoute adminOnly>
                             <Dashboard />
