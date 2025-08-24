@@ -44,6 +44,11 @@ export const Tab1 = ({ data }) => {
                                 {moment(data.birthDate).format('DD.MM.YYYY')}
                             </span>
                         </div>
+                        <div className={styles.title}>Страховой полис:<br />
+                            <span className={styles.data}>
+                                {data.insurance}
+                            </span>
+                        </div>
                     </div>
                     <div className={styles.topFormsC}>
                         <div className={styles.title}>Номер телефона: <br />
