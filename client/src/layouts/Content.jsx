@@ -14,6 +14,8 @@ const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
 const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
 const Login = lazy(() => import('../pages/login/Login'));
 const Administered = lazy (() => import('../pages/nurse/Administered'))
+const Discharged = lazy (() => import('../pages/nurse/Discharged))
+const Hospitalized = lazy (() => import('../pages/nurse/Hospitalized))
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
@@ -59,6 +61,16 @@ const Content = () => {
                     <Route path="/administered" element={
                       <ProtectedRoute nurse>
                         <Administered />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/discharged" element={
+                      <ProtectedRoute nurse>
+                        <Discharged />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/hospitalized" element={
+                      <ProtectedRoute nurse>
+                        <Hospitalized />
                       </ProtectedRoute>
                     } />
                     {/*----- ADMIN ONLY ROUTE-----*/}
