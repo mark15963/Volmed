@@ -186,7 +186,6 @@ const SearchResults = React.memo(() => {
                 onTabChange={setActiveTab}
             />
 
-
             {renderContent() || tabContents[activeTab]}
 
             <ActionButtons
