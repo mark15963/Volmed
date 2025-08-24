@@ -1,6 +1,34 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import moment from 'moment';
+
+import api from "../services/api";
+import debug from "../../utils/debug";
+
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styles from "./styles.module.css"
 
 const Administered = () => {
+  const [patients, setPatients] = useState([])
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await api.getPatients()
+        const data = Array.isArray(response.data) ? response.data : [];
+        debug.table(data, ['id', 'created_at', 'lastName', 'firstName', 'patr', 'diag'])
+        setPatients(data);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+        setPatients([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPatients();
+  }, []);
+  
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
