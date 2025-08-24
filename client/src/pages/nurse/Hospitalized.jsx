@@ -44,7 +44,7 @@ const Administered = () => {
     <div className={styles.container}>
       <div className={styles.mainBlock}>
         <div style={{ margin: "10px 0" }}>
-          СПИСОК ПОСТУПИВШИХ
+          ПАЦИЕНТЫ ОТДЕЛЕНИЯ
         </div>
         <table className={styles.table}>
 
