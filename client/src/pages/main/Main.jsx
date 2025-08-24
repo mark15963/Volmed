@@ -37,7 +37,7 @@ export const Main = () => {
               text="Выписанные"
               className={nurseStyles.button}
               onClick={() => {
-                console.log('Discharged')
+                navigate('/discharged')
               }}
             />
           </div>
@@ -46,7 +46,7 @@ export const Main = () => {
               text="Пациенты отделения"
               className={nurseStyles.button}
               onClick={() => {
-                console.log('Hospitalized')
+                navigate('/hospitalized')
               }}
             />
             <Button 
