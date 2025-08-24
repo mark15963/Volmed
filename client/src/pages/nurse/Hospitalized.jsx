@@ -6,7 +6,7 @@ import api from "../../services/api";
 import debug from "../../utils/debug";
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import styles from "./styles.module.scss"
+import styles from "./hospitalizedStyles.module.scss"
 
 const Administered = () => {
   const [patients, setPatients] = useState([])
