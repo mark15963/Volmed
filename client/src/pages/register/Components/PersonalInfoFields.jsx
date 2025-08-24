@@ -66,6 +66,12 @@ export const PersonalInfoFields = ({ form }) => {
                         locale={datePickerLocale}
                     />
                 </Form.Item>
+                <Form.Item
+                    label={<span className={styles.formLabel}>Страховой полис</span>}
+                    name="insurance"
+                >
+                    <Input placeholder='Страховой полис'/>
+                </Form.Item>
             </div>
 
             <div className={styles.topFormsC}>
