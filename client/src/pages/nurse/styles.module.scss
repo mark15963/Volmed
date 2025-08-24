@@ -135,7 +135,6 @@
       .rows {
         th:nth-child(1) {
           flex: 0.2;
-          text-align: center;
           font-size: 0.8em !important;
         }
 
@@ -145,7 +144,7 @@
         }
 
         th:nth-child(3) {
-          flex: 1;
+          flex: 0.9;
           text-align: center;
           font-size: 0.8em !important;
         }
