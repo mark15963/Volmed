@@ -57,7 +57,7 @@ const Content = () => {
                     } />
                     {/*----- NURSE ROUTES -----*/}
                     <Route path="/administered" element={
-                      <ProtectedRoute>
+                      <ProtectedRoute nurse>
                         <Administered />
                       </ProtectedRoute>
                     } />
