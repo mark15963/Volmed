@@ -32,7 +32,9 @@ const Administered = () => {
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
-        СПИСОК ПОСТУПИВШИХ
+        <div style={{ margin: "10px 0" }}>
+          СПИСОК ПОСТУПИВШИХ
+        </div>
         <table className={styles.table}>
 
           <thead className={styles.head}>
