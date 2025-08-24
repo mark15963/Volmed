@@ -1,10 +1,10 @@
 import styles from "./styles.module.css"
 
-const AdmissionList = () => {
+const Administered = () => {
   return (
     <>
     </>
   )
 }
 
-export default AdmissionList
+export default Administered
