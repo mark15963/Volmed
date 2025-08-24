@@ -13,9 +13,9 @@ const List = lazy(() => import('../pages/patientsList/List'));
 const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
 const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
 const Login = lazy(() => import('../pages/login/Login'));
-const Administered = lazy (() => import('../pages/nurse/Administered'))
-const Discharged = lazy (() => import('../pages/nurse/Discharged))
-const Hospitalized = lazy (() => import('../pages/nurse/Hospitalized))
+const Administered = lazy (() => import('../pages/nurse/Administered'));
+const Discharged = lazy (() => import('../pages/nurse/Discharged'));
+const Hospitalized = lazy (() => import('../pages/nurse/Hospitalized'));
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
