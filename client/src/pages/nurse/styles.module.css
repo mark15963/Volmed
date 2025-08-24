@@ -20,6 +20,24 @@
   border: 2px solid black;
   border-radius: 15px;
 }
+.table {
+
+}
+.head {
+
+}
+.rows {
+  
+}
+.tbody {
+
+}
+.rowsLoading {
+
+}
+.noData {
+
+}
 
 @media screen and (orientation: portrait) {
   body {
