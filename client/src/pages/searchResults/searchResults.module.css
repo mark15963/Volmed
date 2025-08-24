@@ -176,6 +176,10 @@ h2 {
     width: 100vw;
   }
 
+  .resultsContainer {
+    border-radius: 0 0 10px 10px;
+  }
+  
   .bg {
     padding: 5px;
   }
