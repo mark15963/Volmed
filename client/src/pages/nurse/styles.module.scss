@@ -21,14 +21,40 @@
   border-radius: 15px;
 }
 .table {
+  width: 100%;
+  table-layout: fixed;
+  &:hover {
+    transition: all 0.3s;
+  }
 
-}
-.head {
+  .head {
+    .rows {
+      display: flex;
+      text-align: center;
+      background-color: #0065ad;
+      align-items: center;
+      padding-bottom: 5px;
 
-}
-.rows {
-  
-}
+      th:nth-child(1) {
+        flex: 0.2;
+        text-align: center;
+      }
+
+      th:nth-child(2) {
+        flex: 0.5;
+      }
+
+      th:nth-child(3) {
+        flex: 1;
+        text-align: center;
+      }
+
+      th:nth-child(4) {
+        flex: 0.5;
+        text-align: center;
+      }
+    }
+  }
 .tbody {
 
 }
@@ -37,6 +63,7 @@
 }
 .noData {
 
+}
 }
 
 @media screen and (orientation: portrait) {
