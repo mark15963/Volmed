@@ -2,9 +2,11 @@ import styles from "./styles.module.css"
 
 const Administered = () => {
   return (
-    <>
-      СПИСОК ПОСТУПИВШИХ
-    </>
+    <div className={styles.container}>
+      <div className={styles.mainBlock}>
+        СПИСОК ПОСТУПИВШИХ
+      </div>
+    </div>
   )
 }
 
