@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from 'moment';
 
-import api from "../services/api";
+import api from "../../services/api";
 import debug from "../../utils/debug";
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
