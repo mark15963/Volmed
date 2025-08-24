@@ -31,6 +31,7 @@ export const Main = () => {
               className={nurseStyles.button}
               onClick={() => {
                 console.log('Clicked')
+                navigate('/administered')
               }}
             />
             <Button 
