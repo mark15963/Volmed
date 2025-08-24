@@ -76,7 +76,7 @@ const Administered = () => {
                   className={styles.rows}
                 >
                   <td>{patient.lastName}</td>
-                  <td>({calculateAge(patient.birthDate)})</td>
+                  <td>{calculateAge(patient.birthDate)}</td>
                   <td>{patient.insurance}</td>
                   <td>{patient.diag}</td>
                   <td>ЛЕЧ.ВРАЧ</td>
