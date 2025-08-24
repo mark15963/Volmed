@@ -142,7 +142,7 @@
     .head {
       .rows {
         th:nth-child(1) {
-          flex: 0.3;
+          flex: 0.5;
           font-size: 0.8em !important;
           left: 15px;
         }
@@ -153,18 +153,18 @@
         }
 
         th:nth-child(3) {
-          flex: 0.2;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
         }
 
         th:nth-child(4) {
-          flex: 0.5;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
         }
         th:nth-child(5) {
-          flex: 0.5;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
         }
@@ -174,7 +174,7 @@
       .rows {
         td {
         &:nth-child(1) {
-          flex: 0.3;
+          flex: 0.5;
           text-align: left;
           position: relative;
           left: 10px;
@@ -185,17 +185,17 @@
           font-size: 0.8em !important;
         }
         &:nth-child(3) {
-          flex: 0.2;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
         }
         &:nth-child(4) {
-          flex: 0.5;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
         }
         &:nth-child(5) {
-          flex: 0.5;
+          flex: 0.3;
           text-align: center;
           font-size: 0.8em !important;
           }
