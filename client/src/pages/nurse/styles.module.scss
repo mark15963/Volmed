@@ -130,4 +130,33 @@
   .container{
     padding: 10px;
   }
+  .table {
+    .tbody {
+      .rows {
+        td {
+        &:nth-child(1) {
+          flex: 0.2;
+          text-align: left;
+          position: relative;
+          left: 10px;
+          font-size: 0.8em !important;
+        }
+        &:nth-child(2) {
+          flex: 0.5;
+          text-align: center;
+          font-size: 0.8em !important;
+        }
+        &:nth-child(3) {
+          flex: 1;
+          font-size: 0.8em !important;
+        }
+        &:nth-child(4) {
+          flex: 0.5;
+          text-align: center;
+          font-size: 0.8em !important;
+        }
+        }
+      }
+    }
+  }
 }
