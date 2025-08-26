@@ -53,19 +53,19 @@ export const ContextMenu = ({ authState, children }) => {
 
     const items = [
         {
-            label: 'Dashboard',
+            label: 'Панель управления',
             key: '1',
         },
         {
-            label: chatVisible ? 'Close chat' : 'Show chat',
+            label: chatVisible ? 'Закрыть чат' : 'Чат',
             key: '2',
         },
         {
-            label: sideMenuVisible ? 'Close side menu' : 'Show side menu',
+            label: sideMenuVisible ? 'Закрыть боковое меню' : 'Боковое меню',
             key: '3',
         },
         {
-            label: 'Server page',
+            label: 'Страница сервера',
             key: '4',
         },
     ];
