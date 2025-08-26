@@ -216,16 +216,19 @@
             }
 
             &:nth-child(2) {
-              font-size: 1.2em !important;
+              padding-right: 5px;
+              font-size: 1.1em !important;
             }
 
             &:nth-child(3) {
+              padding-right: 5px;
               flex: 0.8;
               font-size: 0.8em !important;
               text-align: start;
             }
 
             &:nth-child(4) {
+              padding-right: 5px;
               flex: 0.7;
               font-size: 0.8em;
               text-align: start;
