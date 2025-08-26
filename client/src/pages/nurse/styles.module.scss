@@ -35,23 +35,25 @@
       align-items: center;
       padding-bottom: 5px;
 
-      th:nth-child(1) {
-        flex: 0.2;
-        text-align: left;
-      }
+      th {
+        &:nth-child(1) {
+          flex: 0.2;
+          text-align: left;
+        }
 
-      th:nth-child(2) {
-        flex: 0.5;
-      }
+        &:nth-child(2) {
+          flex: 0.5;
+        }
 
-      th:nth-child(3) {
-        flex: 1;
-        text-align: center;
-      }
+        &:nth-child(3) {
+          flex: 1;
+          text-align: center;
+        }
 
-      th:nth-child(4) {
-        flex: 0.5;
-        text-align: center;
+        &:nth-child(4) {
+          flex: 0.5;
+          text-align: center;
+        }
       }
     }
   }
