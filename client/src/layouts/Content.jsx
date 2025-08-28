@@ -59,23 +59,23 @@ const Content = () => {
                     } />
                     {/*----- NURSE ROUTES -----*/}
                     <Route path="/administered" element={
-                      <ProtectedRoute nurse>
+                      <ProtectedRoute roles={["nurse", "Сестра"]}>
                         <Administered />
                       </ProtectedRoute>
                     } />
                     <Route path="/discharged" element={
-                      <ProtectedRoute nurse>
+                      <ProtectedRoute roles={["nurse", "Сестра"]}>
                         <Discharged />
                       </ProtectedRoute>
                     } />
                     <Route path="/hospitalized" element={
-                      <ProtectedRoute nurse>
+                      <ProtectedRoute roles={["nurse", "Сестра"]}>
                         <Hospitalized />
                       </ProtectedRoute>
                     } />
                     {/*----- ADMIN ONLY ROUTE-----*/}
                     <Route path="/dashboard" element={
-                        <ProtectedRoute adminOnly>
+                        <ProtectedRoute roles={["admin", "Администратор"]}>
                             <Dashboard />
                         </ProtectedRoute>
                     } />
