@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../context";
 import Loader from "../components/Loader";
 
-const ProtectedRoute = ({ children, roles = [], adminOnly = false, nurse = false }) => {
+const ProtectedRoute = ({ children, roles = [] }) => {
   const { authState } = useAuth();
   const location = useLocation();
 
