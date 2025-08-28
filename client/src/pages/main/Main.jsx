@@ -18,7 +18,9 @@ export const Main = () => {
   if (authState.isLoading) return <Loader />
   if (!authState.isAuthenticated) return null
   
-  if (authState.user.status==='Сестра') {
+  const userRole = authState.user.status;
+
+  if (["Сестра", "nurse"].includes(userRole)) {
     return (
       <div className={nurseStyles.container}>
         <div className={nurseStyles.mainBlock}>
@@ -62,7 +64,7 @@ export const Main = () => {
     )
   }
               
-  if (authState.user.status!=='Сестра') {
+  if (["doctor", "Врач", "admin", "Администратор"]. includes(userRole)) {
     return (
       <div className={styles.container}>
         <div className={styles.mainBlock}>
@@ -89,6 +91,7 @@ export const Main = () => {
       </div>
     ) 
   }
+  return <div>Пользователь не авторизован </div>
 }
 
 export default Main
