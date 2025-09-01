@@ -24,12 +24,6 @@ export const Dashboard = () => {
         <div className={styles.container}>
             <div className={styles.mainBlock}>
 
-                <InDev>
-                    <div></div>
-
-                    <Divider style={{ background: 'black' }} />
-                </InDev>
-
                 <div className={styles.row}>
                     <div className={styles.block}>
                         <div className={styles.blockTitle}>
