@@ -5,7 +5,7 @@ import { useUsers } from "../../context/UsersDataContext"
 
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 import { Divider } from "antd"
-import InDev from "../../components/InDev"
+import InDev from "../../components/InDev.jsx"
 
 import styles from './styles/dashboard.module.scss'
 
