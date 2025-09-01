@@ -3,7 +3,7 @@ import { useState } from "react"
 import { usePatients } from "../../context/PatientDataContext"
 import { useUsers } from "../../context/UsersDataContext"
 
-import InDev from "../../components/InDev.jsx"
+import InDev from "../../components/InDev"
 
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 import { Divider } from "antd"

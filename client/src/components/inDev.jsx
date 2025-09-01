@@ -1,4 +1,4 @@
-const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
+export const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
     const lineStyle = {
         position: 'absolute',
         top: 0,
