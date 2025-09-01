@@ -3,10 +3,10 @@ import { useState } from "react"
 import { usePatients } from "../../context/PatientDataContext"
 import { useUsers } from "../../context/UsersDataContext"
 
-import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
-import { Divider } from "antd"
 import InDev from "../../components/InDev.jsx"
 
+import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
+import { Divider } from "antd"
 import styles from './styles/dashboard.module.scss'
 
 export const Dashboard = () => {

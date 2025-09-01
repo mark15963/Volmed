@@ -5,11 +5,12 @@ import { useAuth } from '../../context/AuthContext'
 
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
+import Loader from '../../components/Loader';
+import InDev from '../../components/InDev.jsx';
 
 import styles from './main.module.scss'
 import nurseStyles from './nurseMenu.module.scss'
-import Loader from '../../components/Loader';
-import InDev from '../../components/InDev';
+
 
 export const Main = () => {
   const { authState } = useAuth()
@@ -94,7 +95,13 @@ export const Main = () => {
       </div>
     )
   }
-  return <div>Пользователь не авторизован </div>
+  return (
+    <div className={styles.container}>
+      <div className={styles.mainBlock}>
+        <div style={{ color: 'aliceblue' }}>Пользователь не авторизован </div>
+      </div>
+    </div>
+  )
 }
 
 export default Main
