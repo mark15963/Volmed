@@ -98,7 +98,9 @@ export const Main = () => {
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
-        <div style={{ color: 'aliceblue' }}>Пользователь не авторизован </div>
+        <div style={{ color: 'aliceblue' }}>
+          Пользователь не авторизован
+        </div>
       </div>
     </div>
   )
