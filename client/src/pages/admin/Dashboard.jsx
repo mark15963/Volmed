@@ -5,7 +5,7 @@ import { useUsers } from "../../context/UsersDataContext"
 
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 import { Divider } from "antd"
-import InDev from "../../components/inDev"
+import InDev from "../../components/InDev"
 
 import styles from './styles/dashboard.module.scss'
 
@@ -15,16 +15,20 @@ export const Dashboard = () => {
 
     const countUsers = users.length
     const countDoctors = users.filter(user => user.status === 'Врач').length
+    const countNurses = users.filter(user => user.status === 'Сестра').length
     const countPatients = patients.length
-    const stablePatients = patients.filter(patient => patient.state === 'Выписан').length
+    const stablePatients = patients.filter(patient => patient.state === 'Стабильно').length
+    const dischargedPatients = patients.filter(patient => patient.state === 'Выписан' || patient.state === 'Выписана').length
 
     return (
         <div className={styles.container}>
             <div className={styles.mainBlock}>
 
-                <InDev />
+                <InDev>
+                    <div></div>
 
-                <Divider style={{ background: 'black' }} />
+                    <Divider style={{ background: 'black' }} />
+                </InDev>
 
                 <div className={styles.row}>
                     <div className={styles.block}>
@@ -41,10 +45,13 @@ export const Dashboard = () => {
                         ) : (
                             <>
                                 <div className={styles.blockContent}>
-                                    Всего пациентов: {countPatients}
+                                    Всего поступили: {countPatients}
                                 </div>
                                 <div className={styles.blockContent}>
                                     Стабильные: {stablePatients}
+                                </div>
+                                <div className={styles.blockContent}>
+                                    Выписанно: {dischargedPatients}
                                 </div>
                             </>
                         )}
@@ -68,37 +75,41 @@ export const Dashboard = () => {
                                 <div className={styles.blockContent}>
                                     Врачи: {countDoctors}
                                 </div>
+                                <div className={styles.blockContent}>
+                                    Сестры: {countNurses}
+                                </div>
                             </>
                         )}
                     </div>
                 </div>
 
                 {/* БЛОК В РАЗРАБОТКЕ */}
-                <div className={styles.row}>
-                    <div className={styles.block}>
-                        <div className={styles.blockTitle}>
-                            БЛОК В РАЗРАБОТКЕ
+                <InDev>
+                    <div className={styles.row}>
+                        <div className={styles.block}>
+                            <div className={styles.blockTitle}>
+                                БЛОК В РАЗРАБОТКЕ
+                            </div>
+                            <div className={styles.blockContent}>
+                                {`TEST TEST TEST: ${'TEST'}`}
+                            </div>
+                            <div className={styles.blockContent}>
+                                {`TEST TEST TEST: ${'TEST'}`}
+                            </div>
                         </div>
-                        <div className={styles.blockContent}>
-                            {`TEST TEST TEST: ${'TEST'}`}
-                        </div>
-                        <div className={styles.blockContent}>
-                            {`TEST TEST TEST: ${'TEST'}`}
+                        <div className={styles.block}>
+                            <div className={styles.blockTitle}>
+                                БЛОК В РАЗРАБОТКЕ
+                            </div>
+                            <div className={styles.blockContent}>
+                                {`TEST TEST TEST: ${'TEST'}`}
+                            </div>
+                            <div className={styles.blockContent}>
+                                {`TEST TEST TEST: ${'TEST'}`}
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.block}>
-                        <div className={styles.blockTitle}>
-                            БЛОК В РАЗРАБОТКЕ
-                        </div>
-                        <div className={styles.blockContent}>
-                            {`TEST TEST TEST: ${'TEST'}`}
-                        </div>
-                        <div className={styles.blockContent}>
-                            {`TEST TEST TEST: ${'TEST'}`}
-                        </div>
-                    </div>
-                </div>
-
+                </InDev>
             </div>
         </div>
     )

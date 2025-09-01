@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import moment from 'moment';
+
+import Button from "../../components/Buttons";
 
 import api from "../../services/api";
 import debug from "../../utils/debug";
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import styles from "./styles.module.scss"
+import 'react-loading-skeleton/dist/skeleton.css';
+import styles from "./administeredStyles.module.scss"
 
 const Administered = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
-  
+  const navigate = useNavigate()
+
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -28,11 +33,11 @@ const Administered = () => {
     };
     fetchPatients();
   }, []);
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
-        <div style={{ margin: "10px 0" }}>
+        <div className={styles.title}>
           СПИСОК ПОСТУПИВШИХ
         </div>
         <table className={styles.table}>
@@ -48,15 +53,15 @@ const Administered = () => {
 
           <tbody className={styles.tbody}>
             {loading ? (
-            <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <tr key={i} className={styles.rowsLoading}>
-                  <td>
-                    <Skeleton borderRadius={5} />
-                  </td>
-                </tr>
-              ))}
-            </SkeletonTheme>
+              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className={styles.rowsLoading}>
+                    <td>
+                      <Skeleton borderRadius={5} />
+                    </td>
+                  </tr>
+                ))}
+              </SkeletonTheme>
             ) : patients.length > 0 ? (
               patients.map(patient => (
                 <tr
@@ -78,6 +83,15 @@ const Administered = () => {
             )}
           </tbody>
         </table>
+        <Button
+          text="Назад"
+          onClick={() => {
+            navigate(-1)
+          }}
+          style={{
+            marginTop: "15px"
+          }}
+        />
       </div>
     </div>
   )

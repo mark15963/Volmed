@@ -105,7 +105,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     return (
         <div className={styles.container}>
             {contextHolder}
-            <h2 style={{ marginBottom: '20px' }}>
+            <h2 style={{ marginBottom: '20px', marginLeft: '10px' }}>
                 {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
             </h2>
             <Form
@@ -131,7 +131,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                         <div className={styles.form}>
                             <PersonalInfoFields form={form} />
                             <MedHistoryFields form={form} />
-                            <Buttons form={form} />
+                            <Buttons form={form} isEditMode={isEditMode} />
                         </div>
                     </div>
                 </div >
