@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import moment from 'moment';
+
+import Button from "../../components/Buttons";
 
 import api from "../../services/api";
 import debug from "../../utils/debug";
@@ -8,10 +11,11 @@ import debug from "../../utils/debug";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styles from "./hospitalizedStyles.module.scss"
 
-const Administered = () => {
+const Hospitalized = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
-  
+  const navigate = useNavigate()
+
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -31,19 +35,25 @@ const Administered = () => {
 
   const calculateAge = (birthDate) => {
     if (!birthDate) return '';
-    
+
     const birthMoment = moment(birthDate);
     const now = moment();
     const years = now.diff(birthMoment, 'years');
-    
+
     return `${years}`;
-    
+
   }
-  
+
+  const filteredAndSortedPatients = patients.filter(patient => patient.room).sort((a, b) => {
+    const roomA = parseInt(a.room) || 0
+    const roomB = parseInt(b.room) || 0
+    return roomA - roomB
+  })
+
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
-        <div style={{ margin: "10px 0" }}>
+        <div className={styles.title}>
           ПАЦИЕНТЫ ОТДЕЛЕНИЯ
         </div>
         <table className={styles.table}>
@@ -51,6 +61,7 @@ const Administered = () => {
           <thead className={styles.head}>
             <tr className={styles.rows}>
               <th>Фамилия</th>
+              <th>Палата</th>
               <th>Возраст</th>
               <th>Страховка</th>
               <th>Диагноз</th>
@@ -60,26 +71,27 @@ const Administered = () => {
 
           <tbody className={styles.tbody}>
             {loading ? (
-            <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <tr key={i} className={styles.rowsLoading}>
-                  <td>
-                    <Skeleton borderRadius={5} />
-                  </td>
-                </tr>
-              ))}
-            </SkeletonTheme>
-            ) : patients.length > 0 ? (
-              patients.map(patient => (
+              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className={styles.rowsLoading}>
+                    <td>
+                      <Skeleton borderRadius={5} />
+                    </td>
+                  </tr>
+                ))}
+              </SkeletonTheme>
+            ) : filteredAndSortedPatients.length > 0 ? (
+              filteredAndSortedPatients.map(patient => (
                 <tr
                   key={patient.id}
                   className={styles.rows}
                 >
                   <td>{patient.lastName}</td>
+                  <td>{patient.room || "N/A"}</td>
                   <td>{calculateAge(patient.birthDate)}</td>
                   <td>{patient.insurance}</td>
                   <td>{patient.diag}</td>
-                  <td>ЛЕЧ.ВРАЧ</td>
+                  <td>{patient.doctor || "N/A"}</td>
                 </tr>
               ))
             ) : (
@@ -91,9 +103,18 @@ const Administered = () => {
             )}
           </tbody>
         </table>
+        <Button
+          text="Назад"
+          onClick={() => {
+            navigate(-1)
+          }}
+          style={{
+            marginTop: "15px"
+          }}
+        />
       </div>
     </div>
   )
 }
 
-export default Administered
+export default Hospitalized

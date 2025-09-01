@@ -27,7 +27,8 @@ async function runStartupTests() {
       .split("\n")
       .filter((line) => line.trim() && !line.startsWith("#"))
       .map((line) => line.split("=")[0].trim());
-    debug.log("Loaded server environment file variables:", envFileKeys);
+    debug.log("Loading server ENV file variables:", envFileKeys);
+    debug.log("Server ENV file variables loaded.");
 
     // LOGIN
     const loginRes = await axios.post(

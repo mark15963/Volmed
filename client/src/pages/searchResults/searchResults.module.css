@@ -174,7 +174,7 @@ h2 {
   body {
     width: 100vw;
   }
-  
+
   .bg {
     padding: 5px;
   }
@@ -245,8 +245,12 @@ h2 {
 
 @media print {
   @page {
-    margin: 0;
+    margin: 5mm;
     size: auto;
+    marks: none;
+  }
+  @page :not-first {
+    margin-top: 10mm;
   }
 
   * {
@@ -262,9 +266,10 @@ h2 {
 
   .resultsContainer {
     width: 100%;
-    max-width: 210mm; /* Standard A4 width */
+    max-width: calc(210mm - 20mm); /* Standard A4 width */
     margin: 0 auto;
-    padding: 0mm; /* 15mm Standard print padding */
+    padding: 0; /* 15mm Standard print padding */
+    /* page-break-inside: avoid; */
   }
 
   .bg {

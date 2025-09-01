@@ -1,0 +1,60 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20%;
+
+  .mainBlock {
+    height: fit-content;
+    width: fit-content;
+    padding: 5px 20px 20px 20px;
+    color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #0073c7;
+    border: 2px solid black;
+    border-radius: 15px;
+
+    .buttonsContainer {
+      display: flex;
+      gap: 5px;
+
+      .button {
+        height: 100px;
+        width: 170px !important;
+        margin: 5px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+    }
+  }
+}
+@media screen and (orientation: portrait) {
+  body {
+    height: 100%;
+  }
+  .container {
+    padding: 10px;
+
+    .buttonsContainer {
+      display: flex;
+      gap: 5px;
+
+      .button {
+        height: 100px;
+        width: 170px !important;
+        margin: 5px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+    }
+  }
+}

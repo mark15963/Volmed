@@ -122,12 +122,12 @@
     justify-content: center;
 
     .logo {
-      position: relative;
-      left: 30px;
-      cursor: pointer;
-      height: calc(100% - 40px);
-      margin: 0 10px;
-      opacity: 1;
+      // position: relative;
+      // cursor: pointer;
+      // height: calc(100% - 40px);
+      // margin: 0 10px;
+      // opacity: 1;
+      display: none;
     }
 
     .title,

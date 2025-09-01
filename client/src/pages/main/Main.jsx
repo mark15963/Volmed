@@ -7,8 +7,9 @@ import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
 
 import styles from './main.module.scss'
-import nurseStyles from './nurseMenu.module.css'
+import nurseStyles from './nurseMenu.module.scss'
 import Loader from '../../components/Loader';
+import InDev from '../../components/InDev';
 
 export const Main = () => {
   const { authState } = useAuth()
@@ -17,7 +18,7 @@ export const Main = () => {
 
   if (authState.isLoading) return <Loader />
   if (!authState.isAuthenticated) return null
-  
+
   const userRole = authState.user.status;
 
   if (["Сестра", "nurse"].includes(userRole)) {
@@ -28,14 +29,14 @@ export const Main = () => {
             МЕНЮ МЕДСЕСТЕР
           </div>
           <div className={nurseStyles.buttonsContainer}>
-            <Button 
-              text="Поступившие"
+            <Button
+              text="Пациенты отделения"
               className={nurseStyles.button}
               onClick={() => {
-                navigate('/administered')
+                navigate('/hospitalized')
               }}
             />
-            <Button 
+            <Button
               text="Выписанные"
               className={nurseStyles.button}
               onClick={() => {
@@ -44,27 +45,29 @@ export const Main = () => {
             />
           </div>
           <div className={nurseStyles.buttonsContainer}>
-            <Button 
-              text="Пациенты отделения"
+            <Button
+              text="Поступившие"
               className={nurseStyles.button}
               onClick={() => {
-                navigate('/hospitalized')
+                navigate('/administered')
               }}
             />
-            <Button 
-              text="TEST"
-              className={nurseStyles.button}
-              onClick={() => {
-                console.log('Clicked')
-              }}
-            />
+            <InDev >
+              <Button
+                text="TEST"
+                className={nurseStyles.button}
+                onClick={() => {
+                  console.log('')
+                }}
+              />
+            </InDev>
           </div>
         </div>
       </div>
     )
   }
-              
-  if (["doctor", "Врач", "admin", "Администратор"]. includes(userRole)) {
+
+  if (["doctor", "Врач", "admin", "Администратор"].includes(userRole)) {
     return (
       <div className={styles.container}>
         <div className={styles.mainBlock}>
@@ -89,7 +92,7 @@ export const Main = () => {
           </div>
         </div>
       </div>
-    ) 
+    )
   }
   return <div>Пользователь не авторизован </div>
 }
