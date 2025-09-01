@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { SearchBar } from '../../components/SearchBar';
 import Button from '../../components/Buttons.tsx';
 import Loader from '../../components/Loader';
-import InDev from '../../components/InDev.jsx';
+import InDev from '../../components/InDev';
 
 import styles from './main.module.scss'
 import nurseStyles from './nurseMenu.module.scss'
