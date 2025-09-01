@@ -5,7 +5,7 @@ const PatientDataContext = createContext()
 
 export const PatientDataProvider = ({ children }) => {
     const [state, setState] = useState({
-        patients: [],
+        patients: JSON.parse(localStorage.getItem('cachedPatients')) || [],
         isLoading: true,
         error: null
     })
@@ -14,8 +14,12 @@ export const PatientDataProvider = ({ children }) => {
         try {
             setState(prev => ({ ...prev, isLoading: true }))
             const { data } = await api.getPatients()
+            const patientsData = data || []
+
+            localStorage.setItem('cachedPatients', JSON.stringify(patientsData))
+
             setState({
-                patients: data || [],
+                patients: patientsData,
                 isLoading: false,
                 error: null
             })
@@ -30,7 +34,7 @@ export const PatientDataProvider = ({ children }) => {
 
     useEffect(() => {
         fetchPatients()
-    }, [])
+    }, [fetchPatients])
 
     return (
         <PatientDataContext.Provider value={{
