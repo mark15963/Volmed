@@ -82,6 +82,18 @@ export const Dashboard = () => {
                     <div className={styles.row}>
                         <div className={styles.block}>
                             <div className={styles.blockTitle}>
+                                Пользователи
+                            </div>
+                            <div className={styles.blockContent}>
+                                Данные - ФИО, должность
+                                функции - Редактировать, добавить, удалить аккаунт
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className={styles.row}>
+                        <div className={styles.block}>
+                            <div className={styles.blockTitle}>
                                 БЛОК В РАЗРАБОТКЕ
                             </div>
                             <div className={styles.blockContent}>
