@@ -8,6 +8,7 @@ import InDev from "../../components/InDev"
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 import { Divider } from "antd"
 import styles from './styles/dashboard.module.scss'
+import Select from "../../components/Select"
 
 export const Dashboard = () => {
     const { patients, loading: patientsLoading } = usePatients()
@@ -79,6 +80,34 @@ export const Dashboard = () => {
 
                 {/* БЛОК В РАЗРАБОТКЕ */}
                 <InDev>
+                    <div className={styles.row}>
+                        <div className={styles.block}>
+                            <div className={styles.blockTitle}>
+                                ПЕРСОНАЛ
+                            </div>
+                            <div>
+                                Admin
+                                <Select name='test' id='1'>
+                                    <option value="test">Test</option>
+                                    <option value="test2">Test 2</option>
+                                </Select>
+                            </div>
+                            <div>
+                                Doctor
+                                <Select name='test' id='1'>
+                                    <option value="test">Test</option>
+                                    <option value="test2">Test 2</option>
+                                </Select>
+                            </div>
+                            <div>
+                                Nurse
+                                <Select name='test' id='1'>
+                                    <option value="test">Test</option>
+                                    <option value="test2">Test 2</option>
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
                     <div className={styles.row}>
                         <div className={styles.block}>
                             <div className={styles.blockTitle}>
