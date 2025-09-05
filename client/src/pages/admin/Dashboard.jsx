@@ -85,6 +85,8 @@ export const Dashboard = () => {
                             <div className={styles.blockTitle}>
                                 ПЕРСОНАЛ
                             </div>
+                            Данные - ФИО, должность
+                            функции - Редактировать, добавить, удалить аккаунт
                             <div>
                                 Admin
                                 <Select name='test' id='1'>
@@ -132,9 +134,9 @@ export const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                </InDev>
-            </div>
-        </div>
+                </InDev >
+            </div >
+        </div >
     )
 }
 
