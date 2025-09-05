@@ -1,4 +1,8 @@
-export const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
+import { useAuth } from '../context/AuthContext'
+
+const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
+    const { authState } = useAuth()
+    
     const lineStyle = {
         position: 'absolute',
         top: 0,
@@ -17,25 +21,33 @@ export const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, 
         zIndex: 2
     };
 
-    return (
-        <div
-            style={{
-                position: 'relative',
-                display: 'inline-block'
-            }}
-        >
-            <div
-                style={lineStyle}
-            />
+    const userRole = authState.user.status;
+
+    if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole)){
+        return (
             <div
                 style={{
                     position: 'relative',
-                    zIndex: 1
+                    display: 'inline-block'
                 }}
             >
-                {children}
+                <div
+                    style={lineStyle}
+                />
+                <div
+                    style={{
+                        position: 'relative',
+                        zIndex: 1
+                    }}
+                >
+                    {children}
+                </div>
             </div>
-        </div>
+        )
+    }
+    return (
+        <>
+        </>
     )
 }
 
