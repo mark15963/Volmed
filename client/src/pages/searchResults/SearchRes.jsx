@@ -18,7 +18,7 @@ import { usePatientData } from '../../hooks/usePatientData'
 import { usePatientMedications } from '../../hooks/usePatientMedications'
 
 // Components
-import Button from '../../components/Buttons.tsx'
+import Button from '../../components/Button.js'
 import ActionButtons from './tabs/Components/ActionButton'
 import { Menu } from '../../components/Menu'
 import ErrorState from './tabs/Components/States/ErrorState'

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import Button from './Buttons.tsx';
+import Button from './Button.js';
 import Input from './Input';
 
 import styles from './styles/SearchBar.module.css'

@@ -5,7 +5,7 @@ import { message } from 'antd';
 import api from '../../../services/api';
 
 import Input from '../../../components/Input';
-import Button from '../../../components/Buttons';
+import Button from '../../../components/Button';
 
 import tableStyles from '../../../components/styles/Table.module.css';
 import styles from './tab3.module.scss'

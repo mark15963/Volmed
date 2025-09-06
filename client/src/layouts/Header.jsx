@@ -4,7 +4,7 @@ import { Dropdown } from "antd";
 
 import { useAuth } from "../context/AuthContext"
 
-import Button from "../components/Buttons.tsx"
+import Button from "../components/Button"
 import Chat from "../components/admin/Chat";
 import SideMenu from "../components/admin/SideMenu";
 import { ContextMenu } from "../components/admin/ContextMenu";

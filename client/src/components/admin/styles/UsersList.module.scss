@@ -1,0 +1,40 @@
+table {
+  width: 100%;
+}
+
+.userRow {
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+
+  td {
+    display: flex;
+    justify-content: center;
+    &:nth-child(1) {
+      width: 33%;
+      justify-content: left;
+    }
+    &:nth-child(2) {
+      width: 33%;
+    }
+    &:nth-child(3) {
+      width: 33%;
+    }
+  }
+
+  .name {
+    margin-right: 10px;
+  }
+
+  .select {
+    padding: 5px 10px;
+    border-radius: 6px;
+    width: fit-content;
+    cursor: pointer;
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}
