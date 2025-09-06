@@ -4,11 +4,13 @@ import { usePatients } from "../../context/PatientDataContext"
 import { useUsers } from "../../context/UsersDataContext"
 
 import InDev from "../../components/InDev"
-
+import UsersList from "../../components/admin/UsersList"
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
+
 import { Divider } from "antd"
 import styles from './styles/dashboard.module.scss'
-import Select from "../../components/Select"
+import Button from "../../components/Button"
+
 
 export const Dashboard = () => {
     const { patients, loading: patientsLoading } = usePatients()
@@ -79,37 +81,22 @@ export const Dashboard = () => {
                 </div>
 
                 {/* БЛОК В РАЗРАБОТКЕ */}
-                <InDev>
-                    <div className={styles.row}>
-                        <div className={styles.block}>
-                            <div className={styles.blockTitle}>
-                                ПЕРСОНАЛ
-                            </div>
-                            Данные - ФИО, должность
-                            функции - Редактировать, добавить, удалить аккаунт
+                {/* <InDev> */}
+                <div className={styles.row}>
+                    <div className={styles.block}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className={styles.blockTitle}>
+                            ПЕРСОНАЛ
+                        </div>
+                        <div className={styles.blockContent}>
                             <div>
-                                Admin
-                                <Select name='test' id='1'>
-                                    <option value="test">Test</option>
-                                    <option value="test2">Test 2</option>
-                                </Select>
-                            </div>
-                            <div>
-                                Doctor
-                                <Select name='test' id='1'>
-                                    <option value="test">Test</option>
-                                    <option value="test2">Test 2</option>
-                                </Select>
-                            </div>
-                            <div>
-                                Nurse
-                                <Select name='test' id='1'>
-                                    <option value="test">Test</option>
-                                    <option value="test2">Test 2</option>
-                                </Select>
+                                <UsersList />
                             </div>
                         </div>
                     </div>
+                </div>
+                {/* </InDev> */}
+                <br />
+                <InDev>
                     <div className={styles.row}>
                         <div className={styles.block}>
                             <div className={styles.blockTitle}>

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 
 import { useAuth } from '../../context/AuthContext';
 
-import Button from "../../components/Buttons.tsx";
+import Button from "../../components/Button";
 import Input from "../../components/Input";
 
 import styles from './login.module.css';

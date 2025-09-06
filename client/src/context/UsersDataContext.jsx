@@ -10,30 +10,27 @@ export const UsersDataProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const { authState } = useAuth()
 
-    const fetchUsers = useCallback(async () => {
-        // Don't fetch if not authenticated
+    const fetchUsers = useCallback(async (showGlobalLoader = true) => {
         if (!authState.isAuthenticated) return
 
-        setLoading(true)
+        if (showGlobalLoader) setLoading(true)
         setError(null)
+
         try {
             const response = await api.getUsers()
             setUsers(response.data || [])
         } catch (error) {
             console.log("Error fetching users: ", error)
-            // Consider adding error state if needed
             setError(error.message);
         } finally {
-            setLoading(false)
+            if (showGlobalLoader) setLoading(false)
         }
     }, [authState.isAuthenticated])
 
     useEffect(() => {
-        // Only fetch if authenticated and not loading
         if (authState.isAuthenticated && !authState.isLoading) {
             fetchUsers()
         } else {
-            // Clear data when not authenticated
             setUsers([]);
         }
     }, [authState.isAuthenticated, authState.isLoading])
@@ -42,7 +39,8 @@ export const UsersDataProvider = ({ children }) => {
         <UsersDataContext.Provider value={{
             users,
             loading,
-            error
+            error,
+            fetchUsers,
         }}>
             {children}
         </UsersDataContext.Provider>

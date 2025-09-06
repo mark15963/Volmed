@@ -1,14 +1,13 @@
-const debug = require("../utils/debug");
 const { db } = require("../config/db-connection");
 
 const User = {
-  async create(username, password) {
-    const res = await db.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
-      [username, password]
+  async create(username, password, lastName, firstName, patr, status) {
+    const { rows } = await db.query(
+      `INSERT INTO users (username, password, "lastName", "firstName", patr, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [username, password, lastName, firstName, patr || null, status]
     );
 
-    return res.rows[0];
+    return rows[0];
   },
 
   async findByUsername(username) {
@@ -20,6 +19,7 @@ const User = {
       return rows[0] || null;
     } catch (err) {
       console.error("Database error in findByUsername:", err);
+      return null;
     }
   },
 };

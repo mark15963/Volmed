@@ -164,12 +164,18 @@ router.put("/patients/:id", isAuth, async (req, res) => {
 });
 // Delete a patient
 router.delete("/patients/:id", isAuth, async (req, res) => {
+  const { id } = req.params;
+
   try {
     const { rowCount } = await db.query("DELETE FROM patients WHERE id = $1", [
-      req.params.id,
+      id,
     ]);
-    if (!rowCount) return res.status(404).json({ error: "Patient not found" });
-    res.json({ success: true, message: "Deleted", deletedId: req.params.id });
+
+    if (rowCount === 0) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    res.json({ success: true, message: "Deleted", deletedId: id });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Delete failed", message: e.message });

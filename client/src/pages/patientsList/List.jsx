@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { AllPatients, PatientCount } from '../../components/fetchData'
 import { SearchBar } from '../../components/SearchBar'
 import { usePageTitle } from '../../components/PageTitle'
-import Button from '../../components/Buttons.tsx'
+import Button from '../../components/Button'
 
 import styles from './list.module.css'
 

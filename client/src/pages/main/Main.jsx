@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 
 import { SearchBar } from '../../components/SearchBar';
-import Button from '../../components/Buttons.tsx';
+import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import InDev from '../../components/InDev';
 

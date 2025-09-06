@@ -1,4 +1,4 @@
-import Button from "../../../../components/Buttons";
+import Button from "../../../../components/Button";
 import { message } from 'antd'
 import styles from '../../searchResults.module.css'
 import { useNavigate } from "react-router";
