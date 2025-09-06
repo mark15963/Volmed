@@ -14,63 +14,24 @@ const api = axios.create({
   },
 });
 
-debug.log("API URL:", import.meta.env.VITE_API_URL);
-
 // Global error handling
 api.interceptors.response.use(
   (response) => {
-    // const { method, url } = response.config;
-    // const { status } = response;
+    if (environment === "development") {
+      debug.log("Response:", {
+        data: response.data,
+        headers: response.headers,
+        method: response.config.method?.toUpperCase(),
+        url: response.config.url,
+      });
+    }
 
-    // debug.log(`Success: ${method?.toUpperCase()} ${url} (${status})`, {
-    //   data: response.data,
-    //   headers: response.headers,
-    // });
     return response;
   },
   (error) => {
-    const errorDetails = {
-      code: error.code,
-      data: error.response?.status,
-      message: error.message,
-      stack: environment === "development" ? error.stack : undefined,
-      status: error.response?.status,
-      url: error.config?.url,
-    };
+    const status = error.response?.status;
 
-    debug.error("API Error:", errorDetails);
-
-    // Handle specific error cases
-    if (error.code === "ECONNABORTED") {
-      return Promise.reject(
-        new Error("Server timeout. Please try again later.")
-      );
-    }
-
-    if (!error.response) {
-      if (error.message === "Network Error") {
-        return Promise.reject(
-          new Error("Network error. Please check your internet connection.")
-        );
-      }
-      return Promise.reject(new Error("No response from server"));
-    }
-
-    const status = error.response.status;
-    const defaultMessage = `Server error (${status})`;
-
-    const statusMessages = {
-      400: error.response.data?.message || "Некорректный запрос",
-      401: "Не авторизован",
-      403: "Доступ запрещен",
-      404: "Не найдено",
-      408: "Истекло время ожидания",
-      500: "Ошибка сервера",
-      502: "Ошибочный шлюз",
-      503: "Сервис недоступен",
-      504: "Шлюз не отвечает",
-    };
-
+    // Backend tells frontend to redirect
     if (status === 401 && error.response.data?.redirectToFrontend) {
       if (typeof window !== "undefined") {
         window.location.href =
@@ -78,12 +39,43 @@ api.interceptors.response.use(
       }
       return Promise.reject(new Error("Session expired"));
     }
-    const errorMessage =
-      error.response.data?.message || statusMessages[status] || defaultMessage;
 
-    return Promise.reject(
-      new Error("Global error message:", errorMessage, errorDetails)
-    );
+    const errorDetails = {
+      code: error.code,
+      status,
+      url: error.config?.url,
+      message: error.message,
+    };
+
+    let errorMessage = "Произошла ошибка";
+
+    // Handle specific error cases
+    if (error.code === "ECONNABORTED") {
+      errorMessage = "Сервер не ответил вовремя.";
+    } else if (!error.response) {
+      errorMessage = "Проблема с сетью. Проверьте подключение.";
+    } else {
+      const statusMessages = {
+        400: "Некорректный запрос",
+        401: "Не авторизован",
+        403: "Доступ запрещен",
+        404: "Не найдено",
+        408: "Истекло время ожидания",
+        409: "Конфликт",
+        500: "Ошибка сервера",
+        502: "Ошибочный шлюз",
+        503: "Сервис недоступен",
+        504: "Шлюз не отвечает",
+      };
+      errorMessage =
+        error.response.data?.message ||
+        statusMessages[status] ||
+        `Ошибка (${status})`;
+    }
+
+    const customError = new Error(errorMessage);
+    customError.details = errorDetails;
+    return Promise.reject(customError);
   }
 );
 

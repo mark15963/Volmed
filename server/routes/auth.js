@@ -25,7 +25,7 @@ const isAuth = (req, res, next) => {
 
 router.get("/login", (req, res) => {
   res.type("html");
-  res.render("login");
+  res.render("login", { query: req.query });
 });
 
 router.post("/login", originMiddleware, async (req, res) => {
@@ -53,7 +53,20 @@ router.post("/login", originMiddleware, async (req, res) => {
     const match = await bcrypt.compare(password, rows[0].password);
     if (!match) {
       debug.log("Wrong password");
-      return res.status(401).json({ error: "Invalid credentials" });
+
+      // If AJAX/React client (JSON request)
+      if (
+        req.xhr ||
+        req.headers.accept?.includes("application/json") ||
+        req.is("application/json")
+      ) {
+        return res.status(401).json({
+          error: "Invalid credentials",
+        });
+      }
+
+      // Browser form submit -> rederect back with query param
+      return res.redirect("/api/login?error=Invalid+credentials");
     }
 
     req.session.regenerate((error) => {
@@ -89,7 +102,11 @@ router.post("/login", originMiddleware, async (req, res) => {
         });
 
         if (process.env.NODE_ENV === "development") {
-          if (req.accepts("html")) {
+          if (
+            req.xhr ||
+            req.headers.accept?.includes("application/json") ||
+            req.is("application/json")
+          ) {
             return res.status(200).json({
               success: true,
               message: "Logged in successfully",
@@ -107,11 +124,15 @@ router.post("/login", originMiddleware, async (req, res) => {
         }
 
         let redirectUrl = "/";
-        if (user.status === 'Сестра' || user.status === 'Nurse') {
+        if (user.status === "Сестра" || user.status === "Nurse") {
           redirectUrl = "/nurse-menu";
         }
-        
-        if (req.accepts("json")) {
+
+        if (
+          req.xhr ||
+          req.headers.accept?.includes("application/json") ||
+          req.is("application/json")
+        ) {
           return res.status(200).json({
             success: true,
             message: "Logged in successfully",

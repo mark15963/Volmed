@@ -58,11 +58,12 @@ export const AuthProvider = ({ children }) => {
         setAuthState(prev => ({ ...prev, isLoading: true }));
         try {
             const response = await api.postLogin(credentials);
-            const isAuth = await checkAuthStatus();
 
+            const isAuth = await checkAuthStatus();
             if (!isAuth) {
                 throw new Error('Authentication failed after login');
             }
+
             return response
         } catch (error) {
             setAuthState(prev => ({ ...prev, isLoading: false }));
