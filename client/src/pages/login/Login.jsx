@@ -19,15 +19,17 @@ export const Login = () => {
         password: ''
     });
 
-    // Additional defensive authState check 
+    // Return to main if already auth
     useEffect(() => {
         if (authState.isAuthenticated) {
             navigate('/');
         }
     }, [authState, navigate])
+
     if (authState.isLoading) return <Loader />
     if (authState.isAuthenticated) return null
 
+    // Sets the credentials while typing
     const handleChange = (e) => {
         const { name, value } = e.target
         setCredentials(prev => ({
@@ -47,9 +49,8 @@ export const Login = () => {
             const redirectUrl = response.data.redirect || '/';
             navigate(redirectUrl)
         } catch (error) {
-            console.error("Login error:", error)
             setErrors({
-                general: error.response?.data?.error || error.message || 'Login failed. Please check your credentials.'
+                general: error.message || 'Login failed. Please check your credentials.'
             })
         } finally {
             setIsLoading(false)

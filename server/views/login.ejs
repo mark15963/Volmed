@@ -2,6 +2,11 @@
 
 <h1>VolMed API Server - LOGIN</h1>
 <div style="display:flex; flex-direction:column; align-items:center;">
+  <% if (query && query.error) { %>
+  <div style="color: red; margin-bottom: 1rem;">
+    <%= query.error %>
+  </div>
+  <% } %>
   <form action="/api/login" method="POST">
     <label htmlFor="username">
       Username:
