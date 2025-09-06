@@ -37,6 +37,7 @@ export const Header = (props) => {
                     className={styles.logo}
                     onClick={handleClick}
                     loading='eager'
+                    draggable='false'
                 />
                 <div
                     className={styles.title}

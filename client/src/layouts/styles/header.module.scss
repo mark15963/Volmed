@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  user-select: none;
 }
 
 @keyframes fadeIn {
@@ -122,11 +123,6 @@
     justify-content: center;
 
     .logo {
-      // position: relative;
-      // cursor: pointer;
-      // height: calc(100% - 40px);
-      // margin: 0 10px;
-      // opacity: 1;
       display: none;
     }
 

@@ -173,9 +173,9 @@ const SearchResults = React.memo(() => {
     return (
         <div className={styles.resultsContainer}>
             {contextHolder}
-            <h2>
-                {state?.searchQuery ? `Результаты поиска:` : `Карта пациента`}
-            </h2>
+            <span className={styles.pageTitle}>
+                {state?.searchQuery ? `Результаты поиска:` : `Карта пациента №${id}`}
+            </span>
             <Menu
                 items={[
                     { name: 'Основное' },
