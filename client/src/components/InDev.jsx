@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext'
 
 const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
     const { authState } = useAuth()
-    
+
     const lineStyle = {
         position: 'absolute',
         top: 0,
@@ -23,7 +23,7 @@ const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing
 
     const userRole = authState.user.status;
 
-    if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole)){
+    if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole) && import.meta.env.NODE_ENV === 'development') {
         return (
             <div
                 style={{
