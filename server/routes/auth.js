@@ -263,8 +263,10 @@ router.get("/dashboard", isAuth, async (req, res) => {
 
     const client = await db.connect();
     try {
-      const { rows: users } = await db.query("SELECT * FROM users ORDER BY id");
-      const { rows: patients } = await db.query(
+      const { rows: users } = await client.query(
+        "SELECT * FROM users ORDER BY id"
+      );
+      const { rows: patients } = await client.query(
         "SELECT * FROM patients ORDER BY id"
       );
       res.render("dashboard", {
