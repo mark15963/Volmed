@@ -2,6 +2,8 @@ import { useAuth } from '../context/AuthContext'
 
 const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
     const { authState } = useAuth()
+    const userRole = authState.user.status;
+    const env = import.meta.env.VITE_ENV
 
     const lineStyle = {
         position: 'absolute',
@@ -21,14 +23,13 @@ const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing
         zIndex: 2
     };
 
-    const userRole = authState.user.status;
-
-    if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole) && import.meta.env.NODE_ENV === 'development') {
+    if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole) && env === 'development') {
         return (
             <div
                 style={{
                     position: 'relative',
-                    display: 'inline-block'
+                    display: 'inline-block',
+                    userSelect: 'none',
                 }}
             >
                 <div

@@ -60,7 +60,6 @@ export const MedHistoryFields = ({ form }) => {
 
     return (
         <div className={styles.bottomForms}>
-            <br />
             <Form.Item
                 label={<span className={styles.formLabel}>Жалобы при поступлении</span>}
                 name="complaint"

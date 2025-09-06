@@ -80,8 +80,6 @@ export const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* БЛОК В РАЗРАБОТКЕ */}
-                {/* <InDev> */}
                 <div className={styles.row}>
                     <div className={styles.block}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className={styles.blockTitle}>
@@ -94,7 +92,6 @@ export const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                {/* </InDev> */}
                 <br />
                 <InDev>
                     <div className={styles.row}>

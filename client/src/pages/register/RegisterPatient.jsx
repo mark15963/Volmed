@@ -105,9 +105,9 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     return (
         <div className={styles.container}>
             {contextHolder}
-            <h2 style={{ marginBottom: '20px', marginLeft: '10px' }}>
+            <span className={styles.pageTitle}>
                 {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
-            </h2>
+            </span>
             <Form
                 form={form}
                 layout="vertical"

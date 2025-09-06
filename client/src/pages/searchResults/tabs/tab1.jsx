@@ -16,23 +16,30 @@ export const Tab1 = ({ data }) => {
         <div className={styles.info}>
             <div className={styles.bg}>
                 <div className={styles.topForms}>
+
                     <div className={styles.topFormsA}>
                         <div className={styles.title}>ФИО:
                             <span className={styles.data}>
                                 {data.lastName} {data.firstName} {data.patr}
                             </span>
                         </div>
-                        <div className={styles.title}>№ карты:<br />
-                            <span className={styles.data}>
-                                {data.id}
-                            </span>
-                        </div>
                         <div className={styles.title}>Дата поступления: <br />
                             <span className={styles.data}>
-                                {moment(data.created_at).format('DD.MM.YYYY')}
+                                {moment(data.created_at).format('DD.MM.YYYY HH:mm')}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Форма оказания помощи:
+                            <span className={styles.data}>
+                                {data.type}
+                            </span>
+                        </div>
+                        <div className={styles.title}>Поступил:<br />
+                            <span className={styles.data}>
+                                {data.freq}
                             </span>
                         </div>
                     </div>
+
                     <div className={styles.topFormsB}>
                         <div className={styles.title}>Пол: <br />
                             <span className={styles.data}>
@@ -44,13 +51,35 @@ export const Tab1 = ({ data }) => {
                                 {moment(data.birthDate).format('DD.MM.YYYY')}
                             </span>
                         </div>
-                        <div className={styles.title}>Страховой полис:<br />
-                            <span className={styles.data}>
-                                {data.insurance}
-                            </span>
-                        </div>
+                        {data.sender ? (
+                            <div className={styles.title}>Направили: <br />
+                                <span className={styles.data}>
+                                    {data.sender}
+                                    <br />
+                                    {data.sendingTime}
+                                </span>
+                            </div>
+                        ) : (
+                            <div className={styles.title}>Страховой полис:<br />
+                                <span className={styles.data}>
+                                    {data.insurance}
+                                </span>
+                            </div>
+                        )}
+
                     </div>
+
                     <div className={styles.topFormsC}>
+                        {data.sender ? (
+
+                            <div className={styles.title}>Страховой полис:<br />
+                                <span className={styles.data}>
+                                    {data.insurance}
+                                </span>
+                            </div>
+                        ) : (
+                            <></>
+                        )}
                         <div className={styles.title}>Номер телефона: <br />
                             <span className={styles.data}>
                                 {formatPhoneNumber(data.phone)}
@@ -68,6 +97,16 @@ export const Tab1 = ({ data }) => {
                         </div>
                     </div>
                 </div>
+
+                {data.firstDiag ? (
+                    <div className={styles.title}>Диагноз при направлении:<br />
+                        <span className={styles.data}>
+                            {data.firstDiag}
+                        </span>
+                    </div>
+                ) : (
+                    <></>
+                )}
 
                 <Divider style={{ borderColor: 'black' }} />
 

@@ -89,6 +89,9 @@ const UsersList = () => {
                   value={user.status}
                   disabled={user.status === "Администратор"}
                   className={styles.select}
+                  style={{
+                    userSelect: 'none'
+                  }}
                   onChange={(e) => {
                     if (user.status === "Администратор") return
                     handleStatusChange(user.id, e.target.value)
