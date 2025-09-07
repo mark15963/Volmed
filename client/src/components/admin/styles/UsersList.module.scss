@@ -31,10 +31,49 @@ table {
   .select {
     padding: 5px 10px;
     border-radius: 6px;
+    font-size: 0.8rem;
     width: fit-content;
     cursor: pointer;
     &:disabled {
       cursor: not-allowed;
     }
+  }
+  .mobile {
+    display: none;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .name {
+    margin-bottom: 5px;
+  }
+  td {
+    &:nth-child(1) {
+      width: 100% !important;
+      justify-content: left;
+    }
+  }
+  .select {
+    font-size: 0.6rem;
+    padding: 2px 5px !important;
+  }
+  .computer {
+    display: none;
+  }
+  .mobile {
+    display: flex !important;
+    justify-content: space-between;
+    width: 100%;
+    td {
+      &:nth-child(2) {
+        button {
+          margin: 0 !important;
+        }
+      }
+    }
+  }
+  .userRow {
+    flex-direction: column;
+    margin: 0 0 10px 0;
   }
 }

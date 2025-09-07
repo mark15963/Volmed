@@ -1,22 +1,25 @@
 import { useLocation, useNavigate } from "react-router";
 import { useCallback, useMemo } from "react";
-import { Dropdown } from "antd";
 
-import { useAuth } from "../context/AuthContext"
+import { useAuth, useConfig } from "../context"
 
 import Button from "../components/Button"
 import Chat from "../components/admin/Chat";
 import SideMenu from "../components/admin/SideMenu";
 import { ContextMenu } from "../components/admin/ContextMenu";
+
 import logo from '../assets/images/logo.webp'
 
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Dropdown } from "antd";
 import styles from './styles/header.module.scss'
+
 import debug from "../utils/debug";
 
 export const Header = (props) => {
     const navigate = useNavigate();
     const { authState, logout } = useAuth();
+    const { title, color } = useConfig()
     const location = useLocation()
 
     const handleClick = useCallback(() => {
@@ -30,7 +33,12 @@ export const Header = (props) => {
 
     return (
         <header>
-            <div className={styles.content}>
+            <div
+                style={{
+                    backgroundColor: color.header,
+                }}
+                className={styles.content}
+            >
                 <img
                     src={logo}
                     alt="Logo"
@@ -42,14 +50,14 @@ export const Header = (props) => {
                 <div
                     className={styles.title}
                 >
-                    <span className={styles.titleTop}>ГБУ ДНР «Волновахская</span>
-                    <span className={styles.titleBottom}>районная больница»</span>
+                    <span className={styles.titleTop}>{title.top}</span>
+                    <span className={styles.titleBottom}>{title.bottom}</span>
                 </div>
                 <div
                     className={styles.titlePrint}
                 >
-                    <span className={styles.titlePrintText}>ГБУ ДНР «Волновахская</span>
-                    <span className={styles.titlePrintText}>районная больница»</span>
+                    <span className={styles.titlePrintText}>{title.top}</span>
+                    <span className={styles.titlePrintText}>{title.bottom}</span>
                     <br />
                     <span className={styles.titleStreetPrint}>Волноваха, Железнодорожный переулок</span>
                 </div>
