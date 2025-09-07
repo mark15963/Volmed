@@ -42,6 +42,9 @@
   animation: fadeIn 0.5s ease-in forwards;
   font-family: system-ui, -apple-system, sans-serif;
   will-change: transform;
+
+  word-break: keep-all;
+  white-space: normal;
 }
 
 .titlePrint {

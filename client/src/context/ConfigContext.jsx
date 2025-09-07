@@ -10,8 +10,8 @@ export const ConfigProvider = ({ children }) => {
         bottom: ""
     });
     const [color, setColorState] = useState({
-        header: '',
-        content: '',
+        header: '#3c97e6',
+        content: '#a5c6e2',
     })
 
     const fetchTitle = useCallback(async () => {

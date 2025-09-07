@@ -26,7 +26,7 @@ export const List = () => {
                 </>
                 <div className={styles.buttonContainer}>
                     <Button
-                        text='Главный экран'
+                        text='На главную'
                         onClick={() => {
                             navigate('/')
                         }}

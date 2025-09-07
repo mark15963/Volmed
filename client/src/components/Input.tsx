@@ -26,6 +26,11 @@ export const Input: FC<InputProps> = ({
   const inputClass = ["input", className].filter(Boolean).join(" ");
   const inputValue = type === "color" ? value || "#000000" : value;
 
+  const mergedStyle: CSSProperties =
+    type === "color"
+      ? { width: "50px", height: "30px", padding: 0, border: "none", ...style }
+      : style || {};
+
   return (
     <input
       name={name}
@@ -35,7 +40,7 @@ export const Input: FC<InputProps> = ({
       pattern={pattern}
       inputMode={inputMode}
       className={inputClass}
-      style={style}
+      style={mergedStyle}
       value={inputValue}
       {...props}
     />

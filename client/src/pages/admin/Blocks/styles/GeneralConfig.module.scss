@@ -1,0 +1,22 @@
+.textInput {
+  margin-top: 5px;
+  font-size: 1.1em;
+}
+
+.colorBlocksContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .colorBlocks {
+    display: flex;
+    flex-direction: column;
+
+    .colorPicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 5px;
+    }
+  }
+}
