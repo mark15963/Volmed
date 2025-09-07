@@ -49,7 +49,7 @@ table {
 @media screen and (orientation: portrait) {
   table {
     .userRow {
-      flex-wrap: nowrap;
+      flex-wrap: wrap !important;
 
       td {
         &.nameCell {
