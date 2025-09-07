@@ -1,0 +1,39 @@
+.block {
+  height: fit-content;
+  width: fit-content;
+  background: aliceblue;
+  border: 5px solid #9a9a9a;
+  border-radius: 10px;
+  margin: 5px;
+  flex: 1;
+
+  .blockTitle {
+    width: 100%;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: center;
+  }
+
+  .blockContent {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .blockContentLoader {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .block {
+    max-width: 100%;
+  }
+  .blockContent {
+    max-width: 100%;
+    font-size: 14px !important;
+  }
+}

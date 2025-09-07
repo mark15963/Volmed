@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { useUsers } from "../../context/UsersDataContext"
+import { useAuth } from '../../../context/AuthContext'
+import { useUsers } from "../../../context/UsersDataContext"
 
-import Button from '../Button'
-import { SpinLoader } from '../Loading/SpinLoader'
+import Button from '../../../components/Button'
+import { SpinLoader } from '../../../components/Loading/SpinLoader'
 
-import api from '../../services/api'
+import api from '../../../services/api'
 
 import styles from './styles/UsersList.module.scss'
 

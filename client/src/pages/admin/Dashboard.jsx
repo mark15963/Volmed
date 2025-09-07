@@ -1,55 +1,25 @@
 import { useState } from "react"
+import { message } from "antd"
 
-import { usePatients, useUsers, useConfig } from "../../context"
+import { usePatients, useUsers } from "../../context"
 
-import InDev from "../../components/InDev"
-import UsersList from "../../components/admin/UsersList"
+import UsersList from "./Blocks/UsersList"
+import GeneralConfig from "./Blocks/GeneralConfig"
+
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
 
-import { Divider } from "antd"
 import styles from './styles/dashboard.module.scss'
+import Block from "./components/Block"
+import Row from "./components/Row"
 import Button from "../../components/Button"
-import Input from "../../components/Input"
-import api from "../../services/api"
-
+import { useNavigate } from "react-router"
 
 export const Dashboard = () => {
+  const [messageApi, contextHolder] = message.useMessage()
+  const navigate = useNavigate()
+
   const { patients, loading: patientsLoading } = usePatients()
   const { users, loading: usersLoading } = useUsers()
-  const { title, setTitle, color, setColor } = useConfig()
-  const [topInput, setTopInput] = useState(title.top)
-  const [bottomInput, setBottomInput] = useState(title.bottom)
-  const [headerColorInput, setHeaderColorInput] = useState(color.header)
-  const [contentColorInput, setContentColorInput] = useState(color.content)
-
-  const handleSave = async () => {
-    try {
-      const { data } = await api.updateTitle({
-        topTitle: topInput,
-        bottomTitle: bottomInput,
-        headerColor: headerColorInput
-      })
-
-      setTitle({
-        top: topInput,
-        bottom: bottomInput
-      })
-      setColor({
-        header: headerColorInput,
-        content: contentColorInput
-      })
-
-    } catch (err) {
-      console.error("Failed to update title:", err)
-    }
-  }
-
-  const handleHeaderColorChange = (e) => {
-    setHeaderColorInput(e.target.value);
-  };
-  const handleContentColorChange = (e) => {
-    setContentColorInput(e.target.value)
-  };
 
   const countUsers = users.length
   const countDoctors = users.filter(user => user.status === 'Врач').length
@@ -60,77 +30,21 @@ export const Dashboard = () => {
 
   return (
     <div className={styles.container}>
+      {contextHolder}
       <div className={styles.mainBlock}>
-        <div className={styles.row} style={{ color: 'aliceblue', fontWeight: '800', justifyContent: 'center', margin: '10px' }}>
+        <div className={styles.title}>
           ПАНЕЛЬ УПРАВЛЕНИЯ
         </div>
-        <div className={styles.row}>
-          <div className={styles.block}>
-            <div className={styles.blockTitle}>
-              Настройки сайта
-            </div>
-            <div className={styles.blockContent}>
-              Название сайта:
-              <Input
-                type="text"
-                value={topInput}
-                onChange={
-                  (e) => setTopInput(e.target.value)
-                }
-                placeholder='Верхняя строка'
-                style={{ marginTop: '5px' }}
-              />
-              <div style={{ height: '10px' }} />
-              <Input
-                type="text"
-                value={bottomInput}
-                onChange={
-                  (e) => setBottomInput(e.target.value)
-                }
-                placeholder="Нижняя строка"
-              />
-              <div style={{ height: '20px' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
 
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  Цвет шапки
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '5px' }}>
-                    <Input
-                      type="color"
-                      value={headerColorInput}
-                      onChange={handleHeaderColorChange}
-                      style={{ width: '50px', height: '30px', padding: 0, border: 'none' }}
-                    />
-                    <span>{headerColorInput.toUpperCase()}</span>
-                  </div>
-                </div>
+        <Row>
+          <Block title='НАСТРОЙКИ САЙТА'>
+            <GeneralConfig messageApi={messageApi} />
+          </Block>
+        </Row>
 
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  Цвет заднего фона
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '5px' }}>
-                    <Input
-                      type="color"
-                      value={contentColorInput}
-                      onChange={handleContentColorChange}
-                      style={{ width: '50px', height: '30px', padding: 0, border: 'none' }}
-                    />
-                    <span>{contentColorInput.toUpperCase()}</span>
-                  </div>
-                </div>
-
-              </div>
-              <br />
-              <Button text="Сохранить" onClick={handleSave} />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.block}>
-            <div className={styles.blockTitle}>
-              ОБЩИЕ ДАННЫЕ ПАЦИЕНТОВ
-            </div>
-            {usersLoading ? (
+        <Row>
+          <Block title='ОБЩИЕ ДАННЫЕ ПАЦИЕНТОВ'>
+            {patientsLoading ? (
               <div className={styles.blockContentLoader}>
                 <SpinLoader
                   color='black'
@@ -150,11 +64,9 @@ export const Dashboard = () => {
                 </div>
               </>
             )}
-          </div>
-          <div className={styles.block}>
-            <div className={styles.blockTitle}>
-              ОБЩИЕ ДАННЫЕ ПЕРСОНАЛА
-            </div>
+          </Block>
+
+          <Block title='ОБЩИЕ ДАННЫЕ ПЕРСОНАЛА'>
             {usersLoading ? (
               <div className={styles.blockContentLoader}>
                 <SpinLoader
@@ -175,50 +87,21 @@ export const Dashboard = () => {
                 </div>
               </>
             )}
-          </div>
-        </div>
+          </Block>
+        </Row>
 
-        <div className={styles.row}>
-          <div className={styles.block}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className={styles.blockTitle}>
-              ПЕРСОНАЛ
-            </div>
-            <div className={styles.blockContent}>
-              <div>
-                <UsersList />
-              </div>
-            </div>
-          </div>
-        </div>
-        <br />
+        <Row >
+          <Block title='ПЕРСОНАЛ'>
+            <UsersList />
+          </Block>
+        </Row>
 
-        <InDev>
-          <div className={styles.row}>
-            <div className={styles.block}>
-              <div className={styles.blockTitle}>
-                БЛОК В РАЗРАБОТКЕ
-              </div>
-              <div className={styles.blockContent}>
-                {`TEST TEST TEST: ${'TEST'}`}
-              </div>
-              <div className={styles.blockContent}>
-                {`TEST TEST TEST: ${'TEST'}`}
-              </div>
-            </div>
-            <div className={styles.block}>
-              <div className={styles.blockTitle}>
-                БЛОК В РАЗРАБОТКЕ
-              </div>
-              <div className={styles.blockContent}>
-                {`TEST TEST TEST: ${'TEST'}`}
-              </div>
-              <div className={styles.blockContent}>
-                {`TEST TEST TEST: ${'TEST'}`}
-              </div>
-            </div>
-          </div>
-        </InDev >
-
+        <Row center>
+          <Button
+            text="На главную"
+            onClick={() => navigate('/')}
+          />
+        </Row>
       </div >
     </div >
   )

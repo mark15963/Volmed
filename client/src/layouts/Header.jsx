@@ -98,7 +98,6 @@ export const Header = (props) => {
                                         logout();
                                         navigate('/');
                                     }}
-                                    loading={authState.isLoading}
                                 />
                             ) : (
                                 <Button
