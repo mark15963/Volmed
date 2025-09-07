@@ -83,39 +83,34 @@ const UsersList = () => {
               key={user.id}
               className={styles.userRow}
             >
-              <td>
-                <span className={styles.name}>[{user.id}] {user.lastName} {user.firstName} {user.patr}</span>
+              <td className={styles.nameCell}>
+                <span className={styles.name}>
+                  [{user.id}] {user.lastName} {user.firstName} {user.patr}
+                </span>
               </td>
-              <div className={`${styles.mobile} ${styles.computer}`}>
-                <td>
-                  <select
-                    value={user.status}
-                    disabled={user.status === "Администратор"}
-                    className={styles.select}
-                    style={{
-                      userSelect: 'none'
-                    }}
-                    onChange={(e) => {
-                      if (user.status === "Администратор") return
-                      handleStatusChange(user.id, e.target.value)
-                    }}
-                  >
-                    {statusOptions.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <Button
-                    text='Удалить'
-                    size='s'
-                    disabled={user.status === "Администратор"}
-                    onClick={() => handleUserDelete(user.id)}
-                  />
-                </td>
-              </div>
+              <td className={styles.actionCell}>
+                <select
+                  value={user.status}
+                  disabled={user.status === "Администратор"}
+                  className={styles.select}
+                  onChange={(e) => {
+                    if (user.status === "Администратор") return
+                    handleStatusChange(user.id, e.target.value)
+                  }}
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  text='Удалить'
+                  size='s'
+                  disabled={user.status === "Администратор"}
+                  onClick={() => handleUserDelete(user.id)}
+                />
+              </td>
             </tr>
           ))}
 
