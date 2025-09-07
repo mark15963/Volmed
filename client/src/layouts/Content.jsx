@@ -2,7 +2,8 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router"
 import { lazy, Suspense, useContext, useEffect } from 'react'
 
-import { useAuth } from '../context/AuthContext'
+import { useAuth, useConfig } from '../context'
+
 import debug from "../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
 
@@ -13,9 +14,9 @@ const List = lazy(() => import('../pages/patientsList/List'));
 const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
 const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
 const Login = lazy(() => import('../pages/login/Login'));
-const Administered = lazy (() => import('../pages/nurse/Administered'));
-const Discharged = lazy (() => import('../pages/nurse/Discharged'));
-const Hospitalized = lazy (() => import('../pages/nurse/Hospitalized'));
+const Administered = lazy(() => import('../pages/nurse/Administered'));
+const Discharged = lazy(() => import('../pages/nurse/Discharged'));
+const Hospitalized = lazy(() => import('../pages/nurse/Hospitalized'));
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
@@ -24,8 +25,14 @@ import Loader from "../components/Loader";
 //#endregion
 
 const Content = () => {
+    const { color } = useConfig()
+
     return (
-        <main>
+        <main
+            style={{
+                backgroundColor: color.content,
+            }}
+        >
             <Suspense fallback={<Loader />}>
                 <Routes>
                     {/*----- PUBLIC ROUTE -----*/}
@@ -59,19 +66,19 @@ const Content = () => {
                     } />
                     {/*----- NURSE ROUTES -----*/}
                     <Route path="/administered" element={
-                      <ProtectedRoute roles={["nurse", "Сестра"]}>
-                        <Administered />
-                      </ProtectedRoute>
+                        <ProtectedRoute roles={["nurse", "Сестра"]}>
+                            <Administered />
+                        </ProtectedRoute>
                     } />
                     <Route path="/discharged" element={
-                      <ProtectedRoute roles={["nurse", "Сестра"]}>
-                        <Discharged />
-                      </ProtectedRoute>
+                        <ProtectedRoute roles={["nurse", "Сестра"]}>
+                            <Discharged />
+                        </ProtectedRoute>
                     } />
                     <Route path="/hospitalized" element={
-                      <ProtectedRoute roles={["nurse", "Сестра"]}>
-                        <Hospitalized />
-                      </ProtectedRoute>
+                        <ProtectedRoute roles={["nurse", "Сестра"]}>
+                            <Hospitalized />
+                        </ProtectedRoute>
                     } />
                     {/*----- ADMIN ONLY ROUTE-----*/}
                     <Route path="/dashboard" element={

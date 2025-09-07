@@ -3,7 +3,7 @@ import { InputHTMLAttributes, CSSProperties, FC } from "react";
 import "./styles/Input.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  type?: "text" | "password" | "email" | "tel" | "search" | "number";
+  type?: "text" | "password" | "email" | "tel" | "search" | "number" | "color";
   value?: string;
   placeholder?: string;
   name?: string;
@@ -20,9 +20,12 @@ export const Input: FC<InputProps> = ({
   inputMode,
   className,
   style,
+  value,
   ...props
 }) => {
   const inputClass = ["input", className].filter(Boolean).join(" ");
+  const inputValue = type === "color" ? value || "#000000" : value;
+
   return (
     <input
       name={name}
@@ -33,6 +36,7 @@ export const Input: FC<InputProps> = ({
       inputMode={inputMode}
       className={inputClass}
       style={style}
+      value={inputValue}
       {...props}
     />
   );

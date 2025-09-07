@@ -51,3 +51,16 @@
     }
   }
 }
+
+@media screen and (orientation: portrait) {
+  .mainBlock {
+    padding: 10px !important;
+  }
+  .block {
+    max-width: 100%;
+  }
+  .blockContent {
+    max-width: 100%;
+    font-size: 14px !important;
+  }
+}
