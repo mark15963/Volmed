@@ -10,7 +10,8 @@
   .mainBlock {
     height: 100%;
     width: 100%;
-    padding: 20px;
+    max-width: 660px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     background-color: #0073c7;
@@ -38,7 +39,7 @@
         }
 
         .blockContent {
-          padding: 5px;
+          padding: 5px 10px;
           font-size: 12px;
         }
 
