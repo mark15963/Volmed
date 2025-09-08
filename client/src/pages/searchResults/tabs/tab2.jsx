@@ -181,7 +181,7 @@ export const Tab2 = memo(({
             if (!isNaN(num)) {
                 try {
                     await api.saveO2(id, num)
-
+                    messageApi.success('Данные сохранены!', 2.5)
                     const newEntry = {
                         val: num,
                         created_at: new Date().toISOString()
@@ -191,6 +191,7 @@ export const Tab2 = memo(({
                     setO2Values([...o2Values, newEntry]);
                     setO2Value('');
                 } catch (error) {
+                    messageApi.error('Ошибка!', 2.5)
                     console.error('Error saving O2:', error);
                 }
             }
