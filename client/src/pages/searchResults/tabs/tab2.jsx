@@ -311,6 +311,7 @@ export const Tab2 = memo(({
 
     return (
         <div className={styles.info}>
+            {contextHolder}
             <div className={styles.bg}>
                 <div className={styles.collapseContainer}>
                     <div>
