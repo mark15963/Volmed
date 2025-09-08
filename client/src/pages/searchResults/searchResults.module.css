@@ -271,19 +271,18 @@
     max-width: calc(210mm - 20mm); /* Standard A4 width */
     margin: 0 auto;
     padding: 0; /* 15mm Standard print padding */
-    /* page-break-inside: avoid; */
-  }
-
-  .bg {
-    border: none;
-    background-color: white !important;
-    padding-top: 0;
   }
 
   .info {
     width: 100%;
     background-color: white !important;
     padding: 0;
+  }
+
+  .bg {
+    border: none;
+    background-color: white !important;
+    padding-top: 0;
   }
 
   h2,

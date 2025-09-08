@@ -71,7 +71,6 @@ export const Tab1 = ({ data }) => {
 
                     <div className={styles.topFormsC}>
                         {data.sender ? (
-
                             <div className={styles.title}>Страховой полис:<br />
                                 <span className={styles.data}>
                                     {data.insurance}

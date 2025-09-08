@@ -1,7 +1,13 @@
 import styles from '../../../searchResults.module.css'
 
-export const ErrorState = ({ error }) => (
-    <div className={styles.resultsContainer}>Ошибка: {error}</div>
-);
+const ErrorState = ({ error }) => {
+    return (
+        <div className={styles.info}>
+            <div className={styles.bg} style={{ textAlign: 'center' }}>
+                Ошибка: {error}
+            </div>
+        </div>
+    )
+}
 
 export default ErrorState

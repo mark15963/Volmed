@@ -12,105 +12,101 @@
   border-top-left-radius: 0;
   padding: 10px 10px;
   cursor: default;
+
+  .bg {
+    background-color: #0075c9;
+    padding: 10px;
+    border-radius: 8px;
+    border: solid, black, 1px;
+
+    .fileSection {
+      margin-top: 20px;
+
+      .fileSectionTitle {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .fileList {
+        width: 70%;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        color: aliceblue;
+        text-decoration: none;
+
+        .fileItem {
+          background-color: #076ab1;
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          cursor: pointer;
+          margin: 5px 0;
+          border: 1px solid black;
+          border-radius: 5px;
+          &:hover {
+            background-color: #0062a8;
+          }
+
+          .fileSize {
+            color: #dbdbdb;
+            font-size: 0.9em;
+          }
+        }
+
+        .uploadArea {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 0;
+
+          .uploadListText {
+            &:global(.ant-upload-list-text) {
+              width: 100%;
+            }
+            & :global(.ant-upload-list-item-name) {
+              color: aliceblue;
+              text-decoration: none;
+            }
+            .uploadAreaText {
+              color: aliceblue;
+            }
+          }
+        }
+      }
+    }
+
+    .buttonsContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+      gap: 10px;
+    }
+
+    .items {
+      max-width: 100%;
+      min-width: 300px;
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+  }
 }
 
-.bg {
-  background-color: #0075c9;
-  padding: 10px;
-  border-radius: 8px;
-  border: solid, black, 1px;
-}
-
-.graphTableTitle {
-  cursor: default;
-}
-
-/* 
-.collapseContainer {
-  
-}
-*/
-
-.fileSection {
-  margin-top: 20px;
-}
-
-.fileSectionTitle {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.fileList {
-  width: 70%;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+.graphContainer {
   display: flex;
-  flex-direction: column;
-  color: aliceblue;
-  text-decoration: none;
-}
-
-.fileItem {
-  background-color: #076ab1;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  cursor: pointer;
-  margin: 5px 0;
-  border: 1px solid black;
-  border-radius: 5px;
-}
-
-.fileItem:hover {
-  background-color: #0062a8;
-}
-
-.fileSize {
-  color: #dbdbdb;
-  font-size: 0.9em;
-}
-
-.uploadArea {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-}
-
-.uploadAreaText {
-  color: aliceblue;
-}
-
-.uploadListText :global(.ant-upload-list-text) {
-  width: 100%;
-}
-
-.uploadListText :global(.ant-upload-list-item-name) {
-  color: aliceblue;
-  text-decoration: none;
-}
-
-.buttonsContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
   gap: 10px;
-}
-
-.items {
-  max-width: 100%;
-  min-width: 300px;
+  align-items: center;
   width: fit-content;
-  margin-bottom: 20px;
-}
 
-.itemsTable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+  .inputfield {
+    width: 60px;
+    padding: 5px;
+    font-size: 0.8em;
+  }
 }
 
 .collapseContainer {
@@ -119,17 +115,14 @@
   gap: 10px;
 }
 
-.graphContainer {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  width: fit-content;
+.graphTableTitle {
+  cursor: default;
 }
 
-.inputfield {
-  width: 60px;
-  padding: 5px;
-  font-size: 0.8em;
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
 @media print {
@@ -229,6 +222,7 @@
   .info {
     width: 100%;
     padding: 5px;
+    border-top-right-radius: 0;
   }
 
   .bg {
