@@ -46,6 +46,11 @@ export const MedHistoryFields = ({ form }) => {
                 Стабильно
             </Select.Option>
             <Select.Option
+                value='Cредней степени тяжести'
+            >
+                Cредней степени тяжести
+            </Select.Option>
+            <Select.Option
                 value='Критическое'
             >
                 Критическое

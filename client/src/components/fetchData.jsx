@@ -19,6 +19,7 @@ export const AllPatients = () => {
   const getStateClass = (state) => {
     switch (state) {
       case 'Стабильно': return styles.stable;
+      case 'Cредней степени тяжести': return styles.moderate;
       case 'Критическое': return styles.critical;
       case 'Выписан':
       case 'Выписана':
@@ -69,51 +70,52 @@ export const AllPatients = () => {
         </thead>
 
         <tbody className={styles.tbody}>
-          {loading ? (
-            <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <tr key={i} className={styles.rowsLoading}>
+          {loading
+            ? (
+              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className={styles.rowsLoading}>
+                    <td>
+                      <Skeleton borderRadius={5} />
+                    </td>
+                  </tr>
+                ))}
+              </SkeletonTheme>
+            ) : patients.length > 0 ? (
+              patients.map(patient => (
+                <tr
+                  key={patient.id}
+                  className={styles.rows}
+                  onClick={(e) => handlePatientClick(patient.id, e)}
+                  onKeyDown={(e) => handlePatientClick(patient.id, e)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
+                >
                   <td>
-                    <Skeleton borderRadius={5} />
+                    {patient.id}
+                  </td>
+                  <td>
+                    {patient.lastName} {patient.firstName} {patient.patr}
+                  </td>
+                  <td>
+                    {moment(patient.birthDate).format('DD.MM.YYYY')}
+                  </td>
+                  <td>
+                    {moment(patient.created_at).format('DD.MM.YYYY')}
+                  </td>
+                  <td className={`${getStateClass(patient.state)}`}>
+                    {patient.state}
                   </td>
                 </tr>
-              ))}
-            </SkeletonTheme>
-          ) : patients.length > 0 ? (
-            patients.map(patient => (
-              <tr
-                key={patient.id}
-                className={styles.rows}
-                onClick={(e) => handlePatientClick(patient.id, e)}
-                onKeyDown={(e) => handlePatientClick(patient.id, e)}
-                tabIndex={0}
-                role="button"
-                aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
-              >
-                <td>
-                  {patient.id}
-                </td>
-                <td>
-                  {patient.lastName} {patient.firstName} {patient.patr}
-                </td>
-                <td>
-                  {moment(patient.birthDate).format('DD.MM.YYYY')}
-                </td>
-                <td>
-                  {moment(patient.created_at).format('DD.MM.YYYY')}
-                </td>
-                <td className={`${getStateClass(patient.state)}`}>
-                  {patient.state}
+              ))
+            ) : (
+              <tr>
+                <td className={styles.noData}>
+                  No data found!
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td className={styles.noData}>
-                No data found!
-              </td>
-            </tr>
-          )}
+            )}
         </tbody>
       </table>
     </div >

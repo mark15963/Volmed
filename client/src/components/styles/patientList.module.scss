@@ -6,145 +6,150 @@
   background-color: #0065ad;
   padding: 5px;
   border-radius: 5px;
-  margin: 5px 0 10px 0;
-}
+  margin: 10px 0;
 
-.table {
-  width: 100%;
-  table-layout: fixed;
-  &:hover {
-    transition: all 0.3s;
-  }
-
-  .head {
-    .rows {
-      display: flex;
-      text-align: center;
-      background-color: #0065ad;
-      align-items: center;
-      padding-bottom: 5px;
-
-      th {
-        &:nth-child(1) {
-          flex: 0.2;
-          text-align: center;
-        }
-
-        &:nth-child(2) {
-          flex: 1;
-        }
-
-        &:nth-child(3) {
-          flex: 0.5;
-          text-align: center;
-        }
-
-        &:nth-child(4) {
-          flex: 0.5;
-          text-align: center;
-        }
-
-        &:nth-child(5) {
-          flex: 0.5;
-          text-align: center;
-          margin: 0 5px;
-        }
-      }
+  .table {
+    width: 100%;
+    table-layout: fixed;
+    &:hover {
+      transition: all 0.3s;
     }
-  }
 
-  .tbody {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    .head {
+      .rows {
+        display: flex;
+        text-align: center;
+        background-color: #0065ad;
+        align-items: center;
+        padding-bottom: 5px;
 
-    .rows {
-      display: flex;
-      width: 100%;
-      padding: 5px 0;
-      justify-content: space-between;
-      background-color: #006fbe;
-      cursor: default;
-      align-items: center;
-      border-radius: 6px;
-      &:hover {
-        transition: all 0.3s;
-        background-color: #005fa2;
-      }
-      &:active {
-        transition: all 0.3s;
-        background-color: #005491;
-      }
-
-      td {
-        &:nth-child(1) {
-          flex: 0.2;
-          text-align: left;
-          position: relative;
-          left: 10px;
-        }
-
-        &:nth-child(2) {
-          flex: 1;
-        }
-
-        &:nth-child(3) {
-          flex: 0.5;
-          text-align: center;
-        }
-
-        &:nth-child(4) {
-          flex: 0.5;
-          text-align: center;
-        }
-
-        &:nth-child(5) {
-          flex: 0.5;
-          text-align: center;
-          font-weight: 600;
-          font-size: 0.9em;
-          margin: 0 5px;
-          &.stable {
-            background-color: #4caf50bf;
-            border-radius: 6px;
-            padding: 5px 0;
-            align-content: center;
+        th {
+          &:nth-child(1) {
+            flex: 0.2;
+            text-align: center;
           }
-          &.critical {
-            background-color: #f44336bf;
-            border-radius: 6px;
-            padding: 5px 0;
-            align-content: center;
+          &:nth-child(2) {
+            flex: 1;
           }
-          &.leave {
-            background-color: #ffffffbf;
-            color: #000;
-            border-radius: 6px;
-            padding: 5px 0;
-            align-content: center;
+          &:nth-child(3) {
+            flex: 0.5;
+            text-align: center;
+          }
+          &:nth-child(4) {
+            flex: 0.5;
+            text-align: center;
+          }
+          &:nth-child(5) {
+            flex: 0.5;
+            text-align: center;
+            margin: 0 5px;
           }
         }
       }
     }
+
+    .tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .rowsLoading {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        background-color: #006fbe;
+        padding: 5px 10px;
+        overflow: hidden;
+
+        td {
+          flex: 1;
+        }
+      }
+
+      .rows {
+        display: flex;
+        width: 100%;
+        padding: 5px 0;
+        justify-content: space-between;
+        background-color: #006fbe;
+        cursor: default;
+        align-items: center;
+        border-radius: 6px;
+        &:hover {
+          transition: all 0.3s;
+          background-color: #005fa2;
+        }
+        &:active {
+          transition: all 0.3s;
+          background-color: #005491;
+        }
+
+        td {
+          &:nth-child(1) {
+            flex: 0.2;
+            text-align: left;
+            position: relative;
+            left: 10px;
+          }
+          &:nth-child(2) {
+            flex: 1;
+          }
+          &:nth-child(3) {
+            flex: 0.5;
+            text-align: center;
+          }
+          &:nth-child(4) {
+            flex: 0.5;
+            text-align: center;
+          }
+          &:nth-child(5) {
+            flex: 0.5;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin: 0 5px;
+            &.stable {
+              background-color: #4caf50bf;
+              border-radius: 6px;
+              padding: 5px 0;
+              align-content: center;
+            }
+            &.moderate {
+              background-color: #c9c318bf;
+              border-radius: 6px;
+              padding: 5px 0px;
+              align-content: center;
+              font-size: 0.7em;
+            }
+            &.critical {
+              background-color: #f44336bf;
+              border-radius: 6px;
+              padding: 5px 0;
+              align-content: center;
+            }
+            &.leave {
+              background-color: #ffffffbf;
+              color: #000;
+              border-radius: 6px;
+              padding: 5px 0;
+              align-content: center;
+            }
+          }
+        }
+      }
+
+      .noData {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        text-align: center;
+        color: aliceblue;
+        font-size: 1em;
+        border-radius: 5px;
+        background: #006fbe;
+      }
+    }
   }
-}
-
-.rowsLoading {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  background-color: #006fbe;
-  padding: 5px 10px;
-  overflow: hidden;
-
-  td {
-    flex: 1;
-  }
-}
-
-.react-loading-skeleton {
-  animation: pulse 1.5s ease-in-out infinite;
-  color: #488ab9;
 }
 
 @keyframes pulse {
@@ -158,22 +163,14 @@
     opacity: 0.6;
   }
 }
-
-.noData {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-  color: aliceblue;
-  font-size: 1em;
-  border-radius: 5px;
-  background: #006fbe;
+.react-loading-skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  color: #488ab9;
 }
 
 .skeleton {
   margin-bottom: 10px;
 }
-
 .skeletonItem {
   margin-bottom: 10px;
   width: 100%;
@@ -193,11 +190,13 @@
       &:hover {
         transition: all 0.25s;
       }
+
       .head {
         .rows {
           display: none;
         }
       }
+
       .tbody {
         .rows {
           padding: 5px;
@@ -216,26 +215,22 @@
               font-size: 0.8em !important;
               text-align: start;
             }
-
             &:nth-child(2) {
               padding-left: 5px;
               font-size: 1.1em !important;
             }
-
             &:nth-child(3) {
               padding-left: 5px;
               flex: 0.8;
               font-size: 0.8em !important;
               text-align: start;
             }
-
             &:nth-child(4) {
               padding-left: 5px;
               flex: 0.7;
               font-size: 0.8em;
               text-align: start;
             }
-
             &:nth-child(5) {
               &.stable,
               &.critical,
@@ -249,6 +244,7 @@
           }
         }
       }
+
       .tdLoad:nth-child(1) {
         padding: 5px;
       }

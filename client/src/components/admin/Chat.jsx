@@ -7,7 +7,7 @@ import debug from '../../utils/debug'
 
 let socket
 
-export const Chat = () => {
+const Chat = () => {
     const backendUrl = import.meta.env.VITE_API_URL
     const debugMode = import.meta.env.VITE_DEBUG
 

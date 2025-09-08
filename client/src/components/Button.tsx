@@ -23,7 +23,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   type?: "button" | "submit" | "reset";
 }
 
-export const Button: FC<ButtonProps> = ({
+const Button: FC<ButtonProps> = ({
   onClick,
   shape = "default",
   icon = "none",
@@ -39,11 +39,11 @@ export const Button: FC<ButtonProps> = ({
   const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
     // Force blur to remove active state
     e.currentTarget.blur();
-    
+
     // Call the original onClick if provided
     if (onClick) onClick();
-  }
-  
+  };
+
   const buttonClass = [
     "button",
     size,
