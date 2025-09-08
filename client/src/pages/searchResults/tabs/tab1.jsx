@@ -23,7 +23,7 @@ export const Tab1 = ({ data }) => {
                                 {data.lastName} {data.firstName} {data.patr}
                             </span>
                         </div>
-                        <div className={styles.title}>Дата поступления: <br />
+                        <div className={styles.title}>Дата и время поступления: <br />
                             <span className={styles.data}>
                                 {moment(data.created_at).format('DD.MM.YYYY HH:mm')}
                             </span>
