@@ -4,6 +4,7 @@ import axios from 'axios';
 import api from '../../../services/api'
 import debug from '../../../utils/debug';
 
+const { message } = await import('antd/es')
 import { Upload, Form, Collapse } from "antd"
 const { Dragger } = Upload;
 const { Panel } = Collapse;
@@ -28,6 +29,7 @@ export const Tab2 = memo(({
     setUploadStatus,
     id,
 }) => {
+    const [messageApi, contextHolder] = message.useMessage()
     const [loadingPulse, setLoadingPulse] = useState(true);
     const [loadingO2, setLoadingO2] = useState(true);
     const [pulseValue, setPulseValue] = useState('');
@@ -73,7 +75,7 @@ export const Tab2 = memo(({
             if (!isNaN(num)) {
                 try {
                     await api.savePulse(id, num)
-
+                    messageApi.success('Данные сохранены!', 2.5)
                     const newEntry = {
                         val: num,
                         created_at: new Date().toISOString()
@@ -83,6 +85,7 @@ export const Tab2 = memo(({
                     setPulseValues([...pulseValues, newEntry]);
                     setPulseValue('');
                 } catch (error) {
+                    messageApi.error('Ошибка!', 2.5)
                     console.error('Error saving pulse:', error);
                 }
             }
