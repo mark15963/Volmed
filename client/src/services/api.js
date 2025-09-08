@@ -119,15 +119,15 @@ export default {
     }),
 
   // Vital Signs (Pulse)
-  savePulse: (patientId, value) => {
+  savePulse: (patientId, pulseValue) => {
     if (!patientId) throw new Error("Patient ID is required");
     return api.post(`/patients/${patientId}/pulse`, {
-      value,
+      pulseValue,
     });
   },
   getPulseData: (patientId) => api.get(`/patients/${patientId}/pulse`),
-  saveO2: (patientId, value) =>
-    api.post(`/patients/${patientId}/o2`, { value }),
+  saveO2: (patientId, o2Value) =>
+    api.post(`/patients/${patientId}/o2`, { o2Value }),
   getO2Data: (patientId) => api.get(`/patients/${patientId}/o2`),
 
   // Auth
