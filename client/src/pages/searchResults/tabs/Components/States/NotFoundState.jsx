@@ -1,5 +1,13 @@
-export const NotFoundState = () => (
-    <div className={styles.resultsContainer}>Пациент не найден.</div>
-);
+import styles from '../../../searchResults.module.css'
+
+const NotFoundState = () => {
+  return (
+    <div className={styles.info}>
+      <div className={styles.bg}>
+        Пациент не найден.
+      </div>
+    </div>
+  )
+}
 
 export default NotFoundState

@@ -41,167 +41,183 @@ const TAB_MEDS = 2;
 
 // ===== Main Component =====
 const SearchResults = React.memo(() => {
-    //#region ===== Router, Message, States =====
-    const { state } = useLocation();
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [messageApi, contextHolder] = message.useMessage();
-    const messageApiRef = {
-        api: messageApi,
-        holder: contextHolder,
-    };
-    const [activeTab, setActiveTab] = useState(TAB_MAIN)
-    //#endregion
+  //#region ===== Router, Message, States =====
+  const { state } = useLocation();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
+  const messageApiRef = {
+    api: messageApi,
+    holder: contextHolder,
+  };
+  const [activeTab, setActiveTab] = useState(TAB_MAIN)
+  //#endregion
 
-    //#region ===== Patient data =====
-    const { data, loading, error } = usePatientData(id, state)
-    const patientId = data?.id || id;
+  //#region ===== Patient data =====
+  const { data, loading, error } = usePatientData(id, state)
+  const patientId = data?.id || id;
 
-    const filesHook = usePatientFiles(patientId, messageApiRef, activeTab === TAB_FILES)
-    filesHook.id = patientId
+  const filesHook = usePatientFiles(patientId, messageApiRef, activeTab === TAB_FILES)
+  filesHook.id = patientId
 
-    const medsHook = usePatientMedications(patientId, messageApiRef, activeTab === TAB_MEDS);
+  const medsHook = usePatientMedications(patientId, messageApiRef, activeTab === TAB_MEDS);
 
-    //#endregion
+  //#endregion
 
-    //#region ===== Effects =====
-    // Sync list of files
-    useEffect(() => {
-        if (filesHook.isEditing && filesHook.files.length > 0 && (!filesHook.fileList || filesHook.fileList.length === 0)) {
-            filesHook.setFileList(
-                filesHook.files.map(file => ({
-                    uid: file.path,
-                    name: file.originalname,
-                    status: "done",
-                    url: `${apiUrl}${file.path}`,
-                    response: { path: file.path },
-                }))
-            );
+  //#region ===== Effects =====
+  // Sync list of files
+  useEffect(() => {
+    if (filesHook.isEditing && filesHook.files.length > 0 && (!filesHook.fileList || filesHook.fileList.length === 0)) {
+      filesHook.setFileList(
+        filesHook.files.map(file => ({
+          uid: file.path,
+          name: file.originalname,
+          status: "done",
+          url: `${apiUrl}${file.path}`,
+          response: { path: file.path },
+        }))
+      );
+    }
+  }, [filesHook.isEditingFiles, filesHook.files, filesHook.fileList.length, filesHook.setFileList]);
+
+  // Reset the editing states when tab change    
+  useEffect(() => {
+    const prevTab = prevTabRef.current;
+    if (activeTab !== prevTab) {
+
+      filesHook.setIsEditing(false);
+      medsHook.setIsEditing(false);
+
+      if (activeTab !== 2 && medsHook.medications.length > 0) {
+        const lastItem = medsHook.medications[medsHook.medications.length - 1]
+        if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
+          medsHook.setMedications(prev => prev.slice(0, -1));
         }
-    }, [filesHook.isEditingFiles, filesHook.files, filesHook.fileList.length, filesHook.setFileList]);
+      }
+      prevTabRef.current = activeTab
+    }
+  }, [activeTab]);
 
-    // Reset the editing states when tab change    
-    useEffect(() => {
-        const prevTab = prevTabRef.current;
-        if (activeTab !== prevTab) {
+  // Sets edit of other tabs off when one is on
+  useEffect(() => {
+    if (filesHook.isEditingFiles) {
+      medsHook.setIsEditing(false);
+    }
+    if (medsHook.isEditingMedications) {
+      filesHook.setIsEditing(false);
+    }
+  }, [filesHook.isEditingFiles, filesHook.isEditingMedications]);
+  //#endregion
 
-            filesHook.setIsEditing(false);
-            medsHook.setIsEditing(false);
+  //#region ===== Handlers =====
+  const handlePrint = () => window.print()
 
-            if (activeTab !== 2 && medsHook.medications.length > 0) {
-                const lastItem = medsHook.medications[medsHook.medications.length - 1]
-                if (!lastItem.name.trim() && !lastItem.dosage.trim() && !lastItem.frequency.trim()) {
-                    medsHook.setMedications(prev => prev.slice(0, -1));
-                }
-            }
-            prevTabRef.current = activeTab
+  const handleEdit = useCallback(() => {
+    const isMedTab = activeTab === TAB_MEDS;
+    const isFileTab = activeTab === TAB_FILES;
+
+    if (isMedTab) {
+      medsHook.setIsEditing(prev => !prev);
+      filesHook.setIsEditing(false)
+    } else if (isFileTab) {
+      filesHook.setIsEditing(prev => !prev)
+      medsHook.setIsEditing(false);
+    } else if (data?.id) {
+      navigate(`/edit/${data.id}`, {
+        state: {
+          patientData: data
         }
-    }, [activeTab]);
+      })
+    }
+  }, [activeTab, data, navigate, filesHook.isEditing, medsHook.isEditing])
 
-    // Sets edit of other tabs off when one is on
-    useEffect(() => {
-        if (filesHook.isEditingFiles) {
-            medsHook.setIsEditing(false);
-        }
-        if (medsHook.isEditingMedications) {
-            filesHook.setIsEditing(false);
-        }
-    }, [filesHook.isEditingFiles, filesHook.isEditingMedications]);
-    //#endregion
+  const handleDeletePatient = async () => {
+    try {
+      if (confirm("Удалить пациента?")) {
+        const patient = await api.deletePatient(id)
+      }
+      await messageApi.open({
+        type: 'loading',
+        content: 'Идет удаление...',
+        duration: 1
+      })
+      messageApi.success('Пациент удален успешно!', 2.5)
+      setTimeout(() => {
+        navigate('/patients')
+      }, 1000)
+    } catch (err) {
+      messageApi.error("Ошибка")
+    }
+  }
+  //#endregion
 
-    //#region ===== Handlers =====
-    const handlePrint = () => window.print()
+  //#region ===== Renders =====
+  const renderLoader = () => (
+    <div className={styles.info}>
+      <div className={styles.bg}>
+        <SpinLoader />
+      </div>
+    </div>
+  )
+  const renderContent = () => {
+    if (loading && !data) return renderLoader();
+    if (error) return <ErrorState error={error} />;
+    if (!data) return <NotFoundState />
+    return null;
+  };
+  //#endregion
 
-    const handleEdit = useCallback(() => {
-        const isMedTab = activeTab === TAB_MEDS;
-        const isFileTab = activeTab === TAB_FILES;
+  //#region ===== Refs & Tabs =====
+  const prevTabRef = useRef(activeTab);
+  const tabContents = useMemo(() => [
+    <Suspense fallback={renderLoader()}>
+      <Tab1 data={data} />
+    </Suspense>,
 
-        if (isMedTab) {
-            medsHook.setIsEditing(prev => !prev);
-            filesHook.setIsEditing(false)
-        } else if (isFileTab) {
-            filesHook.setIsEditing(prev => !prev)
-            medsHook.setIsEditing(false);
-        } else if (data?.id) {
-            navigate(`/edit/${data.id}`, {
-                state: {
-                    patientData: data
-                }
-            })
-        }
-    }, [activeTab, data, navigate, filesHook.isEditing, medsHook.isEditing])
-    //#endregion
+    <Suspense fallback={renderLoader()}>
+      <Tab2 {...filesHook} isLoading={filesHook.isLoading} />
+    </Suspense>,
 
-    //#region ===== Renders =====
-    const renderLoader = () => (
-        <div className={styles.info}>
-            <div className={styles.bg}>
-                <SpinLoader />
-            </div>
-        </div>
-    )
-    const renderContent = () => {
-        if (loading && !data) {
-            return renderLoader();
-        }
+    <Suspense fallback={renderLoader()}>
+      <Tab3 {...medsHook} />
+    </Suspense>
+  ], [data, filesHook, medsHook])
+  //#endregion
 
-        if (error) return <ErrorState error={error} />;
-        if (!data) return <NotFoundState />;
+  //#region ===== JSX =====
+  return (
+    <div className={styles.resultsContainer}>
+      {contextHolder} {/* TOP FLOATIN MESSAGES */}
+      <span className={styles.pageTitle}>
+        {state?.searchQuery ? `Результаты поиска: №${id}` : `Карта пациента №${id}`}
+      </span>
+      <Menu
+        items={[
+          { name: 'Основное' },
+          { name: 'Анализы' },
+          { name: 'Назначения' }
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
-        return null;
-    };
-    //#endregion
+      {renderContent() || tabContents[activeTab]}
 
-    //#region ===== Refs & Tabs =====
-    const prevTabRef = useRef(activeTab);
-    const tabContents = useMemo(() => [
-        <Suspense fallback={renderLoader()}>
-            <Tab1 data={data} />
-        </Suspense>,
-
-        <Suspense fallback={renderLoader()}>
-            <Tab2 {...filesHook} isLoading={filesHook.isLoading} />
-        </Suspense>,
-
-        <Suspense fallback={renderLoader()}>
-            <Tab3 {...medsHook} />
-        </Suspense>
-    ], [data, filesHook, medsHook])
-    //#endregion
-
-    //#region ===== JSX =====
-    return (
-        <div className={styles.resultsContainer}>
-            {contextHolder}
-            <span className={styles.pageTitle}>
-                {state?.searchQuery ? `Результаты поиска:` : `Карта пациента №${id}`}
-            </span>
-            <Menu
-                items={[
-                    { name: 'Основное' },
-                    { name: 'Анализы' },
-                    { name: 'Назначения' }
-                ]}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-            />
-
-            {renderContent() || tabContents[activeTab]}
-
-            <ActionButtons
-                activeTab={activeTab}
-                isEditing={medsHook.isEditing}
-                isEditingFiles={filesHook.isEditing}
-                handleEdit={handleEdit}
-                handleSaveMedications={medsHook.handleSave}
-                handleSaveFiles={filesHook.handleSave}
-                handlePrint={handlePrint}
-                navigate={navigate}
-                medications={medsHook.medications}
-            />
-        </div >
-    );
-    //#endregion
+      <ActionButtons
+        activeTab={activeTab}
+        isEditing={medsHook.isEditing}
+        isEditingFiles={filesHook.isEditing}
+        handleEdit={handleEdit}
+        handleSaveMedications={medsHook.handleSave}
+        handleSaveFiles={filesHook.handleSave}
+        handlePrint={handlePrint}
+        handleDeletePatient={handleDeletePatient}
+        navigate={navigate}
+        medications={medsHook.medications}
+      />
+    </div >
+  );
+  //#endregion
 })
 
 export default SearchResults

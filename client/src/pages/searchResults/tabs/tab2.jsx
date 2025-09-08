@@ -12,7 +12,7 @@ import Input from '../../../components/Input';
 import Graph from '../../../components/Graph';
 
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import styles from './tab2.module.css'
+import styles from './tab2.module.scss'
 import { SpinLoader } from '../../../components/Loading/SpinLoader';
 
 const environment = import.meta.env.VITE_ENV
@@ -117,7 +117,9 @@ export const Tab2 = memo(({
                     </div>
 
                     <div style={{ marginTop: '20px' }}>
-                        <h4 className={styles.graphTableTitle}>История изменений ЧСС</h4>
+                        <h4 className={styles.graphTableTitle}>
+                            История изменений ЧСС
+                        </h4>
                         <table className={styles.itemsTable}>
                             <thead>
                                 <tr style={{ backgroundColor: '#f0f0f0', color: 'black' }}>
@@ -328,7 +330,7 @@ export const Tab2 = memo(({
                                 <SpinLoader size="30px" />
                             </div>
                         ) : files.length === 0 && !isEditing ? (
-                            <p style={{ cursor: 'default' }}>
+                            <p style={{ cursor: 'default', textAlign: 'center', marginBottom: '10px' }}>
                                 Нет загруженных документов
                             </p>
                         ) : !isEditing ? (

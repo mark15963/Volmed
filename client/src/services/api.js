@@ -80,9 +80,11 @@ api.interceptors.response.use(
 );
 
 export default {
-  //General
-  getHospitalName: () => api.get(`/general-data`),
-  setHospitalName: (hospitalName, backgroundColor) => api.put(`/general-data`),
+  // Config
+  getTitle: () => api.get(`/general/title`),
+  updateTitle: (data) => api.put(`/general/title`, data),
+  getColor: () => api.get(`/general/color`),
+  updateColor: (data) => api.put(`/general/color`, data),
 
   // Patients
   getPatients: () => api.get(`/patients`),
@@ -144,10 +146,4 @@ export default {
   createUser: (data) => api.post(`/users`, data),
   updateUser: (id, data) => api.put(`/users/${id}`, data),
   deleteUser: (id) => api.delete(`/users/${id}`),
-
-  // Config
-  getTitle: () => api.get(`/general/title`),
-  updateTitle: (data) => api.put(`/general/title`, data),
-  getColor: () => api.get(`/general/color`),
-  updateColor: (data) => api.put(`/general/color`, data),
 };

@@ -135,6 +135,10 @@ a {
   align-content: center;
 }
 
+.ant-input-status-error {
+  border-width: 2px !important;
+}
+
 @media screen and (orientation: portrait) {
   body {
     width: 100vw;

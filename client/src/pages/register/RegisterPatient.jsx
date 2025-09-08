@@ -113,7 +113,8 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 layout="vertical"
                 onFinish={onFinish}
                 onFinishFailed={(info) => {
-                    console.log('Validation Failed:', info);
+                    messageApi.error("Ошибка! Проверьте все поля.")
+                    console.log('Validation Failed. Check fields', info);
                 }}
                 initialValues={{
                     sex: 'Мужской',
@@ -129,7 +130,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                         {error && <Alert message={error} type='error' showIcon />}
 
                         <div className={styles.form}>
-                            <PersonalInfoFields form={form} />
+                            <PersonalInfoFields form={form} messageApi={messageApi} />
                             <MedHistoryFields form={form} />
                             <Buttons form={form} isEditMode={isEditMode} />
                         </div>
