@@ -1,9 +1,16 @@
 import { useAuth } from '../context/AuthContext'
 
-const InDev = ({ children, color = "#ffeb3b", opacity = 0.5, angle = 45, spacing = 20 }) => {
+const env = import.meta.env.VITE_ENV
+
+const InDev = ({
+    children,
+    color = "#ffeb3b",
+    opacity = 0.5,
+    angle = 45,
+    spacing = 20
+}) => {
     const { authState } = useAuth()
     const userRole = authState.user.status;
-    const env = import.meta.env.VITE_ENV
 
     const lineStyle = {
         position: 'absolute',

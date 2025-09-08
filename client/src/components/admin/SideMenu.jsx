@@ -26,7 +26,7 @@ const items = [
     },
 ]
 
-export const SideMenu = () => {
+const SideMenu = () => {
     const [collapsed, setCollapsed] = useState(true)
     const toggleCollapsed = () => {
         setCollapsed(!collapsed)

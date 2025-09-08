@@ -1,26 +1,26 @@
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { message } from 'antd';
 
 import Button from './Button.js';
 import Input from './Input';
 
-import styles from './styles/SearchBar.module.css'
-
 import api from '../../src/services/api.js'
 import debug from '../utils/debug.js';
 
+import styles from './styles/SearchBar.module.scss'
+
 export const SearchBar = () => {
+    const [messageApi, contextHolder] = message.useMessage();
     const [searchValue, setSearchValue] = useState('')
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const inputValue = e.target.value
         if (/^\d*$/.test(inputValue)) {
             setSearchValue(e.target.value)
-            setError('')
         }
     }
 
@@ -28,12 +28,11 @@ export const SearchBar = () => {
         e.preventDefault()
 
         if (!searchValue.trim()) {
-            setError('Введите № карты')
+            messageApi.error("Введите № карты")
             return
         }
 
         setIsLoading(true)
-        setError('')
 
         try {
             const response = await api.getPatient(searchValue.trim())
@@ -44,7 +43,7 @@ export const SearchBar = () => {
                 }
             })
         } catch (err) {
-            setError(err.message)
+            messageApi.error(err.message)
         } finally {
             setIsLoading(false)
         }
@@ -52,6 +51,7 @@ export const SearchBar = () => {
 
     return (
         <div className={styles.container}>
+            {contextHolder}
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <div className={styles.searchtitle}>
                     Поиск пациентов:
@@ -75,11 +75,6 @@ export const SearchBar = () => {
                         icon='search'
                     />
                 </div>
-                {error && (
-                    <div className={styles.error}>
-                        {error}
-                    </div>
-                )}
             </form>
         </div>
     )

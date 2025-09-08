@@ -11,7 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   style?: CSSProperties;
 }
 
-export const Input: FC<InputProps> = ({
+const Input: FC<InputProps> = ({
   name,
   type = "text",
   placeholder,
