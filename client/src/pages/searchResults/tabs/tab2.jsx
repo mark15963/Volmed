@@ -68,6 +68,7 @@ export const Tab2 = memo(({
         if (e.key === 'Enter' && pulseValue.trim() !== '') {
             if (!id) {
                 console.error('Patient ID is missing');
+                messageApi.error('Отсутствует ID пациента')
                 return;
             }
 
