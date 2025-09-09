@@ -73,18 +73,15 @@ const Chat = () => {
     }
 
     const handleReceiveMessage = (data) => {
-      setMessages(prev => {
-        if (prev.some(msg => msg.timestamp === data.timestamp && msg.sender === data.sender)) {
-          return prev
-        }
-        return [...prev,
+      setMessages(prev => [
+        ...prev,
         {
           text: data.message,
           sender: data.sender,
           senderName: data.senderName,
           timestamp: data.timestamp
-        }]
-      })
+        },
+      ])
     }
 
     socket.on('connect', handleConnect)
@@ -97,12 +94,12 @@ const Chat = () => {
   }, [roomName])
 
   // Auto-refresh messages every 5 seconds
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     loadMessages(roomName)
-  //   }, 5000)
-  //   return () => clearInterval(interval)
-  // }, [roomName])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadMessages(roomName)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [roomName])
 
   const sendMessage = async () => {
     if (!message.trim()) return
