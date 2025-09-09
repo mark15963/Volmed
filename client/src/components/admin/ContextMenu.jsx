@@ -9,6 +9,7 @@ import debug from "../../utils/debug"
 
 import { Dropdown } from "antd"
 import styles from './styles/sideMenu.module.css'
+import AdminChat from "./AdminChat"
 
 export const ContextMenu = ({ authState, children }) => {
     const [chatVisible, setChatVisible] = useState(false)
@@ -90,7 +91,12 @@ export const ContextMenu = ({ authState, children }) => {
                         zIndex: 1000
                     }}
                 >
-                    <Chat />
+                    {authState.user.status === "Администратор" ? (
+                        <AdminChat />
+                    ) : (
+                        <Chat />
+                    )}
+
                 </div>,
                 document.body
             )}
