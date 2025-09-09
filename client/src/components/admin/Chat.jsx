@@ -33,6 +33,10 @@ const Chat = () => {
 
   const roomName = `chat_${userId}_admin`;
 
+  const formatTime = (date) => {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
   useEffect(() => {
     if (!socket.connected) socket.connect()
     setSocketId(socket.id)
@@ -74,7 +78,7 @@ const Chat = () => {
         text: msg.message,
         sender: msg.sender,
         senderName: msg.sender_name || 'Unknown',
-        timestamp: new Date(msg.timestamp).toLocaleTimeString()
+        timestamp: formatTime(msg.timestamp)
       }))
       if (formatted) debug.log("Messages loaded")
       setMessages(formatted)
@@ -102,7 +106,7 @@ const Chat = () => {
       text: message,
       sender: userId,
       senderName: displayName,
-      timestamp: new Date().toLocaleTimeString()
+      timestamp: formatTime(timestamp)
     }
     debug.log("Sending as:", userId)
 
@@ -163,7 +167,11 @@ const Chat = () => {
               }}
             >
               {msg.type !== 'system' && (
-                <div style={{ fontSize: '0.8em' }}>
+                <div
+                  style={{
+                    fontSize: '0.8em'
+                  }}
+                >
                   {msg.sender === userId
                     ? displayName
                     : msg.senderName || "Unknown"} - {msg.timestamp}

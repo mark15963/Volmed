@@ -50,7 +50,7 @@ const AdminChat = () => {
       data.map((msg) => ({
         text: msg.message,
         sender: msg.sender,
-        senderName: msg.sender_name,
+        senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
         timestamp: formatTime(msg.timestamp),
       }))
     )
@@ -63,7 +63,7 @@ const AdminChat = () => {
     const newMsg = {
       text: message,
       sender: 'admin',
-      senderName: 'Admin',
+      senderName: 'Админ',
       timestamp: formatTime(timestamp),
     }
     setMessages((prev) => [...prev, newMsg])
@@ -72,7 +72,7 @@ const AdminChat = () => {
       message,
       room: currentRoom,
       sender: 'admin',
-      senderName: 'Admin',
+      senderName: 'Админ',
       timestamp,
     })
 
@@ -82,7 +82,7 @@ const AdminChat = () => {
       body: JSON.stringify({
         room: currentRoom,
         sender: 'admin',
-        senderName: 'Admin',
+        senderName: 'Админ',
         message,
         timestamp,
       }),

@@ -68,7 +68,7 @@ export const Main = () => {
     )
   }
 
-  if (["doctor", "Врач", "admin", "Администратор"].includes(userRole)) {
+  if (["doctor", "Врач", "admin", "Администратор", "tester", "Тестировщик"].includes(userRole)) {
     return (
       <div className={styles.container}>
         <div className={styles.mainBlock}>

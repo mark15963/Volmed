@@ -29,9 +29,16 @@ export const Footer = () => {
             <div className={styles.content}>
                 © {yearText}
             </div>
-            <Button
-                onClick={handleClick}
-            />
+            {authState.isAuthenticated &&
+                <Button
+                    onClick={handleClick}
+                    text='Чат'
+                    style={{
+                        height: 'fit-content',
+                        padding: '5px 10px'
+                    }}
+                />
+            }
             {chatVisible && createPortal(
                 <div
                     style={{
