@@ -12,12 +12,7 @@ let socket
 const Chat = () => {
   const backendUrl = import.meta.env.VITE_API_URL
 
-  if (!socket) {
-    socket = io(backendUrl)
-  }
-
   const { authState } = useAuth()
-
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [socketId, setSocketId] = useState('')
@@ -61,9 +56,13 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    if (!socket.connected) socket.connect()
-    setSocketId(socket.id)
+    if (!socket) {
+      socket = io(backendUrl)
+    }
 
+    if (!socket.connected) socket.connect()
+
+    setSocketId(socket.id)
     socket.emit('join_room', roomName)
     loadMessages(roomName)
 
@@ -73,15 +72,21 @@ const Chat = () => {
     }
 
     const handleReceiveMessage = (data) => {
-      setMessages(prev => [
-        ...prev,
-        {
-          text: data.message,
-          sender: data.sender,
-          senderName: data.senderName,
-          timestamp: data.timestamp
-        },
-      ])
+      setMessages(prev => {
+        // Deduplicate: check if message with same sender+timestamp already exists
+        if (prev.some(msg => msg.timestamp === formatTime(data.timestamp) && msg.sender === data.sender)) {
+          return prev
+        }
+        return [
+          ...prev,
+          {
+            text: data.message,
+            sender: data.sender,
+            senderName: data.senderName,
+            timestamp: formatTime(data.timestamp)
+          }
+        ]
+      })
     }
 
     socket.on('connect', handleConnect)
@@ -91,14 +96,6 @@ const Chat = () => {
       socket.off('connect', handleConnect)
       socket.off('receive_message', handleReceiveMessage)
     }
-  }, [roomName])
-
-  // Auto-refresh messages every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadMessages(roomName)
-    }, 5000)
-    return () => clearInterval(interval)
   }, [roomName])
 
   const sendMessage = async () => {
@@ -113,8 +110,10 @@ const Chat = () => {
     }
     debug.log("Sending as:", userId)
 
+    // Add message locally
     setMessages(prev => [...prev, newMessage])
 
+    // Emit to server
     socket.emit('send_message', {
       message,
       room: roomName,
@@ -123,6 +122,7 @@ const Chat = () => {
       timestamp,
     })
 
+    // Save to backend
     try {
       await fetch(`${backendUrl}/chat/save-message`, {
         method: 'POST',
@@ -138,8 +138,17 @@ const Chat = () => {
     } catch (error) {
       console.error('Failed to send message', error)
     }
+
     setMessage('')
   }
+
+  // Auto-refresh messages every 5 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     loadMessages(roomName)
+  //   }, 5000)
+  //   return () => clearInterval(interval)
+  // }, [roomName])
 
   return (
     <div className={styles.container}>
