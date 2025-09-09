@@ -1,0 +1,85 @@
+.container {
+  border: 1px solid black;
+  height: 350px;
+  width: 200px;
+  position: relative;
+  background: #ffffffaa;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background-color: aliceblue;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    overflow-y: scroll;
+
+    .messageRows {
+      display: flex;
+      flex-direction: column;
+      margin-left: 5px;
+      margin-right: 5px;
+
+      .generalInfo {
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+
+        .info {
+          font-size: 0.5em;
+          width: 100%;
+          overflow-wrap: break-word;
+        }
+      }
+
+      .messageBox {
+        font-size: 0.6em;
+        margin-top: 5px;
+        padding: 3px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .messageInputs {
+    display: flex;
+
+    .input {
+      height: 25px;
+      font-size: 0.7em;
+    }
+
+    .button {
+      width: 40px;
+      height: 20px;
+      padding: 5px;
+      font-size: 0.6em;
+      margin: 3px;
+      vertical-align: middle;
+    }
+  }
+
+  .roomInputs {
+    display: flex;
+    margin-top: 5px;
+    align-items: center;
+
+    .input {
+      height: 25px;
+      font-size: 0.7em;
+    }
+
+    .button {
+      width: 40px;
+      height: 20px;
+      padding: 5px;
+      font-size: 0.6em;
+      margin: 3px;
+      vertical-align: middle;
+    }
+  }
+}

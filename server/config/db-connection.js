@@ -42,27 +42,27 @@ async function testDbConnection() {
 }
 
 //-----DATABASE DEBUG-----
-// function setupPoolEvents(pool) {
-//   pool.on("connect", () => {
-//     debug.log("New database connection established");
-//   });
-//   pool.on("acquire", (client) => {
-//     debug.log(`Client acquired. Pool status:
-//         Process ID: ${client.processID}
-//         Active clients: ${pool.totalCount - pool.idleCount}/${pool.totalCount}
-//         Server: ${client.connection.stream.remoteAddress}`);
-//   });
-//   pool.on("release", () => {
-//     debug.log(`Client released. Idle: ${pool.idleCount}/${pool.totalCount}`);
-//   });
-//   pool.on("remove", () => {
-//     debug.log("Connection permanently removed from pool");
-//   });
-//   pool.on("error", (err) => {
-//     debug.error("Pool error:", err);
-//   });
-// }
-// setupPoolEvents(db);
+function setupPoolEvents(pool) {
+  // pool.on("connect", () => {
+  //   debug.log("New database connection established");
+  // });
+  // pool.on("acquire", (client) => {
+  //   debug.log(`Client acquired. Pool status:
+  //       Process ID: ${client.processID}
+  //       Active clients: ${pool.totalCount - pool.idleCount}/${pool.totalCount}
+  //       Server: ${client.connection.stream.remoteAddress}`);
+  // });
+  // pool.on("release", () => {
+  //   debug.log(`Client released. Idle: ${pool.idleCount}/${pool.totalCount}`);
+  // });
+  // pool.on("remove", () => {
+  //   debug.log("Connection permanently removed from pool");
+  // });
+  pool.on("error", (err) => {
+    debug.error("Pool error:", err);
+  });
+}
+setupPoolEvents(db);
 
 module.exports = {
   db,
