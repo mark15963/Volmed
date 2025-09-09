@@ -51,8 +51,6 @@ const Hospitalized = () => {
     return roomA - roomB
   })
 
-  const drFullName = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
-
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
@@ -94,7 +92,7 @@ const Hospitalized = () => {
                   <td>{calculateAge(patient.birthDate)}</td>
                   <td>{patient.insurance}</td>
                   <td>{patient.diag}</td>
-                  <td>{drFullName}</td>
+                  <td>{patient.doctor}</td>
                 </tr>
               ))
             ) : (
