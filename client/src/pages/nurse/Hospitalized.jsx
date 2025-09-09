@@ -7,6 +7,7 @@ import Button from "../../components/Button";
 
 import api from "../../services/api";
 import debug from "../../utils/debug";
+import { useAuth } from "../../context"
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styles from "./hospitalizedStyles.module.scss"
@@ -15,6 +16,7 @@ const Hospitalized = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const { authState } = useAuth();
 
   useEffect(() => {
     const fetchPatients = async () => {
