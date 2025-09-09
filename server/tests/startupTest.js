@@ -9,10 +9,9 @@ async function runStartupTests() {
   const password = "test321";
 
   try {
+    debug.log("===================================");
     debug.log("Running startup tests...");
-    debug.log("========================");
-
-    debug.log(BASE_URL);
+    debug.log("===================================");
 
     // HEALTH
     const healthRes = await axios.get(`${BASE_URL}/api/health`);
