@@ -40,4 +40,13 @@ router.get("/room/:room/messages", async (req, res) => {
   }
 });
 
+router.get("/active-rooms", async (req, res) => {
+  try {
+    const result = await db.query("SELECT DISTINCT room FROM messages");
+    res.json({ rooms: result.rows.map((r) => r.room) });
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 module.exports = router;
