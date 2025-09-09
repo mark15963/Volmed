@@ -57,6 +57,7 @@ footer {
   display: flex;
   background-color: rgb(75, 79, 82);
   color: #fff;
+  align-items: center;
 }
 
 @media print {
