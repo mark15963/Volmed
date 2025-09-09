@@ -86,7 +86,7 @@ const Administered = () => {
         <Button
           text="Назад"
           onClick={() => {
-            navigate(-1)
+            navigate("/")
           }}
           style={{
             marginTop: "15px"
