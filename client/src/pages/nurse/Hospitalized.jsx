@@ -21,7 +21,7 @@ const Hospitalized = () => {
       try {
         const response = await api.getPatients()
         const data = Array.isArray(response.data) ? response.data : [];
-        debug.table(data, ['id', 'created_at', 'lastName', 'firstName', 'patr', 'diag'])
+        debug.table(data, ['id', 'created_at', 'lastName', 'firstName', 'patr', 'diag', 'doctor'])
         setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
