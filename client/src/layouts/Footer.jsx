@@ -39,7 +39,7 @@ export const Footer = () => {
                     }}
                 />
             }
-            {chatVisible && createPortal(
+            {authState.isAuthenticated && chatVisible && createPortal(
                 <div
                     style={{
                         position: 'absolute',
