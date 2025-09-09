@@ -143,12 +143,12 @@ const Chat = () => {
   }
 
   // Auto-refresh messages every 5 seconds
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     loadMessages(roomName)
-  //   }, 5000)
-  //   return () => clearInterval(interval)
-  // }, [roomName])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadMessages(roomName)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [roomName])
 
   return (
     <div className={styles.container}>
