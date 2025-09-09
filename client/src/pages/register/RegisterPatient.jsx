@@ -16,9 +16,11 @@ import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 import styles from './register.module.css'
 import api from '../../services/api';
 //#endregion
+import { useAuth } from "../context"
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
     const navigate = useNavigate()
+    const { authState } = useAuth();
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
     const [isLoading, setIsLoading] = useState(false)
@@ -58,6 +60,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 sop_zab: formValues.sop_zab || "",
                 rec: formValues.rec || "",
                 state: formValues.state || "",
+                doctor: authState.user.lastName || "",
             };
 
             let response
