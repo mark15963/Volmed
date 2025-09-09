@@ -16,7 +16,7 @@ import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 import styles from './register.module.css'
 import api from '../../services/api';
 //#endregion
-import { useAuth } from "../context"
+import { useAuth } from "../../context"
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
     const navigate = useNavigate()
