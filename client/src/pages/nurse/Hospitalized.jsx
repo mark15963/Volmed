@@ -41,7 +41,6 @@ const Hospitalized = () => {
     const years = now.diff(birthMoment, 'years');
 
     return `${years}`;
-
   }
 
   const filteredAndSortedPatients = patients.filter(patient => patient.room).sort((a, b) => {
@@ -49,6 +48,8 @@ const Hospitalized = () => {
     const roomB = parseInt(b.room) || 0
     return roomA - roomB
   })
+
+  const drFullName = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
 
   return (
     <div className={styles.container}>
@@ -91,7 +92,7 @@ const Hospitalized = () => {
                   <td>{calculateAge(patient.birthDate)}</td>
                   <td>{patient.insurance}</td>
                   <td>{patient.diag}</td>
-                  <td>{patient.doctor || "N/A"}</td>
+                  <td>{patient.drFullName}</td>
                 </tr>
               ))
             ) : (
