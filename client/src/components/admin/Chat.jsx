@@ -143,8 +143,9 @@ const Chat = () => {
       <div className={styles.screen}>
         <div className={styles.messageRows}>
           <div className={styles.generalInfo}>
-            <span className={styles.info}>{displayName}</span>
-            <span className={styles.info}>Room: {roomName}</span>
+            <span className={styles.info}>
+              Служба поддержки
+            </span>
           </div>
 
           {messages.map((msg, i) => (
@@ -187,13 +188,16 @@ const Chat = () => {
 
       <div className={styles.messageInputs}>
         <Input
-          placeholder='Message'
+          placeholder='Сообщение'
           className={styles.input}
           value={message}
           onChange={e => setMessage(e.target.value)}
         />
         <Button
-          text='Send'
+          text='Отправить'
+          style={{
+            width: 'fit-content'
+          }}
           size='s'
           className={styles.button}
           onClick={sendMessage}

@@ -114,7 +114,7 @@ const AdminChat = () => {
             marginBottom: '10px'
           }}
         >
-          Active Chats
+          Активные чаты
         </div>
 
         {activeChats.map((room) => (
@@ -149,7 +149,7 @@ const AdminChat = () => {
             marginBottom: '10px'
           }}
         >
-          {currentRoom || 'Select a chat'}
+          {currentRoom || 'Выбрать чат'}
         </div>
         <div
           style={{
