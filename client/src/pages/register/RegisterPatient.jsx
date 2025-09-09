@@ -26,6 +26,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
 
+    const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
     usePageTitle("Регистрация пациента");
 
     useEffect(() => {
@@ -60,7 +61,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
                 sop_zab: formValues.sop_zab || "",
                 rec: formValues.rec || "",
                 state: formValues.state || "",
-                doctor: authState.user.lastName || "",
+                doctor: doctor || "",
             };
 
             let response
