@@ -37,6 +37,29 @@ const Chat = () => {
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  const loadMessages = async (room) => {
+    try {
+      const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
+      const data = await res.json()
+      const formatted = data.map(msg => ({
+        text: msg.message,
+        sender: msg.sender,
+        senderName: msg.sender_name || 'Unknown',
+        timestamp: formatTime(msg.timestamp)
+      }))
+      if (formatted) debug.log("Messages loaded")
+      setMessages(formatted)
+    } catch (err) {
+      console.error("Failed to load messages:", err)
+      setMessages([
+        {
+          text: `Failed to load messages for room "${room}"`,
+          type: 'system'
+        },
+      ])
+    }
+  }
+
   useEffect(() => {
     if (!socket.connected) socket.connect()
     setSocketId(socket.id)
@@ -70,32 +93,12 @@ const Chat = () => {
     }
   }, [roomName])
 
-  const loadMessages = async (room) => {
-    try {
-      const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
-      const data = await res.json()
-      const formatted = data.map(msg => ({
-        text: msg.message,
-        sender: msg.sender,
-        senderName: msg.sender_name || 'Unknown',
-        timestamp: formatTime(msg.timestamp)
-      }))
-      if (formatted) debug.log("Messages loaded")
-      setMessages(formatted)
-    } catch (err) {
-      console.error("Failed to load messages:", err)
-      setMessages([
-        {
-          text: `Failed to load messages for room "${room}"`,
-          type: 'system'
-        },
-      ])
-    }
-  }
+  // Auto-refresh messages every 5 seconds
   useEffect(() => {
-    if (messages.length === 0) {
+    const interval = setInterval(() => {
       loadMessages(roomName)
-    }
+    }, 5000)
+    return () => clearInterval(interval)
   }, [roomName])
 
   const sendMessage = async () => {

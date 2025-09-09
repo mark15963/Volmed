@@ -37,13 +37,8 @@ const AdminChat = () => {
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
-  const joinRoom = async (room) => {
-    if (currentRoom) socket.emit('leave_room', currentRoom)
-
-    socket.emit('join_room', room)
-    setCurrentRoom(room)
-
-    // load chat history
+  const fetchMessages = async (room) => {
+    if (!room) return
     const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
     const data = await res.json()
     setMessages(
@@ -54,6 +49,14 @@ const AdminChat = () => {
         timestamp: formatTime(msg.timestamp),
       }))
     )
+  }
+
+  const joinRoom = async (room) => {
+    if (currentRoom) socket.emit('leave_room', currentRoom)
+    socket.emit('join_room', room)
+    setCurrentRoom(room)
+    // load chat history
+    await fetchMessages(room)
   }
 
   const sendMessage = async () => {
@@ -91,6 +94,14 @@ const AdminChat = () => {
     setMessage('')
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchMessages(currentRoom)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [currentRoom])
+
   return (
     <div
       style={{
@@ -126,7 +137,9 @@ const AdminChat = () => {
               fontSize: '0.5em',
               wordBreak: 'break-word'
             }}
-            onClick={() => joinRoom(room)}
+            onClick={() => {
+              joinRoom(room)
+            }}
           />
         ))}
 
@@ -137,7 +150,7 @@ const AdminChat = () => {
         style={{
           background: '#bbb',
           width: 'fit-content',
-          maxWidth: '350px',
+          maxWidth: '400px',
           borderRadius: '0 8px 8px 0',
           padding: '10px'
         }}
@@ -156,7 +169,8 @@ const AdminChat = () => {
             fontSize: '0.8em',
             marginBottom: '10px',
             background: !currentRoom ? '#bbb' : '#fff',
-            padding: '5px'
+            padding: '5px',
+            minHeight: 'fit-content',
           }}
         >
           {messages.map((m, i) => (
