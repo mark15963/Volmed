@@ -92,7 +92,7 @@ const Hospitalized = () => {
                   <td>{calculateAge(patient.birthDate)}</td>
                   <td>{patient.insurance}</td>
                   <td>{patient.diag}</td>
-                  <td>{patient.drFullName}</td>
+                  <td>{drFullName}</td>
                 </tr>
               ))
             ) : (
