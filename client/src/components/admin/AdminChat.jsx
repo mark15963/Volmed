@@ -53,11 +53,20 @@ const AdminChat = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchMessages(currentRoom)
-      setActiveChats(activeChats)
-    }, 3000)
 
+      if (!socket.connected) socket.connect()
+
+      // load active chats from backend
+      fetch(`${backendUrl}/chat/active-rooms`)
+        .then((res) => res.json())
+        .then((data) => setActiveChats(data.rooms))
+
+      return () => {
+        socket.off('receive_message')
+      }
+    }, 3000)
     return () => clearInterval(interval)
-  }, [currentRoom, activeChats])
+  }, [currentRoom])
 
   const joinRoom = async (room) => {
     if (currentRoom) socket.emit('leave_room', currentRoom)
