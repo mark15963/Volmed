@@ -50,6 +50,14 @@ const AdminChat = () => {
       }))
     )
   }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchMessages(currentRoom)
+      setActiveChats(activeChats)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [currentRoom, activeChats])
 
   const joinRoom = async (room) => {
     if (currentRoom) socket.emit('leave_room', currentRoom)
@@ -94,13 +102,7 @@ const AdminChat = () => {
     setMessage('')
   }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchMessages(currentRoom)
-    }, 3000)
 
-    return () => clearInterval(interval)
-  }, [currentRoom])
 
   return (
     <div
