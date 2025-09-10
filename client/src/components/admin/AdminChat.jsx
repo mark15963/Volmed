@@ -2,18 +2,24 @@ import { useEffect, useState } from "react";
 import { io } from 'socket.io-client'
 import Button from '../Button'
 import Input from '../Input'
+import { SpinLoader } from "../Loading/SpinLoader";
 
 let socket
 
 const AdminChat = () => {
-  const backendUrl = import.meta.env.VITE_API_URL
-
-  if (!socket) socket = io(backendUrl)
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [showChat, setShowChat] = useState(false)
   const [activeChats, setActiveChats] = useState([]) // list of userIds
   const [currentRoom, setCurrentRoom] = useState(null)
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
+  const backendUrl = import.meta.env.VITE_API_URL
+
+  const formatTime = (date) => {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  if (!socket) socket = io(backendUrl)
 
   useEffect(() => {
     if (!socket.connected) socket.connect()
@@ -28,27 +34,25 @@ const AdminChat = () => {
         setMessages((prev) => [...prev, data])
       }
     })
-    return () => {
-      socket.off('receive_message')
-    }
+    return () => socket.off('receive_message')
   }, [currentRoom])
-
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  }
 
   const fetchMessages = async (room) => {
     if (!room) return
-    const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
-    const data = await res.json()
-    setMessages(
-      data.map((msg) => ({
-        text: msg.message,
-        sender: msg.sender,
-        senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
-        timestamp: formatTime(msg.timestamp),
-      }))
-    )
+    try {
+      const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
+      const data = await res.json()
+      setMessages(
+        data.map((msg) => ({
+          text: msg.message,
+          sender: msg.sender,
+          senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
+          timestamp: formatTime(msg.timestamp),
+        }))
+      )
+    } catch (err) {
+      console.error("Messages fetching error:", err)
+    }
   }
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,11 +73,19 @@ const AdminChat = () => {
   }, [currentRoom])
 
   const joinRoom = async (room) => {
-    if (currentRoom) socket.emit('leave_room', currentRoom)
-    socket.emit('join_room', room)
-    setCurrentRoom(room)
-    // load chat history
-    await fetchMessages(room)
+    setIsLoading(true)
+    try {
+      if (currentRoom) socket.emit('leave_room', currentRoom)
+      socket.emit('join_room', room)
+      setCurrentRoom(room)
+      // load chat history
+      await fetchMessages(room)
+    } catch (err) {
+      console.error("Error joining room:", err)
+    } finally {
+      setIsLoading(false)
+      setShowChat(true)
+    }
   }
 
   const sendMessage = async () => {
@@ -111,7 +123,9 @@ const AdminChat = () => {
     setMessage('')
   }
 
+  useEffect(() => {
 
+  }, [setShowChat])
 
   return (
     <div
@@ -138,7 +152,6 @@ const AdminChat = () => {
         >
           Активные чаты
         </div>
-
         {activeChats.map((room) => (
           <Button
             key={room}
@@ -150,72 +163,80 @@ const AdminChat = () => {
             }}
             onClick={() => {
               joinRoom(room)
+              setShowChat(!showChat)
             }}
           />
         ))}
-
       </div>
 
       {/* Right: current chat */}
-      <div
-        style={{
-          background: '#bbb',
-          width: 'fit-content',
-          maxWidth: '400px',
-          borderRadius: '0 8px 8px 0',
-          padding: '10px'
-        }}
-      >
+      {showChat && (
         <div
           style={{
-            fontSize: '1em',
-            fontWeight: '700',
-            marginBottom: '10px'
+            background: '#bbb',
+            width: 'fit-content',
+            maxWidth: '400px',
+            borderRadius: '0 8px 8px 0',
+            padding: '10px'
           }}
         >
-          {currentRoom || 'Выбрать чат'}
-        </div>
-        <div
-          style={{
-            fontSize: '0.8em',
-            marginBottom: '10px',
-            background: !currentRoom ? '#bbb' : '#fff',
-            padding: '5px',
-            minHeight: 'fit-content',
-          }}
-        >
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              style={{
-                margin: '5px 0',
-                wordBreak: 'break-word'
-              }}
-            >
-              <strong>{m.senderName}:</strong> {m.text} ({m.timestamp})
-            </div>
-          ))}
-        </div>
-
-        {currentRoom && (
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center'
+              fontSize: '1em',
+              fontWeight: '700',
+              marginBottom: '10px',
+              width: 'fit-content',
             }}
           >
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Message"
-            />
-            <Button
-              text="Send"
-              onClick={sendMessage}
-            />
+            {currentRoom || 'Выбрать чат'}
           </div>
-        )}
-      </div>
+          <div
+            style={{
+              fontSize: '0.8em',
+              marginBottom: '10px',
+              background: !currentRoom ? '#bbb' : '#fff',
+              padding: '2px 5px',
+              minHeight: '200px',
+              borderRadius: '6px'
+            }}
+          >
+            {isLoading ? (
+              <SpinLoader color="blue" size='30px' />
+            ) : (
+              messages.map((m, i) => (
+                <div
+                  key={i}
+                  style={{
+                    margin: '5px 0',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  <strong>{m.senderName}:</strong> {m.text} ({m.timestamp})
+                </div>
+              ))
+            )}
+          </div>
+
+          {currentRoom && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Message"
+              />
+              <Button
+                text="Send"
+                onClick={sendMessage}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
