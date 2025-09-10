@@ -25,6 +25,11 @@ const Chat = () => {
   const userId = isAuthenticated
     ? `${authState.user?.lastName}_${authState.user?.firstName}_${authState.user?.patr}` || socket.id
     : socket.id;
+  const userIdRef = useRef(
+    isAuthenticated
+      ? `${authState.user?.lastName}_${authState.user?.firstName}_${authState.user?.patr}`
+      : null
+  )
 
   const roomName = `chat_${userId}_admin`;
 
@@ -56,25 +61,26 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    if (!socket) {
-      socket = io(backendUrl)
-    }
-
+    if (!socket) socket = io(backendUrl)
     if (!socket.connected) socket.connect()
 
-    setSocketId(socket.id)
     socket.emit('join_room', roomName)
     loadMessages(roomName)
 
     const handleConnect = () => {
       debug.log(`Connected to Socket.IO with ID: ${socket.id}`)
       setSocketId(socket.id)
+      if (!userIdRef.current) {
+        userIdRef.current = socket.id
+      }
     }
-
     const handleReceiveMessage = (data) => {
       setMessages(prev => {
         // Deduplicate: check if message with same sender+timestamp already exists
-        if (prev.some(msg => msg.timestamp === formatTime(data.timestamp) && msg.sender === data.sender)) {
+        if (prev.some(msg =>
+          msg.timestamp === formatTime(data.timestamp) &&
+          msg.sender === data.sender
+        )) {
           return prev
         }
         return [
@@ -146,7 +152,7 @@ const Chat = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       loadMessages(roomName)
-    }, 5000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [roomName])
 

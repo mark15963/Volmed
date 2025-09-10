@@ -15,8 +15,9 @@ const AdminChat = () => {
   const [message, setMessage] = useState('')
   const backendUrl = import.meta.env.VITE_API_URL
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const formatTime = (dateString) => {
+    const date = new Date(dateString)
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
   if (!socket) socket = io(backendUrl)
@@ -25,17 +26,37 @@ const AdminChat = () => {
     if (!socket.connected) socket.connect()
 
     // load active chats from backend
-    fetch(`${backendUrl}/chat/active-rooms`)
-      .then((res) => res.json())
-      .then((data) => setActiveChats(data.rooms))
+    const loadActiveChats = () => {
+      fetch(`${backendUrl}/chat/active-rooms`)
+        .then((res) => res.json())
+        .then((data) => setActiveChats(data.rooms))
+        .catch(err => console.error("Error loading active chatcs:", err))
+    }
 
-    socket.on('receive_message', (data) => {
+    loadActiveChats()
+
+    // Socket event listener for new messages
+    const handleReceiveMessage = (data) => {
       if (data.room === currentRoom) {
-        setMessages((prev) => [...prev, data])
+        setMessages((prev) => [...prev, {
+          text: data.message,
+          sender: data.sender,
+          senderName: data.senderName,
+          timestamp: data.timestamp,
+        }])
       }
-    })
-    return () => socket.off('receive_message')
-  }, [currentRoom])
+    }
+
+    socket.on('receive_message', handleReceiveMessage)
+
+    // Set up interval for refreshing active chats
+    const activeChatsInterval = setInterval(loadActiveChats, 3000)
+
+    return () => {
+      socket.off('receive_message', handleReceiveMessage)
+      clearInterval(activeChatsInterval)
+    }
+  }, [currentRoom, backendUrl])
 
   const fetchMessages = async (room) => {
     if (!room) return
@@ -47,29 +68,23 @@ const AdminChat = () => {
           text: msg.message,
           sender: msg.sender,
           senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
-          timestamp: formatTime(msg.timestamp),
+          timestamp: msg.timestamp,
         }))
       )
     } catch (err) {
       console.error("Messages fetching error:", err)
     }
   }
+
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (!currentRoom) return
+
+    // Set up interval for refreshing messages for the current room
+    const messagesInterval = setInterval(() => {
       fetchMessages(currentRoom)
-
-      if (!socket.connected) socket.connect()
-
-      // load active chats from backend
-      fetch(`${backendUrl}/chat/active-rooms`)
-        .then((res) => res.json())
-        .then((data) => setActiveChats(data.rooms))
-
-      return () => {
-        socket.off('receive_message')
-      }
     }, 3000)
-    return () => clearInterval(interval)
+
+    return () => clearInterval(messagesInterval)
   }, [currentRoom])
 
   const joinRoom = async (room) => {
@@ -78,7 +93,7 @@ const AdminChat = () => {
       if (currentRoom) socket.emit('leave_room', currentRoom)
       socket.emit('join_room', room)
       setCurrentRoom(room)
-      // load chat history
+      // Load chat history
       await fetchMessages(room)
     } catch (err) {
       console.error("Error joining room:", err)
@@ -96,8 +111,10 @@ const AdminChat = () => {
       text: message,
       sender: 'admin',
       senderName: 'Админ',
-      timestamp: formatTime(timestamp),
+      timestamp: timestamp,
     }
+
+    // Optimistically add the message to the UI
     setMessages((prev) => [...prev, newMsg])
 
     socket.emit('send_message', {
@@ -123,16 +140,8 @@ const AdminChat = () => {
     setMessage('')
   }
 
-  useEffect(() => {
-
-  }, [setShowChat])
-
   return (
-    <div
-      style={{
-        display: "flex",
-      }}
-    >
+    <div style={{ display: "flex" }}>
       {/* Left: list of chats */}
       <div
         style={{
@@ -161,10 +170,7 @@ const AdminChat = () => {
               fontSize: '0.5em',
               wordBreak: 'break-word'
             }}
-            onClick={() => {
-              joinRoom(room)
-              setShowChat(!showChat)
-            }}
+            onClick={() => joinRoom(room)}
           />
         ))}
       </div>
@@ -211,7 +217,7 @@ const AdminChat = () => {
                     wordBreak: 'break-word'
                   }}
                 >
-                  <strong>{m.senderName}:</strong> {m.text} ({m.timestamp})
+                  <strong>{m.senderName}:</strong> {m.text} ({formatTime(m.timestamp)})
                 </div>
               ))
             )}
