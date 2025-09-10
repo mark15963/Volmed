@@ -42,11 +42,18 @@ export const Footer = () => {
             {authState.isAuthenticated && chatVisible && createPortal(
                 <div
                     style={{
-                        position: 'absolute',
-                        left: '10px',
-                        top: '200px',
-                        transform: 'translateY(-50%)',
-                        marginRight: '20px',
+                        // display: 'flex',
+                        // position: 'absolute',
+                        // left: '10px',
+                        // top: '280px',
+                        // transform: 'translateY(-50%)',
+                        // marginRight: '20px',
+                        // zIndex: 1000
+                        display: 'flex',
+                        position: 'fixed',
+                        transform: 'none',
+                        bottom: '70px',
+                        right: '10px',
                         zIndex: 1000
                     }}
                 >
