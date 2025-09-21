@@ -32,11 +32,27 @@ const Chat = () => {
   const roomName = `chat_${userId}_admin`;
 
   const formatTime = (dateString) => {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) {
-      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    try {
+      const date = new Date(dateString);
+
+      if (isNaN(date.getTime())) {
+        return new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error("Error formatting time:", error);
+      return new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
-    return date.toLocaleTimeString([], { hour: '2-digital', minute: '2-digit' })
   }
 
   const loadMessages = async (room) => {
@@ -97,9 +113,12 @@ const Chat = () => {
         lastMessageRef.current.text === data.message &&
         Math.abs(new Date(lastMessageRef.current.timestamp) - new Date(data.timestamp)) < 1000
 
-      if (!isDuplicateMessage(newMessage, messages) && !isOwnRecentMessage) {
-        setMessages(prev => [...prev, newMessage])
-      }
+      setMessages(prev => {
+        if (!isDuplicateMessage(newMessage, prev) && !isOwnRecentMessage) {
+          return [...prev, newMessage]
+        }
+        return prev
+      })
     }
 
     socket.on('connect', handleConnect)
@@ -109,7 +128,7 @@ const Chat = () => {
       socket.off('connect', handleConnect)
       socket.off('receive_message', handleReceiveMessage)
     }
-  }, [roomName, backendUrl, messages, userId])
+  }, [roomName, backendUrl, userId])
 
   const sendMessage = async () => {
     if (!message.trim()) return
