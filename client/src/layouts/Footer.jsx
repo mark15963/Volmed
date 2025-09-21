@@ -1,18 +1,22 @@
-import { useLocation, useNavigate } from 'react-router';
-import Chat from '../components/admin/Chat';
-import Button from '../components/Button';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+
+import Chat from '../components/admin/Chat';
+import AdminChat from '../components/admin/AdminChat';
+import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext'
 
 import styles from './styles/footer.module.scss'
-import AdminChat from '../components/admin/AdminChat';
+
 
 export const Footer = () => {
   const year = new Date().getFullYear()
   const navigate = useNavigate();
   const location = useLocation();
   const [chatVisible, setChatVisible] = useState(false)
+  const chatRef = useRef(null)
+  const buttonRef = useRef(null);
 
   const { authState } = useAuth()
 
@@ -20,7 +24,30 @@ export const Footer = () => {
     ? `Volmed 2025 - ${year}`
     : `Volmed ${year}`
 
-  const handleClick = (e) => setChatVisible(!chatVisible)
+  const handleChatToggle = () => {
+    setChatVisible(prev => !prev)
+  }
+
+  // Close chat when clicking outside (but not on the button)
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (chatRef.current &&
+        !chatRef.current.contains(e.target) &&
+        !floatButtonPrefixCls.current?.contains(e.target)) {
+        setChatVisible(false)
+      }
+    }
+
+    if (chatVisible) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside);
+    }
+  }, [chatVisible])
 
   return (
     <footer>
@@ -29,7 +56,8 @@ export const Footer = () => {
       </div>
       {authState.isAuthenticated &&
         <Button
-          onClick={handleClick}
+          ref={buttonRef}
+          onClick={handleChatToggle}
           text='Чат'
           style={{
             height: 'fit-content',
@@ -39,6 +67,7 @@ export const Footer = () => {
       }
       {authState.isAuthenticated && chatVisible && createPortal(
         <div
+          ref={chatRef}
           style={{
             display: 'flex',
             position: 'fixed',
