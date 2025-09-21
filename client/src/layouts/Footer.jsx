@@ -17,6 +17,7 @@ export const Footer = () => {
   const [chatVisible, setChatVisible] = useState(false)
   const chatRef = useRef(null)
   const buttonRef = useRef(null)
+  const clickOutsideEnabled = useRef(false)
 
   const { authState } = useAuth()
 
@@ -26,11 +27,18 @@ export const Footer = () => {
 
   const handleChatToggle = () => {
     setChatVisible(prev => !prev)
+
+    clickOutsideEnabled.current = false
+    setTimeout(() => {
+      clickOutsideEnabled.current = true
+    }, 300)
   }
 
   // Close chat when clicking outside (but not on the button)
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (!clickOutsideEnabled.current) return
+
       if (chatRef.current &&
         !chatRef.current.contains(e.target) &&
         !buttonRef.current?.contains(e.target)) {
