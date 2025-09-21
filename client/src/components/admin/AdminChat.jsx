@@ -21,8 +21,25 @@ const AdminChat = () => {
   const backendUrl = import.meta.env.VITE_API_URL
 
   const formatTime = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error("Error formatting time:", error);
+      return new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
   }
 
   if (!socket) socket = io(backendUrl)
@@ -44,7 +61,7 @@ const AdminChat = () => {
           text: data.message,
           sender: data.sender,
           senderName: data.senderName,
-          timestamp: data.timestamp,
+          timestamp: formatTime(data.timestamp),
         }])
       }
     }
@@ -52,7 +69,6 @@ const AdminChat = () => {
 
     // Set up interval for refreshing active chats
     const activeChatsInterval = setInterval(loadActiveChats, 3000)
-
     return () => {
       socket.off('receive_message', handleReceiveMessage)
       clearInterval(activeChatsInterval)
@@ -70,7 +86,7 @@ const AdminChat = () => {
           text: msg.message,
           sender: msg.sender,
           senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
-          timestamp: msg.timestamp,
+          timestamp: formatTime(msg.timestamp),
         }))
       )
     } catch (err) {
@@ -82,7 +98,6 @@ const AdminChat = () => {
   useEffect(() => {
     if (!currentRoom) return
 
-    // Set up interval for refreshing messages for the current room
     const messagesInterval = setInterval(() => {
       fetchMessages(currentRoom)
     }, 3000)
