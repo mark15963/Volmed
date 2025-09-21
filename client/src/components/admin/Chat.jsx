@@ -87,7 +87,7 @@ const Chat = () => {
     if (!socket.connected) socket.connect()
 
     socket.emit('join_room', roomName)
-    loadMessages(roomName)
+    loadMessages(roomName) // Initial load
 
     const handleConnect = () => {
       debug.log(`Connected to Socket.IO with ID: ${socket.id}`)
@@ -121,12 +121,24 @@ const Chat = () => {
       })
     }
 
+    const handleChatDeleted = (data) => {
+      if (data.room === roomName) {
+        setMessages([{
+          text: "Чат удален администратором.",
+          type: 'system',
+          timestamp: formatTime(new Date())
+        }])
+      }
+    }
+
     socket.on('connect', handleConnect)
     socket.on('receive_message', handleReceiveMessage)
+    socket.on('chat_deleted', handleChatDeleted)
 
     return () => {
       socket.off('connect', handleConnect)
       socket.off('receive_message', handleReceiveMessage)
+      socket.off('chat_deleted', handleChatDeleted)
     }
   }, [roomName, backendUrl, userId])
 
