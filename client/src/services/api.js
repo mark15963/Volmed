@@ -140,6 +140,8 @@ export default {
   // Chat
   getChatHistory: (room) => api.get(`/chat/room/${room}/messages`),
   saveMessage: (data) => api.post(`/chat/save-message`, data),
+  getActiveRooms: () => api.get(`/chat/active-rooms`),
+  deleteChatRoom: (room) => api.delete(`chat/room/${room}`),
 
   // Users
   getUsers: () => api.get(`/users`),

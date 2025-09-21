@@ -187,7 +187,9 @@ const SearchResults = React.memo(() => {
   //#region ===== JSX =====
   return (
     <div className={styles.resultsContainer}>
-      {contextHolder} {/* TOP FLOATIN MESSAGES */}
+
+      {contextHolder} {/* TOP FLOATING MESSAGES */}
+
       <span className={styles.pageTitle}>
         {state?.searchQuery ? `Результаты поиска: №${id}` : `Карта пациента №${id}`}
       </span>

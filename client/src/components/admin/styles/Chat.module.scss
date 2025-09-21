@@ -85,3 +85,55 @@
     }
   }
 }
+
+.adminContainer {
+  display: flex;
+
+  .leftSide {
+    background: #bbb;
+    width: fit-content;
+    border-right: 1px solid #ccc;
+    border-radius: 8px 0 0 8px;
+    padding: 10px;
+
+    .title {
+      font-size: 1em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+  }
+
+  .rightSide {
+    background: #bbb;
+    width: fit-content;
+    max-width: 400px;
+    border-radius: 0 8px 8px 0;
+    padding: 10px;
+
+    .title {
+      font-size: 1em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+
+    .screen {
+      font-size: 0.8em;
+      margin-bottom: 10px;
+      padding: 2px 5px;
+      min-height: 200px;
+      border-radius: 6px;
+
+      .message {
+        margin: 5px 0;
+        word-break: break-word;
+
+        .time {
+          font-size: 0.7em;
+          color: #aaa;
+        }
+      }
+    }
+  }
+}

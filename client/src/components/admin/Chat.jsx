@@ -6,6 +6,7 @@ import Input from '../Input'
 import debug from '../../utils/debug'
 
 import styles from './styles/Chat.module.scss'
+import api from '../../services/api'
 
 let socket
 
@@ -17,6 +18,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([])
   const [socketId, setSocketId] = useState('')
   const messagesEndRef = useRef(null);
+  const lastMessageRef = useRef(null)
 
   const isAuthenticated = authState.isAuthenticated
   const displayName = isAuthenticated
@@ -24,13 +26,9 @@ const Chat = () => {
     : "Unauthorized person";
   const userId = isAuthenticated
     ? `${authState.user?.lastName}_${authState.user?.firstName}_${authState.user?.patr}` || socket.id
-    : socket.id;
-  const userIdRef = useRef(
-    isAuthenticated
-      ? `${authState.user?.lastName}_${authState.user?.firstName}_${authState.user?.patr}`
-      : null
-  )
+    : socket.id || '';
 
+  const userIdRef = useRef(userId)
   const roomName = `chat_${userId}_admin`;
 
   const formatTime = (date) => {
@@ -39,25 +37,28 @@ const Chat = () => {
 
   const loadMessages = async (room) => {
     try {
-      const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
+      const res = await api.getChatHistory(room)
       const data = await res.json()
       const formatted = data.map(msg => ({
         text: msg.message,
         sender: msg.sender,
         senderName: msg.sender_name || 'Unknown',
-        timestamp: formatTime(msg.timestamp)
+        timestamp: formatTime(msg.timestamp),
+        dbTimestamp: msg.timestamp
       }))
-      if (formatted) debug.log("Messages loaded")
+
       setMessages(formatted)
     } catch (err) {
       console.error("Failed to load messages:", err)
-      setMessages([
-        {
-          text: `Failed to load messages for room "${room}"`,
-          type: 'system'
-        },
-      ])
     }
+  }
+
+  const isDuplicateMessage = (newMsg, existingMessages) => {
+    return existingMessages.some(existingMsg =>
+      existingMsg.text === newMsg.text &&
+      existingMsg.sender === newMsg.sender &&
+      Math.abs(new Date(existingMsg.dbTimestamp || existingMsg.timestamp) - new Date(newMsg.timestamp)) < 2000
+    )
   }
 
   useEffect(() => {
@@ -74,25 +75,26 @@ const Chat = () => {
         userIdRef.current = socket.id
       }
     }
+
     const handleReceiveMessage = (data) => {
-      setMessages(prev => {
-        // Deduplicate: check if message with same sender+timestamp already exists
-        if (prev.some(msg =>
-          msg.timestamp === formatTime(data.timestamp) &&
-          msg.sender === data.sender
-        )) {
-          return prev
-        }
-        return [
-          ...prev,
-          {
-            text: data.message,
-            sender: data.sender,
-            senderName: data.senderName,
-            timestamp: formatTime(data.timestamp)
-          }
-        ]
-      })
+      const newMessage = {
+        text: data.message,
+        sender: data.sender,
+        senderName: data.senderName,
+        timestamp: formatTime(data.timestamp),
+        dbTimestamp: data.timestamp
+      }
+
+      // Check if this is the same as our last sent message
+      const isOwnRecentMessage =
+        data.sender === userId &&
+        lastMessageRef.current &&
+        lastMessageRef.current.text === data.message &&
+        Math.abs(new Date(lastMessageRef.current.timestamp) - new Date(data.timestamp)) < 1000
+
+      if (!isDuplicateMessage(newMessage, messages) && !isOwnRecentMessage) {
+        sendMessages(prev => [...prev, newMessage])
+      }
     }
 
     socket.on('connect', handleConnect)
@@ -102,7 +104,7 @@ const Chat = () => {
       socket.off('connect', handleConnect)
       socket.off('receive_message', handleReceiveMessage)
     }
-  }, [roomName])
+  }, [roomName, backendUrl, messages, userId])
 
   const sendMessage = async () => {
     if (!message.trim()) return
@@ -112,12 +114,15 @@ const Chat = () => {
       text: message,
       sender: userId,
       senderName: displayName,
-      timestamp: formatTime(timestamp)
+      timestamp: formatTime(timestamp),
+      dbTimestamp: timestamp
     }
-    debug.log("Sending as:", userId)
+
+    lastMessageRef.current = newMessage
 
     // Add message locally
     setMessages(prev => [...prev, newMessage])
+    setMessage('')
 
     // Emit to server
     socket.emit('send_message', {
@@ -130,31 +135,35 @@ const Chat = () => {
 
     // Save to backend
     try {
-      await fetch(`${backendUrl}/chat/save-message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          room: roomName,
-          sender: userId,
-          senderName: displayName,
-          message,
-          timestamp,
-        })
+      await api.saveMessage({
+        room: roomName,
+        sender: userId,
+        senderName: displayName,
+        message,
+        timestamp,
       })
     } catch (error) {
       console.error('Failed to send message', error)
     }
 
-    setMessage('')
+    // Clear the last message reference after a short delay
+    setTimeout(() => {
+      lastMessageRef.current = null
+    }, 2000)
   }
 
-  // Auto-refresh messages every 5 seconds
+  // Auto-refresh messages every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       loadMessages(roomName)
     }, 3000)
     return () => clearInterval(interval)
   }, [roomName])
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <div className={styles.container}>
@@ -210,6 +219,11 @@ const Chat = () => {
           className={styles.input}
           value={message}
           onChange={e => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              sendMessage()
+            }
+          }}
         />
         <Button
           text='Отправить'

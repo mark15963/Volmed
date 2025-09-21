@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { io } from 'socket.io-client'
+
+import api from "../../services/api";
+
 import Button from '../Button'
 import Input from '../Input'
 import { SpinLoader } from "../Loading/SpinLoader";
+
+import styles from './styles/Chat.module.scss'
 
 let socket
 
@@ -22,17 +27,14 @@ const AdminChat = () => {
 
   if (!socket) socket = io(backendUrl)
 
+  // Load active chats
   useEffect(() => {
     if (!socket.connected) socket.connect()
 
-    // load active chats from backend
-    const loadActiveChats = () => {
-      fetch(`${backendUrl}/chat/active-rooms`)
-        .then((res) => res.json())
-        .then((data) => setActiveChats(data.rooms))
-        .catch(err => console.error("Error loading active chatcs:", err))
+    const loadActiveChats = async () => {
+      await api.getActiveRooms()
+        .then((response) => setActiveChats(response.data.rooms))
     }
-
     loadActiveChats()
 
     // Socket event listener for new messages
@@ -46,7 +48,6 @@ const AdminChat = () => {
         }])
       }
     }
-
     socket.on('receive_message', handleReceiveMessage)
 
     // Set up interval for refreshing active chats
@@ -58,11 +59,12 @@ const AdminChat = () => {
     }
   }, [currentRoom, backendUrl])
 
+  // Fetch messages
   const fetchMessages = async (room) => {
     if (!room) return
     try {
-      const res = await fetch(`${backendUrl}/chat/room/${room}/messages`)
-      const data = await res.json()
+      const response = await api.getChatHistory(room)
+      const data = response.data
       setMessages(
         data.map((msg) => ({
           text: msg.message,
@@ -76,6 +78,7 @@ const AdminChat = () => {
     }
   }
 
+  // Update messages
   useEffect(() => {
     if (!currentRoom) return
 
@@ -125,85 +128,86 @@ const AdminChat = () => {
       timestamp,
     })
 
-    await fetch(`${backendUrl}/chat/save-message`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        room: currentRoom,
-        sender: 'admin',
-        senderName: 'Админ',
-        message,
-        timestamp,
-      }),
+    await api.saveMessage({
+      room: currentRoom,
+      sender: 'admin',
+      senderName: 'Админ',
+      message,
+      timestamp,
     })
 
     setMessage('')
   }
 
+  const deleteChat = async (room) => {
+    if (!window.confirm("Удалить чат?")) return
+
+    try {
+      await api.deleteChatRoom(room)
+      // Update UI state
+      setActiveChats(prev => prev.filter(chatRoom => chatRoom !== room))
+
+      // If we're currently viewing the deleted chat, clear it
+      if (currentRoom == room) {
+        setCurrentRoom(null)
+        setMessages([])
+        setShowChat(false)
+        socket.emit('leave_room', room)
+      }
+    } catch (err) {
+      console.error("Error deleting chat:", err)
+      alert("Ошибка при удалении")
+    }
+  }
+
   return (
-    <div style={{ display: "flex" }}>
+    <div className={styles.adminContainer}>
       {/* Left: list of chats */}
-      <div
-        style={{
-          background: '#bbb',
-          width: 'fit-content',
-          borderRight: '1px solid #ccc',
-          borderRadius: '8px 0 0 8px',
-          padding: '10px'
-        }}
-      >
-        <div
-          style={{
-            fontSize: '1em',
-            fontWeight: '700',
-            marginBottom: '10px'
-          }}
-        >
+      <div className={styles.leftSide}>
+        <div className={styles.title}>
           Активные чаты
         </div>
         {activeChats.map((room) => (
-          <Button
-            key={room}
-            text={room}
-            style={{
-              maxWidth: '100px',
-              fontSize: '0.5em',
-              wordBreak: 'break-word'
-            }}
-            onClick={() => joinRoom(room)}
-          />
+          <div style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <Button
+              key={room}
+              text={room}
+              style={{
+                maxWidth: '100px',
+                fontSize: '0.5em',
+                wordBreak: 'break-word'
+              }}
+              onClick={() => joinRoom(room)}
+            />
+            <div
+              style={{
+                fontSize: '0.8em',
+                fontWeight: '700',
+                color: 'red',
+                userSelect: 'none'
+              }}
+              onClick={() => deleteChat(room)}
+              title="Удалить чат"
+            >
+              X
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Right: current chat */}
       {showChat && (
-        <div
-          style={{
-            background: '#bbb',
-            width: 'fit-content',
-            maxWidth: '400px',
-            borderRadius: '0 8px 8px 0',
-            padding: '10px'
-          }}
-        >
-          <div
-            style={{
-              fontSize: '1em',
-              fontWeight: '700',
-              marginBottom: '10px',
-              width: 'fit-content',
-            }}
-          >
+        <div className={styles.rightSide}>
+          <div className={styles.title}>
             {currentRoom || 'Выбрать чат'}
           </div>
           <div
+            className={styles.screen}
             style={{
-              fontSize: '0.8em',
-              marginBottom: '10px',
               background: !currentRoom ? '#bbb' : '#fff',
-              padding: '2px 5px',
-              minHeight: '200px',
-              borderRadius: '6px'
             }}
           >
             {isLoading ? (
@@ -212,12 +216,13 @@ const AdminChat = () => {
               messages.map((m, i) => (
                 <div
                   key={i}
-                  style={{
-                    margin: '5px 0',
-                    wordBreak: 'break-word'
-                  }}
+                  className={styles.message}
+                // style={{
+                //   left: m.senderName !== "Админ" ? '0' : '10px',
+                //   right: m.senderName === "Админ" ? '0' : '10px'
+                // }}
                 >
-                  <strong>{m.senderName}:</strong> {m.text} ({formatTime(m.timestamp)})
+                  <strong>{m.senderName}:</strong> {m.text} <span className={styles.time}>({formatTime(m.timestamp)})</span>
                 </div>
               ))
             )}
