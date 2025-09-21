@@ -37,8 +37,9 @@ const Chat = () => {
 
   const loadMessages = async (room) => {
     try {
-      const res = await api.getChatHistory(room)
-      const data = await res.json()
+      const response = await api.getChatHistory(room)
+      const data = response.data
+
       const formatted = data.map(msg => ({
         text: msg.message,
         sender: msg.sender,
@@ -93,7 +94,7 @@ const Chat = () => {
         Math.abs(new Date(lastMessageRef.current.timestamp) - new Date(data.timestamp)) < 1000
 
       if (!isDuplicateMessage(newMessage, messages) && !isOwnRecentMessage) {
-        sendMessages(prev => [...prev, newMessage])
+        setMessages(prev => [...prev, newMessage])
       }
     }
 

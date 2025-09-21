@@ -239,6 +239,11 @@ const AdminChat = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Message"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    sendMessage()
+                  }
+                }}
               />
               <Button
                 text="Send"
