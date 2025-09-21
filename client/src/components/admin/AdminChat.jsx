@@ -162,6 +162,9 @@ const AdminChat = () => {
       // Update UI state
       setActiveChats(prev => prev.filter(chatRoom => chatRoom !== room))
 
+      //Emit socket event to notify the user
+      socket.emit('admin_delete_chat', { room })
+
       // If we're currently viewing the deleted chat, clear it
       if (currentRoom == room) {
         setCurrentRoom(null)

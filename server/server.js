@@ -118,6 +118,7 @@ async function startServer() {
         credentials: true,
       },
     });
+    app.set("io", io);
 
     io.on("connection", (socket) => {
       debug.log("Socket ID", socket.id);
