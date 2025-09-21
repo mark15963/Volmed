@@ -27,7 +27,7 @@ export const Footer = () => {
 
   const handleChatToggle = () => {
     setChatVisible(prev => !prev)
-
+    // Disable click outside detection briefly after opening
     clickOutsideEnabled.current = false
     setTimeout(() => {
       clickOutsideEnabled.current = true
@@ -56,6 +56,7 @@ export const Footer = () => {
       document.removeEventListener('touchstart', handleClickOutside);
     }
   }, [chatVisible])
+
 
   return (
     <footer>

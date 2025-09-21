@@ -31,8 +31,12 @@ const Chat = () => {
   const userIdRef = useRef(userId)
   const roomName = `chat_${userId}_admin`;
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const formatTime = (dateString) => {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+    return date.toLocaleDateString([], { houre: '2-digital', minute: '2-digit' })
   }
 
   const loadMessages = async (room) => {
