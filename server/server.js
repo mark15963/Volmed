@@ -100,6 +100,7 @@ async function startServer() {
       server.keepAliveTimeout = 1000 * 60;
       server.headersTimeout = 1000 * 65;
 
+      // Start tests
       if (process.env.NODE_ENV === "development") {
         require(path.join(__dirname, "tests", "startupTest.js"));
       }
@@ -121,37 +122,42 @@ async function startServer() {
     app.set("io", io);
 
     io.on("connection", (socket) => {
-      debug.log("Socket ID", socket.id);
+      debug.log("Client connected:", socket.id);
 
-      socket.on("join_room", (data) => {
-        debug.log("Set room", data);
-        socket.join(data);
+      socket.on("join_room", (room, callback) => {
+        socket.join(room);
+        if (callback) callback({ success: true });
+        debug.log(`Client ${socket.id} joined room: ${room}`);
       });
 
       socket.on("leave_room", (data) => {
-        debug.log(data);
+        debug.log("User left room:", data);
         socket.leave(data);
       });
 
       socket.on("send_message", async (data) => {
         try {
-          const { room, sender, message, timestamp } = data;
+          const { room, sender, senderName, message, timestamp } = data;
+          debug.log("Message received for room:", room);
 
-          if (data.room === "") {
-            socket.broadcast.emit("receive_message", data);
-          } else {
-            socket.to(room).emit("receive_message", data);
-          }
+          io.to(data.room).emit("receive_message", data);
 
           await axios.post(`${process.env.BACKEND_URL}/api/chat/save-message`, {
             room,
             sender,
+            senderName,
             message,
             timestamp,
           });
+
+          debug.log(`📨 Message broadcast to room: ${data.room}`);
         } catch (error) {
           console.error("Failed to save message:", error.message);
         }
+      });
+
+      socket.on("disconnect", () => {
+        debug.log("Socket disconnected:", socket.id);
       });
     });
 
