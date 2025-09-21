@@ -16,6 +16,7 @@ export const Footer = () => {
   const location = useLocation();
   const [chatVisible, setChatVisible] = useState(false)
   const chatRef = useRef(null)
+  const buttonRef = useRef(null)
 
   const { authState } = useAuth()
 
@@ -32,7 +33,7 @@ export const Footer = () => {
     const handleClickOutside = (e) => {
       if (chatRef.current &&
         !chatRef.current.contains(e.target) &&
-        !floatButtonPrefixCls.current?.contains(e.target)) {
+        !buttonRef.current?.contains(e.target)) {
         setChatVisible(false)
       }
     }
@@ -54,14 +55,16 @@ export const Footer = () => {
         © {yearText}
       </div>
       {authState.isAuthenticated &&
-        <Button
-          onClick={handleChatToggle}
-          text='Чат'
-          style={{
-            height: 'fit-content',
-            padding: '5px 10px'
-          }}
-        />
+        <div ref={buttonRef}>
+          <Button
+            onClick={handleChatToggle}
+            text='Чат'
+            style={{
+              height: 'fit-content',
+              padding: '5px 10px'
+            }}
+          />
+        </div>
       }
       {authState.isAuthenticated && chatVisible && createPortal(
         <div
