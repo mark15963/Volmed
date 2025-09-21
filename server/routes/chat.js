@@ -39,7 +39,16 @@ router.get("/room/:room/messages", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
+router.delete("/room/:room", async (req, res) => {
+  const room = req.params.room;
+  try {
+    await db.query("DELETE FROM messages WHERE room = $1", [room]);
+    res.json({ success: true, message: "Chat room deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting chat room:", err.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
 router.get("/active-rooms", async (req, res) => {
   try {
     const result = await db.query("SELECT DISTINCT room FROM messages");
