@@ -176,13 +176,13 @@ const Chat = () => {
     }, 2000)
   }
 
-  // Auto-refresh messages every 3 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadMessages(roomName)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [roomName])
+  // // Auto-refresh messages every 3 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     loadMessages(roomName)
+  //   }, 3000)
+  //   return () => clearInterval(interval)
+  // }, [roomName])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
