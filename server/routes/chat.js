@@ -44,7 +44,8 @@ router.delete("/room/:room", async (req, res) => {
   try {
     await db.query("DELETE FROM messages WHERE room = $1", [room]);
 
-    req.app.get("io").to(room).emit("chat_deleted", { room });
+    const io = req.app.get("io");
+    io.to(room).emit("chat_deleted", { room });
     res.json({ success: true, message: "Chat room deleted successfully" });
   } catch (err) {
     console.error("Error deleting chat room:", err.message);

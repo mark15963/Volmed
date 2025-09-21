@@ -23,12 +23,14 @@ const AdminChat = () => {
   const formatTime = (dateString) => {
     try {
       const date = new Date(dateString);
+
       if (isNaN(date.getTime())) {
         return new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit'
         });
       }
+
       return date.toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit'
@@ -81,29 +83,19 @@ const AdminChat = () => {
     try {
       const response = await api.getChatHistory(room)
       const data = response.data
-      setMessages(
-        data.map((msg) => ({
-          text: msg.message,
-          sender: msg.sender,
-          senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
-          timestamp: formatTime(msg.timestamp),
-        }))
-      )
+
+      const formated = data.map((msg) => ({
+        text: msg.message,
+        sender: msg.sender,
+        senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
+        timestamp: formatTime(msg.timestamp),
+      }))
+
+      setMessages(formated)
     } catch (err) {
       console.error("Messages fetching error:", err)
     }
   }
-
-  // Update messages
-  useEffect(() => {
-    if (!currentRoom) return
-
-    const messagesInterval = setInterval(() => {
-      fetchMessages(currentRoom)
-    }, 3000)
-
-    return () => clearInterval(messagesInterval)
-  }, [currentRoom])
 
   const joinRoom = async (room) => {
     setIsLoading(true)
@@ -163,7 +155,7 @@ const AdminChat = () => {
       setActiveChats(prev => prev.filter(chatRoom => chatRoom !== room))
 
       //Emit socket event to notify the user
-      socket.emit('admin_delete_chat', { room })
+      socket.emit('chat_deleted', { room })
 
       // If we're currently viewing the deleted chat, clear it
       if (currentRoom == room) {
@@ -177,6 +169,18 @@ const AdminChat = () => {
       alert("Ошибка при удалении")
     }
   }
+
+
+  // Update messages
+  useEffect(() => {
+    if (!currentRoom) return
+
+    const messagesInterval = setInterval(() => {
+      fetchMessages(currentRoom)
+    }, 3000)
+
+    return () => clearInterval(messagesInterval)
+  }, [currentRoom])
 
   return (
     <div className={styles.adminContainer}>
@@ -229,16 +233,23 @@ const AdminChat = () => {
             }}
           >
             {isLoading ? (
-              <SpinLoader color="blue" size='30px' />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                width: '100%'
+              }}>
+                <SpinLoader color="blue" size='30px' />
+              </div>
             ) : (
               messages.map((m, i) => (
                 <div
                   key={i}
                   className={styles.message}
-                // style={{
-                //   left: m.senderName !== "Админ" ? '0' : '10px',
-                //   right: m.senderName === "Админ" ? '0' : '10px'
-                // }}
+                  style={{
+                    textAlign: m.senderName !== "Админ" ? 'left' : 'right',
+                  }}
                 >
                   <strong>{m.senderName}:</strong> {m.text} <span className={styles.time}>({formatTime(m.timestamp)})</span>
                 </div>
