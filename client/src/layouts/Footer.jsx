@@ -16,7 +16,6 @@ export const Footer = () => {
   const location = useLocation();
   const [chatVisible, setChatVisible] = useState(false)
   const chatRef = useRef(null)
-  const buttonRef = useRef(null);
 
   const { authState } = useAuth()
 
@@ -56,7 +55,6 @@ export const Footer = () => {
       </div>
       {authState.isAuthenticated &&
         <Button
-          ref={buttonRef}
           onClick={handleChatToggle}
           text='Чат'
           style={{
