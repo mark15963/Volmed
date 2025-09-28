@@ -1,4 +1,4 @@
-//#region ===== REQUIRES =====
+//#region ===== REQUIRES & CONSTS =====
 const path = require("path");
 
 require("dotenv").config({ path: path.join(__dirname, ".env") });
@@ -25,39 +25,44 @@ const debug = require("./utils/debug");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS setup
+//#region ===== CORS setup =====
 const cors = require("cors");
 app.use(cors(corsOptions));
+//#endregion
 
 app.locals.allowedOrigins = allowedOrigins;
 app.locals.debug = debug;
 
-// Middleware
+//#region ===== Middleware =====
 app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+//#endregion
 
 // Session setup
 app.use(sessionConfig);
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/uploads", express.static("uploads"));
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Routes
+//#region ===== Routes =====
 app.get("/", (req, res) => {
   res.redirect("/api");
 });
+
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
   next();
 });
+
 app.use("/api", routes);
+//#endregion
 
 // Debug session & cookies on start
 app.use((req, res, next) => {
@@ -86,7 +91,7 @@ app.use((err, req, res, next) => {
   }
 });
 
-// ===== START SERVER =====
+//#region ===== START SERVER =====
 async function startServer() {
   try {
     await testDbConnection();
@@ -174,5 +179,7 @@ async function startServer() {
   }
 }
 startServer();
+
+//#endregion
 
 module.exports = { allowedOrigins };
