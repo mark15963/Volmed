@@ -1,100 +1,42 @@
-import { useNavigate } from 'react-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useAuth } from '../../context/AuthContext'
 
-import { SearchBar } from '../../components/SearchBar';
-import Button from '../../components/Button';
+import DoctorDisplay from './pages/DoctorDisplay';
+import NurseDisplay from './pages/NurseDisplay';
 import Loader from '../../components/Loader';
-import InDev from '../../components/InDev';
 
 import styles from './main.module.scss'
-import nurseStyles from './nurseMenu.module.scss'
 
-
-export const Main = () => {
+export default function Main() {
   const { authState } = useAuth()
-  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const userRole = authState.user.status;
+  const allowedUsers = [
+    "doctor",
+    "Врач",
+    "admin",
+    "Администратор",
+    "tester",
+    "Тестировщик"
+  ]
+  const nurseUsers = [
+    "Сестра",
+    "nurse"
+  ]
 
   if (authState.isLoading) return <Loader />
   if (!authState.isAuthenticated) return null
 
-  const userRole = authState.user.status;
-
-  if (["Сестра", "nurse"].includes(userRole)) {
-    return (
-      <div className={nurseStyles.container}>
-        <div className={nurseStyles.mainBlock}>
-          <div style={{ margin: "10px 0" }}>
-            МЕНЮ МЕДСЕСТЕР
-          </div>
-          <div className={nurseStyles.buttonsContainer}>
-            <Button
-              text="Пациенты отделения"
-              className={nurseStyles.button}
-              onClick={() => {
-                navigate('/hospitalized')
-              }}
-            />
-            <Button
-              text="Выписанные"
-              className={nurseStyles.button}
-              onClick={() => {
-                navigate('/discharged')
-              }}
-            />
-          </div>
-          <div className={nurseStyles.buttonsContainer}>
-            <Button
-              text="Поступившие"
-              className={nurseStyles.button}
-              onClick={() => {
-                navigate('/administered')
-              }}
-            />
-            <InDev >
-              <Button
-                text="TEST"
-                className={nurseStyles.button}
-                onClick={() => {
-                  console.log('')
-                }}
-              />
-            </InDev>
-          </div>
-        </div>
-      </div>
-    )
+  // User role -> Nurse
+  if (nurseUsers.includes(userRole)) {
+    return <NurseDisplay />
   }
-
-  if (["doctor", "Врач", "admin", "Администратор", "tester", "Тестировщик"].includes(userRole)) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.mainBlock}>
-          <SearchBar />
-          <div className={styles.buttonsContainer}>
-            <Button
-              text='Список пациентов'
-              icon='patients'
-              margin='0 0 0 5px'
-              onClick={() => {
-                navigate('/patients')
-              }}
-            />
-            <Button
-              text='Новый пациент'
-              icon='newPatient'
-              margin='0 0 0 5px'
-              onClick={() => {
-                navigate('/register')
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    )
+  // User role -> Doctor, tester, admin
+  if (allowedUsers.includes(userRole)) {
+    return <DoctorDisplay />
   }
+  // Not auth
   return (
     <div className={styles.container}>
       <div className={styles.mainBlock}>
@@ -105,5 +47,3 @@ export const Main = () => {
     </div>
   )
 }
-
-export default Main

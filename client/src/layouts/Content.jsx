@@ -13,7 +13,7 @@ const SearchResults = lazy(() => import('../pages/searchResults/SearchRes'));
 const List = lazy(() => import('../pages/patientsList/List'));
 const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
 const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
-const Login = lazy(() => import('../pages/login/Login'));
+const Login = lazy(() => import('../pages/login/LoginPage'));
 const Administered = lazy(() => import('../pages/nurse/Administered'));
 const Discharged = lazy(() => import('../pages/nurse/Discharged'));
 const Hospitalized = lazy(() => import('../pages/nurse/Hospitalized'));

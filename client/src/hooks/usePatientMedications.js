@@ -4,11 +4,15 @@ import { message } from "antd";
 import api from "../services/api";
 import debug from "../utils/debug";
 
-export function usePatientMedications(patientId, messageApiRef) {
+export function usePatientMedications(patientId, messageApi) {
   const [medications, setMedications] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const messageApi = messageApiRef?.api;
-  const contextHolder = messageApiRef?.holder;
+  const apiInstance = messageApi?.api ?? {
+    success: () => {},
+    error: () => {},
+    open: () => {},
+  };
+  const contextHolder = messageApi?.holder;
 
   const fetchMedications = useCallback(async () => {
     if (!patientId) return;
@@ -26,7 +30,7 @@ export function usePatientMedications(patientId, messageApiRef) {
   }, [patientId]);
 
   useEffect(() => {
-    setIsEditing(false);  // Reset edit mode when patient changes
+    setIsEditing(false); // Reset edit mode when patient changes
   }, [patientId]);
 
   useEffect(() => {
@@ -36,6 +40,14 @@ export function usePatientMedications(patientId, messageApiRef) {
   const handleSaveMedications = useCallback(async () => {
     try {
       debug.log("Saving medication");
+
+      // Show loading message if there are changes
+      await apiInstance.open?.({
+        type: "loading",
+        content: "Идет загрузка...",
+        duration: 1, // 1 second or 0 to keep it until replaced
+      });
+
       const validMedications = medications.filter((item) => item.name?.trim());
 
       if (validMedications.length !== medications.length) {
@@ -76,10 +88,10 @@ export function usePatientMedications(patientId, messageApiRef) {
       );
 
       setIsEditing(false);
-      messageApi.success("Назначения успешно сохранены");
+      apiInstance.success("Назначения успешно сохранены");
     } catch (error) {
       debug.error("Ошибка при сохранении назначений", error);
-      messageApi.error("Ошибка при сохранении назначений: " + error.message);
+      apiInstance.error("Ошибка при сохранении назначений: " + error.message);
     }
   }, [medications, patientId]);
 
@@ -97,7 +109,7 @@ export function usePatientMedications(patientId, messageApiRef) {
     });
 
     if (hasEmptyNames) {
-      messageApi.error("Пожалуйста, заполните названия всех препаратов");
+      apiInstance.error("Пожалуйста, заполните все поля");
       debug.log("Empty spaces");
       return;
     }
