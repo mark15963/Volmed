@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import api from "../services/api";
+
 import { message } from "antd";
+
+import api from "../services/api";
+import debug from "../utils/debug";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export function usePatientFiles(patientId, messageApiRef, enabled = false) {
+export function usePatientFiles(patientId, messageApi, enabled = false) {
   const [files, setFiles] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -13,8 +16,8 @@ export function usePatientFiles(patientId, messageApiRef, enabled = false) {
   const [retryCount, setRetryCount] = useState(0);
   const timeoutRef = useRef();
 
-  const messageApi = messageApiRef?.api;
-  const contextHolder = messageApiRef?.holder;
+  const apiInstance = messageApi?.api ?? { success: () => {}, error: () => {} };
+  const contextHolder = messageApi?.holder;
 
   if (!patientId) {
     console.error("usePatientFiles: No patientId provided");
@@ -42,13 +45,13 @@ export function usePatientFiles(patientId, messageApiRef, enabled = false) {
           setRetryCount((prev) => prev + 1);
         }, delay);
       } else {
-        messageApi.error("Ошибка загрузки файлов");
+        apiInstance.error("Ошибка загрузки файлов");
         setRetryCount(0);
       }
     } finally {
       setIsLoading(false);
     }
-  }, [patientId, enabled, messageApi, retryCount]);
+  }, [patientId, enabled, apiInstance, retryCount]);
 
   useEffect(() => {
     if (retryCount > 0) {
@@ -93,15 +96,22 @@ export function usePatientFiles(patientId, messageApiRef, enabled = false) {
   const handleSave = useCallback(async () => {
     if (!patientId) return;
     try {
+      // Show loading message
+      await apiInstance.open?.({
+        type: "loading",
+        content: "Идет загрузка...",
+        duration: 1, // 1 second or 0 to keep it until replaced
+      });
+
       await refreshFileList();
       const response = await api.getPatientFiles(patientId);
       setFiles(response.data);
       setIsEditing(false);
-      messageApi.success("Файлы успешно сохранены");
+      apiInstance.success("Файлы успешно сохранены");
     } catch (error) {
-      messageApi.error("Ошибка сохранения файлов");
+      apiInstance.error("Ошибка сохранения файлов");
     }
-  }, [patientId, messageApi, refreshFileList]);
+  }, [patientId, apiInstance, refreshFileList]);
 
   const handleRemoveFiles = useCallback(
     async (file) => {
@@ -135,11 +145,11 @@ export function usePatientFiles(patientId, messageApiRef, enabled = false) {
           error: error.message,
           response: error.response?.data,
         });
-        messageApi.error(`Ошибка при удалении ${file.name}: ${error.message}`);
+        apiInstance.error(`Ошибка при удалении ${file.name}: ${error.message}`);
         return false;
       }
     },
-    [messageApi]
+    [apiInstance]
   );
 
   // Upload status
@@ -155,9 +165,9 @@ export function usePatientFiles(patientId, messageApiRef, enabled = false) {
       ? "error"
       : "success";
 
-    messageApi[type](messages[uploadFilesStatus.status]);
-    setUploadStatus(null);
-  }, [uploadFilesStatus, messageApi]);
+    apiInstance[type](messages[uploadFilesStatus.status]);
+    setUploadFilesStatus(null);
+  }, [uploadFilesStatus, apiInstance]);
 
   return {
     files,

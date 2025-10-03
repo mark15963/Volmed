@@ -1,8 +1,8 @@
+import { useState } from 'react';
+
 import moment from 'moment';
 import axios from 'axios';
 import { message } from 'antd';
-
-import api from '../../../services/api';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
@@ -10,7 +10,8 @@ import Button from '../../../components/Button';
 import tableStyles from '../../../components/styles/Table.module.css';
 import styles from './tab3.module.scss'
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
-import { useState } from 'react';
+
+import api from '../../../services/api';
 import debug from '../../../utils/debug';
 
 axios.defaults.withCredentials = true;
