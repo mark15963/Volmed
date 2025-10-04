@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import api from "../../../services/api";
+import debug from "../../../utils/debug";
 
 export function useSearchResultsActions({
   activeTab,
@@ -19,13 +20,21 @@ export function useSearchResultsActions({
   const handlePrint = () => window.print();
 
   const handleEdit = useCallback(() => {
+    debug.log("Edit clicked - activeTab:", activeTab);
+    debug.log("Current medsHook.isEditing:", medsHook.isEditing);
+    debug.log("Current filesHook.isEditing:", filesHook.isEditing);
+
     const isMedTab = activeTab === 2;
     const isFileTab = activeTab === 1;
 
     if (isMedTab) {
+      debug.log("Toggling medications edit mode");
+
       medsHook.setIsEditing((prev) => !prev);
       filesHook.setIsEditing(false);
     } else if (isFileTab) {
+      debug.log("Toggling files edit mode");
+
       filesHook.setIsEditing((prev) => !prev);
       medsHook.setIsEditing(false);
     } else if (data?.id) {
