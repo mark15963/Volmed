@@ -39,7 +39,6 @@ const SearchResultsView = ({
     return null;
   };
 
-  //#region ===== Tabs =====
   const tabContents = useMemo(() => [
     <Suspense fallback={renderLoader()}>
       <Tab1 data={data} />
@@ -53,7 +52,6 @@ const SearchResultsView = ({
       <Tab3 {...medsHook} />
     </Suspense>
   ], [data, filesHook, medsHook])
-  //#endregion
 
   return (
     <div className={styles.resultsContainer}>
@@ -77,7 +75,7 @@ const SearchResultsView = ({
 
       <ActionButtons
         activeTab={activeTab}
-        isEditing={medsHook.isEditing}
+        isEditingMeds={medsHook.isEditing}
         isEditingFiles={filesHook.isEditing}
         handleEdit={handleEdit}
         handleSaveMedications={medsHook.handleSave}
@@ -85,7 +83,6 @@ const SearchResultsView = ({
         handlePrint={handlePrint}
         handleDeletePatient={handleDeletePatient}
         navigate={navigate}
-        medications={medsHook.medications}
       />
     </div >
   );

@@ -18,7 +18,7 @@ axios.defaults.withCredentials = true;
 
 export const Tab3 = ({
   medications,
-  isEditingMedications,
+  isEditing,
   setMedications,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -84,12 +84,12 @@ export const Tab3 = ({
         <h2>Назначения</h2>
 
         {/* EMPTY LIST */}
-        {medications.length === 0 && !isEditingMedications && (
+        {medications.length === 0 && !isEditing && (
           <p style={{ marginTop: '10px', textAlign: 'center' }}>Нет назначений</p>
         )}
 
         {/* MED LIST */}
-        {(medications.length > 0 || isEditingMedications) && (
+        {(medications.length > 0 || isEditing) && (
           <div className={styles.listContainer}>
             <table className={styles.table}>
               <thead className={styles.head}>
@@ -98,7 +98,11 @@ export const Tab3 = ({
                   <th>Препарат / Манипуляция</th>
                   <th>Дозировка</th>
                   <th>Частота</th>
-                  {isEditingMedications && <th style={{ width: '15%' }}>Удалить</th>}
+                  {isEditing &&
+                    <th style={{ width: '15%' }}>
+                      Удалить
+                    </th>
+                  }
                 </tr>
               </thead>
               <tbody className={styles.body}>
@@ -116,7 +120,7 @@ export const Tab3 = ({
                     </td>
                     {/* Name */}
                     <td>
-                      {isEditingMedications ? (
+                      {isEditing ? (
                         <Input
                           value={item.name}
                           onChange={(e) => {
@@ -136,7 +140,7 @@ export const Tab3 = ({
                     </td>
                     {/* Dosage */}
                     <td>
-                      {isEditingMedications ? (
+                      {isEditing ? (
                         <Input
                           value={item.dosage}
                           onChange={(e) => {
@@ -160,7 +164,7 @@ export const Tab3 = ({
                     {/* Frequency*/}
                     <td>
                       <div style={{ display: 'inline-block' }}>
-                        {isEditingMedications ? (
+                        {isEditing ? (
                           <Input
                             value={item.frequency}
                             onChange={(e) => {
@@ -177,7 +181,7 @@ export const Tab3 = ({
                       </div>
                     </td>
                     {/* Delete Button*/}
-                    {isEditingMedications && (
+                    {isEditing && (
                       <td className={styles.deleteButton}>
                         <Button
                           text='Удалить'
@@ -194,7 +198,7 @@ export const Tab3 = ({
         )}
 
         {/* NEW MED */}
-        {isEditingMedications && (
+        {isEditing && (
           <Button
             text='Добавить'
             onClick={handleAdd}

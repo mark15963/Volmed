@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { message } from "antd";
 
 import api from "../services/api";
 import debug from "../utils/debug";
@@ -29,15 +28,63 @@ export function usePatientMedications(patientId, messageApi) {
     }
   }, [patientId]);
 
+  // Reset edit mode when patient changes
   useEffect(() => {
-    setIsEditing(false); // Reset edit mode when patient changes
-  }, [patientId]);
-
-  useEffect(() => {
+    setIsEditing(false);
     fetchMedications();
-  }, [fetchMedications]);
+  }, [patientId, fetchMedications]);
 
-  const handleSaveMedications = useCallback(async () => {
+  // Validation
+  const hasEmptyFields = () => {
+    for (let i = 0; i < medications.length; i++) {
+      const med = medications[i];
+      const isLastRow = i === medications.length - 1;
+
+      if (isLastRow) {
+        const hasData =
+          med.name.trim() || med.dosage.trim() || med.frequency.trim();
+
+        // If last row has any data, check ALL required fields
+        if (hasData) {
+          // Checking fields data
+          if (!med.name.trim() || !med.dosage.trim() || !med.frequency.trim())
+            return true;
+        }
+      } else {
+        if (!med.name.trim() || !med.dosage.trim() || !med.frequency.trim()) {
+          // For non-last rows, check ALL required fields
+          return true; // Non-last row has no name
+        }
+      }
+    }
+    return false;
+  };
+
+  const removeEmptyLastRow = () => {
+    const lastItem = medications[medications.length - 1];
+    const isEmpty =
+      !lastItem.name.trim() &&
+      !lastItem.dosage.trim() &&
+      !lastItem.frequency.trim();
+
+    if (isEmpty) {
+      setMedications((prev) => prev.slice(0, -1));
+    }
+  };
+
+  // UI/validation logic
+  const handleSave = () => {
+    // Validation
+    if (hasEmptyFields()) {
+      apiInstance.error("Пожалуйста, заполните все поля");
+      return;
+    }
+    removeEmptyLastRow();
+    handleSaveToAPI();
+  };
+
+  // Internal implementation to API
+  const handleSaveToAPI = useCallback(async () => {
     try {
       debug.log("Saving medication");
 
@@ -45,14 +92,10 @@ export function usePatientMedications(patientId, messageApi) {
       await apiInstance.open?.({
         type: "loading",
         content: "Идет загрузка...",
-        duration: 1, // 1 second or 0 to keep it until replaced
+        duration: 1,
       });
 
       const validMedications = medications.filter((item) => item.name?.trim());
-
-      if (validMedications.length !== medications.length) {
-        throw new Error("Название препарата не может быть пустым");
-      }
 
       if (validMedications.length === 0) {
         setIsEditing(false);
@@ -60,27 +103,25 @@ export function usePatientMedications(patientId, messageApi) {
       }
 
       await Promise.all(
-        validMedications.map(async (item) => {
+        validMedications.map(async (med) => {
           const payload = {
-            name: item.name.trim(),
-            dosage: item.dosage?.trim() || "",
-            frequency: item.frequency?.trim() || "",
-            createdAt: item.createdAt || new Date().toISOString(),
+            name: med.name.trim(),
+            dosage: med.dosage?.trim() || "",
+            frequency: med.frequency?.trim() || "",
+            createdAt: med.createdAt || new Date().toISOString(),
           };
 
-          if (item.id) {
-            await api.updateMedication(item.id, payload);
+          if (med.id) {
+            // update existing medication
+            await api.updateMedication(med.id, payload);
           } else {
+            // add new medication
             if (!patientId) throw new Error("Отсутствует ID пациента");
             const res = await api.createMedication(patientId, payload);
+
             setMedications((prev) =>
-              prev.map((a) =>
-                !a.id &&
-                a.name === item.name &&
-                a.dosage === item.dosage &&
-                a.frequency === item.frequency
-                  ? { ...a, id: res.data.id }
-                  : a
+              prev.map((item) =>
+                item === med ? { ...item, id: res.data.id } : item
               )
             );
           }
@@ -95,41 +136,9 @@ export function usePatientMedications(patientId, messageApi) {
     }
   }, [medications, patientId]);
 
-  const handleSave = () => {
-    const hasEmptyNames = medications.some((item, index) => {
-      // Only validate non-empty rows that aren't the last row
-      if (index < medications.length - 1) {
-        return !item.name.trim();
-      }
-      const lastItem = medications[medications.length - 1];
-      // For the last row, only validate if it's not completely empty
-      return item.name || item.dosage || item.frequency
-        ? !item.name.trim()
-        : false;
-    });
-
-    if (hasEmptyNames) {
-      apiInstance.error("Пожалуйста, заполните все поля");
-      debug.log("Empty spaces");
-      return;
-    }
-
-    // Remove empty row before saving
-    const lastItem = medications[medications.length - 1];
-    if (
-      !lastItem.name.trim() &&
-      !lastItem.dosage.trim() &&
-      !lastItem.frequency.trim()
-    ) {
-      setMedications((prev) => prev.slice(0, -1));
-    }
-    handleSaveMedications();
-  };
-
   return {
     medications,
     setMedications,
-    isEditingMedications: isEditing,
     isEditing,
     setIsEditing,
     handleSave,
