@@ -48,6 +48,10 @@ app.use(sessionConfig);
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(
+  "/assets",
+  express.static(path.join(__dirname, "..", "client", "public", "assets"))
+);
 
 //#region ===== Routes =====
 app.get("/", (req, res) => {

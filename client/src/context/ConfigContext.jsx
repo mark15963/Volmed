@@ -13,6 +13,7 @@ export const ConfigProvider = ({ children }) => {
         header: '#3c97e6',
         content: '#a5c6e2',
     })
+    const [logo, setLogoState] = useState(null)
 
     const fetchTitle = useCallback(async () => {
         try {
@@ -23,30 +24,12 @@ export const ConfigProvider = ({ children }) => {
             })
         } catch (error) {
             setTitleState({
-                top: 'DEFAULT',
-                bottom: 'DEFAULT',
+                top: '',
+                bottom: '',
             })
             console.error("Cannot fetch title")
         }
-    })
-    useEffect(() => {
-        fetchTitle()
     }, [])
-    const setTitle = useCallback(async ({ top, bottom }) => {
-        try {
-            const { data } = await api.updateTitle({
-                topTitle: top,
-                bottomTitle: bottom
-            })
-            setTitleState({
-                top: data.topTitle,
-                bottom: data.bottomTitle
-            })
-        } catch (err) {
-            console.error("Failed to update title:", err)
-        }
-    })
-
     const fetchColor = useCallback(async () => {
         try {
             const { data } = await api.getColor();
@@ -61,9 +44,38 @@ export const ConfigProvider = ({ children }) => {
             })
             console.error("Cannot fetch color")
         }
-    })
+    }, [])
+    const fetchLogo = useCallback(async () => {
+        try {
+            const { data } = await api.getLogo()
+            setLogoState(data.logoUrl)
+            console.log("Get logo from:", data.logoUrl);
+
+        } catch (err) {
+            console.error("Cannon fetch logo")
+            setLogoState(null)
+        }
+    }, [])
+
     useEffect(() => {
+        fetchTitle()
         fetchColor()
+        fetchLogo()
+    }, [fetchTitle, fetchColor, fetchLogo])
+
+    const setTitle = useCallback(async ({ top, bottom }) => {
+        try {
+            const { data } = await api.updateTitle({
+                topTitle: top,
+                bottomTitle: bottom
+            })
+            setTitleState({
+                top: data.topTitle,
+                bottom: data.bottomTitle
+            })
+        } catch (err) {
+            console.error("Failed to update title:", err)
+        }
     }, [])
     const setColor = useCallback(async ({ header, content }) => {
         try {
@@ -78,10 +90,20 @@ export const ConfigProvider = ({ children }) => {
         } catch (err) {
             console.error("Failed to update Color:", err)
         }
-    })
+    }, [])
+    const setLogo = useCallback(async (fileUrl) => {
+        setLogoState(fileUrl)
+    }, [])
 
     return (
-        <ConfigContext.Provider value={{ title, setTitle, color, setColor }}>
+        <ConfigContext.Provider value={{
+            title,
+            setTitle,
+            color,
+            setColor,
+            logo,
+            setLogo
+        }}>
             {children}
         </ConfigContext.Provider>
     );
