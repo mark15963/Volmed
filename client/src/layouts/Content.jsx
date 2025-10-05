@@ -2,6 +2,8 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router"
 import { lazy, Suspense, useContext, useEffect } from 'react'
 
+import OfflineFallback from "../services/notifications/offlineFallback";
+
 import { useAuth, useConfig } from '../context'
 
 import debug from "../utils/debug";
@@ -33,6 +35,8 @@ const Content = () => {
                 backgroundColor: color.content,
             }}
         >
+            <OfflineFallback /> {/*Shown when offline*/}
+
             <Suspense fallback={<Loader />}>
                 <Routes>
                     {/*----- PUBLIC ROUTE -----*/}

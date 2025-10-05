@@ -56,7 +56,7 @@ export const SearchBar = () => {
                 <div className={styles.searchtitle}>
                     Поиск пациентов:
                 </div>
-                <div className={styles.searchContainer}>
+                <search className={styles.searchContainer}>
                     <div className={styles.space}></div>
                     <Input
                         id='searchfield'
@@ -74,7 +74,7 @@ export const SearchBar = () => {
                         shape='circle'
                         icon='search'
                     />
-                </div>
+                </search>
             </form>
         </div>
     )
