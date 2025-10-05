@@ -158,11 +158,13 @@ const GeneralConfig = ({ messageApi }) => {
         </div>
       </div>
       <br />
-      <Button
-        text="Сохранить"
-        onClick={handleSave}
-        loading={isLoading}
-      />
+      <div className={styles.button}>
+        <Button
+          text="Сохранить"
+          onClick={handleSave}
+          loading={isLoading}
+        />
+      </div>
     </>
   )
 }
