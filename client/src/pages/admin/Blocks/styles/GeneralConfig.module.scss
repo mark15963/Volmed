@@ -4,15 +4,17 @@
 }
 
 .row {
-  display: flex;
-  justify-content: space-around;
   padding: 10px;
   height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   .logoBlockContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 30%;
+    width: 50%;
+    padding-right: 25px;
     .image {
       margin-top: 10px;
       max-height: 100px;
@@ -35,10 +37,10 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    justify-content: center;
-    margin-right: 10%;
     font-weight: 600;
     font-size: 1.3em;
+    width: 50%;
+    padding-left: 70px;
     .colorBlocks {
       display: flex;
       flex-direction: column;
@@ -61,4 +63,9 @@
       }
     }
   }
+}
+
+.button {
+  display: flex;
+  justify-content: center;
 }
