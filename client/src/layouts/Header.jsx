@@ -4,14 +4,10 @@ import { useCallback, useMemo } from "react";
 import { useAuth, useConfig } from "../context"
 
 import Button from "../components/Button"
-import Chat from "../components/admin/Chat";
-import SideMenu from "../components/admin/SideMenu";
 import { ContextMenu } from "../components/admin/ContextMenu";
 
-import logo from '../assets/images/logo.webp'
+import defaultLogo from '../assets/images/logo.webp'
 
-import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Dropdown } from "antd";
 import styles from './styles/header.module.scss'
 
 import debug from "../utils/debug";
@@ -19,7 +15,7 @@ import debug from "../utils/debug";
 export const Header = (props) => {
     const navigate = useNavigate();
     const { authState, logout } = useAuth();
-    const { title, color } = useConfig()
+    const { title, color, logo } = useConfig()
     const location = useLocation()
 
     const handleClick = useCallback(() => {
@@ -31,6 +27,8 @@ export const Header = (props) => {
 
     const userContainerClass = `${styles.userContainer} ${!authState.isAuthenticated ? styles.userContainerHidden : ''}`.trim()
 
+    const logoSource = logo || defaultLogo
+
     return (
         <header>
             <div
@@ -40,12 +38,15 @@ export const Header = (props) => {
                 className={styles.content}
             >
                 <img
-                    src={logo}
+                    src={logoSource}
                     alt="Logo"
                     className={styles.logo}
                     onClick={handleClick}
                     loading='eager'
                     draggable='false'
+                    onError={(e) => {
+                        e.target.src = defaultLogo
+                    }}
                 />
                 <div
                     className={styles.title}

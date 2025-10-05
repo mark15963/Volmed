@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useNavigate } from "react-router"
+
 import { message } from "antd"
 
 import { usePatients, useUsers } from "../../context"
@@ -7,12 +8,11 @@ import UsersList from "./Blocks/UsersList"
 import GeneralConfig from "./Blocks/GeneralConfig"
 
 import { SpinLoader } from "../../components/Loading/SpinLoader.tsx"
-
-import styles from './styles/dashboard.module.scss'
 import Block from "./components/Block"
 import Row from "./components/Row"
 import Button from "../../components/Button"
-import { useNavigate } from "react-router"
+
+import styles from './styles/dashboard.module.scss'
 
 export const Dashboard = () => {
   const [messageApi, contextHolder] = message.useMessage()

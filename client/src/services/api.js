@@ -85,6 +85,11 @@ export default {
   updateTitle: (data) => api.put(`/general/title`, data),
   getColor: () => api.get(`/general/color`),
   updateColor: (data) => api.put(`/general/color`, data),
+  getLogo: () => api.get(`/general/get-logo`),
+  uploadLogo: (formData) =>
+    api.post(`/general/upload-logo`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
   // Patients
   getPatients: () => api.get(`/patients`),
