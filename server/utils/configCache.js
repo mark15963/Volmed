@@ -1,0 +1,27 @@
+const fs = require("fs");
+const path = require("path");
+
+const CACHE_PATH = path.join(__dirname, "..", "cache", "config-cache.json");
+
+function saveConfigToCache(data) {
+  try {
+    fs.writeFileSync(CACHE_PATH, JSON.stringify(data, null, 2), "utf8");
+    console.log("✅ Config cache updated");
+  } catch (err) {
+    console.error("❌ Failed to write config cache:", err);
+  }
+}
+
+function loadConfigFromCache() {
+  try {
+    if (fs.existsSync(CACHE_PATH)) {
+      const content = fs.readFileSync(CACHE_PATH, "utf8");
+      return JSON.parse(content);
+    }
+  } catch (err) {
+    console.error("⚠️ Failed to read config cache:", err);
+  }
+  return null;
+}
+
+module.exports = { saveConfigToCache, loadConfigFromCache, CACHE_PATH };

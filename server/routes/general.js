@@ -3,88 +3,166 @@ const { db } = require("../config/db-connection");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const { fetchRow, updateRow } = require("../utils/dbUtils");
+const {
+  saveConfigToCache,
+  loadConfigFromCache,
+} = require("../utils/configCache");
 
 const router = Router();
+const CACHE_KEY = "general";
 
 // --------------------
 // Utility Functions
 // --------------------
-async function fetchRow(query, res, params = []) {
-  if (!res) throw new Error("Response object is required");
+// async function fetchRow(query, res, params = []) {
+//   if (!res) throw new Error("Response object is required");
 
-  try {
-    const { rows } = await db.query(query, params);
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Data not found" });
-    }
-    res.json(rows[0]);
-  } catch (err) {
-    console.error("DB fetch error:", err);
-    res
-      .status(500)
-      .json({ error: "Database fetch failed", details: err.message });
-  }
+//   try {
+//     const { rows } = await db.query(query, params);
+//     if (rows.length === 0) {
+//       return res.status(404).json({ error: "Data not found" });
+//     }
+//     res.json(rows[0]);
+//   } catch (err) {
+//     console.error("DB fetch error:", err);
+//     res
+//       .status(500)
+//       .json({ error: "Database fetch failed", details: err.message });
+//   }
+// }
+// async function updateRow(query, res, params = [], requiredFields = []) {
+//   if (!res) throw new Error("Response object is required");
+
+//   for (const field of requiredFields) {
+//     if (!params[field.index]) {
+//       return res.status(400).json({ error: `${field.name} is required` });
+//     }
+//   }
+
+//   try {
+//     const { rows } = await db.query(
+//       query,
+//       params.map((p) => p.value)
+//     );
+//     if (rows.length === 0) {
+//       return res.status(404).send("Record not found");
+//     }
+//     res.status(200).json(rows[0]);
+//   } catch (err) {
+//     console.error("DB update error:", err);
+//     res
+//       .status(500)
+//       .json({ error: "Database update failed", message: err.message });
+//   }
+// }
+
+function getCachedConfig() {
+  const cache = loadConfigFromCache();
+  return cache && cache[CACHE_KEY] ? cache[CACHE_KEY] : null;
 }
-async function updateRow(query, res, params = [], requiredFields = []) {
-  if (!res) throw new Error("Response object is required");
 
-  for (const field of requiredFields) {
-    if (!params[field.index]) {
-      return res.status(400).json({ error: `${field.name} is required` });
-    }
-  }
-
-  try {
-    const { rows } = await db.query(
-      query,
-      params.map((p) => p.value)
-    );
-    if (rows.length === 0) {
-      return res.status(404).send("Record not found");
-    }
-    res.status(200).json(rows[0]);
-  } catch (err) {
-    console.error("DB update error:", err);
-    res
-      .status(500)
-      .json({ error: "Database update failed", message: err.message });
-  }
+function saveCachedConfig(newData) {
+  const cache = loadConfigFromCache() || {};
+  cache[CACHE_KEY] = { ...(cache[CACHE_KEY] || {}), ...newData };
+  saveConfigToCache(cache);
 }
 
 // ---- General Config Routes ----
 // Title
 router.get("/title", async (req, res) => {
-  fetchRow('SELECT "topTitle", "bottomTitle" FROM general WHERE id = 1', res);
+  try {
+    const cached = getCachedConfig();
+    if (cached?.title) {
+      return res.json(cached.title);
+    }
+
+    const row = await fetchRow(
+      'SELECT "topTitle", "bottomTitle" FROM general WHERE id = 1'
+    );
+    if (!row) return res.status(404).json({ error: "Data not found" });
+
+    const data = {
+      topTitle: row.topTitle,
+      bottomTitle: row.bottomTitle,
+    };
+    saveCachedConfig({ title: data });
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error fetching title:", err);
+    res.status(500).json({ error: "Failed to fetch title" });
+  }
 });
 router.put("/title", async (req, res) => {
   const { topTitle, bottomTitle } = req.body;
 
-  updateRow(
-    `UPDATE general SET "topTitle" = $1, "bottomTitle" = $2 WHERE id = 1 RETURNING *`,
-    res,
-    [{ value: topTitle }, { value: bottomTitle }],
-    [{ index: 0, name: "Top title" }] // Required
-  );
+  try {
+    const row = await updateRow(
+      `UPDATE general SET "topTitle" = $1, "bottomTitle" = $2 WHERE id = 1 RETURNING *`,
+      [{ value: topTitle }, { value: bottomTitle }],
+      [{ index: 0, name: "Top title" }] // Required
+    );
+    if (!row) return res.status(404).json({ error: "Record not found" });
+
+    const data = { topTitle: row.topTitle, bottomTitle: row.bottomTitle };
+    saveCachedConfig({ title: data });
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error updating title:", err);
+    res.status(500).json({ error: "Failed to update title" });
+  }
 });
 // Color
 router.get("/color", async (req, res) => {
-  fetchRow(
-    'SELECT "headerColor", "contentColor" FROM general WHERE id = 1',
-    res
-  );
+  try {
+    const cached = getCachedConfig();
+    if (cached?.color) {
+      return res.json(cached.color);
+    }
+    const row = await fetchRow(
+      'SELECT "headerColor", "contentColor" FROM general WHERE id = 1'
+    );
+    if (!row) return res.status(404).json({ error: "Data not found" });
+
+    const data = {
+      headerColor: row.headerColor,
+      contentColor: row.contentColor,
+    };
+    saveCachedConfig({ color: data });
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error fetching color:", err);
+    res.status(500).json({ error: "Failed to fetch color" });
+  }
 });
 router.put("/color", async (req, res) => {
   const { headerColor, contentColor } = req.body;
 
-  updateRow(
-    'UPDATE general SET "headerColor" = $1, "contentColor" = $2 WHERE id = 1 RETURNING *',
-    res,
-    [{ value: headerColor }, { value: contentColor }],
-    [
-      { index: 0, name: "Header color" }, // Required
-      { index: 1, name: "Content color" }, // Required
-    ]
-  );
+  try {
+    const row = await updateRow(
+      'UPDATE general SET "headerColor" = $1, "contentColor" = $2 WHERE id = 1 RETURNING *',
+      [{ value: headerColor }, { value: contentColor }],
+      [
+        { index: 0, name: "Header color" }, // Required
+        { index: 1, name: "Content color" }, // Required
+      ]
+    );
+    if (!row) return res.status(404).json({ error: "Record not found" });
+
+    const data = {
+      headerColor: row.headerColor,
+      contentColor: row.contentColor,
+    };
+    saveCachedConfig({ color: data });
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error updating color:", err);
+    res.status(500).json({ error: "Failed to update color" });
+  }
 });
 
 // ---- Logo Upload ----
@@ -148,7 +226,7 @@ router.get("/get-logo", (req, res) => {
     const logo = files.find((f) => f.startsWith("logo."));
 
     res.json({
-      logoUrl: logo ? `/assets/images/${logoFile}?t=${Date.now()}` : null,
+      logoUrl: logo ? `/assets/images/${logo}?t=${Date.now()}` : null,
     });
   } catch (err) {
     console.error("Failed to get logo:", err);
