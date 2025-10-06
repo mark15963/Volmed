@@ -1,24 +1,28 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+
+import { useSafeMessage } from "../../../hooks/useSafeMessage"
 
 import { useConfig } from "../../../context"
 
 import Button from "../../../components/Button"
 import Input from "../../../components/Input"
 
+import debug from "../../../utils/debug"
+
 import api from "../../../services/api"
 
 import styles from "./styles/GeneralConfig.module.scss"
-import debug from "../../../utils/debug"
 
-const GeneralConfig = ({ messageApi }) => {
+const GeneralConfig = () => {
   const [isLoading, setIsLoading] = useState(false)
   const config = useConfig()
   const { title, setTitle, color, setColor, logo, setLogo } = config
-
+  const safeMessage = useSafeMessage();
   const [topInput, setTopInput] = useState(title.top)
   const [bottomInput, setBottomInput] = useState(title.bottom)
   const [headerColorInput, setHeaderColorInput] = useState(color.header)
   const [contentColorInput, setContentColorInput] = useState(color.content)
+
 
   useEffect(() => {
     debug.log('Config context:', config)
@@ -37,11 +41,7 @@ const GeneralConfig = ({ messageApi }) => {
   const handleSave = async () => {
     try {
       setIsLoading(true)
-      await messageApi.open({
-        type: 'loading',
-        content: 'Данные сохраняются...',
-        duration: 1
-      })
+      safeMessage("loading", "Данные сохраняются...", 1)
 
       // Update title and color
       await api.updateTitle({
@@ -58,10 +58,10 @@ const GeneralConfig = ({ messageApi }) => {
         content: contentColorInput
       })
 
-      messageApi.success('Данные сохранены!', 2.5)
+      safeMessage("success", "Данные сохранены!", 2.5)
     } catch (err) {
       console.error("Failed to update title:", err)
-      messageApi.error("Ошибка!", 2.5)
+      safeMessage("error", "Ошибка!", 2.5)
     } finally {
       setIsLoading(false)
     }
@@ -72,7 +72,7 @@ const GeneralConfig = ({ messageApi }) => {
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      messageApi.error('Пожалуйста, выберите файл изображения');
+      safeMessage("error", "Пожалуйста, выберите файл изображения");
       return
     }
 
@@ -82,12 +82,11 @@ const GeneralConfig = ({ messageApi }) => {
       formData.append('logo', file)
 
       const res = await api.uploadLogo(formData)
-
       setLogo(`${res.data.logoUrl}?t=${Date.now()}`)
-      messageApi.success('Логотип загружен!');
+      safeMessage("success", "Логотип загружен!");
     } catch (err) {
       console.error("Failed to upload logo:", err);
-      messageApi.error("Ошибка загрузки логотипа!");
+      safeMessage("error", "Ошибка загрузки логотипа!");
     } finally {
       setIsLoading(false);
     }

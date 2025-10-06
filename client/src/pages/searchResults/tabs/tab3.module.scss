@@ -113,6 +113,11 @@
               width: 15%;
               vertical-align: middle;
             }
+            .inputError {
+              border: 2px solid red !important;
+              outline: none;
+              box-shadow: 0 0 5px red;
+            }
           }
         }
       }
