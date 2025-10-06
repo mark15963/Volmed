@@ -1,12 +1,13 @@
 import { useState } from 'react';
-
 import moment from 'moment';
 import axios from 'axios';
-import { message } from 'antd';
+
+import { useSafeMessage } from '../../../hooks/useSafeMessage';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
+import { message } from 'antd';
 import tableStyles from '../../../components/styles/Table.module.css';
 import styles from './tab3.module.scss'
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
@@ -21,11 +22,12 @@ export const Tab3 = ({
   isEditing,
   setMedications,
 }) => {
+  const safeMessage = useSafeMessage()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleAdd = async () => {
     if (medications.length === 0 || medications[medications.length - 1].name.trim()) {
-      debug.log(`Adding new assignment`)
+      debug.log(`Opened new assignment`)
       setMedications(prev => [...prev, {
         name: '',
         dosage: '',
@@ -36,8 +38,21 @@ export const Tab3 = ({
       // Focus on the empty field in the last row
       const lastRowInput = document.querySelector(`.${styles.table} tr:last-child td:nth-child(2) input`);
       if (lastRowInput) {
+        // Add red border
+        lastRowInput.classList.add(styles.inputError)
+
+        // Focus on the empty input
         lastRowInput.focus();
-        message.warning('Пожалуйста, заполните текущее назначение перед добавлением нового');
+
+        // Show warning
+        safeMessage('warning', 'Пожалуйста, заполните текущее назначение перед добавлением нового', 2);
+
+        // Remove red border on user input
+        const removeError = () => {
+          lastRowInput.classList.remove(styles.inputError);
+          lastRowInput.removeEventListener('input', removeError);
+        };
+        lastRowInput.addEventListener('input', removeError);
       }
     }
   }
