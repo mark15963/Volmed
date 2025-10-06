@@ -52,6 +52,7 @@ app.use(
   "/assets",
   express.static(path.join(__dirname, "..", "client", "public", "assets"))
 );
+app.use("/cache", express.static(path.join(__dirname, "cache")));
 
 //#region ===== Routes =====
 app.get("/", (req, res) => {

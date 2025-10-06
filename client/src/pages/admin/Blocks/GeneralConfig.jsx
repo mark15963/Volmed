@@ -8,6 +8,7 @@ import Input from "../../../components/Input"
 import api from "../../../services/api"
 
 import styles from "./styles/GeneralConfig.module.scss"
+import debug from "../../../utils/debug"
 
 const GeneralConfig = ({ messageApi }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -19,7 +20,9 @@ const GeneralConfig = ({ messageApi }) => {
   const [headerColorInput, setHeaderColorInput] = useState(color.header)
   const [contentColorInput, setContentColorInput] = useState(color.content)
 
-  console.log('Config context:', config)
+  useEffect(() => {
+    debug.log('Config context:', config)
+  }, [])
 
   useEffect(() => {
     setTopInput(title.top)
