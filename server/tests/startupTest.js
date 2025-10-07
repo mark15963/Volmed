@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
 const debug = require("../utils/debug");
+const { getCachedConfig } = require("../utils/cacheHelpers");
 //#endregion
 
 //#region ===== HELPER =====
@@ -211,6 +212,14 @@ async function runStartupTests() {
     //#endregion
 
     debug.log("==================================");
+
+    try {
+      const cached = getCachedConfig();
+      if (cached) logTestResult("Cache fetched", true);
+    } catch (err) {
+      logTestResult("Cache not fetched", false);
+    }
+
     debug.log("All startup tests PASSED.");
   } catch (err) {
     debug.error("startup test failed:");

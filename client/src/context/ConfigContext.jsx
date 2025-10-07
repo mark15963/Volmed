@@ -17,7 +17,7 @@ export const ConfigProvider = ({ children }) => {
 
   const loadFromCache = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.VITE_API_URL}/cache/config-cache.json`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL.replace(/\/api$/, "")}/cache/config-cache.json`, {
         cache: "no-store",
       })
       if (!res.ok) return
