@@ -32,9 +32,9 @@ async function runStartupTests() {
   //#endregion
 
   try {
-    debug.log("==================================");
-    debug.log("Running startup tests...");
-    debug.log("==================================");
+    debug.log("===================================");
+    debug.log("|    Running startup tests...     |");
+    debug.log("===================================");
 
     //#region ===== HEALTH =====
     try {
@@ -114,7 +114,7 @@ async function runStartupTests() {
 
     //#region ===== FILES =====
     try {
-      debug.log("=== START FILES LIFE CYCLE TEST ===");
+      // debug.log("===== FILES LIFE CYCLE TEST =====");
 
       // Delete previous test files to avoid duplicates
       const filesResBefore = await axios.get(
@@ -132,7 +132,7 @@ async function runStartupTests() {
           headers: { Cookie: cookies.join("; ") },
           data: { filePath: file.path },
         });
-        debug.log(`Deleted leftover file: ${file.originalname}`);
+        // debug.log(`Deleted leftover file: ${file.originalname}`);
       }
 
       let uploadedFiles = [];
@@ -154,7 +154,7 @@ async function runStartupTests() {
             },
           }
         );
-        logTestResult("Uploaded file file", uploadRes?.status === 200);
+        // logTestResult("Uploaded file file", uploadRes?.status === 200);
       } catch (err) {
         logTestResult("Uploaded file file", false);
         debug.error(err.message);
@@ -170,7 +170,7 @@ async function runStartupTests() {
         );
         if (uploadedFiles.length === 0)
           throw new Error("Uploaded test file not found!");
-        logTestResult("Uploaded file verified", true);
+        // logTestResult("Uploaded file verified", true);
       } catch (err) {
         logTestResult("Uploaded file verified", false);
         debug.error(err.message);
@@ -182,10 +182,10 @@ async function runStartupTests() {
           headers: { Cookie: cookies.join("; ") },
           data: { filePath: file.path },
         });
-        logTestResult(
-          `File deleted: ${file.originalname}`,
-          deleteRes.data.success
-        );
+        // logTestResult(
+        //   `File deleted: ${file.originalname}`,
+        //   deleteRes.data.success
+        // );
       }
 
       // Verify deletion
@@ -199,7 +199,7 @@ async function runStartupTests() {
         );
         if (stillExists) throw new Error("File was not deleted!");
 
-        logTestResult("File deletion verified", true);
+        //logTestResult("File deletion verified", true);
       } catch (err) {
         logTestResult("File deletion verified", false);
       }
@@ -209,21 +209,23 @@ async function runStartupTests() {
       logTestResult("Files lifecycle", false);
       debug.error(err.message);
     }
+    // debug.log("===================================");
     //#endregion
 
-    debug.log("==================================");
-
+    //#region ===== CACHE =====
     try {
       const cached = getCachedConfig();
       if (cached) logTestResult("Cache fetched", true);
     } catch (err) {
       logTestResult("Cache not fetched", false);
     }
+    //#endregion
 
+    debug.log("==================================");
     debug.log("All startup tests PASSED.");
   } catch (err) {
     debug.error("startup test failed:");
-    if (error.response) {
+    if (err.response) {
       debug.error("Status:", err.response.status);
       debug.error("Data:", err.response.data);
     } else {
