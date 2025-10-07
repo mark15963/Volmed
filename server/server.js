@@ -18,6 +18,7 @@ const cookieParser = require("cookie-parser");
 const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
+const { initCacheOnStartup } = require("./utils/initCache");
 const routes = require("./routes/index");
 const debug = require("./utils/debug");
 //#endregion
@@ -100,6 +101,7 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await testDbConnection();
+    await initCacheOnStartup();
 
     const server = app.listen(PORT, () => {
       debug.log(`Server running on port ${PORT}`);
@@ -116,6 +118,7 @@ async function startServer() {
       }
     });
 
+    //#region ===== Socket.IO =====
     const io = require("socket.io")(server, {
       cors: {
         origin: (origin, callback) => {
@@ -170,6 +173,7 @@ async function startServer() {
         debug.log("Socket disconnected:", socket.id);
       });
     });
+    //#endregion
 
     process.on("SIGTERM", () => {
       debug.log("Shutting down gracefully...");
