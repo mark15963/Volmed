@@ -3,11 +3,10 @@ const { db } = require("../config/db-connection");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-const { fetchRow, updateRow } = require("../utils/dbUtils");
 const {
-  saveConfigToCache,
-  loadConfigFromCache,
-} = require("../utils/configCache");
+  getCachedConfig,
+  saveCachedConfig,
+} = require("../utils/cacheHelpers");
 
 const router = Router();
 
