@@ -47,7 +47,10 @@ const GeneralConfig = () => {
       await api.updateTitle({
         topTitle: topInput,
         bottomTitle: bottomInput,
-        headerColor: headerColorInput
+      })
+      await api.updateColor({
+        headerColor: headerColorInput,
+        contentColor: contentColorInput
       })
       await setTitle({
         top: topInput,
