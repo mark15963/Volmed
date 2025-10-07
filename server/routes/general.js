@@ -12,64 +12,43 @@ const {
 const router = Router();
 const CACHE_KEY = "general";
 
-// --------------------
-// Utility Functions
-// --------------------
-// async function fetchRow(query, res, params = []) {
-//   if (!res) throw new Error("Response object is required");
-
-//   try {
-//     const { rows } = await db.query(query, params);
-//     if (rows.length === 0) {
-//       return res.status(404).json({ error: "Data not found" });
-//     }
-//     res.json(rows[0]);
-//   } catch (err) {
-//     console.error("DB fetch error:", err);
-//     res
-//       .status(500)
-//       .json({ error: "Database fetch failed", details: err.message });
-//   }
-// }
-// async function updateRow(query, res, params = [], requiredFields = []) {
-//   if (!res) throw new Error("Response object is required");
-
-//   for (const field of requiredFields) {
-//     if (!params[field.index]) {
-//       return res.status(400).json({ error: `${field.name} is required` });
-//     }
-//   }
-
-//   try {
-//     const { rows } = await db.query(
-//       query,
-//       params.map((p) => p.value)
-//     );
-//     if (rows.length === 0) {
-//       return res.status(404).send("Record not found");
-//     }
-//     res.status(200).json(rows[0]);
-//   } catch (err) {
-//     console.error("DB update error:", err);
-//     res
-//       .status(500)
-//       .json({ error: "Database update failed", message: err.message });
-//   }
-// }
-
+//#region Get data from cache file 
+/**
+ * Retrieves a cached configuration object from storage.
+ * 
+ * 1. Calls `loadConfigFromCache()` to get the current cache object from file.
+ * 2. Checks if the cache exists and contains the key defined by `CACHE_KEY`.
+ * 3. Returns the cached configuration if found; otherwise returns `null`.
+ */
 function getCachedConfig() {
   const cache = loadConfigFromCache();
   return cache && cache[CACHE_KEY] ? cache[CACHE_KEY] : null;
 }
 
+/**
+ * Saves or updates a configuration object in the cache.
+ * 
+ * 1. Loads the current cache (if it exists) or initializes an empty object.
+ * 2. Merges the new data (`newData`) into the existing cached config under `CACHE_KEY`.
+ *    - This ensures partial updates don’t overwrite other existing keys.
+ * 3. Persists the updated cache by calling `saveConfigToCache(cache)`.
+ * 
+ * @param {Object} newData - The new or updated configuration data to store.
+ */
 function saveCachedConfig(newData) {
   const cache = loadConfigFromCache() || {};
   cache[CACHE_KEY] = { ...(cache[CACHE_KEY] || {}), ...newData };
   saveConfigToCache(cache);
 }
+// -----------------
+// getCachedConfig() → Fetches and returns the cached config for a given key, or null if missing.
 
-// ---- General Config Routes ----
-// Title
+// saveCachedConfig(newData) → Merges new config data into the cache and saves it persistently.
+// -----------------
+//#endregion
+
+//#region ===== Routes =====
+// ----- Title -----
 router.get("/title", async (req, res) => {
   try {
     const cached = getCachedConfig();
@@ -114,7 +93,7 @@ router.put("/title", async (req, res) => {
     res.status(500).json({ error: "Failed to update title" });
   }
 });
-// Color
+// ----- Color -----
 router.get("/color", async (req, res) => {
   try {
     const cached = getCachedConfig();
@@ -233,5 +212,6 @@ router.get("/get-logo", (req, res) => {
     res.status(500).json({ error: "Failed to get logo" });
   }
 });
+//#endregion
 
 module.exports = router;
