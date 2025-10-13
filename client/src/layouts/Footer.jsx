@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router';
 
-import Chat from '../components/admin/Chat';
-import AdminChat from '../components/admin/AdminChat';
+import Chat from '../components/admin/Chat/UserChat';
+import AdminChat from '../components/admin/Chat/AdminChat';
 import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext'
 
@@ -63,6 +63,7 @@ export const Footer = () => {
       <div className={styles.content}>
         © {yearText}
       </div>
+
       {authState.isAuthenticated &&
         <div ref={buttonRef}>
           <Button
@@ -75,6 +76,7 @@ export const Footer = () => {
           />
         </div>
       }
+
       {authState.isAuthenticated && chatVisible && createPortal(
         <div
           ref={chatRef}
@@ -88,15 +90,15 @@ export const Footer = () => {
           }}
         >
 
-          {authState.user.status === "Администратор" ? (
-            <AdminChat />
-          ) : (
-            <Chat />
-          )}
+          {authState.user.status === "Администратор"
+            ? <AdminChat />
+            : <Chat />
+          }
 
         </div>,
         document.body
       )}
+
     </footer>
   )
 }

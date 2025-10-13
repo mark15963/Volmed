@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../../context/AuthContext'
 
-import { ChatWindow } from './Chat/ChatWindow'
+import UserChatWindow from './components/UserChatWindow'
+import { useChat } from '../../../hooks/useChat'
 
-import debug from '../../utils/debug'
-import api from '../../services/api'
+import debug from '../../../utils/debug'
+import api from '../../../services/api'
 
 import styles from './styles/Chat.module.scss'
-import { useChat } from '../../hooks/useChat'
 
 const Chat = () => {
   const { authState } = useAuth()
@@ -271,7 +271,7 @@ const Chat = () => {
   }
 
   return (
-    <ChatWindow
+    <UserChatWindow
       messages={messages}
       onSendMessage={handleSend}
       message={message}

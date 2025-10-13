@@ -6,7 +6,7 @@ import {
     MenuUnfoldOutlined
 } from '@ant-design/icons'
 import { Button, Menu } from 'antd'
-import DesktopNotification from '../../services/DesktopNotification'
+import DesktopNotification from '../../services/notifications/DesktopNotification'
 import debug from '../../utils/debug'
 
 const items = [

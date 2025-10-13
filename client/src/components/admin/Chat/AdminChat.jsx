@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { io } from 'socket.io-client'
 
-import api from "../../services/api";
+import api from "../../../services/api";
 
-import Button from '../Button'
-import Input from '../Input'
-import { SpinLoader } from "../Loading/SpinLoader";
+import Button from '../../Button'
+import Input from "../../Input";
+import { SpinLoader } from "../../Loading/SpinLoader";
 
 import styles from './styles/Chat.module.scss'
 

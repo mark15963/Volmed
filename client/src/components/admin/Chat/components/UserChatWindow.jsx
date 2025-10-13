@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import Input from "../../Input";
-import Button from "../../Button";
+import Input from "../../../Input";
+import Button from "../../../Button";
 import styles from '../styles/Chat.module.scss'
 
-export const ChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
+export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -78,3 +78,5 @@ export const ChatWindow = ({ messages, onSendMessage, message, setMessage, curre
     </div>
   )
 }
+
+export default UserChatWindow

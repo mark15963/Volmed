@@ -2,14 +2,14 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 import { createPortal } from "react-dom"
 
-import Chat from "./Chat"
+import Chat from "./Chat/UserChat"
 import SideMenu from "./SideMenu"
 
 import debug from "../../utils/debug"
 
 import { Dropdown } from "antd"
 import styles from './styles/sideMenu.module.css'
-import AdminChat from "./AdminChat"
+import AdminChat from "./Chat/AdminChat"
 
 export const ContextMenu = ({ authState, children }) => {
     const [chatVisible, setChatVisible] = useState(false)
