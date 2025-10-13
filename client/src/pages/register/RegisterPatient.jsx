@@ -12,137 +12,156 @@ import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
 import { Buttons } from './Components/Buttons.jsx'
 import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 
+// Hooks & Context
+import { useAuth } from "../../context"
+import { useSafeMessage } from '../../hooks/useSafeMessage'
+
 // UI & Services
 import styles from './register.module.css'
-import api from '../../services/api';
+import api from '../../services/api'
 //#endregion
-import { useAuth } from "../../context"
+
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
-    const navigate = useNavigate()
-    const { authState } = useAuth();
-    const [form] = Form.useForm()
-    const [messageApi, contextHolder] = message.useMessage()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
+  const navigate = useNavigate()
+  const { authState } = useAuth();
+  const [form] = Form.useForm()
 
-    const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
-    usePageTitle("Регистрация пациента");
+  const [messageApi, contextHolder] = message.useMessage()
+  const safeMessage = useSafeMessage()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
-    useEffect(() => {
-        if (initialValues) {
-            form.setFieldsValue({
-                ...initialValues,
-                birthDate: initialValues.birthDate ? dayjs(initialValues.birthDate) : null
-            });
+  const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
+  usePageTitle("Регистрация пациента");
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        ...initialValues,
+        birthDate: initialValues.birthDate ? dayjs(initialValues.birthDate) : null
+      });
+    }
+  }, [initialValues, form]);
+
+  const onFinish = async (formValues) => {
+    try {
+      setIsLoading(true);
+      setError('');
+
+      const formattedValues = {
+        ...formValues,
+        patr: formValues.patr || "",
+        birthDate: formValues.birthDate?.format('YYYY-MM-DD'),
+        phone: formValues.phone
+          ? `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`
+          : '',
+        email: formValues.email || "",
+        address: formValues.address || "",
+        complaint: formValues.complaint || "",
+        anam: formValues.anam || "",
+        life: formValues.life || "",
+        status: formValues.status || "",
+        diag: formValues.diag || "",
+        mkb: formValues.mkb || "",
+        sop_zab: formValues.sop_zab || "",
+        rec: formValues.rec || "",
+        state: formValues.state || "",
+        doctor: doctor || "",
+      };
+
+      let response
+      if (isEditMode && patientId) {
+        response = await api.updatePatient(patientId, formattedValues)
+      } else {
+        response = await api.createPatient(formattedValues, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      }
+
+      safeMessage('loading', 'Данные сохраняются...', 1)
+      safeMessage("success", 'Данные сохранены!', 2.5)
+
+      form.resetFields(['mkb'])
+
+      setTimeout(() => {
+        navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
+          state: {
+            results: response.data,
+            searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
+          }
+        });
+      }, 1000)
+
+    } catch (err) {
+      setError(err.response?.data?.error || err.message);
+      console.error('Registration error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        fullError: err,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      {contextHolder}
+      <span className={styles.pageTitle}>
+        {isEditMode
+          ? 'Редактировать пациента'
+          : 'Регистрация пациента'
         }
-    }, [initialValues, form]);
+      </span>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={(info) => {
+          safeMessage("error", "Ошибка! Проверьте все поля.")
+          console.log('Validation Failed. Check fields', info);
+        }}
+        initialValues={{
+          sex: 'Мужской',
+          state: 'Стабильно'
+        }}
+      >
+        <div className={styles.info}>
+          <div className={styles.bg}>
+            <div className={styles.title}>
+              <p>Заполните ниформацию:</p>
+            </div>
 
-    const onFinish = async (formValues) => {
-        try {
-            setIsLoading(true);
-            setError('');
-
-            const formattedValues = {
-                ...formValues,
-                patr: formValues.patr || "",
-                birthDate: formValues.birthDate?.format('YYYY-MM-DD'),
-                phone: formValues.phone
-                    ? `+7${formValues.phone.replace(/\D/g, '').replace(/^7/, '')}`
-                    : '',
-                email: formValues.email || "",
-                address: formValues.address || "",
-                complaint: formValues.complaint || "",
-                anam: formValues.anam || "",
-                life: formValues.life || "",
-                status: formValues.status || "",
-                diag: formValues.diag || "",
-                mkb: formValues.mkb || "",
-                sop_zab: formValues.sop_zab || "",
-                rec: formValues.rec || "",
-                state: formValues.state || "",
-                doctor: doctor || "",
-            };
-
-            let response
-            if (isEditMode && patientId) {
-                response = await api.updatePatient(patientId, formattedValues)
-            } else {
-                response = await api.createPatient(formattedValues, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+            {error &&
+              <Alert
+                message={error}
+                type='error'
+                showIcon
+              />
             }
 
-            await messageApi.open({
-                type: 'loading',
-                content: 'Данные сохраняются...',
-                duration: 1
-            })
-            messageApi.success('Данные сохранены!', 2.5)
-
-            form.resetFields(['mkb'])
-
-            setTimeout(() => {
-                navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
-                    state: {
-                        results: response.data,
-                        searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
-                    }
-                });
-            }, 1000)
-
-        } catch (err) {
-            setError(err.response?.data?.error || err.message);
-            console.error('Registration error:', {
-                message: err.message,
-                response: err.response?.data,
-                status: err.response?.status,
-                fullError: err,
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className={styles.container}>
-            {contextHolder}
-            <span className={styles.pageTitle}>
-                {isEditMode ? 'Редактировать пациента' : 'Регистрация пациента'}
-            </span>
-            <Form
+            <div className={styles.form}>
+              <PersonalInfoFields
                 form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                onFinishFailed={(info) => {
-                    messageApi.error("Ошибка! Проверьте все поля.")
-                    console.log('Validation Failed. Check fields', info);
-                }}
-                initialValues={{
-                    sex: 'Мужской',
-                    state: 'Стабильно'
-                }}
-            >
-                <div className={styles.info}>
-                    <div className={styles.bg}>
-                        <div className={styles.title}>
-                            <p>Заполните ниформацию:</p>
-                        </div>
-
-                        {error && <Alert message={error} type='error' showIcon />}
-
-                        <div className={styles.form}>
-                            <PersonalInfoFields form={form} messageApi={messageApi} />
-                            <MedHistoryFields form={form} />
-                            <Buttons form={form} isEditMode={isEditMode} />
-                        </div>
-                    </div>
-                </div >
-            </Form>
+                messageApi={messageApi}
+              />
+              <MedHistoryFields
+                form={form}
+              />
+              <Buttons
+                form={form}
+                isEditMode={isEditMode}
+              />
+            </div>
+          </div>
         </div >
-    )
+      </Form>
+    </div >
+  )
 }
 
 export default RegisterPatient

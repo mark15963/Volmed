@@ -1,0 +1,70 @@
+import { SpinLoader } from "../../../components/Loading/SpinLoader"
+import { usePatients, useUsers } from "../../../context"
+
+import styles from '../styles/dashboard.module.scss'
+
+export const PatientsStats = () => {
+  const { patients, loading: patientsLoading } = usePatients()
+  const countPatients = patients.length
+  const stablePatients = patients.filter(patient => patient.state === 'Стабильно').length
+  const dischargedPatients = patients.filter(patient => patient.state === 'Выписан' || patient.state === 'Выписана').length
+
+  return (
+    <>
+      {patientsLoading ? (
+        <div className={styles.blockContentLoader}>
+          <SpinLoader
+            color='black'
+            size="30px"
+          />
+        </div>
+      ) : (
+        <>
+          <div className={styles.blockContent}>
+            Всего поступили: {countPatients}
+          </div>
+          <div className={styles.blockContent}>
+            Стабильные: {stablePatients}
+          </div>
+          <div className={styles.blockContent}>
+            Выписанно: {dischargedPatients}
+          </div>
+        </>
+      )
+      }
+    </>
+  )
+}
+
+export const UsersStats = () => {
+  const { users, loading: usersLoading } = useUsers()
+
+  const countUsers = users.length
+  const countDoctors = users.filter(user => user.status === 'Врач').length
+  const countNurses = users.filter(user => user.status === 'Сестра').length
+
+  return (
+    <>
+      {usersLoading ? (
+        <div className={styles.blockContentLoader}>
+          <SpinLoader
+            color="black"
+            size="30px"
+          />
+        </div>
+      ) : (
+        <>
+          <div className={styles.blockContent}>
+            Всего персонала: {countUsers}
+          </div>
+          <div className={styles.blockContent}>
+            Врачи: {countDoctors}
+          </div>
+          <div className={styles.blockContent}>
+            Сестры: {countNurses}
+          </div>
+        </>
+      )}
+    </>
+  )
+}

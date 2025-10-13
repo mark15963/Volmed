@@ -1,3 +1,5 @@
+// For hook useSafeMessage.js
+
 import { message } from "antd";
 import { createContext, useContext } from "react";
 

@@ -1,3 +1,5 @@
+// Used for UserChat component
+
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import api from "../services/api";
