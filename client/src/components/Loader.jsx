@@ -12,7 +12,7 @@ export const Loader = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSlowMessage(true)
-        }, 5000)
+        }, 10000)
         return () => clearTimeout(timer)
     }, [])
 
@@ -24,7 +24,7 @@ export const Loader = () => {
                 </p>
                 {showSlowMessage && (
                     <p className={styles.loadingTitle}>
-                        Сервер грузится...
+                        Идет загрузка сервера...
                     </p>
                 )}
                 <img
