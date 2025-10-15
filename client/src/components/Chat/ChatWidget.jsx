@@ -38,7 +38,7 @@ export const ChatWidget = memo(() => {
 
     if (chatVisible) {
       document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside, { passive: true });
     }
 
     return () => {
@@ -54,6 +54,7 @@ export const ChatWidget = memo(() => {
       <div ref={buttonRef}>
         <Button
           onClick={handleChatToggle}
+          onTouchEnd={handleChatToggle}
           text='Чат'
           className={styles.chatButton}
         />
