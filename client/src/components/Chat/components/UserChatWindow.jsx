@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
-import Input from "../../../Input";
-import Button from "../../../Button";
+
+import Input from "../../Input";
+import Button from "../../Button";
+
+import { formatChatTime } from "../../../utils/time";
 import styles from '../styles/Chat.module.scss'
 
 export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
@@ -12,14 +15,13 @@ export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, c
 
   return (
     <div className={styles.container}>
+      <div className={styles.generalInfo}>
+        <span className={styles.info}>
+          Служба поддержки
+        </span>
+      </div>
       <div className={styles.screen}>
         <div className={styles.messageRows}>
-          <div className={styles.generalInfo}>
-            <span className={styles.info}>
-              Служба поддержки
-            </span>
-          </div>
-
           {messages.map((msg, i) => (
             <div
               key={i}
@@ -45,7 +47,7 @@ export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, c
                 }}>
                   {msg.sender === currentUserId
                     ? displayName
-                    : msg.senderName || "Unknown"} - {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    : msg.senderName || "Unknown"} - {formatChatTime(msg.timestamp)}
                 </div>
               )}
               <div>{msg.text}</div>

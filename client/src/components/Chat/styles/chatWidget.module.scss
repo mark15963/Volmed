@@ -1,0 +1,13 @@
+.chatContainer {
+  display: flex;
+  position: fixed;
+  transform: none;
+  bottom: 70px;
+  right: 10px;
+  z-index: 1000;
+
+  .chatButton {
+    height: fit-content;
+    padding: 5px 10px;
+  }
+}

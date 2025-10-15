@@ -10,7 +10,7 @@ const { Dragger } = Upload;
 const { Panel } = Collapse;
 
 import Input from '../../../components/Input';
-import Graph from '../../../components/Graph';
+import Graph from './Components/Graph';
 
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from './tab2.module.scss'
