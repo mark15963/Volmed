@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router';
 import styles from './styles/footer.module.scss'
 import ChatWidget from '../components/Chat/ChatWidget';
 
-
 export const Footer = memo(() => {
   const year = new Date().getFullYear()
   const navigate = useNavigate();

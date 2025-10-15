@@ -45,9 +45,9 @@ export const useChat = (roomName, currentUserId) => {
         lastMessageRef.current.text === data.message &&
         Math.abs(
           new Date(lastMessageRef.current.timestamp) - new Date(data.timestamp)
-        ) < 1000;
+        ) < 5000;
 
-      setMessages((prev) => (isOwnRecentMessage ? prev : [...prev, newMsg]));
+      if (!isOwnRecentMessage) setMessages([...prev, newMsg]);
     };
 
     socket.on("receive_message", handleReceiveMessage);
@@ -69,6 +69,7 @@ export const useChat = (roomName, currentUserId) => {
       sender: currentUserId,
       senderName,
       timestamp: optimisticTimestamp,
+      originalTimestamp: Date.now(),
     };
     lastMessageRef.current = newMessage;
 
@@ -102,7 +103,7 @@ export const useChat = (roomName, currentUserId) => {
             !(
               msg.text === messageText &&
               msg.sender === currentUserId &&
-              Math.abs(new Date(msg.timestamp) - new Date(timestamp)) < 1000
+              msg.originalTimestamp === newMessage.originalTimestamp
             )
         )
       );
@@ -111,7 +112,7 @@ export const useChat = (roomName, currentUserId) => {
     // Clear the last message reference after a short delay
     setTimeout(() => {
       lastMessageRef.current = null;
-    }, 2000);
+    }, 5000);
   };
 
   return { messages, sendMessage };
