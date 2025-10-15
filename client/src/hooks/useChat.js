@@ -1,18 +1,44 @@
-// Used for UserChat component
+// Used for UserChat and AdminChat components
 
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import api from "../services/api";
-import { formatChatTime, getLocalISOTime } from "../utils/time";
+import { getLocalISOTime } from "../utils/time";
 
-export const useChat = (roomName, currentUserId) => {
+export const useChat = (initialRoomName, currentUserId) => {
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Admin states
+  const [showChat, setShowChat] = useState(false);
+  const [activeChats, setActiveChats] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState(initialRoomName);
+  const [message, setMessage] = useState("");
+
   const socketRef = useRef(null);
   const lastMessageRef = useRef(null);
 
-  const loadMessages = async () => {
+  // Load active chats
+  useEffect(() => {
+    const loadActiveChats = async () => {
+      try {
+        const response = await api.getActiveRooms();
+        setActiveChats(response.data.rooms || []);
+      } catch (error) {
+        console.error("Error loading active chats:", error);
+      }
+    };
+
+    loadActiveChats();
+    const interval = setInterval(loadActiveChats, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadMessages = async (room = currentRoom) => {
+    if (!room) return;
     try {
-      const res = await api.getChatHistory(roomName);
+      setIsLoading(true);
+      const res = await api.getChatHistory(room);
       setMessages(
         res.data.map((msg) => ({
           text: msg.message,
@@ -23,17 +49,20 @@ export const useChat = (roomName, currentUserId) => {
       );
     } catch (err) {
       console.error("Failed to load messages:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    if (!currentRoom) return;
     // Initialize socket
     const socket = io(import.meta.env.VITE_API_URL);
     socketRef.current = socket;
 
     socket.connect();
-    socket.emit("join_room", roomName);
-    loadMessages();
+    socket.emit("join_room", currentRoom);
+    loadMessages(currentRoom);
 
     // Socket listener for incoming messages
     const handleReceiveMessage = (data) => {
@@ -56,7 +85,7 @@ export const useChat = (roomName, currentUserId) => {
       socket.off("receive_message", handleReceiveMessage);
       socket.disconnect();
     };
-  }, [roomName, currentUserId]);
+  }, [currentRoom, currentUserId]);
 
   const sendMessage = async (messageText, senderName) => {
     if (!messageText.trim() || !socketRef.current) return;
@@ -87,7 +116,7 @@ export const useChat = (roomName, currentUserId) => {
     // Emit to server
     socketRef.current.emit("send_message", {
       message: messageText,
-      room: roomName,
+      room: currentRoom,
       sender: currentUserId,
       senderName,
       timestamp,
@@ -96,14 +125,14 @@ export const useChat = (roomName, currentUserId) => {
     // Save to backend
     try {
       await api.saveMessage({
-        room: roomName,
+        room: currentRoom,
         sender: currentUserId,
         senderName,
         message: messageText,
         timestamp,
       });
-    } catch (error) {
-      console.error("Failed to send message", error);
+    } catch (err) {
+      console.error("Failed to send message", err);
       // Remove optimistic message on error
       setMessages((prev) =>
         prev.filter(
@@ -123,5 +152,77 @@ export const useChat = (roomName, currentUserId) => {
     }, 5000);
   };
 
-  return { messages, sendMessage };
+  // ADMIN-ONLY: load active chats
+  useEffect(() => {
+    if (currentUserId !== "admin") return;
+
+    const loadActiveChats = async () => {
+      try {
+        const res = await api.getActiveRooms();
+        setActiveChats(res.data.rooms || []);
+      } catch (err) {
+        console.error("Error loading active chats:", err);
+      }
+    };
+    loadActiveChats();
+
+    const interval = setInterval(loadActiveChats, 3000);
+    return () => clearInterval(interval);
+  }, [currentUserId]);
+
+  // ADMIN-ONLY: join a chat
+  const joinRoom = async (room) => {
+    if (currentUserId !== "admin") return;
+    setIsLoading(true);
+    setShowChat(true);
+    setCurrentRoom(room);
+    await new Promise((res) => setTimeout(res, 300));
+    setIsLoading(false);
+  };
+
+  const handleSendMessage = async (senderName = "Админ") => {
+    if (!message.trim() || !currentRoom) return;
+    let cachedMsg = message;
+    setMessage("");
+    await sendMessage(cachedMsg, senderName);
+  };
+
+  // ADMIN-ONLY: delete chat
+  const deleteChat = async (room) => {
+    if (currentUserId !== "admin") return;
+    if (!window.confirm("Удалить чат?")) return;
+
+    try {
+      await api.deleteChatRoom(room);
+      // Update UI state
+      setActiveChats((prev) => prev.filter((r) => r !== room));
+
+      // If we're currently viewing the deleted chat, clear it
+      if (currentRoom == room) {
+        setCurrentRoom(null);
+        setShowChat(false);
+        setMessages([]);
+      }
+    } catch (err) {
+      console.error("Error deleting chat:", err);
+      alert("Ошибка при удалении");
+    }
+  };
+
+  return {
+    // Shared
+    messages,
+    sendMessage,
+    isLoading,
+
+    // Admin
+    activeChats,
+    currentRoom,
+    showChat,
+    message,
+    setMessage,
+    joinRoom,
+    handleSendMessage,
+    deleteChat,
+  };
 };

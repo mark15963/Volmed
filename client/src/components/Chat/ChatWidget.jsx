@@ -6,6 +6,7 @@ import Button from "../Button";
 import { useAuth } from "../../context";
 
 import styles from './styles/chatWidget.module.scss'
+import debug from "../../utils/debug";
 
 export const ChatWidget = memo(() => {
   const [chatVisible, setChatVisible] = useState(false)
@@ -40,6 +41,8 @@ export const ChatWidget = memo(() => {
       document.addEventListener('mousedown', handleClickOutside)
       document.addEventListener('touchstart', handleClickOutside, { passive: true });
     }
+
+    debug.log(`Chat visible: ${chatVisible}`)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
