@@ -61,6 +61,14 @@ export const useChat = (roomName, currentUserId) => {
   const sendMessage = async (messageText, senderName) => {
     if (!messageText.trim() || !socketRef.current) return;
 
+    if (
+      lastMessageRef.current?.text === messageText &&
+      Date.now() - lastMessageRef.current.originalTimestamp < 3000
+    ) {
+      console.log("🟡 Preventing duplicate send");
+      return;
+    }
+
     const timestamp = getLocalISOTime();
     const optimisticTimestamp = new Date().toString();
 
