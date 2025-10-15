@@ -17,14 +17,14 @@ const api = axios.create({
 // Global error handling
 api.interceptors.response.use(
   (response) => {
-    if (environment === "development") {
-      debug.log("Response:", {
-        data: response.data,
-        headers: response.headers,
-        method: response.config.method?.toUpperCase(),
-        url: response.config.url,
-      });
-    }
+    // if (environment === "development") {
+    //   debug.log("Response:", {
+    //     data: response.data,
+    //     headers: response.headers,
+    //     method: response.config.method?.toUpperCase(),
+    //     url: response.config.url,
+    //   });
+    // }
 
     return response;
   },
