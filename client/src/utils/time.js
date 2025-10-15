@@ -11,6 +11,7 @@ export const formatChatTime = (timestamp) => {
     const date = new Date(timestamp);
 
     if (isNaN(date.getTime())) {
+      console.warn("Invalid timestamp:", timestamp);
       return "--:--";
     }
 
@@ -19,7 +20,7 @@ export const formatChatTime = (timestamp) => {
       minute: "2-digit",
     });
   } catch (error) {
-    console.error("Error formatting time:", error);
+    console.error("Error formatting time:", error, "Timestamp:", timestamp);
     return "--:--";
   }
 };
