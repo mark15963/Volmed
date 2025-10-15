@@ -1,118 +1,141 @@
 import { useLocation, useNavigate } from "react-router";
-import { useCallback, useMemo } from "react";
+import { useCallback, memo, useEffect } from "react";
 
 import { useAuth, useConfig } from "../context"
 
 import Button from "../components/Button"
 import { ContextMenu } from "../components/admin/ContextMenu";
 
-import defaultLogo from '../assets/images/logo.webp'
+// import defaultLogo from '../assets/images/logo.webp'
 
 import styles from './styles/header.module.scss'
 
 import debug from "../utils/debug";
 
-export const Header = (props) => {
-    const navigate = useNavigate();
-    const { authState, logout } = useAuth();
-    const { title, color, logo } = useConfig()
-    const location = useLocation()
+export const Header = memo(() => {
+  const navigate = useNavigate();
+  const { authState, logout } = useAuth();
+  const { title, color, logo, isLoading } = useConfig()
+  const location = useLocation()
 
-    const handleClick = useCallback(() => {
-        debug.log("Clicked on logo")
-        navigate('/');
-    }, [navigate])
+  const handleClick = useCallback(() => {
+    debug.log("Clicked on logo")
+    navigate('/');
+  }, [navigate])
 
-    const isLoginPage = useMemo(() => location.pathname === '/login', [location.pathname]);
+  const handleLogout = useCallback(() => {
+    logout()
+    navigate('/')
+  }, [logout, navigate])
 
-    const userContainerClass = `${styles.userContainer} ${!authState.isAuthenticated ? styles.userContainerHidden : ''}`.trim()
+  const handleLogin = useCallback(() => {
+    navigate('/login')
+  }, [navigate])
 
-    const logoSource = logo || defaultLogo
+  const userContainerClass = `${styles.userContainer} ${!authState.isAuthenticated ? styles.userContainerHidden : ''}`.trim()
 
-    return (
-        <header>
-            <div
-                style={{
-                    backgroundColor: color.header,
-                }}
-                className={styles.content}
-            >
-                <img
-                    src={logoSource}
-                    alt="Logo"
-                    className={styles.logo}
-                    onClick={handleClick}
-                    loading='eager'
-                    draggable='false'
-                    onError={(e) => {
-                        e.target.src = defaultLogo
-                    }}
-                />
-                <div
-                    className={styles.title}
-                >
-                    <span className={styles.titleTop}>{title.top}</span>
-                    <span className={styles.titleBottom}>{title.bottom}</span>
-                </div>
-                <div
-                    className={styles.titlePrint}
-                >
-                    <span className={styles.titlePrintText}>{title.top}</span>
-                    <span className={styles.titlePrintText}>{title.bottom}</span>
-                    <br />
-                    <span className={styles.titleStreetPrint}>Волноваха, Железнодорожный переулок</span>
-                </div>
-                <div className={userContainerClass}>
-                    {authState.isAuthenticated && (
-                        <>
-                            {authState.isAdmin && (
-                                <ContextMenu authState={authState}>
-                                    <div className={styles.userNameContainer}>
-                                        <div className={styles.userNameText}>
-                                            {authState.user.status}
-                                        </div>
-                                        <div className={styles.userNameText}>
-                                            {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
-                                        </div>
-                                    </div>
-                                </ContextMenu>
-                            )}
+  const logoSource = logo || null
 
-                            {!authState.isAdmin && (
-                                <div className={styles.userNameContainer}>
-                                    <span className={styles.userNameText}>
-                                        {authState.user.status}
-                                    </span>
-                                    <span className={styles.userNameText}>
-                                        {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
-                                    </span>
-                                </div>
-                            )}
-                        </>
-                    )}
-                    <div className={styles.authButton}>
-                        {location.pathname !== '/login' && (
-                            authState.isAuthenticated ? (
-                                <Button
-                                    icon="logout"
-                                    onClick={() => {
-                                        logout();
-                                        navigate('/');
-                                    }}
-                                />
-                            ) : (
-                                <Button
-                                    text="Вход"
-                                    icon="login"
-                                    onClick={() => navigate('/login')}
-                                />
-                            )
-                        )}
+  useEffect(() => {
+    if (logoSource) {
+      const img = new Image()
+      img.src = logoSource
+    }
+  }, [logoSource])
+
+  return (
+    <header>
+      <div
+        style={{
+          backgroundColor: color.header,
+        }}
+        className={styles.content}
+      >
+        <img
+          src={logoSource}
+          alt="Logo"
+          className={styles.logo}
+          onClick={handleClick}
+          loading='eager'
+          draggable='false'
+          onError={(e) => {
+            console.log("Can not load logo")
+          }}
+        />
+        <div
+          className={styles.title}
+        >
+          <span className={styles.titleTop}>
+            {title.top}
+          </span>
+          <span className={styles.titleBottom}>
+            {title.bottom}
+          </span>
+        </div>
+        {/* ===== Title on print ===== */}
+        <div
+          className={styles.titlePrint}
+        >
+          <span className={styles.titlePrintText}>
+            {title.top}
+          </span>
+          <span className={styles.titlePrintText}>
+            {title.bottom}
+          </span>
+          <br />
+          <span className={styles.titleStreetPrint}>Волноваха, Железнодорожный переулок</span>
+        </div>
+        {/* ========================== */}
+
+        <div className={userContainerClass}>
+          {authState.isAuthenticated && (
+            <>
+              {/* Context menu access for admin */}
+              {authState.isAdmin && (
+                <ContextMenu authState={authState}>
+                  <div className={styles.userNameContainer}>
+                    <div className={styles.userNameText}>
+                      {authState.user.status}
                     </div>
+                    <div className={styles.userNameText}>
+                      {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
+                    </div>
+                  </div>
+                </ContextMenu>
+              )}
+              {/* Disable access to context menu for non-admin users */}
+              {!authState.isAdmin && (
+                <div className={styles.userNameContainer}>
+                  <span className={styles.userNameText}>
+                    {authState.user.status}
+                  </span>
+                  <span className={styles.userNameText}>
+                    {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
+                  </span>
                 </div>
-            </div>
-        </header>
-    )
-}
+              )}
+            </>
+          )}
+          <div className={styles.authButton}>
+            {location.pathname !== '/login' && (
+              authState.isAuthenticated ? (
+                <Button
+                  icon="logout"
+                  onClick={handleLogout}
+                />
+              ) : (
+                <Button
+                  text="Вход"
+                  icon="login"
+                  onClick={handleLogin}
+                />
+              )
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+})
 
 export default Header

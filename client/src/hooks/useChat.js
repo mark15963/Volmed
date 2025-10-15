@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import api from "../services/api";
+import { formatChatTime, getLocalISOTime } from "../utils/time";
 
 export const useChat = (roomName, currentUserId) => {
   const [messages, setMessages] = useState([]);
@@ -32,13 +33,12 @@ export const useChat = (roomName, currentUserId) => {
 
     socket.connect();
     socket.emit("join_room", roomName);
-
-    // Initial load
     loadMessages();
 
     // Socket listener for incoming messages
     const handleReceiveMessage = (data) => {
       const newMsg = { ...data };
+
       const isOwnRecentMessage =
         data.sender === currentUserId &&
         lastMessageRef.current &&
@@ -58,27 +58,21 @@ export const useChat = (roomName, currentUserId) => {
     };
   }, [roomName, currentUserId]);
 
-  // Auto-refresh messages every 3 seconds as a fallback
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadMessages();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [roomName]);
-
   const sendMessage = async (messageText, senderName) => {
     if (!messageText.trim() || !socketRef.current) return;
 
-    const timestamp = new Date().toISOString();
+    const timestamp = getLocalISOTime();
+    const optimisticTimestamp = new Date().toString();
+
     const newMessage = {
       text: messageText,
       sender: currentUserId,
       senderName,
-      timestamp,
+      timestamp: optimisticTimestamp,
     };
     lastMessageRef.current = newMessage;
 
-    // Add message locally
+    // Optimistically add the message to the UI
     setMessages((prev) => [...prev, newMessage]);
 
     // Emit to server
@@ -101,6 +95,17 @@ export const useChat = (roomName, currentUserId) => {
       });
     } catch (error) {
       console.error("Failed to send message", error);
+      // Remove optimistic message on error
+      setMessages((prev) =>
+        prev.filter(
+          (msg) =>
+            !(
+              msg.text === messageText &&
+              msg.sender === currentUserId &&
+              Math.abs(new Date(msg.timestamp) - new Date(timestamp)) < 1000
+            )
+        )
+      );
     }
 
     // Clear the last message reference after a short delay

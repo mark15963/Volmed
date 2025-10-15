@@ -1,4 +1,3 @@
-
 // CORRECT
 //
 // <Graph data={yourData} />

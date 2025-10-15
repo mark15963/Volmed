@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { io } from 'socket.io-client'
 
-import api from "../../../services/api";
 
-import Button from '../../Button'
-import Input from "../../Input";
-import { SpinLoader } from "../../Loading/SpinLoader";
+import Button from '../Button'
+import Input from "../Input";
+import { SpinLoader } from "../Loading/SpinLoader";
+
+import api from "../../services/api";
+import { formatChatTime, getLocalISOTime } from "../../utils/time";
 
 import styles from './styles/Chat.module.scss'
 
@@ -14,35 +16,11 @@ let socket
 const AdminChat = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [showChat, setShowChat] = useState(false)
-  const [activeChats, setActiveChats] = useState([]) // list of userIds
+  const [activeChats, setActiveChats] = useState([])
   const [currentRoom, setCurrentRoom] = useState(null)
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const backendUrl = import.meta.env.VITE_API_URL
-
-  const formatTime = (dateString) => {
-    try {
-      const date = new Date(dateString);
-
-      if (isNaN(date.getTime())) {
-        return new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
-
-      return date.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch (error) {
-      console.error("Error formatting time:", error);
-      return new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-  }
 
   if (!socket) socket = io(backendUrl)
 
@@ -51,8 +29,12 @@ const AdminChat = () => {
     if (!socket.connected) socket.connect()
 
     const loadActiveChats = async () => {
-      await api.getActiveRooms()
-        .then((response) => setActiveChats(response.data.rooms))
+      try {
+        const response = await api.getActiveRooms()
+        setActiveChats(response.data.rooms)
+      } catch (error) {
+        console.error("Error loading active chats:", error)
+      }
     }
     loadActiveChats()
 
@@ -63,7 +45,7 @@ const AdminChat = () => {
           text: data.message,
           sender: data.sender,
           senderName: data.senderName,
-          timestamp: formatTime(data.timestamp),
+          timestamp: data.timestamp,
         }])
       }
     }
@@ -88,7 +70,7 @@ const AdminChat = () => {
         text: msg.message,
         sender: msg.sender,
         senderName: msg.sender === 'admin' ? 'Админ' : msg.sender_name,
-        timestamp: formatTime(msg.timestamp),
+        timestamp: msg.timestamp,
       }))
 
       setMessages(formated)
@@ -115,7 +97,7 @@ const AdminChat = () => {
 
   const sendMessage = async () => {
     if (!message.trim() || !currentRoom) return
-    const timestamp = new Date().toISOString()
+    const timestamp = getLocalISOTime()
 
     const newMsg = {
       text: message,
@@ -190,12 +172,11 @@ const AdminChat = () => {
           Активные чаты
         </div>
         {activeChats.map((room) => (
-          <div style={{
+          <div key={room} style={{
             display: 'flex',
             alignItems: 'center'
           }}>
             <Button
-              key={room}
               text={room}
               style={{
                 maxWidth: '100px',
@@ -209,7 +190,8 @@ const AdminChat = () => {
                 fontSize: '0.8em',
                 fontWeight: '700',
                 color: 'red',
-                userSelect: 'none'
+                userSelect: 'none',
+                cursor: 'pointer'
               }}
               onClick={() => deleteChat(room)}
               title="Удалить чат"
@@ -251,7 +233,7 @@ const AdminChat = () => {
                     textAlign: m.senderName !== "Админ" ? 'left' : 'right',
                   }}
                 >
-                  <strong>{m.senderName}:</strong> {m.text} <span className={styles.time}>({formatTime(m.timestamp)})</span>
+                  <strong>{m.senderName}:</strong> {m.text} <span className={styles.time}>({formatChatTime(m.timestamp)})</span>
                 </div>
               ))
             )}

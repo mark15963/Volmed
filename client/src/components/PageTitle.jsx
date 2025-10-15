@@ -1,12 +1,17 @@
 import { useEffect } from 'react';
+import { useConfig } from '../context';
 
 export const usePageTitle = (title) => {
-    useEffect(() => {
-        const baseTitle = "ГБУ «Городская больница Волновахского района»";
-        document.title = title ? `${title} | ${baseTitle}` : baseTitle;
+  const config = useConfig()
+  const { title } = config
 
-        return () => {
-            document.title = baseTitle;
-        };
-    }, [title]);
+  useEffect(() => {
+    const baseTitle = `${title.top} ${title.bottom}`;
+
+    document.title = title ? `${title} | ${baseTitle}` : baseTitle;
+
+    return () => {
+      document.title = baseTitle;
+    };
+  }, [title]);
 };

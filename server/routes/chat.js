@@ -18,7 +18,7 @@ router.post("/save-message", async (req, res) => {
   try {
     await db.query(
       "INSERT INTO messages (room, sender, sender_name, message, timestamp) VALUES ($1, $2, $3, $4, $5)",
-      [room, sender, senderName, message, timestamp || new Date()]
+      [room, sender, senderName, message, timestamp]
     );
     res.status(201).json({ success: true });
   } catch (err) {
