@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useConfig } from '../context';
 
-export const usePageTitle = (title) => {
+export const usePageTitle = () => {
   const config = useConfig()
   const { title } = config
 
