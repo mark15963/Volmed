@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { message } from "antd";
 
-import api from "../services/api";
-import debug from "../utils/debug";
+import api from "../../services/api";
+import debug from "../../utils/debug";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 

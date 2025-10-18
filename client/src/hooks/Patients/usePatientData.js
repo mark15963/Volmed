@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api from "../../services/api";
 
 export function usePatientData(id, state) {
   const [data, setData] = useState(null);

@@ -12,13 +12,14 @@ require("dotenv").config({
 });
 
 const express = require("express");
-const axios = require("axios");
 const cookieParser = require("cookie-parser");
 
 const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
 const { initCacheOnStartup } = require("./utils/initCache");
+const initSocket = require("./sockets");
+
 const routes = require("./routes/index");
 const debug = require("./utils/debug");
 //#endregion
@@ -118,62 +119,8 @@ async function startServer() {
       }
     });
 
-    //#region ===== Socket.IO =====
-    const io = require("socket.io")(server, {
-      cors: {
-        origin: (origin, callback) => {
-          if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-          } else {
-            callback(new Error("Not allowed by CORS"));
-          }
-        },
-        methods: ["GET", "POST"],
-        credentials: true,
-      },
-    });
-    app.set("io", io);
-
-    io.on("connection", (socket) => {
-      debug.log("Client connected:", socket.id);
-
-      socket.on("join_room", (room, callback) => {
-        socket.join(room);
-        if (callback) callback({ success: true });
-        debug.log(`Client ${socket.id} joined room: ${room}`);
-      });
-
-      socket.on("leave_room", (data) => {
-        debug.log("User left room:", data);
-        socket.leave(data);
-      });
-
-      socket.on("send_message", async (data) => {
-        try {
-          const { room, sender, senderName, message, timestamp } = data;
-          debug.log("Message received for room:", room);
-
-          io.to(data.room).emit("receive_message", data);
-
-          await axios.post(`${process.env.BACKEND_URL}/api/chat/save-message`, {
-            room,
-            sender,
-            senderName,
-            message,
-            timestamp,
-          });
-
-          debug.log(`📨 Message broadcast to room: ${data.room}`);
-        } catch (error) {
-          console.error("Failed to save message:", error.message);
-        }
-      });
-
-      socket.on("disconnect", () => {
-        debug.log("Socket disconnected:", socket.id);
-      });
-    });
-    //#endregion
+    // Socket
+    initSocket(server, app, allowedOrigins, debug);
 
     process.on("SIGTERM", () => {
       debug.log("Shutting down gracefully...");
