@@ -5,11 +5,13 @@ import Button from "../../Button";
 
 import { formatChatTime } from "../../../utils/time";
 import styles from '../styles/Chat.module.scss'
+import debug from "../../../utils/debug";
 
 export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
+    debug.log("Messages updated:", messages);
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 

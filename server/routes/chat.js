@@ -20,9 +20,10 @@ router.post("/save-message", async (req, res) => {
       "INSERT INTO messages (room, sender, sender_name, message, timestamp) VALUES ($1, $2, $3, $4, $5)",
       [room, sender, senderName, message, timestamp]
     );
+    debug.log(`💾 Message saved to database: "${message}"`);
     res.status(201).json({ success: true });
   } catch (err) {
-    console.error("Error saving message:", err.message);
+    debug.error("❌ Database save error:", err.message);
     res.status(500).json({ error: "Database error" });
   }
 });

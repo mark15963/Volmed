@@ -6,6 +6,7 @@ import { SpinLoader } from "../../Loading/SpinLoader"
 import { formatChatTime } from "../../../utils/time"
 
 import styles from '../styles/Chat.module.scss'
+import debug from "../../../utils/debug"
 
 export const AdminChatWindow = ({
   activeChats,
@@ -22,6 +23,7 @@ export const AdminChatWindow = ({
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
+    debug.log("Messages updated:", messages);
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 

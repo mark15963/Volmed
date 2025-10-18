@@ -7,9 +7,9 @@ import React, { useState } from 'react'
 import { message } from "antd"
 
 // Custom Hooks
-import { usePatientFiles } from '../../hooks/usePatientFiles'
-import { usePatientData } from '../../hooks/usePatientData'
-import { usePatientMedications } from '../../hooks/usePatientMedications'
+import { usePatientFiles } from '../../hooks/Patients/usePatientFiles'
+import { usePatientData } from '../../hooks/Patients/usePatientData'
+import { usePatientMedications } from '../../hooks/Patients/usePatientMedications'
 
 // Components
 import SearchResultsView from './SearchResultsView.jsx'
