@@ -1,24 +1,30 @@
 import { memo } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+
+import ChatWidget from '../components/Chat/ChatWidget';
+
+import { services } from '../constants';
 
 import styles from './styles/footer.module.scss'
-import ChatWidget from '../components/Chat/ChatWidget';
+import InDev from '../components/InDev';
 
 export const Footer = memo(() => {
   const year = new Date().getFullYear()
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const yearText = year > 2025
-    ? `Volmed 2025 - ${year}`
-    : `Volmed ${year}`
+  const projectService = services.find(service => service.title === "Project name")
+  const projectContent = projectService?.content || ""
+
+  const adjustedYear = year > 2025
+    ? `2025 - ${year}`
+    : `${year}`
 
   return (
     <footer>
       <div className={styles.content}>
-        © {yearText}
+        © {projectContent} {adjustedYear}
       </div>
-      <ChatWidget />
+      <InDev>
+        <ChatWidget />
+      </InDev>
     </footer>
   )
 })

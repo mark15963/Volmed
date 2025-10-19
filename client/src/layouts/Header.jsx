@@ -1,12 +1,10 @@
 import { useLocation, useNavigate } from "react-router";
-import { useCallback, memo, useEffect } from "react";
+import { useCallback, memo, useEffect, useState } from "react";
 
 import { useAuth, useConfig } from "../context"
 
 import Button from "../components/Button"
 import { ContextMenu } from "../components/admin/ContextMenu";
-
-// import defaultLogo from '../assets/images/logo.webp'
 
 import styles from './styles/header.module.scss'
 
@@ -17,14 +15,17 @@ export const Header = memo(() => {
   const { authState, logout } = useAuth();
   const { title, color, logo, isLoading } = useConfig()
   const location = useLocation()
+  const [isButtonLoading, setIsButtonLoading] = useState(false)
 
   const handleClick = useCallback(() => {
     debug.log("Clicked on logo")
     navigate('/');
   }, [navigate])
 
-  const handleLogout = useCallback(() => {
-    logout()
+  const handleLogout = useCallback(async () => {
+    setIsButtonLoading(true)
+    await logout()
+    setIsButtonLoading(false)
     navigate('/')
   }, [logout, navigate])
 
@@ -64,16 +65,12 @@ export const Header = memo(() => {
         />
         <div
           className={styles.title}
+          onClick={handleClick}
         >
-          <span className={styles.titleTop}>
-            {title.top}
-          </span>
-          <span className={styles.titleBottom}>
-            {title.bottom}
-          </span>
+          {title.title}
         </div>
         {/* ===== Title on print ===== */}
-        <div
+        {/* <div
           className={styles.titlePrint}
         >
           <span className={styles.titlePrintText}>
@@ -84,9 +81,10 @@ export const Header = memo(() => {
           </span>
           <br />
           <span className={styles.titleStreetPrint}>Волноваха, Железнодорожный переулок</span>
-        </div>
+        </div> */}
         {/* ========================== */}
 
+        <div style={{ width: "100%" }} />
         <div className={userContainerClass}>
           {authState.isAuthenticated && (
             <>
@@ -122,6 +120,8 @@ export const Header = memo(() => {
                 <Button
                   icon="logout"
                   onClick={handleLogout}
+                  loading={isButtonLoading}
+                  loadingText='Выход...'
                 />
               ) : (
                 <Button

@@ -25,7 +25,8 @@ export default function Main() {
     "nurse"
   ]
 
-  if (authState.isLoading) return <Loader />
+  // if (authState.isLoading) return <Loader />
+  if (authState.isLoading) return
   if (!authState.isAuthenticated) return null
 
   // User role -> Nurse

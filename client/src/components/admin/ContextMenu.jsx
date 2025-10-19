@@ -15,6 +15,7 @@ export const ContextMenu = ({ authState, children }) => {
     const [chatVisible, setChatVisible] = useState(false)
     const [sideMenuVisible, setSideMenuVisible] = useState(false)
     const navigate = useNavigate()
+    const apiUrl = import.meta.env.VITE_API_URL
 
     // Hide components when anotherone is choosen
     useEffect(() => {
@@ -42,9 +43,7 @@ export const ContextMenu = ({ authState, children }) => {
                 setSideMenuVisible(!sideMenuVisible)
                 break;
             case '4':
-                const serverUrl = import.meta.env.VITE_ENV === 'production'
-                    ? 'https://volmed-backend.onrender.com/api/dashboard'
-                    : 'http://localhost:5000/api/dashboard';
+                const serverUrl = `${apiUrl}/dashboard`
                 window.location.href = serverUrl;
                 break;
             default:

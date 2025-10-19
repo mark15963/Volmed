@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "5.4.11",
+  "version": "5.5.1",
   "description": "",
   "main": "server.js",
   "scripts": {
@@ -16,13 +16,13 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
     "combined-stream": "^1.0.8",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-router": "^0.0.1",
@@ -35,7 +35,7 @@
     "util": "^0.12.5"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.10"
   }
 }

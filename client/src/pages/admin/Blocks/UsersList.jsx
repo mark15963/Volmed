@@ -1,6 +1,8 @@
 import { useState } from 'react'
+
 import { useAuth } from '../../../context/AuthContext'
 import { useUsers } from "../../../context/UsersDataContext"
+import { usePerItemLoading } from '../../../hooks/usePerItemLoading'
 
 import Button from '../../../components/Button'
 import { SpinLoader } from '../../../components/Loading/SpinLoader'
@@ -15,17 +17,27 @@ const UsersList = () => {
   const { authState } = useAuth()
   const { users, loading, fetchUsers } = useUsers()
 
-  const [updatingUserId, setUpdatingUserId] = useState(null)
+  const {
+    loadingStates: deleteLoading,
+    setItemLoading: setDeleteLoading
+  } = usePerItemLoading()
+
+  const {
+    loadingStates: statusLoading,
+    setItemLoading: setStatusLoading
+  } = usePerItemLoading()
+
+  const [addLoading, setAddLoading] = useState(false)
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      setUpdatingUserId(id)
+      setStatusLoading(id, true)
       await api.updateUser(id, { status: newStatus })
       await fetchUsers(false) // refresh without global loader
     } catch (err) {
       console.error('Failed to update status:', err.message)
     } finally {
-      setUpdatingUserId(null)
+      setStatusLoading(id, false)
     }
   }
 
@@ -43,22 +55,28 @@ const UsersList = () => {
     if (!status) return;
 
     try {
+      setAddLoading(true)
       await api.createUser({ username, password, firstName, lastName, patr, status });
       await fetchUsers(false);
     } catch (err) {
       alert("Не удалось добавить пользователя");
       console.error("Failed to add user:", err.message);
-
+    } finally {
+      setAddLoading(false)
     }
   }
 
   const handleUserDelete = async (id) => {
     if (!window.confirm("Удалить?")) return
     try {
+      setDeleteLoading(id, true)
+
       await api.deleteUser(id)
       await fetchUsers(false)
     } catch (err) {
       console.error('Failed to delete user:', err.message)
+    } finally {
+      setDeleteLoading(id, false)
     }
   }
 
@@ -91,8 +109,15 @@ const UsersList = () => {
               <td className={styles.actionCell}>
                 <select
                   value={user.status}
-                  disabled={user.status === "Администратор"}
-                  className={styles.select}
+                  disabled={
+                    user.status === "Администратор" ||
+                    statusLoading[user.id]
+                  }
+                  className={
+                    statusLoading[user.id]
+                      ? `${styles.select} ${styles.loading}`
+                      : `${styles.select}`
+                  }
                   onChange={(e) => {
                     if (user.status === "Администратор") return
                     handleStatusChange(user.id, e.target.value)
@@ -108,6 +133,8 @@ const UsersList = () => {
                   text='Удалить'
                   size='s'
                   disabled={user.status === "Администратор"}
+                  loading={deleteLoading[user.id]}
+                  loadingText='Удаление...'
                   onClick={() => handleUserDelete(user.id)}
                 />
               </td>
@@ -119,6 +146,7 @@ const UsersList = () => {
       <Button
         text="Добавить"
         size="s"
+        loading={addLoading}
         onClick={() => handleAddUser()}
       />
     </>

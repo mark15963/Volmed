@@ -5,7 +5,7 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   user-select: none;
 }
 
@@ -18,7 +18,7 @@
 .logo {
   cursor: pointer;
   height: calc(100% - 40px);
-  margin: 0 10px;
+  padding: 0 10px;
   opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
 }
@@ -28,6 +28,7 @@
 }
 
 .title {
+  flex: 1 0.6 600px;
   display: flex;
   flex-direction: column;
   color: aliceblue;
@@ -35,9 +36,8 @@
   font-weight: 600 !important;
   font-display: swap;
   text-align: left;
-  margin: 0 5px;
-  flex-grow: 1;
-  cursor: default;
+  padding: 0 5px;
+  cursor: pointer;
   opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
   font-family: system-ui, -apple-system, sans-serif;
@@ -52,6 +52,7 @@
 }
 
 .userContainer {
+  float: right;
   box-sizing: border-box;
   padding: 10px;
   border-radius: 8px;
@@ -68,6 +69,7 @@
 
     .userNameText {
       margin: 0 10px;
+      text-align: center;
       color: aliceblue;
       font-weight: 500;
       cursor: default;
@@ -129,9 +131,7 @@
       display: none;
     }
 
-    .title,
-    .titleTop,
-    .titleBottom {
+    .title {
       display: none;
     }
 

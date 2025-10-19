@@ -8,6 +8,7 @@ import { useAuth, useConfig } from '../context'
 
 import debug from "../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
+import { usePageTitle } from "../utils/usePageTitle";
 
 //----- PAGES -----
 const Main = lazy(() => import('../pages/main/Main'));
@@ -28,6 +29,8 @@ import Loader from "../components/Loader";
 
 const Content = () => {
     const { color } = useConfig()
+
+    usePageTitle()
 
     return (
         <main

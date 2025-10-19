@@ -9,6 +9,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   style?: CSSProperties;
+  loading?: boolean;
+  loadingPosition?: "left" | "right";
 }
 
 const Input: FC<InputProps> = ({
@@ -21,9 +23,15 @@ const Input: FC<InputProps> = ({
   className,
   style,
   value,
+  loading = false,
+  loadingPosition = "right",
+  disabled,
   ...props
 }) => {
-  const inputClass = ["input", className].filter(Boolean).join(" ");
+  const inputClass = ["input", loading ? "input--loading" : "", className]
+    .filter(Boolean)
+    .join(" ");
+
   const inputValue = type === "color" ? value || "#000000" : value;
 
   const mergedStyle: CSSProperties =
@@ -32,18 +40,33 @@ const Input: FC<InputProps> = ({
       : style || {};
 
   return (
-    <input
-      name={name}
-      type={type}
-      placeholder={placeholder}
-      onChange={onChange}
-      pattern={pattern}
-      inputMode={inputMode}
-      className={inputClass}
-      style={mergedStyle}
-      value={inputValue}
-      {...props}
-    />
+    <div className="input-wrapper">
+      {loading && loadingPosition === "left" && (
+        <div className="input-loader input-loader--left">
+          <div className="input-loader-spinner"></div>
+        </div>
+      )}
+
+      <input
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        onChange={onChange}
+        pattern={pattern}
+        inputMode={inputMode}
+        className={inputClass}
+        style={mergedStyle}
+        value={inputValue}
+        disabled={disabled || loading}
+        {...props}
+      />
+
+      {loading && loadingPosition === "right" && (
+        <div className="input-loader input-loader--right">
+          <div className="input-loader-spinner"></div>
+        </div>
+      )}
+    </div>
   );
 };
 

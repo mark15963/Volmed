@@ -5,11 +5,11 @@ const path = require("path");
 const multer = require("multer");
 const { getCachedConfig, saveCachedConfig } = require("../utils/cacheHelpers");
 const { updateRow, fetchRow } = require("../utils/dbUtils");
+const debug = require("../utils/debug");
 
 const router = Router();
 
-//#region ===== Routes =====
-// ----- Title -----
+//#region ===== Title routes =====
 router.get("/title", async (req, res) => {
   try {
     const cached = getCachedConfig();
@@ -17,14 +17,11 @@ router.get("/title", async (req, res) => {
       return res.json(cached.title);
     }
 
-    const row = await fetchRow(
-      'SELECT "topTitle", "bottomTitle" FROM general WHERE id = 1'
-    );
+    const row = await fetchRow('SELECT "title" FROM general WHERE id = 1');
     if (!row) return res.status(404).json({ error: "Data not found" });
 
     const data = {
-      topTitle: row.topTitle,
-      bottomTitle: row.bottomTitle,
+      title: row.title,
     };
     saveCachedConfig({ title: data });
 
@@ -35,17 +32,20 @@ router.get("/title", async (req, res) => {
   }
 });
 router.put("/title", async (req, res) => {
-  const { topTitle, bottomTitle } = req.body;
+  const { title } = req.body;
+
+  debug.log("📝 Received title update:", { title });
+  debug.log("📝 Request body:", req.body);
 
   try {
     const row = await updateRow(
-      `UPDATE general SET "topTitle" = $1, "bottomTitle" = $2 WHERE id = 1 RETURNING *`,
-      [{ value: topTitle }, { value: bottomTitle }],
-      [{ index: 0, name: "Top title" }] // Required
+      `UPDATE general SET "title" = $1 WHERE id = 1 RETURNING *`,
+      [{ value: title }],
+      [{ index: 0, name: "Title" }] // Required
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    const data = { topTitle: row.topTitle, bottomTitle: row.bottomTitle };
+    const data = { title: row.title };
     saveCachedConfig({ title: data });
 
     res.json(data);
@@ -54,7 +54,8 @@ router.put("/title", async (req, res) => {
     res.status(500).json({ error: "Failed to update title" });
   }
 });
-// ----- Color -----
+//#endregion
+//#region ===== Color routes =====
 router.get("/color", async (req, res) => {
   try {
     const cached = getCachedConfig();
@@ -81,6 +82,9 @@ router.get("/color", async (req, res) => {
 router.put("/color", async (req, res) => {
   const { headerColor, contentColor } = req.body;
 
+  debug.log("🎨 Received color update:", { headerColor, contentColor });
+  debug.log("🎨 Request body:", req.body);
+
   try {
     const row = await updateRow(
       'UPDATE general SET "headerColor" = $1, "contentColor" = $2 WHERE id = 1 RETURNING *',
@@ -104,8 +108,8 @@ router.put("/color", async (req, res) => {
     res.status(500).json({ error: "Failed to update color" });
   }
 });
-
-// ---- Logo Upload ----
+//#endregion
+//#region ===== Logo configs =====
 // Define permanent upload location (client's public assets folder)
 const publicDir = path.join(
   __dirname,
@@ -146,6 +150,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+//#region ===== Logo routes =====
 router.post("/upload-logo", upload.single("logo"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
@@ -173,6 +178,7 @@ router.get("/get-logo", (req, res) => {
     res.status(500).json({ error: "Failed to get logo" });
   }
 });
+//#endregion
 //#endregion
 
 module.exports = router;

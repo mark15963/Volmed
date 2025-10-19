@@ -21,6 +21,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
   loading?: boolean;
   type?: "button" | "submit" | "reset";
+  loadingText?: string;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -34,6 +35,7 @@ const Button: FC<ButtonProps> = ({
   disabled,
   loading,
   type = "button",
+  loadingText,
   ...props
 }) => {
   const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
@@ -75,25 +77,33 @@ const Button: FC<ButtonProps> = ({
   };
 
   const handleClick = () => {
-    debug.log(`Button clicked: ${text || "(empty)"}`);
+    debug.log(`Button clicked: ${text || "(no text)"}`);
     if (onClick) onClick();
   };
+
   return (
     <button
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
       className={buttonClass}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
       style={style || undefined}
       {...props}
     >
       {loading ? (
-        <img src={loader} style={{ height: "20px" }} alt="Loading..." />
+        <>
+          {/* <img src={loader} style={{ height: "20px" }} alt="Loading..." /> */}
+          {loadingText && (
+            <span className="button-text" style={{ marginLeft: "3px" }}>
+              {loadingText}
+            </span>
+          )}
+        </>
       ) : (
         renderIcon()
       )}
-      {text && (
+      {text && !loading && (
         <span
           className="button-text"
           style={icon !== "none" ? { marginLeft: "3px" } : undefined}
