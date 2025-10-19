@@ -1,12 +1,15 @@
-.content {
-  width: 100%;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  justify-content: space-between;
-}
+footer {
+  padding: 5px !important;
 
+  .content {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    justify-content: space-between;
+  }
+}
 @media screen and (orientation: portrait) {
   .content {
     font-size: 0.8em;

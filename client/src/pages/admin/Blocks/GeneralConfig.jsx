@@ -1,5 +1,3 @@
-import { useEffect, useState, useRef } from "react"
-
 import { useSafeMessage } from "../../../hooks/useSafeMessage"
 
 import { useConfig } from "../../../context"
@@ -9,117 +7,62 @@ import Input from "../../../components/Input"
 
 import debug from "../../../utils/debug"
 
-import api from "../../../services/api"
-
 import styles from "./styles/GeneralConfig.module.scss"
+import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
+import { useEffect } from "react"
 
 const GeneralConfig = () => {
-  const [isLoading, setIsLoading] = useState(false)
   const config = useConfig()
-  const { title, setTitle, color, setColor, logo, setLogo } = config
   const safeMessage = useSafeMessage();
-  const [topInput, setTopInput] = useState(title.top)
-  const [bottomInput, setBottomInput] = useState(title.bottom)
-  const [headerColorInput, setHeaderColorInput] = useState(color.header)
-  const [contentColorInput, setContentColorInput] = useState(color.content)
 
+  const {
+    isLoading,
+    titleInput,
+    headerColorInput,
+    contentColorInput,
+    setTitleInput,
+    setHeaderColorInput,
+    setContentColorInput,
+    handleSave,
+    handleLogoUpdate
+  } = useGeneralConfig(config, safeMessage)
 
   useEffect(() => {
     debug.log('Config context:', config)
   }, [])
 
-  useEffect(() => {
-    setTopInput(title.top)
-    setBottomInput(title.bottom)
-  }, [title])
-
-  useEffect(() => {
-    setHeaderColorInput(color.header)
-    setContentColorInput(color.content)
-  }, [color])
-
-  const handleSave = async () => {
-    try {
-      setIsLoading(true)
-      safeMessage("loading", "Данные сохраняются...", 1)
-
-      // Update title and color
-      await api.updateTitle({
-        topTitle: topInput,
-        bottomTitle: bottomInput,
-      })
-      await api.updateColor({
-        headerColor: headerColorInput,
-        contentColor: contentColorInput
-      })
-      await setTitle({
-        top: topInput,
-        bottom: bottomInput
-      })
-      await setColor({
-        header: headerColorInput,
-        content: contentColorInput
-      })
-
-      safeMessage("success", "Данные сохранены!", 2.5)
-    } catch (err) {
-      console.error("Failed to update title:", err)
-      safeMessage("error", "Ошибка!", 2.5)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleLogoUpdate = async (e) => {
-    const file = e.target.files[0]
+  const handleLogoUpdateWrapper = async (e) => {
+    const file = e.target.files[0];
     if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      safeMessage("error", "Пожалуйста, выберите файл изображения");
-      return
-    }
-
     try {
-      setIsLoading(true)
-      const formData = new FormData()
-      formData.append('logo', file)
-
-      const res = await api.uploadLogo(formData)
-      setLogo(`${res.data.logoUrl}?t=${Date.now()}`)
-      safeMessage("success", "Логотип загружен!");
-    } catch (err) {
-      console.error("Failed to upload logo:", err);
-      safeMessage("error", "Ошибка загрузки логотипа!");
-    } finally {
-      setIsLoading(false);
-    }
-  }
+      await handleLogoUpdate(file);
+      e.target.value = ''
+    } catch { }
+  };
 
   return (
     <>
       Название сайта:
       <Input
         type="text"
-        value={topInput}
-        onChange={e => setTopInput(e.target.value)}
-        placeholder='Верхняя строка'
+        value={titleInput}
+        onChange={e => setTitleInput(e.target.value)}
+        placeholder='Введите название сайта'
         className={styles.textInput}
-      />
-      <div style={{ height: '10px' }} />
-      <Input
-        type="text"
-        value={bottomInput}
-        onChange={e => setBottomInput(e.target.value)}
-        placeholder="Нижняя строка"
-        className={styles.textInput}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !isLoading) {
+            e.preventDefault()
+            handleSave()
+          }
+        }}
       />
       <div style={{ height: '20px' }} />
       <div className={styles.row}>
         <div className={styles.logoBlockContainer}>
           Загрузить логотип:
-          {logo && (
+          {config.logo && (
             <img
-              src={logo}
+              src={config.logo}
               alt="Текущий логотип"
               className={styles.image}
             />
@@ -127,7 +70,7 @@ const GeneralConfig = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={handleLogoUpdate}
+            onChange={handleLogoUpdateWrapper}
             className={styles.imageButton}
           />
         </div>
@@ -173,4 +116,5 @@ const GeneralConfig = () => {
     </>
   )
 }
+
 export default GeneralConfig

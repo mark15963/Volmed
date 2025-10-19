@@ -2,14 +2,12 @@ import { useNavigate } from 'react-router'
 
 import { AllPatients, PatientCount } from '../../components/fetchData'
 import { SearchBar } from '../../components/SearchBar'
-import { usePageTitle } from '../../components/PageTitle'
 import Button from '../../components/Button'
 
 import styles from './list.module.css'
 
 export const List = () => {
     const navigate = useNavigate()
-    usePageTitle("Список пациентов");
 
     return (
         <div className={styles.container} style={{ maxWidth: '800px' }}>

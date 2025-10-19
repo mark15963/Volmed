@@ -67,10 +67,11 @@ const LoginForm = ({
           />
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              text={isLoading ? 'Загрузка...' : 'Вход'}
+              text='Вход'
               type='submit'
               icon='login'
               loading={isLoading}
+              loadingText='Вход...'
               disabled={isLoading}
             />
           </div>

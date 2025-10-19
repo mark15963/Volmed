@@ -36,6 +36,9 @@ table {
             &:disabled {
               cursor: not-allowed;
             }
+            &.loading {
+              cursor: progress !important;
+            }
           }
           button {
             flex-shrink: 0;

@@ -22,14 +22,17 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 import api from "../services/api";
+import {
+  CONFIG_DEFAULTS,
+  CACHE_CONFIG,
+  CONFIG_KEYS
+} from "../constants"
+import debug from "../utils/debug";
 
 const ConfigContext = createContext(null);
 
 export const ConfigProvider = ({ children }) => {
-  const [title, setTitleState] = useState({
-    top: "",
-    bottom: ""
-  });
+  const [title, setTitleState] = useState("");
   const [color, setColorState] = useState({
     header: '#3c97e6',
     content: '#a5c6e2',
@@ -37,39 +40,34 @@ export const ConfigProvider = ({ children }) => {
   const [logo, setLogoState] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  const getNestedValue = useCallback((obj, path) => {
+    return path.split('.').reduce((current, key) => current?.[key], obj)
+  }, [])
+
   const loadFromCache = useCallback(async () => {
     try {
-      const cacheUrl = `${import.meta.env.VITE_API_URL.replace(/\/api$/, "")}/cache/config-cache.json?t=${Date.now()}`
-      const res = await fetch(cacheUrl, {
-        cache: "no-cache",
-      })
+      const cacheUrl = `${CACHE_CONFIG.CACHE_URL}${CACHE_CONFIG.CACHE_BUSTER}`
+      const res = await fetch(cacheUrl, CACHE_CONFIG.CACHE_OPTIONS)
 
       if (!res.ok) throw new Error("Cache not found")
+
       const cache = await res.json()
 
-      if (cache.general?.title) {
-        setTitleState({
-          top: cache.general.title.topTitle || "",
-          bottom: cache.general.title.bottomTitle || "",
-        })
-      }
-      if (cache.general?.color) {
-        setColorState({
-          header: cache.general.color.headerColor || "#3c97e6",
-          content: cache.general.color.contentColor || "#a5c6e2",
-        })
-      }
-      if (cache.general?.logoUrl) {
-        setLogoState(cache.general.logoUrl)
-      }
+      setTitleState(getNestedValue(cache, CONFIG_KEYS.TITLE) || CONFIG_DEFAULTS.GENERAL.TITLE,)
+      setColorState({
+        header: getNestedValue(cache, CONFIG_KEYS.COLOR.HEADER) || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+        content: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTENT) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+      })
+      const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
+      if (cachedLogo) setLogoState(cachedLogo)
 
-      console.log("✅ Loaded config from cache");
+      debug.log("✅ Loaded config from cache");
       return true;
     } catch (err) {
-      console.warn("⚠️ No local config cache found or failed to load:", err);
+      debug.warn("⚠️ No local config cache found or failed to load:", err);
       return false;
     }
-  }, [])
+  }, [getNestedValue])
 
   const fetchFromApi = useCallback(async () => {
     try {
@@ -81,19 +79,18 @@ export const ConfigProvider = ({ children }) => {
 
       if (titleRes.status === 'fulfilled') {
         setTitleState({
-          top: titleRes.value.data.topTitle,
-          bottom: titleRes.value.data.bottomTitle,
+          title: titleRes.value.data.title || CONFIG_DEFAULTS.GENERAL.TITLE,
         })
       }
 
       if (colorRes.status === 'fulfilled') {
         setColorState({
-          header: colorRes.value.data.headerColor,
-          content: colorRes.value.data.contentColor
+          header: colorRes.value.data.headerColor || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+          content: colorRes.value.data.contentColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT
         })
       }
 
-      if (logoRes.status === 'fulfilled') {
+      if (logoRes.status === 'fulfilled' && logoRes.value.data.logoUrl) {
         setLogoState(logoRes.value.data.logoUrl)
       }
 
@@ -108,8 +105,7 @@ export const ConfigProvider = ({ children }) => {
   useEffect(() => {
     const initializeConfig = async () => {
       setIsLoading(true)
-      const cacheLoaded = await loadFromCache()
-
+      await loadFromCache()
       await fetchFromApi()
       setIsLoading(false)
     }
@@ -118,16 +114,10 @@ export const ConfigProvider = ({ children }) => {
   }, [loadFromCache, fetchFromApi])
 
   // --- Update setters ---
-  const setTitle = useCallback(async ({ top, bottom }) => {
+  const setTitle = useCallback(async (titleData) => {
     try {
-      const { data } = await api.updateTitle({
-        topTitle: top,
-        bottomTitle: bottom
-      })
-      setTitleState({
-        top: data.topTitle,
-        bottom: data.bottomTitle
-      })
+      const { data } = await api.updateTitle({ title: titleData.title })
+      setTitleState(data)
     } catch (err) {
       console.error("Failed to update title:", err)
     }
@@ -150,19 +140,28 @@ export const ConfigProvider = ({ children }) => {
     setLogoState(fileUrl)
   }, [])
 
+  const value = {
+    title,
+    setTitle,
+    color,
+    setColor,
+    logo,
+    setLogo,
+    isLoading,
+    defaults: CONFIG_DEFAULTS
+  }
+
   return (
-    <ConfigContext.Provider value={{
-      title,
-      setTitle,
-      color,
-      setColor,
-      logo,
-      setLogo,
-      isLoading
-    }}>
+    <ConfigContext.Provider value={value}>
       {children}
     </ConfigContext.Provider>
   );
 };
 
-export const useConfig = () => useContext(ConfigContext);
+export const useConfig = () => {
+  const context = useContext(ConfigContext)
+  if (!context) {
+    throw new Error("useConfig must be used within a ConfigProvider")
+  }
+  return context
+}
