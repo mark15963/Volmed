@@ -3,7 +3,7 @@ import { useEffect, useState, lazy } from 'react';
 
 const RegisterPatient = lazy(() => import('../register/RegisterPatient'))
 
-import { usePageTitle } from '../../components/PageTitle';
+import { usePageTitle } from '../../utils/usePageTitle';
 
 import api from '../../services/api';
 import Loader from '../../components/Loader';

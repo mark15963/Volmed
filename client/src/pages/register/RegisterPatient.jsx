@@ -7,7 +7,7 @@ const { Form, Alert, message } = await import('antd/es')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 // Components
-import { usePageTitle } from '../../components/PageTitle'
+import { usePageTitle } from '../../utils/usePageTitle.js'
 import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
 import { Buttons } from './Components/Buttons.jsx'
 import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
@@ -33,7 +33,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
   const [error, setError] = useState('')
 
   const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
-  usePageTitle("Регистрация пациента");
 
   useEffect(() => {
     if (initialValues) {
