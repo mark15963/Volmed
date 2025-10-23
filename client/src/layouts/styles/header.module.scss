@@ -99,10 +99,13 @@
     }
 
     .userContainer {
-      padding: 5px 0 5px 10px !important;
-      border-radius: 20px;
-      background-color: #3584c9;
       height: fit-content;
+      width: fit-content;
+      min-width: fit-content;
+      padding: 5px 0 5px 10px !important;
+      border-radius: 13px;
+      background-color: #3584c9;
+      justify-content: start;
       box-shadow: 0 0 10px 5px #3584c9 !important;
 
       .userNameContainer {
@@ -110,7 +113,7 @@
           margin: 0;
           color: aliceblue;
           font-weight: 500;
-          font-size: 0.6em;
+          font-size: 0.7em;
           text-align: center;
         }
       }
