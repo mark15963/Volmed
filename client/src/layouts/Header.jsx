@@ -85,6 +85,7 @@ export const Header = memo(() => {
         {/* ========================== */}
 
         <div style={{ width: "100%" }} />
+
         <div className={userContainerClass}>
           {authState.isAuthenticated && (
             <>

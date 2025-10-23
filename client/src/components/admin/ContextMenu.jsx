@@ -17,7 +17,7 @@ export const ContextMenu = ({ authState, children }) => {
     const navigate = useNavigate()
     const apiUrl = import.meta.env.VITE_API_URL
 
-    // Hide components when anotherone is choosen
+    // Hide components when another one is choosen
     useEffect(() => {
         if (sideMenuVisible) {
             setChatVisible(false)
