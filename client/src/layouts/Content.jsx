@@ -1,27 +1,27 @@
 //#region ===== IMPORTS =====
-import { Routes, Route, Navigate, useNavigate } from "react-router"
-import { lazy, Suspense, useContext, useEffect } from 'react'
+import { Routes, Route } from "react-router"
+import { Suspense } from 'react'
 
 import OfflineFallback from "../services/notifications/offlineFallback";
 
-import { useAuth, useConfig } from '../context'
+import { useConfig } from '../context'
 
 import debug from "../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
 import { usePageTitle } from "../utils/usePageTitle";
 
 //----- PAGES -----
-const Main = lazy(() => import('../pages/main/Main'));
-const SearchResults = lazy(() => import('../pages/searchResults/SearchRes'));
-const List = lazy(() => import('../pages/patientsList/List'));
-const RegisterPatient = lazy(() => import('../pages/register/RegisterPatient'));
-const EditPatient = lazy(() => import('../pages/edit/EditPatient'));
-const Login = lazy(() => import('../pages/login/LoginPage'));
-const Administered = lazy(() => import('../pages/nurse/Administered'));
-const Discharged = lazy(() => import('../pages/nurse/Discharged'));
-const Hospitalized = lazy(() => import('../pages/nurse/Hospitalized'));
-const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
-const NotFound = lazy(() => import('../pages/NotFound'));
+import Main from "../pages/main/Main";
+import SearchResults from "../pages/searchResults/SearchRes";
+import List from "../pages/patientsList/List";
+import RegisterPatient from "../pages/register/RegisterPatient";
+import EditPatient from "../pages/edit/EditPatient";
+import Login from "../pages/login/LoginPage";
+import Administered from "../pages/nurse/Administered";
+import Discharged from "../pages/nurse/Discharged";
+import Hospitalized from "../pages/nurse/Hospitalized";
+import Dashboard from "../pages/admin/Dashboard";
+import NotFound from "../pages/NotFound";
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
@@ -30,22 +30,24 @@ import Loader from "../components/Loader";
 const Content = () => {
     const { color } = useConfig()
 
+    // Page title chages depending on the page
     usePageTitle()
 
     return (
         <main
             style={{
+                // Color palette from cache
                 backgroundColor: color.content,
             }}
         >
             <OfflineFallback /> {/*Shown when offline*/}
 
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader />}> {/* Shows the handicap loader on first load */}
                 <Routes>
-                    {/*----- PUBLIC ROUTE -----*/}
+                    {/*===== PUBLIC ROUTE =====*/}
                     <Route path="/login" element={<Login />} />
 
-                    {/*----- DOCTOR ROUTES -----*/}
+                    {/*===== DOCTOR ROUTES =====*/}
                     <Route path='/' element={
                         <ProtectedRoute>
                             <Main />
@@ -71,7 +73,8 @@ const Content = () => {
                             <EditPatient />
                         </ProtectedRoute>
                     } />
-                    {/*----- NURSE ROUTES -----*/}
+
+                    {/*===== NURSE ROUTES =====*/}
                     <Route path="/administered" element={
                         <ProtectedRoute roles={["nurse", "Сестра"]}>
                             <Administered />
@@ -87,14 +90,15 @@ const Content = () => {
                             <Hospitalized />
                         </ProtectedRoute>
                     } />
-                    {/*----- ADMIN ONLY ROUTE-----*/}
+
+                    {/*===== ADMIN ONLY ROUTES =====*/}
                     <Route path="/dashboard" element={
                         <ProtectedRoute roles={["admin", "Администратор"]}>
                             <Dashboard />
                         </ProtectedRoute>
                     } />
 
-                    {/*----- 404 -----*/}
+                    {/*===== 404 =====*/}
                     <Route path="/*" element={<NotFound />} />
                 </Routes>
             </Suspense>

@@ -25,9 +25,7 @@ export const List = () => {
                 <div className={styles.buttonContainer}>
                     <Button
                         text='На главную'
-                        onClick={() => {
-                            navigate('/')
-                        }}
+                        navigateTo='INDEX'
                     />
                 </div>
             </div>

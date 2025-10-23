@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useConfig } from "../context";
 import { matchPath, useLocation } from "react-router";
+import { CONFIG_DEFAULTS } from "../constants";
 
 const pageTitleConfig = {
   "/": {
@@ -13,7 +14,7 @@ const pageTitleConfig = {
   },
   "/search/:id": {
     title: "Результаты поиска",
-    dynamic: true,
+    dynamic: true, // This page show patient name
   },
   "/register": {
     title: "Регистрация пациента",
@@ -21,7 +22,7 @@ const pageTitleConfig = {
   },
   "/edit/:id": {
     title: "Редактирование пациента",
-    dynamic: true, // This page might want to show patient name
+    dynamic: true, // This page show patient name
   },
   "/login": {
     title: "Вход в систему",
@@ -51,7 +52,8 @@ export const usePageTitle = (customTitle = null, dynamicData = null) => {
 
   useEffect(() => {
     const baseTitle =
-      config.title?.title || "ГБУ «Городская больница Волновахского района»";
+      // Either the cached app title or default constant
+      config.title || CONFIG_DEFAULTS.GENERAL.TITLE;
 
     let finalTitle;
 

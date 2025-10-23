@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import Button from '../../../components/Button'
 import styles from '../register.module.css'
-import { useNavigate } from 'react-router'
 
 export const Buttons = ({ form, isEditMode = false }) => {
     const [isLoading, setIsLoading] = useState(false)
-    const navigate = useNavigate()
 
     return (
         <div className={styles.buttons}>
@@ -21,7 +19,7 @@ export const Buttons = ({ form, isEditMode = false }) => {
 
             <Button
                 text='Назад'
-                onClick={() => navigate(-1)}
+                navigateTo='INDEX'
             />
         </div>)
 }
