@@ -12,6 +12,7 @@ import Button from "../../components/Button"
 
 // UI
 import styles from './styles/dashboard.module.scss'
+import { PAGES } from "../../constants"
 
 export const Dashboard = () => {
   const navigate = useNavigate()
@@ -48,7 +49,8 @@ export const Dashboard = () => {
         <Row center>
           <Button
             text="На главную"
-            onClick={() => navigate('/')}
+            navigateTo='INDEX'
+            replace
           />
         </Row>
       </div >

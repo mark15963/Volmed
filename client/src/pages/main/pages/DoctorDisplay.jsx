@@ -24,17 +24,13 @@ function control() {
           text='Список пациентов'
           icon='patients'
           margin='0 0 0 5px'
-          onClick={() => {
-            navigate('/patients')
-          }}
+          navigateTo='PATIENTS'
         />
         <Button
           text='Новый пациент'
           icon='newPatient'
           margin='0 0 0 5px'
-          onClick={() => {
-            navigate('/register')
-          }}
+          navigateTo='REGISTER'
         />
       </div>
     </>

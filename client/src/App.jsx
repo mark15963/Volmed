@@ -1,11 +1,11 @@
 import { AppProviders } from './context/index'
 import Content from './layouts/Content'
-import Header from './layouts/Header'
+import Header from './layouts/header/Header'
 import Footer from './layouts/Footer'
 
 import './App.css'
 
-function App() {
+const App = () => {
   return (
     <AppProviders>
       <Header />

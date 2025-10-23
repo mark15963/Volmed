@@ -7,8 +7,9 @@ import {
   TeamOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import loader from "../assets/images/Loader.gif";
 import "./styles/Button.scss";
+import { PAGES } from "../constants";
+import { useNavigate } from "react-router";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
@@ -22,6 +23,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   type?: "button" | "submit" | "reset";
   loadingText?: string;
+  navigateTo?: keyof typeof PAGES;
+  replace?: boolean;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -36,8 +39,12 @@ const Button: FC<ButtonProps> = ({
   loading,
   type = "button",
   loadingText,
+  navigateTo,
+  replace = false,
   ...props
 }) => {
+  const navigate = useNavigate();
+
   const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
     // Force blur to remove active state
     e.currentTarget.blur();
@@ -78,6 +85,15 @@ const Button: FC<ButtonProps> = ({
 
   const handleClick = () => {
     debug.log(`Button clicked: ${text || "(no text)"}`);
+
+    // Handle navigation if navigateTo is provided
+    if (navigateTo) {
+      const route = PAGES[navigateTo];
+      // If replace = true - the url changes to a clean route link.
+      // If replace = false - link added to existing link
+      navigate(route, { replace });
+    }
+    // Call original onClick if provided
     if (onClick) onClick();
   };
 
@@ -93,7 +109,6 @@ const Button: FC<ButtonProps> = ({
     >
       {loading ? (
         <>
-          {/* <img src={loader} style={{ height: "20px" }} alt="Loading..." /> */}
           {loadingText && (
             <span className="button-text" style={{ marginLeft: "3px" }}>
               {loadingText}

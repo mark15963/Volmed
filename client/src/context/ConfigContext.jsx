@@ -53,11 +53,14 @@ export const ConfigProvider = ({ children }) => {
 
       const cache = await res.json()
 
-      setTitleState(getNestedValue(cache, CONFIG_KEYS.TITLE) || CONFIG_DEFAULTS.GENERAL.TITLE,)
+      const cachedTitle = getNestedValue(cache, CONFIG_KEYS.TITLE)
+      setTitleState(cachedTitle || CONFIG_DEFAULTS.GENERAL.TITLE,)
+
       setColorState({
         header: getNestedValue(cache, CONFIG_KEYS.COLOR.HEADER) || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
         content: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTENT) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
       })
+
       const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
       if (cachedLogo) setLogoState(cachedLogo)
 
@@ -78,18 +81,14 @@ export const ConfigProvider = ({ children }) => {
       ])
 
       if (titleRes.status === 'fulfilled') {
-        setTitleState({
-          title: titleRes.value.data.title || CONFIG_DEFAULTS.GENERAL.TITLE,
-        })
+        setTitleState(titleRes.value.data.title || CONFIG_DEFAULTS.GENERAL.TITLE)
       }
-
       if (colorRes.status === 'fulfilled') {
         setColorState({
           header: colorRes.value.data.headerColor || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
           content: colorRes.value.data.contentColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT
         })
       }
-
       if (logoRes.status === 'fulfilled' && logoRes.value.data.logoUrl) {
         setLogoState(logoRes.value.data.logoUrl)
       }
@@ -116,7 +115,8 @@ export const ConfigProvider = ({ children }) => {
   // --- Update setters ---
   const setTitle = useCallback(async (titleData) => {
     try {
-      const { data } = await api.updateTitle({ title: titleData.title })
+      const { data } = await api.updateTitle({ title: titleData })
+      debug.log(data)
       setTitleState(data)
     } catch (err) {
       console.error("Failed to update title:", err)

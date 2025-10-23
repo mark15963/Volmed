@@ -6,7 +6,7 @@ import {
 
 export const useGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [titleInput, setTitleInput] = useState(config.title?.title || "");
+  const [titleInput, setTitleInput] = useState(config.title || "");
   const [headerColorInput, setHeaderColorInput] = useState(config.color.header);
   const [contentColorInput, setContentColorInput] = useState(
     config.color.content
@@ -24,7 +24,7 @@ export const useGeneralConfig = (config, safeMessage) => {
   );
 
   useEffect(() => {
-    setTitleInput(config.title?.title || "");
+    setTitleInput(config.title || "");
   }, [config.title]);
 
   useEffect(() => {

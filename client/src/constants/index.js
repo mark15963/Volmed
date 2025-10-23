@@ -34,3 +34,17 @@ export const CONFIG_KEYS = {
   },
   LOGO: "general.logoUrl",
 };
+
+export const PAGES = {
+  INDEX: "/",
+  LOGIN: "/login",
+  PATIENTS: "/patients",
+  SEARCH: "/search",
+  REGISTER: "/register",
+  EDIT: "/edit",
+  ADMINISTERED: "/administered",
+  DISCHARGED: "/discharged",
+  HOSPITALIZED: "/hospitalized",
+  DASHBOARD: "/dashboard",
+  NOTFOUND: "/*",
+};

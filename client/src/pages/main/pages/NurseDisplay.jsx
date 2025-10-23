@@ -33,16 +33,12 @@ function control() {
         <Button
           text="Пациенты отделения"
           className={nurseStyles.button}
-          onClick={() => {
-            navigate('/hospitalized')
-          }}
+          navigateTo='HOSPITALIZED'
         />
         <Button
           text="Выписанные"
           className={nurseStyles.button}
-          onClick={() => {
-            navigate('/discharged')
-          }}
+          navigateTo='DISCHARGED'
         />
       </div>
 
@@ -50,9 +46,7 @@ function control() {
         <Button
           text="Поступившие"
           className={nurseStyles.button}
-          onClick={() => {
-            navigate('/administered')
-          }}
+          navigateTo='ADMINISTERED'
         />
         <InDev >
           <Button
