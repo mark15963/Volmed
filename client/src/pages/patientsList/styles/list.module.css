@@ -1,6 +1,7 @@
 .container {
   height: fit-content;
   width: 90%;
+  max-width: 800px;
   box-sizing: border-box;
   background: #0073c7;
   border: 3px solid black;

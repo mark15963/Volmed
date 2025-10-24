@@ -1,20 +1,21 @@
+//#region ===== IMPORTS =====
 import { useState, useEffect, useRef, memo } from 'react';
 import axios from 'axios';
-
-import api from '../../../services/api'
-import debug from '../../../utils/debug';
-
-const { message } = await import('antd/es')
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { Upload, Form, Collapse } from "antd"
+const { message } = await import('antd/es')
 const { Dragger } = Upload;
 const { Panel } = Collapse;
 
 import Input from '../../../components/Input';
 import Graph from './Components/Graph';
-
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import styles from './tab2.module.scss'
 import { SpinLoader } from '../../../components/Loading/SpinLoader';
+
+import api from '../../../services/api'
+import debug from '../../../utils/debug';
+
+import styles from './styles/tab2.module.scss'
+//#endregion
 
 const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL

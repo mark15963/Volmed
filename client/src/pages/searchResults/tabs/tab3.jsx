@@ -1,19 +1,20 @@
+//#region ===== IMPORTS =====
 import { useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
+import { message } from 'antd';
+import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
 import { useSafeMessage } from '../../../hooks/useSafeMessage';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-import { message } from 'antd';
-import tableStyles from '../../../components/styles/Table.module.css';
-import styles from './tab3.module.scss'
-import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
+import styles from './styles/tab3.module.scss'
 
 import api from '../../../services/api';
 import debug from '../../../utils/debug';
+//#endregion
 
 axios.defaults.withCredentials = true;
 
