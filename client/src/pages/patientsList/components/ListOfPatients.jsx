@@ -10,13 +10,14 @@ import styles from './styles/patientList.module.scss'
 
 import api from "../../../services/api";
 import debug from "../../../utils/debug";
+import Block from "./Block";
 
 export const ListOfPatients = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
-  // List state UI
+  // State elements UI
   const getStateClass = (state) => {
     switch (state) {
       case 'Стабильно': return styles.stable;
@@ -87,6 +88,7 @@ export const ListOfPatients = () => {
               </SkeletonTheme>
             ) : patients.length > 0 ? (
               patients.map(patient => (
+                // <Block />
                 <tr
                   key={patient.id}
                   className={styles.rows}
