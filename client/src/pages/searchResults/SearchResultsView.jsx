@@ -1,3 +1,4 @@
+//#region ===== IMPORTS =====
 import React, { lazy, Suspense, useMemo } from "react";
 import { Menu } from "../../components/Menu";
 import ActionButtons from "./tabs/Components/ActionButton";
@@ -5,12 +6,13 @@ import ErrorState from "./tabs/Components/States/ErrorState";
 import NotFoundState from "./tabs/Components/States/NotFoundState";
 import { SpinLoader } from "../../components/Loading/SpinLoader";
 
-// Tabs
+// Menu tabs
 import { Tab1 } from './tabs/tab1'
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
 
 import styles from './searchResults.module.css'
+//#endregion ================
 
 const SearchResultsView = ({
   dataProps,
@@ -19,12 +21,16 @@ const SearchResultsView = ({
   hooks,
   handlers
 }) => {
+  //#region ===== CONSTS =====
+  // Regrouping consts from parent component (SearchResult.jsx)  
   const { data, loading, error } = dataProps
   const { id, state, navigate } = routerProps
   const { activeTab, setActiveTab, contextHolder } = uiProps
   const { filesHook, medsHook } = hooks
   const { handleEdit, handlePrint, handleDeletePatient } = handlers
+  //#endregion
 
+  //#region ===== RENDERS =====
   const renderLoader = () => (
     <div className={styles.info}>
       <div className={styles.bg}>
@@ -35,22 +41,15 @@ const SearchResultsView = ({
   const renderContent = () => {
     if (loading && !data) return renderLoader();
     if (error) return <ErrorState error={error} />;
-    if (!data) return <NotFoundState />
+    if (data === null) return <NotFoundState />
     return null;
   };
+  //#endregion
 
   const tabContents = useMemo(() => [
-    <Suspense fallback={renderLoader()}>
-      <Tab1 data={data} />
-    </Suspense>,
-
-    <Suspense fallback={renderLoader()}>
-      <Tab2 {...filesHook} isLoading={filesHook.isLoading} />
-    </Suspense>,
-
-    <Suspense fallback={renderLoader()}>
-      <Tab3 {...medsHook} />
-    </Suspense>
+    <Tab1 data={data} />,
+    <Tab2 {...filesHook} isLoading={filesHook.isLoading} />,
+    <Tab3 {...medsHook} />,
   ], [data, filesHook, medsHook])
 
   return (
@@ -58,21 +57,30 @@ const SearchResultsView = ({
 
       {contextHolder} {/* TOP FLOATING MESSAGES */}
 
+      {/* PAGE TITLE */}
       <span className={styles.pageTitle}>
         {state?.searchQuery ? `Результаты поиска: №${id}` : `Карта пациента №${id}`}
       </span>
+
+      {/* NAVIGATION MENU */}
       <Menu
         items={[
           { name: 'Основное' },
           { name: 'Анализы' },
-          { name: 'Назначения' }
+          { name: 'Назначения' },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
 
-      {renderContent() || tabContents[activeTab]}
+      {/* CONTENT */}
+      {renderContent() || (
+        <Suspense fallback={renderLoader()}>
+          {tabContents[activeTab]}
+        </Suspense>
+      )}
 
+      {/* BUTTONS */}
       <ActionButtons
         activeTab={activeTab}
         isEditingMeds={medsHook.isEditing}

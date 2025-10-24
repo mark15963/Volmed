@@ -8,14 +8,15 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from './styles/patientList.module.scss'
 
-import api from "../services/api";
-import debug from "../utils/debug";
+import api from "../../../services/api";
+import debug from "../../../utils/debug";
 
-export const AllPatients = () => {
+export const ListOfPatients = () => {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
+  // List state UI
   const getStateClass = (state) => {
     switch (state) {
       case 'Стабильно': return styles.stable;
@@ -28,12 +29,15 @@ export const AllPatients = () => {
     }
   }
 
+  // Fetching all patients
   useEffect(() => {
     const fetchPatients = async () => {
       try {
         const response = await api.getPatients()
-        const data = Array.isArray(response.data) ? response.data : [];
-        debug.table(data, ['id', 'lastName', 'firstName', 'patr', 'birthDate', 'created_at', 'state'])
+        const data = Array.isArray(response.data)
+          ? response.data
+          : [];
+        // debug.table(data, ['id', 'lastName', 'firstName', 'patr', 'birthDate', 'created_at', 'state'])
         setPatients(data);
       } catch (error) {
         console.error("Error fetching patients:", error);
@@ -109,6 +113,12 @@ export const AllPatients = () => {
                   </td>
                 </tr>
               ))
+            ) : patients.length === 0 ? (
+              <tr>
+                <td className={styles.noData}>
+                  No patients!
+                </td>
+              </tr>
             ) : (
               <tr>
                 <td className={styles.noData}>
@@ -119,44 +129,5 @@ export const AllPatients = () => {
         </tbody>
       </table>
     </div >
-  )
-}
-
-export const PatientCount = () => {
-  const [count, setCount] = useState(0)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const response = await api.getPatientCount()
-        const count = response.data?.count || 0;
-        debug.log(`patients - ${count}`)
-        setCount(count);
-      } catch (error) {
-        debug.error("Error fetching count:", error);
-        setCount('N/A');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCount();
-  }, []);
-
-  return (
-    <div className={styles.countContainer}>
-      <span style={{ marginRight: '10px' }}>Всего пациентов: </span>
-      {loading ? (
-        <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          <Skeleton
-            borderRadius={5}
-            width='20px'
-            duration='3'
-            inline />
-        </SkeletonTheme>
-      ) : (
-        <span className={styles.counterText}>{count}</span>
-      )}
-    </div>
   )
 }

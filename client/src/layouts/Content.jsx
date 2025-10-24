@@ -12,7 +12,7 @@ import { usePageTitle } from "../utils/usePageTitle";
 
 //----- PAGES -----
 import Main from "../pages/main/Main";
-import SearchResults from "../pages/searchResults/SearchRes";
+import SearchResults from "../pages/searchResults/SearchResults";
 import List from "../pages/patientsList/List";
 import RegisterPatient from "../pages/register/RegisterPatient";
 import EditPatient from "../pages/edit/EditPatient";

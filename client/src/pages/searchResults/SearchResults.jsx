@@ -53,6 +53,7 @@ const SearchResults = React.memo(() => {
   //#endregion
 
   //#region ===== Hooks =====
+  // Passing consts to hooks
   useSyncFileList(filesHook, apiUrl)
   useResetEditingOnTabChange(activeTab, filesHook, medsHook)
   useExclusiveEditing(filesHook, medsHook)
@@ -61,6 +62,7 @@ const SearchResults = React.memo(() => {
   //#endregion
 
   //#region ===== Grouped Props =====
+  // Grouped consts to just one
   const dataProps = { data, loading, error }
   const routerProps = { id, state, navigate }
   const uiProps = { activeTab, setActiveTab, contextHolder }
@@ -69,6 +71,7 @@ const SearchResults = React.memo(() => {
   //#endregion
 
   //#region ===== JSX =====
+  // Passing grouped consts to component and regroup them inside
   return (
     <SearchResultsView
       dataProps={dataProps}
