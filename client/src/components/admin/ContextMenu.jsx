@@ -35,14 +35,17 @@ export const ContextMenu = ({ authState, children }) => {
                 navigate('/dashboard')
                 break;
             case '2':
+                navigate('/nurse-menu')
+                break;
+            case '3':
                 debug.log(chatVisible ? "Chat hidden" : "Chat visible")
                 setChatVisible(!chatVisible)
                 break;
-            case '3':
+            case '4':
                 debug.log(sideMenuVisible ? "Menu hidden" : "Menu visible")
                 setSideMenuVisible(!sideMenuVisible)
                 break;
-            case '4':
+            case '5':
                 const serverUrl = `${apiUrl}/dashboard`
                 window.location.href = serverUrl;
                 break;
@@ -57,16 +60,20 @@ export const ContextMenu = ({ authState, children }) => {
             key: '1',
         },
         {
-            label: chatVisible ? 'Закрыть чат' : 'Чат',
+            label: 'Страница медсестер',
             key: '2',
         },
         {
-            label: sideMenuVisible ? 'Закрыть боковое меню' : 'Боковое меню',
+            label: chatVisible ? 'Закрыть чат' : 'Чат',
             key: '3',
         },
         {
-            label: 'Страница сервера',
+            label: sideMenuVisible ? 'Закрыть боковое меню' : 'Боковое меню',
             key: '4',
+        },
+        {
+            label: 'Страница сервера',
+            key: '5',
         },
     ];
 

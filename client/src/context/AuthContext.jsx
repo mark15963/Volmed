@@ -16,21 +16,21 @@ export const AuthProvider = ({ children }) => {
     });
     const navigate = useNavigate()
 
+
     // Check if user authenticated. If not => login page
     const checkAuthStatus = useCallback(async () => {
         try {
             const { data } = await api.status();
-            // make it hidden from browser dev console 
-            const isAdmin = ['admin', 'Администратор'].includes(data.user?.status)
 
+            const isAdmin = ['admin'].includes(data.user?.status)
             setAuthState({
                 isAuthenticated: data.isAuthenticated,
                 isAdmin,
                 isLoading: false,
                 user: data.user
             });
-            return data.isAuthenticated
 
+            return data.isAuthenticated
         } catch (error) {
             console.error('Auth check error:', error);
             setAuthState({
@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
             return false
         }
     }, [])
+
     useEffect(() => {
         const checkAndRedirect = async () => {
             const isAuthenticated = await checkAuthStatus()

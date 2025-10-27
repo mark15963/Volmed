@@ -29,6 +29,7 @@ const UserContainer = () => {
   return (
     <>
       <div className={userContainerClass}>
+        {/* TEXT */}
         {authState.isAuthenticated && (
           <>
             {/* Context menu access for admin */}
@@ -36,7 +37,7 @@ const UserContainer = () => {
               <ContextMenu authState={authState}>
                 <div className={styles.userNameContainer}>
                   <div className={styles.userNameText}>
-                    {authState.user.status}
+                    {authState.user.displayStatus}
                   </div>
                   <div className={styles.userNameText}>
                     {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
@@ -48,7 +49,7 @@ const UserContainer = () => {
             {!authState.isAdmin && (
               <div className={styles.userNameContainer}>
                 <span className={styles.userNameText}>
-                  {authState.user.status}
+                  {authState.user.displayStatus}
                 </span>
                 <span className={styles.userNameText}>
                   {`${authState.user.lastName} ${authState.user.firstName} ${authState.user.patr}`}
@@ -57,6 +58,7 @@ const UserContainer = () => {
             )}
           </>
         )}
+
         <div className={styles.authButton}>
           {location.pathname !== '/login' && (
             authState.isAuthenticated ? (

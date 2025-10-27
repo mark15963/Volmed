@@ -69,6 +69,7 @@ router.post("/login", originMiddleware, async (req, res) => {
       return res.redirect("/api/login?error=Invalid+credentials");
     }
 
+    // Setting session
     req.session.regenerate((error) => {
       if (error) {
         console.error("Login error:", error);
@@ -79,14 +80,16 @@ router.post("/login", originMiddleware, async (req, res) => {
         });
       }
 
-      req.session.isAuth = true;
-      if (user.status === "admin" || user.status === "Администратор")
+      if (user.status === "admin" || user.status === "Администратор") {
         req.session.isAdmin = true;
+      }
+      req.session.isAuth = true;
       req.session.user = user.username;
       req.session.lastName = user.lastName || "Undefined";
       req.session.firstName = user.firstName || "Undefined";
       req.session.patr = user.patr || "";
       req.session.status = user.status || "Undefined";
+      req.session.displayStatus = user.displayStatus || "Undefined";
 
       req.session.save((error) => {
         if (error) {
@@ -117,6 +120,7 @@ router.post("/login", originMiddleware, async (req, res) => {
                 firstName: user.firstName,
                 patr: user.patr,
                 status: user.status,
+                displayStatus: user.displayStatus,
               },
             });
           }
@@ -143,6 +147,7 @@ router.post("/login", originMiddleware, async (req, res) => {
               firstName: user.firstName,
               patr: user.patr,
               status: user.status,
+              displayStatus: user.displayStatus,
             },
           });
         }
@@ -239,6 +244,7 @@ router.get("/status", originMiddleware, async (req, res) => {
             lastName: req.session.lastName,
             patr: req.session.patr,
             status: req.session.status,
+            displayStatus: req.session.displayStatus,
           }
         : null,
     });
@@ -278,6 +284,7 @@ router.get("/dashboard", isAuth, async (req, res) => {
         firstName: req.session.firstName,
         patr: req.session.patr,
         status: req.session.status,
+        displayStatus: req.session.displayStatus,
         sessionData,
         users,
         patients,

@@ -35,8 +35,8 @@ const InDev = ({
     zIndex: 2
   };
 
-  // Show only to tester users
-  if (["Тестировщик", "tester", "Администратор", "admin"].includes(userRole) && env === 'development') {
+  // Show only to tester users in dev mode
+  if (["tester", "admin"].includes(userRole) && env === 'development') {
     return (
       <div
         style={{

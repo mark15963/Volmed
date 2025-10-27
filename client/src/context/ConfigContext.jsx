@@ -55,12 +55,10 @@ export const ConfigProvider = ({ children }) => {
 
       const cachedTitle = getNestedValue(cache, CONFIG_KEYS.TITLE)
       setTitleState(cachedTitle || CONFIG_DEFAULTS.GENERAL.TITLE,)
-
       setColorState({
         header: getNestedValue(cache, CONFIG_KEYS.COLOR.HEADER) || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
         content: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTENT) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
       })
-
       const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
       if (cachedLogo) setLogoState(cachedLogo)
 
@@ -104,8 +102,11 @@ export const ConfigProvider = ({ children }) => {
   useEffect(() => {
     const initializeConfig = async () => {
       setIsLoading(true)
-      await loadFromCache()
+
+      const cacheLoaded = await loadFromCache()
+
       await fetchFromApi()
+
       setIsLoading(false)
     }
 
@@ -116,10 +117,11 @@ export const ConfigProvider = ({ children }) => {
   const setTitle = useCallback(async (titleData) => {
     try {
       const { data } = await api.updateTitle({ title: titleData })
-      debug.log(data)
       setTitleState(data)
+      debug.log("✅ Title updated successfully")
     } catch (err) {
       console.error("Failed to update title:", err)
+      throw err
     }
   }, [])
   const setColor = useCallback(async ({ header, content }) => {
@@ -132,8 +134,10 @@ export const ConfigProvider = ({ children }) => {
         header: data.headerColor,
         content: data.contentColor,
       })
+      debug.log("✅ Colors updated successfully")
     } catch (err) {
-      console.error("Failed to update Color:", err)
+      console.error("Failed to update colors:", err)
+      throw err
     }
   }, [])
   const setLogo = useCallback(async (fileUrl) => {

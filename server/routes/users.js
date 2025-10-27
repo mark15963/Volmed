@@ -31,10 +31,12 @@ router.post("/users", async (req, res) => {
   }
 
   const inputStatus = req.body.status;
-  const allowedStatuses = ["Администратор", "Тестировщик", "Сестра", "Врач"];
+  // const allowedStatuses = ["Администратор", "Тестировщик", "Сестра", "Врач"];
+  const allowedStatuses = ["admin", "tester", "nurse", "doctor"];
+
   const finalStatus = allowedStatuses.includes(inputStatus)
     ? inputStatus
-    : "Сестра";
+    : "nurse";
 
   try {
     const existingUser = await User.findByUsername(username);
@@ -108,7 +110,7 @@ router.delete("/users/:id", async (req, res) => {
       if (check.rows.length === 0) {
         return res.status(404).json({ error: "User not found" });
       }
-      if (check.rows[0].status === "Администратор") {
+      if (check.rows[0].status === "admin") {
         return res.status(403).json({ error: "Cannon delete admin" });
       }
 
