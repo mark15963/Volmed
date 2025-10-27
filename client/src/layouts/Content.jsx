@@ -25,85 +25,91 @@ import NotFound from "../pages/NotFound";
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
+import NurseDisplay from "../pages/main/pages/NurseDisplay";
 //#endregion
 
 const Content = () => {
-    const { color } = useConfig()
+  const { color } = useConfig()
 
-    // Page title chages depending on the page
-    usePageTitle()
+  // Page title chages depending on the page
+  usePageTitle()
 
-    return (
-        <main
-            style={{
-                // Color palette from cache
-                backgroundColor: color.content,
-            }}
-        >
-            <OfflineFallback /> {/*Shown when offline*/}
+  return (
+    <main
+      style={{
+        // Color palette from cache
+        backgroundColor: color.content,
+      }}
+    >
+      <OfflineFallback /> {/*Shown when offline*/}
 
-            <Suspense fallback={<Loader />}> {/* Shows the handicap loader on first load */}
-                <Routes>
-                    {/*===== PUBLIC ROUTE =====*/}
-                    <Route path="/login" element={<Login />} />
+      <Suspense fallback={<Loader />}> {/* Shows the handicap loader on first load */}
+        <Routes>
+          {/*===== PUBLIC ROUTE =====*/}
+          <Route path="/login" element={<Login />} />
 
-                    {/*===== DOCTOR ROUTES =====*/}
-                    <Route path='/' element={
-                        <ProtectedRoute>
-                            <Main />
-                        </ProtectedRoute>
-                    } />
-                    <Route path='/patients' element={
-                        <ProtectedRoute>
-                            <List />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/search/:id" element={
-                        <ProtectedRoute>
-                            <SearchResults />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/register" element={
-                        <ProtectedRoute>
-                            <RegisterPatient />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/edit/:id" element={
-                        <ProtectedRoute>
-                            <EditPatient />
-                        </ProtectedRoute>
-                    } />
+          {/*===== DOCTOR ROUTES =====*/}
+          <Route path='/' element={
+            <ProtectedRoute>
+              <Main />
+            </ProtectedRoute>
+          } />
+          <Route path='/patients' element={
+            <ProtectedRoute>
+              <List />
+            </ProtectedRoute>
+          } />
+          <Route path="/search/:id" element={
+            <ProtectedRoute>
+              <SearchResults />
+            </ProtectedRoute>
+          } />
+          <Route path="/register" element={
+            <ProtectedRoute>
+              <RegisterPatient />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit/:id" element={
+            <ProtectedRoute>
+              <EditPatient />
+            </ProtectedRoute>
+          } />
 
-                    {/*===== NURSE ROUTES =====*/}
-                    <Route path="/administered" element={
-                        <ProtectedRoute roles={["nurse", "Сестра"]}>
-                            <Administered />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/discharged" element={
-                        <ProtectedRoute roles={["nurse", "Сестра"]}>
-                            <Discharged />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/hospitalized" element={
-                        <ProtectedRoute roles={["nurse", "Сестра"]}>
-                            <Hospitalized />
-                        </ProtectedRoute>
-                    } />
+          {/*===== NURSE ROUTES =====*/}
+          <Route path="/administered" element={
+            <ProtectedRoute roles={["nurse"]}>
+              <Administered />
+            </ProtectedRoute>
+          } />
+          <Route path="/discharged" element={
+            <ProtectedRoute roles={["nurse"]}>
+              <Discharged />
+            </ProtectedRoute>
+          } />
+          <Route path="/hospitalized" element={
+            <ProtectedRoute roles={["nurse"]}>
+              <Hospitalized />
+            </ProtectedRoute>
+          } />
 
-                    {/*===== ADMIN ONLY ROUTES =====*/}
-                    <Route path="/dashboard" element={
-                        <ProtectedRoute roles={["admin", "Администратор"]}>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    } />
+          {/*===== ADMIN ONLY ROUTES =====*/}
+          <Route path="/dashboard" element={
+            <ProtectedRoute roles={[]}>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/nurse-menu" element={
+            <ProtectedRoute roles={["nurse"]}>
+              <NurseDisplay />
+            </ProtectedRoute>
+          } />
 
-                    {/*===== 404 =====*/}
-                    <Route path="/*" element={<NotFound />} />
-                </Routes>
-            </Suspense>
-        </main>
-    )
+          {/*===== 404 =====*/}
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </main>
+  )
 }
 
 export default Content

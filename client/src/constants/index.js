@@ -5,6 +5,7 @@ export const services = [
   },
 ];
 
+//
 export const CONFIG_DEFAULTS = {
   GENERAL: {
     TITLE: "ГБУ ДНР «Волновахская районная больница»",
@@ -16,6 +17,7 @@ export const CONFIG_DEFAULTS = {
   },
 };
 
+//
 export const CACHE_CONFIG = {
   CACHE_URL: `${
     import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || ""
@@ -26,6 +28,7 @@ export const CACHE_CONFIG = {
   },
 };
 
+//
 export const CONFIG_KEYS = {
   TITLE: "general.title",
   COLOR: {
@@ -35,6 +38,7 @@ export const CONFIG_KEYS = {
   LOGO: "general.logoUrl",
 };
 
+// Pages
 export const PAGES = {
   INDEX: "/",
   LOGIN: "/login",
@@ -47,4 +51,5 @@ export const PAGES = {
   HOSPITALIZED: "/hospitalized",
   DASHBOARD: "/dashboard",
   NOTFOUND: "/*",
+  NURSE: "/nurse-menu",
 };

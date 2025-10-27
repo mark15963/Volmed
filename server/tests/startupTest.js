@@ -16,6 +16,22 @@ function logTestResult(name, success) {
 
   debug.log(`${icon} ${name}: ${success}`);
 }
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function retryOperation(operation, maxRetries = 3, delayMs = 1000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      debug.log(`⚠️ Attempt ${attempt} failed, retrying in ${delayMs}ms...`);
+      await delay(delayMs * attempt); // Exponential backoff
+    }
+  }
+}
 //#endregion
 
 async function runStartupTests() {
@@ -135,7 +151,13 @@ async function runStartupTests() {
         // debug.log(`Deleted leftover file: ${file.originalname}`);
       }
 
+      if (oldTestFiles.length > 0) {
+        debug.log("Waiting for cleanup to complete...");
+        await delay(2000);
+      }
+
       let uploadedFiles = [];
+
       // Create a test file in memory (no local write)
       try {
         const form = new FormData();
@@ -155,22 +177,28 @@ async function runStartupTests() {
           }
         );
         // logTestResult("Uploaded file file", uploadRes?.status === 200);
+        debug.log("⏳ Waiting for file processing...");
+        await delay(1500);
       } catch (err) {
-        logTestResult("Uploaded file file", false);
+        logTestResult("File upload", false);
         debug.error(err.message);
       }
 
       // Verify upload
       try {
-        const filesRes = await axios.get(`${BASE_URL}/api/patients/1/files`, {
-          headers: { Cookie: cookies.join("; ") },
-        });
-        uploadedFiles = filesRes.data.filter((f) =>
-          f.originalname.startsWith("test-file")
-        );
-        if (uploadedFiles.length === 0)
-          throw new Error("Uploaded test file not found!");
-        // logTestResult("Uploaded file verified", true);
+        const verifyUpload = async () => {
+          const filesRes = await axios.get(`${BASE_URL}/api/patients/1/files`, {
+            headers: { Cookie: cookies.join("; ") },
+          });
+          uploadedFiles = filesRes.data.filter((f) =>
+            f.originalname.startsWith("test-file")
+          );
+          if (uploadedFiles.length === 0)
+            throw new Error("Uploaded test file not found!");
+        };
+
+        await retryOperation(verifyUpload, 3, 1000);
+        logTestResult("Upload verification", true);
       } catch (err) {
         logTestResult("Uploaded file verified", false);
         debug.error(err.message);
@@ -178,30 +206,55 @@ async function runStartupTests() {
 
       // Delete uploaded file(s)
       for (const file of uploadedFiles) {
-        const deleteRes = await axios.delete(`${BASE_URL}/api/files`, {
-          headers: { Cookie: cookies.join("; ") },
-          data: { filePath: file.path },
-        });
-        // logTestResult(
-        //   `File deleted: ${file.originalname}`,
-        //   deleteRes.data.success
-        // );
+        try {
+          const deleteRes = await axios.delete(`${BASE_URL}/api/files`, {
+            headers: { Cookie: cookies.join("; ") },
+            data: { filePath: file.path },
+          });
+          // logTestResult(
+          //   `File deleted: ${file.originalname}`,
+          //   deleteRes.data.success
+          // );
+        } catch (err) {
+          logTestResult(`File deletion: ${file.originalname}`, false);
+          debug.error(err.message);
+        }
       }
+
+      debug.log("⏳ Waiting for file deletion to complete...");
+      await delay(3000);
 
       // Verify deletion
       try {
-        const filesAfterDelete = await axios.get(
-          `${BASE_URL}/api/patients/1/files`,
-          { headers: { Cookie: cookies.join("; ") } }
-        );
-        const stillExists = filesAfterDelete.data.some((f) =>
-          f.originalname.startsWith("test-file")
-        );
-        if (stillExists) throw new Error("File was not deleted!");
+        const verifyDeletion = async () => {
+          const filesAfterDelete = await axios.get(
+            `${BASE_URL}/api/patients/1/files`,
+            { headers: { Cookie: cookies.join("; ") } }
+          );
+          const stillExists = filesAfterDelete.data.some((f) =>
+            f.originalname.startsWith("test-file")
+          );
+          if (stillExists) throw new Error("File was not deleted!");
+        };
 
-        //logTestResult("File deletion verified", true);
+        await retryOperation(verifyDeletion, 5, 1000);
+        logTestResult("Deletion verification", true);
       } catch (err) {
         logTestResult("File deletion verified", false);
+        debug.error("Deletion verification failed:", err.message);
+
+        try {
+          const currentFiles = await axios.get(
+            `${BASE_URL}/api/patients/1/files`,
+            { headers: { Cookie: cookies.join("; ") } }
+          );
+          debug.log(
+            "📁 Current files:",
+            currentFiles.data.map((f) => f.originalname)
+          );
+        } catch (debugErr) {
+          debug.error("Could not get current files for debugging");
+        }
       }
 
       logTestResult("Files lifecycle", true);

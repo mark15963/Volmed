@@ -12,31 +12,30 @@ export default function Main() {
   const { authState } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const userRole = authState.user.status;
-  const allowedUsers = [
+
+  const allowedDoctorUsers = [
     "doctor",
-    "Врач",
     "admin",
-    "Администратор",
     "tester",
-    "Тестировщик"
   ]
-  const nurseUsers = [
-    "Сестра",
-    "nurse"
+  const allowedNurseUsers = [
+    "nurse",
   ]
 
   // if (authState.isLoading) return <Loader />
   if (authState.isLoading) return
   if (!authState.isAuthenticated) return null
 
-  // User role -> Nurse
-  if (nurseUsers.includes(userRole)) {
-    return <NurseDisplay />
-  }
   // User role -> Doctor, tester, admin
-  if (allowedUsers.includes(userRole)) {
+  if (allowedDoctorUsers.includes(userRole)) {
     return <DoctorDisplay />
   }
+
+  // User role -> Nurse
+  if (allowedNurseUsers.includes(userRole)) {
+    return <NurseDisplay />
+  }
+
   // Not auth
   return (
     <div className={styles.container}>

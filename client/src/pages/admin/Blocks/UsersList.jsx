@@ -108,9 +108,9 @@ const UsersList = () => {
               </td>
               <td className={styles.actionCell}>
                 <select
-                  value={user.status}
+                  value={user.displayStatus}
                   disabled={
-                    user.status === "Администратор" ||
+                    user.status === "admin" ||
                     statusLoading[user.id]
                   }
                   className={
@@ -119,7 +119,7 @@ const UsersList = () => {
                       : `${styles.select}`
                   }
                   onChange={(e) => {
-                    if (user.status === "Администратор") return
+                    if (user.status === "admin") return
                     handleStatusChange(user.id, e.target.value)
                   }}
                 >

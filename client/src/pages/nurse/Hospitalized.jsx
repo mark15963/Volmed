@@ -107,7 +107,7 @@ const Hospitalized = () => {
         <Button
           text="Назад"
           onClick={() => {
-            navigate("/")
+            navigate(-1)
           }}
           style={{
             marginTop: "15px"
