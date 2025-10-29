@@ -1,6 +1,6 @@
 //#region ===== IMPORTS =====
 import { Routes, Route } from "react-router"
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 
 import OfflineFallback from "../services/notifications/offlineFallback";
 
@@ -11,21 +11,34 @@ import ProtectedRoute from './ProtectedRoute'
 import { usePageTitle } from "../utils/usePageTitle";
 
 //----- PAGES -----
-import Main from "../pages/main/Main";
-import SearchResults from "../pages/searchResults/SearchResults";
-import List from "../pages/patientsList/List";
-import RegisterPatient from "../pages/register/RegisterPatient";
-import EditPatient from "../pages/edit/EditPatient";
-import Login from "../pages/login/LoginPage";
-import Administered from "../pages/nurse/Administered";
-import Discharged from "../pages/nurse/Discharged";
-import Hospitalized from "../pages/nurse/Hospitalized";
-import Dashboard from "../pages/admin/Dashboard";
-import NotFound from "../pages/NotFound";
+// import Main from "../pages/main/Main";
+// import SearchResults from "../pages/searchResults/SearchResults";
+// import List from "../pages/patientsList/List";
+// import RegisterPatient from "../pages/register/RegisterPatient";
+// import EditPatient from "../pages/edit/EditPatient";
+// import Login from "../pages/login/LoginPage";
+// import Administered from "../pages/nurse/Administered";
+// import Discharged from "../pages/nurse/Discharged";
+// import Hospitalized from "../pages/nurse/Hospitalized";
+// import Dashboard from "../pages/admin/Dashboard";
+// import NotFound from "../pages/NotFound";
+// import NurseDisplay from "../pages/main/pages/NurseDisplay";
+
+const Main = lazy(() => import("../pages/main/Main"));
+const SearchResults = lazy(() => import("../pages/searchResults/SearchResults"));
+const List = lazy(() => import("../pages/patientsList/List"));
+const RegisterPatient = lazy(() => import("../pages/register/RegisterPatient"));
+const EditPatient = lazy(() => import("../pages/edit/EditPatient"));
+const Login = lazy(() => import("../pages/login/LoginPage"));
+const Administered = lazy(() => import("../pages/nurse/Administered"));
+const Discharged = lazy(() => import("../pages/nurse/Discharged"));
+const Hospitalized = lazy(() => import("../pages/nurse/Hospitalized"));
+const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const NotFound = lazy(() => import("../pages/NotFound"));
+const NurseDisplay = lazy(() => import("../pages/main/pages/NurseDisplay"));
 
 //----- COMPONENTS -----
 import Loader from "../components/Loader";
-import NurseDisplay from "../pages/main/pages/NurseDisplay";
 //#endregion
 
 const Content = () => {
