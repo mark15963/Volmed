@@ -11,19 +11,6 @@ import ProtectedRoute from './ProtectedRoute'
 import { usePageTitle } from "../utils/usePageTitle";
 
 //----- PAGES -----
-// import Main from "../pages/main/Main";
-// import SearchResults from "../pages/searchResults/SearchResults";
-// import List from "../pages/patientsList/List";
-// import RegisterPatient from "../pages/register/RegisterPatient";
-// import EditPatient from "../pages/edit/EditPatient";
-// import Login from "../pages/login/LoginPage";
-// import Administered from "../pages/nurse/Administered";
-// import Discharged from "../pages/nurse/Discharged";
-// import Hospitalized from "../pages/nurse/Hospitalized";
-// import Dashboard from "../pages/admin/Dashboard";
-// import NotFound from "../pages/NotFound";
-// import NurseDisplay from "../pages/main/pages/NurseDisplay";
-
 const Main = lazy(() => import("../pages/main/Main"));
 const SearchResults = lazy(() => import("../pages/searchResults/SearchResults"));
 const List = lazy(() => import("../pages/patientsList/List"));
