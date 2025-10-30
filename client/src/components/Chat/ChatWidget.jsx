@@ -68,7 +68,10 @@ export const ChatWidget = memo(() => {
           ref={chatRef}
           className={styles.chatContainer}
         >
-          {authState.user.status === "Администратор" ? <AdminChat /> : <UserChat />}
+          {authState.user.status === "admin"
+            ? <AdminChat />
+            : <UserChat />
+          }
         </div>,
         document.body
       )}
