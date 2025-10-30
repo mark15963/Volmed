@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAuth } from '../../../context/AuthContext'
 import { useUsers } from "../../../context/UsersDataContext"
@@ -11,7 +11,24 @@ import api from '../../../services/api'
 
 import styles from './styles/UsersList.module.scss'
 
-const statusOptions = ['Администратор', 'Тестировщик', 'Сестра', 'Врач']
+const statusMap = {
+  'Администратор': 'admin',
+  'Тестировщик': 'tester',
+  'Сестра': 'nurse',
+  'Врач': 'doctor'
+};
+const reverseStatusMap = {
+  'admin': 'Администратор',
+  'tester': 'Тестировщик',
+  'nurse': 'Сестра',
+  'doctor': 'Врач'
+};
+const statusOptions = [
+  'Администратор',
+  'Тестировщик',
+  'Сестра',
+  'Врач'
+]
 
 const UsersList = () => {
   const { authState } = useAuth()
@@ -29,10 +46,12 @@ const UsersList = () => {
 
   const [addLoading, setAddLoading] = useState(false)
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (id, newStatusDisplay) => {
     try {
       setStatusLoading(id, true)
-      await api.updateUser(id, { status: newStatus })
+      // Convert display name to backend code
+      const backendStatus = statusMap[newStatusDisplay]
+      await api.updateUser(id, { status: backendStatus })
       await fetchUsers(false) // refresh without global loader
     } catch (err) {
       console.error('Failed to update status:', err.message)
@@ -51,12 +70,21 @@ const UsersList = () => {
     const firstName = prompt("Введите имя:");
     if (!firstName) return;
     const patr = prompt("Введите отчество (необязательно):") || null;
-    const status = prompt("Введите статус (Администратор, Тестировщик, Сестра, Врач):");
-    if (!status) return;
+    const statusDisplay = prompt("Введите статус (Администратор, Тестировщик, Сестра, Врач):");
+    if (!statusDisplay) return;
+
+    const backendStatus = statusMap[statusDisplay] || 'nurse'
 
     try {
       setAddLoading(true)
-      await api.createUser({ username, password, firstName, lastName, patr, status });
+      await api.createUser({
+        username,
+        password,
+        firstName,
+        lastName,
+        patr,
+        status: backendStatus
+      });
       await fetchUsers(false);
     } catch (err) {
       alert("Не удалось добавить пользователя");
@@ -108,7 +136,7 @@ const UsersList = () => {
               </td>
               <td className={styles.actionCell}>
                 <select
-                  value={user.displayStatus}
+                  value={reverseStatusMap[user.status] || user.status}
                   disabled={
                     user.status === "admin" ||
                     statusLoading[user.id]
@@ -132,7 +160,7 @@ const UsersList = () => {
                 <Button
                   text='Удалить'
                   size='s'
-                  disabled={user.status === "Администратор"}
+                  disabled={user.status === "admin"}
                   loading={deleteLoading[user.id]}
                   loadingText='Удаление...'
                   onClick={() => handleUserDelete(user.id)}
