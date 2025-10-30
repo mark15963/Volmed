@@ -1,11 +1,11 @@
 export const services = [
   {
     title: "Project name",
-    content: "Volmed",
+    content: "Volmed", // Footer name
   },
 ];
 
-//
+// Default consts
 export const CONFIG_DEFAULTS = {
   GENERAL: {
     TITLE: "ГБУ ДНР «Волновахская районная больница»",

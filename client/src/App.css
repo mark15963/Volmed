@@ -90,18 +90,10 @@ footer {
       "head"
       "content"
       "foot";
-    grid-template-rows: 120px 1fr 60px;
-  }
-
-  .content {
-    padding: 20px 5%;
-    width: 100%;
+    grid-template-rows: 100px 1fr 60px !important;
   }
 
   header {
-    height: 120px;
-  }
-  main {
-    padding: 0 5px;
+    height: 100px !important;
   }
 }

@@ -82,7 +82,11 @@
 @media screen and (orientation: portrait) {
   .content {
     gap: 5px;
-    padding: 0 10px 0 5px;
+    padding: 0 10px;
+
+    .logo {
+      padding: 0;
+    }
 
     .title {
       color: aliceblue;
