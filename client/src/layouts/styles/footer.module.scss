@@ -8,6 +8,7 @@ footer {
     align-items: center;
     font-weight: 500;
     justify-content: space-between;
+    user-select: none;
   }
 }
 @media screen and (orientation: portrait) {
