@@ -3,7 +3,7 @@ footer {
 
   .content {
     width: 100%;
-    padding: 20px;
+    padding: 20px 20px 20px 10px;
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -11,9 +11,12 @@ footer {
   }
 }
 @media screen and (orientation: portrait) {
-  .content {
-    font-size: 0.8em;
-    padding: 0 10px;
+  footer {
+    padding: 0 !important;
+    .content {
+      font-size: 0.8em;
+      padding: 0 10px !important;
+    }
   }
 }
 

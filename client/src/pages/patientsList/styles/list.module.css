@@ -28,6 +28,10 @@
   box-sizing: border-box;
 }
 
+.counter {
+  margin-left: 10px;
+}
+
 .buttonContainer {
   width: 100%;
   display: flex;
@@ -51,6 +55,10 @@
     justify-content: center;
     color: #000;
     box-sizing: border-box;
+  }
+
+  .counter {
+    margin: 10px;
   }
 
   .buttonContainer {

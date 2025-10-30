@@ -21,9 +21,9 @@ export const List = () => {
 
                 <ListOfPatients />
 
-                <div style={{ marginTop: '10px' }} />
-                <PatientCount />
-
+                <div className={styles.counter}>
+                    <PatientCount />
+                </div>
 
                 <div className={styles.buttonContainer}>
                     <Button
