@@ -40,8 +40,8 @@ export const UsersStats = () => {
   const { users, loading: usersLoading } = useUsers()
 
   const countUsers = users.length
-  const countDoctors = users.filter(user => user.status === 'Врач').length
-  const countNurses = users.filter(user => user.status === 'Сестра').length
+  const countDoctors = users.filter(user => user.status === 'doctor').length
+  const countNurses = users.filter(user => user.status === 'nurse').length
 
   return (
     <>

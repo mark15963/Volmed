@@ -39,6 +39,7 @@ const Content = () => {
       style={{
         // Color palette from cache
         backgroundColor: color.content,
+        padding: '0 5px'
       }}
     >
       <OfflineFallback /> {/*Shown when offline*/}
