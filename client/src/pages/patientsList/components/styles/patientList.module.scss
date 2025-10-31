@@ -78,13 +78,13 @@
         border-radius: 6px;
         &:hover {
           transition: all 0.3s;
-          background-color: #4a97cf;
-          color: aliceblue;
+          background-color: #005fa2;
+          // color: aliceblue;
         }
         &:active {
           transition: all 0.3s;
-          background-color: #005fa2;
-          color: aliceblue;
+          background-color: #005998;
+          // color: aliceblue;
         }
 
         td {
@@ -211,6 +211,16 @@
           font-weight: 500;
           align-items: center;
           position: relative;
+          &:hover {
+            transition: all 0.3s;
+            background-color: #4a97cf;
+            color: aliceblue;
+          }
+          &:active {
+            transition: all 0.3s;
+            background-color: #005fa2;
+            color: aliceblue;
+          }
 
           td {
             &:nth-child(2) {
