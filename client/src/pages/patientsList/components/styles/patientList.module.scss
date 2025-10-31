@@ -79,10 +79,12 @@
         &:hover {
           transition: all 0.3s;
           background-color: #005fa2;
+          color: aliceblue;
         }
         &:active {
           transition: all 0.3s;
           background-color: #005998;
+          color: aliceblue;
         }
 
         td {
