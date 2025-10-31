@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useAuth } from "../../../context";
 import { ContextMenu } from "../../../components/admin/ContextMenu";
 
-import styles from '../../styles/header.module.scss'
+import styles from '../header.module.scss'
 import Button from "../../../components/Button";
 import { useCallback, useState } from "react";
 
