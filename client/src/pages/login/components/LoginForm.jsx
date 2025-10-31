@@ -3,7 +3,7 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import ErrorDisplay from './ErrorDisplay';
 
-import styles from '../styles/login.module.css';
+import styles from '../styles/login.module.scss';
 
 const LoginForm = ({
   credentials,
@@ -38,7 +38,9 @@ const LoginForm = ({
       <div className={styles.mainBlock}>
         <h2>Вход</h2>
         <ErrorDisplay errors={errors} />
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+        >
           <label htmlFor="username">
             Имя пользователя:
           </label>
@@ -65,7 +67,7 @@ const LoginForm = ({
             required
             autoComplete="current-password"
           />
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.buttonContainer}>
             <Button
               text='Вход'
               type='submit'

@@ -1,4 +1,4 @@
-import styles from '../styles/login.module.css'
+import styles from '../styles/login.module.scss'
 
 const ErrorDisplay = ({ errors }) => {
   return (

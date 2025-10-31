@@ -1,11 +1,11 @@
 import { memo } from 'react';
 
-import ChatWidget from '../components/Chat/ChatWidget';
+import ChatWidget from '../../components/Chat/ChatWidget';
 
-import { services } from '../constants';
+import { services } from '../../constants';
 
-import styles from './styles/footer.module.scss'
-import InDev from '../components/InDev';
+import styles from './footer.module.scss'
+import InDev from '../../components/InDev';
 
 export const Footer = memo(() => {
   const year = new Date().getFullYear()

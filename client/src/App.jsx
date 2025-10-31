@@ -1,7 +1,7 @@
 import { AppProviders } from './context/index'
 import Content from './layouts/Content'
 import Header from './layouts/header/Header'
-import Footer from './layouts/Footer'
+import Footer from './layouts/footer/Footer'
 
 import './App.css'
 

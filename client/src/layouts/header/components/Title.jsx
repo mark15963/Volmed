@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import styles from '../../styles/header.module.scss'
+import styles from '../header.module.scss'
 import debug from '../../../utils/debug';
 import { useNavigate } from 'react-router';
 import { useConfig } from '../../../context';
