@@ -37,12 +37,15 @@ const Content = () => {
   return (
     <main
       style={{
-        // Color palette from cache
-        backgroundColor: color.content,
-        padding: '0 5px'
+        backgroundColor: color.content, // Color palette from cache
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '0 10px'
       }}
     >
-      <OfflineFallback /> {/*Shown when offline*/}
+      <OfflineFallback /> {/* Оffline/online indicator */}
 
       <Suspense fallback={<Loader />}> {/* Shows the handicap loader on first load */}
         <Routes>

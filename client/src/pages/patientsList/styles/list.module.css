@@ -41,7 +41,8 @@
 
 @media screen and (orientation: portrait) {
   .container {
-    width: calc(100% - 10px);
+    width: 100%;
+    margin: 10px 0;
     padding: 0 10px;
   }
 

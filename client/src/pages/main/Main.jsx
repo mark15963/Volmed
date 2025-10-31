@@ -38,12 +38,12 @@ export default function Main() {
 
   // Not auth
   return (
-    <div className={styles.container}>
-      <div className={styles.mainBlock}>
-        <div style={{ color: 'aliceblue' }}>
-          Пользователь не авторизован
-        </div>
+    // <div className={styles.container}>
+    <div className={styles.mainBlock}>
+      <div style={{ color: 'aliceblue' }}>
+        Пользователь не авторизован
       </div>
     </div>
+    // </div>
   )
 }

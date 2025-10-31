@@ -184,6 +184,7 @@
     margin: 0;
 
     .table {
+      padding: 5px;
       &:hover {
         transition: all 0.25s;
       }
@@ -195,18 +196,18 @@
       }
 
       .tbody {
+        gap: 10px;
         .rows {
           padding: 10px;
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-rows: auto auto auto;
-          gap: 8px;
+          gap: 5px;
           background-color: aliceblue;
           color: #000;
           border-radius: 6px;
           font-weight: 500;
           align-items: center;
-
           position: relative;
 
           td {
