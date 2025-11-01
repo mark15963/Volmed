@@ -1,9 +1,29 @@
+:root {
+  --table: #005fa3;
+  --table-rows: #006fbe;
+  --table-rows-hover: #005490;
+  --table-rows-active: #004474;
+
+  --mobile-table-row-hover: #4a97cf;
+  --mobile-table-row-active: #005fa2;
+
+  --state-stable: #4caf50bf;
+  --state-moderate: #c9c318bf;
+  --state-critical: #f44336bf;
+  --state-leave: #ffffffbf;
+  --mobile-state-leave: #86e5ffbf;
+
+  --loading-skeleton: #488ab9;
+
+  --font-size: 0.8rem;
+}
+
 .container {
   width: 100%;
   display: flex;
   flex-direction: column;
   color: aliceblue;
-  background-color: #0065ad;
+  background-color: var(--table);
   padding: 5px;
   border-radius: 5px;
   margin: 10px 0;
@@ -19,12 +39,12 @@
       .rows {
         display: flex;
         text-align: center;
-        background-color: #0065ad;
+        background-color: var(--table);
         align-items: center;
         padding: 5px 5px 10px 5px;
 
         th {
-          font-size: 0.8rem;
+          font-size: var(--font-size);
           &:nth-child(1) {
             flex: 0.2;
             text-align: center;
@@ -58,7 +78,7 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
-        background-color: #006fbe;
+        background-color: var(--table-rows);
         padding: 5px 10px;
         overflow: hidden;
 
@@ -72,18 +92,18 @@
         width: 100%;
         padding: 5px 0;
         justify-content: space-between;
-        background-color: #006fbe;
+        background-color: var(--table-rows);
         cursor: default;
         align-items: center;
         border-radius: 6px;
         &:hover {
           transition: all 0.3s;
-          background-color: #005fa2;
+          background-color: var(--table-rows-hover);
           // color: aliceblue;
         }
         &:active {
           transition: all 0.3s;
-          background-color: #005998;
+          background-color: var(--table-rows-active);
           // color: aliceblue;
         }
 
@@ -93,44 +113,44 @@
             text-align: left;
             position: relative;
             left: 10px;
-            font-size: 0.8rem;
+            font-size: var(--font-size);
           }
           &:nth-child(2) {
             flex: 1;
-            font-size: 0.8rem;
+            font-size: var(--font-size);
           }
           &:nth-child(3) {
             flex: 0.5;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: var(--font-size);
           }
           &:nth-child(4) {
             flex: 0.5;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: var(--font-size);
           }
           &:nth-child(5) {
             flex: 0.5;
             text-align: center;
             font-weight: 600;
-            font-size: 0.8em;
+            font-size: var(--font-size);
             margin: 0 5px;
             padding: 5px 0;
             box-sizing: border-box;
             border-radius: 6px;
             align-content: center;
             &.stable {
-              background-color: #4caf50bf;
+              background-color: var(--state-stable);
             }
             &.moderate {
-              background-color: #c9c318bf;
+              background-color: var(--state-moderate);
               font-size: 0.7em;
             }
             &.critical {
-              background-color: #f44336bf;
+              background-color: var(--state-critical);
             }
             &.leave {
-              background-color: #ffffffbf;
+              background-color: var(--state-leave);
               color: #000;
             }
           }
@@ -145,7 +165,7 @@
         color: aliceblue;
         font-size: 1em;
         border-radius: 5px;
-        background: #006fbe;
+        background: var(--table-rows);
       }
     }
   }
@@ -162,9 +182,10 @@
     opacity: 0.6;
   }
 }
+
 .react-loading-skeleton {
   animation: pulse 1.5s ease-in-out infinite;
-  color: #488ab9;
+  color: var(--loading-skeleton);
 }
 
 .skeleton {
@@ -176,7 +197,6 @@
 }
 
 .countContainer {
-  background-color: #0073c7;
   color: aliceblue;
   cursor: default;
 }
@@ -213,12 +233,12 @@
           position: relative;
           &:hover {
             transition: all 0.3s;
-            background-color: #4a97cf;
+            background-color: var(--mobile-table-row-hover);
             color: aliceblue;
           }
           &:active {
             transition: all 0.3s;
-            background-color: #005fa2;
+            background-color: var(--mobile-table-row-active);
             color: aliceblue;
           }
 
@@ -283,7 +303,7 @@
                 font-size: 0.8em;
               }
               &.leave {
-                background-color: #86e5ffbf !important;
+                background-color: var(--mobile-state-leave) !important;
               }
             }
           }

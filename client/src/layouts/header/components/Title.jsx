@@ -3,6 +3,7 @@ import styles from '../header.module.scss'
 import debug from '../../../utils/debug';
 import { useNavigate } from 'react-router';
 import { useConfig } from '../../../context';
+import Loader from '../../../components/Loader';
 
 const Title = () => {
   const navigate = useNavigate();
@@ -30,9 +31,13 @@ const Title = () => {
         src={logoSource}
         alt="Logo"
         className={styles.logo}
+        style={{ display: 'none' }}
         onClick={handleClick}
         loading='eager'
         draggable='false'
+        onLoad={(e) => {
+          e.target.style.display = 'block'
+        }}
         onError={(e) => {
           console.log("Can not load logo", logoSource, e)
           e.target.style.display = 'none'
