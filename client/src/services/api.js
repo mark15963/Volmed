@@ -57,7 +57,7 @@ api.interceptors.response.use(
     if (error.code === "ECONNABORTED") {
       errorMessage = "Сервер не ответил вовремя.";
     } else if (!error.response) {
-      errorMessage = "Оштбка сети. Проверьте подключение.";
+      errorMessage = "Ошибка сети. Проверьте подключение.";
     } else {
       const statusMessages = {
         400: "Некорректный запрос",
