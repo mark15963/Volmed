@@ -6,14 +6,22 @@ import {
 
 export const useGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [titleInput, setTitleInput] = useState(config.title || "");
-  const [headerColorInput, setHeaderColorInput] = useState(config.color.header);
-  const [contentColorInput, setContentColorInput] = useState(
-    config.color.content
-  );
-  const [containerColorInput, setContainerColorInput] = useState(
-    config.color.container
-  );
+
+  const [inputs, setInputs] = useState({
+    title: config.title || "",
+    header: config.color.header,
+    content: config.color.content,
+    container: config.color.container,
+  });
+
+  // const [titleInput, setTitleInput] = useState(config.title || "");
+  // const [headerColorInput, setHeaderColorInput] = useState(config.color.header);
+  // const [contentColorInput, setContentColorInput] = useState(
+  //   config.color.content
+  // );
+  // const [containerColorInput, setContainerColorInput] = useState(
+  //   config.color.container
+  // );
 
   const { handleSave, handleLogoUpdate } = useGeneralConfigLogic(
     config,
@@ -21,35 +29,29 @@ export const useGeneralConfig = (config, safeMessage) => {
     setIsLoading
   );
 
-  useKeyboardSave(
-    () =>
-      handleSave(
-        titleInput,
-        headerColorInput,
-        contentColorInput,
-        containerColorInput
-      ),
-    isLoading
-  );
-
   useEffect(() => {
-    setTitleInput(config.title || "");
-  }, [config.title]);
+    setInputs({
+      title: config.title || "",
+      ...config.color,
+    });
+  }, [config]);
 
-  useEffect(() => {
-    setHeaderColorInput(config.color.header);
-    setContentColorInput(config.color.content);
-    setContainerColorInput(config.color.container);
-  }, [config.color]);
+  // useEffect(() => {
+  //   setHeaderColorInput(config.color.header);
+  //   setContentColorInput(config.color.content);
+  //   setContainerColorInput(config.color.container);
+  // }, [config.color]);
+
+  const handleChange = (key, value) => {
+    setInputs((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSaveWrapper = async () => {
-    await handleSave(
-      titleInput,
-      headerColorInput,
-      contentColorInput,
-      containerColorInput
-    );
+    const { title, header, content, container, ...rest } = inputs;
+    await handleSave(title, header, content, container, rest);
   };
+
+  useKeyboardSave(handleSaveWrapper, isLoading);
 
   const handleLogoUpdateWrapper = async (file) => {
     await handleLogoUpdate(file);
@@ -57,14 +59,9 @@ export const useGeneralConfig = (config, safeMessage) => {
 
   return {
     isLoading,
-    titleInput,
-    headerColorInput,
-    contentColorInput,
-    containerColorInput,
-    setTitleInput,
-    setHeaderColorInput,
-    setContentColorInput,
-    setContainerColorInput,
+    inputs,
+    setInputs,
+    handleChange,
     handleSave: handleSaveWrapper,
     handleLogoUpdate: handleLogoUpdateWrapper,
   };
