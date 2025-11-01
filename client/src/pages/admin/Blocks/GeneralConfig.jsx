@@ -17,14 +17,8 @@ const GeneralConfig = () => {
 
   const {
     isLoading,
-    titleInput,
-    headerColorInput,
-    contentColorInput,
-    containerColorInput,
-    setTitleInput,
-    setHeaderColorInput,
-    setContentColorInput,
-    setContainerColorInput,
+    inputs,
+    handleChange,
     handleSave,
     handleLogoUpdate
   } = useGeneralConfig(config, safeMessage)
@@ -47,8 +41,8 @@ const GeneralConfig = () => {
       Название сайта:
       <Input
         type="text"
-        value={!isLoading ? titleInput : ''}
-        onChange={e => setTitleInput(e.target.value)}
+        value={inputs.title}
+        onChange={e => handleChange("title", e.target.value)}
         placeholder='Введите название сайта'
         className={styles.textInput}
         onKeyDown={(e) => {
@@ -86,10 +80,10 @@ const GeneralConfig = () => {
             <div className={styles.colorPicker}>
               <Input
                 type="color"
-                value={headerColorInput}
-                onChange={e => setHeaderColorInput(e.target.value)}
+                value={inputs.header}
+                onChange={e => handleChange("header", e.target.value)}
               />
-              <span>{headerColorInput.toUpperCase()}</span>
+              <span>{inputs.header.toUpperCase()}</span>
             </div>
           </div>
 
@@ -98,10 +92,10 @@ const GeneralConfig = () => {
             <div className={styles.colorPicker}>
               <Input
                 type="color"
-                value={contentColorInput}
-                onChange={e => setContentColorInput(e.target.value)}
+                value={inputs.content}
+                onChange={e => handleChange("content", e.target.value)}
               />
-              <span>{contentColorInput.toUpperCase()}</span>
+              <span>{inputs.content.toUpperCase()}</span>
             </div>
           </div>
 
@@ -110,10 +104,10 @@ const GeneralConfig = () => {
             <div className={styles.colorPicker}>
               <Input
                 type="color"
-                value={containerColorInput}
-                onChange={e => setContainerColorInput(e.target.value)}
+                value={inputs.container}
+                onChange={e => handleChange("container", e.target.value)}
               />
-              <span>{containerColorInput.toUpperCase()}</span>
+              <span>{inputs.container.toUpperCase()}</span>
             </div>
           </div>
 
