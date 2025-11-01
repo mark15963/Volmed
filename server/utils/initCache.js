@@ -24,17 +24,15 @@ async function initCacheOnStartup() {
     }
 
     const data = {
-      title: {
-        topTitle: row.topTitle,
-        bottomTitle: row.bottomTitle,
-      },
+      title: row.title,
       color: {
         headerColor: row.headerColor,
         contentColor: row.contentColor,
+        containerColor: row.containerColor,
       },
     };
 
-    saveCachedConfig();
+    saveCachedConfig(data);
     debug.log("General configuration cache built successfully");
   } catch (err) {
     console.error("Failed to initialize cache:", err);

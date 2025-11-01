@@ -20,9 +20,11 @@ const GeneralConfig = () => {
     titleInput,
     headerColorInput,
     contentColorInput,
+    containerColorInput,
     setTitleInput,
     setHeaderColorInput,
     setContentColorInput,
+    setContainerColorInput,
     handleSave,
     handleLogoUpdate
   } = useGeneralConfig(config, safeMessage)
@@ -45,7 +47,7 @@ const GeneralConfig = () => {
       Название сайта:
       <Input
         type="text"
-        value={titleInput}
+        value={!isLoading ? titleInput : ''}
         onChange={e => setTitleInput(e.target.value)}
         placeholder='Введите название сайта'
         className={styles.textInput}
@@ -100,6 +102,18 @@ const GeneralConfig = () => {
                 onChange={e => setContentColorInput(e.target.value)}
               />
               <span>{contentColorInput.toUpperCase()}</span>
+            </div>
+          </div>
+
+          <div className={styles.colorBlocks}>
+            Цвет контейнера
+            <div className={styles.colorPicker}>
+              <Input
+                type="color"
+                value={containerColorInput}
+                onChange={e => setContainerColorInput(e.target.value)}
+              />
+              <span>{containerColorInput.toUpperCase()}</span>
             </div>
           </div>
 
