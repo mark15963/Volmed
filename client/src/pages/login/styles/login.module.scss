@@ -14,25 +14,26 @@
     border-radius: 15px;
 
     h2 {
-      margin: 0 0 10px 0;
       color: aliceblue;
       font-weight: 700;
     }
 
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-weight: 700;
+      text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    }
+
     form {
       width: 100%;
-      margin: 0 20px;
+      margin: 10px 20px;
       display: flex;
       flex-direction: column;
       gap: 10px;
 
       label {
         color: aliceblue;
-      }
-
-      .error {
-        color: red;
-        margin-bottom: 10px;
       }
 
       input.error {

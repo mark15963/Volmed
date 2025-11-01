@@ -46,15 +46,22 @@ export const ConfigProvider = ({ children }) => {
 
   const loadFromCache = useCallback(async () => {
     try {
-      const cacheUrl = `${CACHE_CONFIG.CACHE_URL}${CACHE_CONFIG.CACHE_BUSTER}`
-      const res = await fetch(cacheUrl, CACHE_CONFIG.CACHE_OPTIONS)
+      let res
+      try {
+        let serverUrl = `${CACHE_CONFIG.CACHE_URL}${CACHE_CONFIG.CACHE_BUSTER}`
+        res = await fetch(serverUrl, CACHE_CONFIG.CACHE_OPTIONS)
+        if (!res.ok) throw new Error(`Server cache returned ${res.status}`);
+      } catch (err) {
+        debug.warn("⚠️ Server cache not found, falling back to local cache:", err.message);
+        res = await fetch("/cache/config-cache.json");
+        if (!res.ok) throw new Error(`Local cache returned ${res.status}`);
+      }
 
-      if (!res.ok) throw new Error("Cache not found")
-
+      // --- Parse JSON ---
       const cache = await res.json()
+      debug.log("Cache:", JSON.stringify(cache, null, 2))
 
-      console.log(cache)
-
+      // --- Apply cached data ---
       const cachedTitle = getNestedValue(cache, CONFIG_KEYS.TITLE)
       setTitleState(cachedTitle || CONFIG_DEFAULTS.GENERAL.TITLE,)
       setColorState({
@@ -62,7 +69,7 @@ export const ConfigProvider = ({ children }) => {
         content: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTENT) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
       })
       const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
-      if (cachedLogo) setLogoState(cachedLogo)
+      setLogoState(cachedLogo || CONFIG_DEFAULTS.GENERAL.LOGO)
 
       debug.log("✅ Loaded config from cache");
       return true;
@@ -105,8 +112,7 @@ export const ConfigProvider = ({ children }) => {
     const initializeConfig = async () => {
       setIsLoading(true)
 
-      const cacheLoaded = await loadFromCache()
-
+      await loadFromCache()
       await fetchFromApi()
 
       setIsLoading(false)
