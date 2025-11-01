@@ -42,7 +42,7 @@ const Content = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '0 10px'
+        padding: '10px',
       }}
     >
       <OfflineFallback /> {/* Оffline/online indicator */}
