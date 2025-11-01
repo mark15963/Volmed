@@ -53,6 +53,8 @@ export const ConfigProvider = ({ children }) => {
 
       const cache = await res.json()
 
+      console.log(cache)
+
       const cachedTitle = getNestedValue(cache, CONFIG_KEYS.TITLE)
       setTitleState(cachedTitle || CONFIG_DEFAULTS.GENERAL.TITLE,)
       setColorState({
