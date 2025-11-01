@@ -31,6 +31,10 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
 
+    debug.log("❌ Axios Error:", error);
+    debug.log("🔍 Response:", error.response);
+    debug.log("🔍 Config:", error.config);
+
     // Backend tells frontend to redirect
     if (status === 401 && error.response.data?.redirectToFrontend) {
       if (typeof window !== "undefined") {
@@ -53,7 +57,7 @@ api.interceptors.response.use(
     if (error.code === "ECONNABORTED") {
       errorMessage = "Сервер не ответил вовремя.";
     } else if (!error.response) {
-      errorMessage = "Проблема с сетью. Проверьте подключение.";
+      errorMessage = "Оштбка сети. Проверьте подключение.";
     } else {
       const statusMessages = {
         400: "Некорректный запрос",
@@ -75,6 +79,7 @@ api.interceptors.response.use(
 
     const customError = new Error(errorMessage);
     customError.details = errorDetails;
+
     return Promise.reject(customError);
   }
 );

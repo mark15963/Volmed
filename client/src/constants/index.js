@@ -20,7 +20,7 @@ export const CONFIG_DEFAULTS = {
 //
 export const CACHE_CONFIG = {
   CACHE_URL: `${
-    import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || ""
+    import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "" // If empty -> local file
   }/cache/config-cache.json`,
   CACHE_BUSTER: `?t=${Date.now()}`,
   CACHE_OPTIONS: {
