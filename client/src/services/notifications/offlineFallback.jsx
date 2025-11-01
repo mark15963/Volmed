@@ -1,3 +1,5 @@
+// Used in Content.jsx
+
 import { useState, useEffect, useRef } from 'react'
 
 import styles from './styles.module.scss'
