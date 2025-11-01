@@ -9,7 +9,8 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
   const handleSave = async (
     titleInput,
     headerColorInput,
-    contentColorInput
+    contentColorInput,
+    containerColorInput
   ) => {
     try {
       setIsLoading(true);
@@ -19,14 +20,17 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         title: titleInput,
         headerColor: headerColorInput,
         contentColor: contentColorInput,
+        containerColor: containerColorInput,
       });
 
       // Update title and color
       try {
         debug.log("🔄 Updating title...");
+
         await api.updateTitle({
           title: titleInput,
         });
+
         const title = await api.getTitle();
         if (title.data.title === titleInput)
           debug.log("✅ Title updated successfully");
@@ -41,10 +45,12 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         const colors = await api.updateColor({
           headerColor: headerColorInput,
           contentColor: contentColorInput,
+          containerColor: containerColorInput,
         });
         if (
           colors.data.headerColor === headerColorInput &&
-          colors.data.contentColor === contentColorInput
+          colors.data.contentColor === contentColorInput &&
+          colors.data.containerColor === containerColorInput
         )
           debug.log("✅ Colors updated successfully");
         else debug.error("❌ Color update failed");
@@ -54,12 +60,11 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
       }
 
       // Update local state
-      setTitle({
-        title: titleInput,
-      });
+      setTitle(titleInput);
       setColor({
         header: headerColorInput,
         content: contentColorInput,
+        container: containerColorInput,
       });
 
       safeMessage("success", "Данные сохранены!", 2.5);

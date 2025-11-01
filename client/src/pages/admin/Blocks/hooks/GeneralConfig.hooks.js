@@ -11,6 +11,9 @@ export const useGeneralConfig = (config, safeMessage) => {
   const [contentColorInput, setContentColorInput] = useState(
     config.color.content
   );
+  const [containerColorInput, setContainerColorInput] = useState(
+    config.color.container
+  );
 
   const { handleSave, handleLogoUpdate } = useGeneralConfigLogic(
     config,
@@ -19,7 +22,13 @@ export const useGeneralConfig = (config, safeMessage) => {
   );
 
   useKeyboardSave(
-    () => handleSave(titleInput, headerColorInput, contentColorInput),
+    () =>
+      handleSave(
+        titleInput,
+        headerColorInput,
+        contentColorInput,
+        containerColorInput
+      ),
     isLoading
   );
 
@@ -30,10 +39,16 @@ export const useGeneralConfig = (config, safeMessage) => {
   useEffect(() => {
     setHeaderColorInput(config.color.header);
     setContentColorInput(config.color.content);
+    setContainerColorInput(config.color.container);
   }, [config.color]);
 
   const handleSaveWrapper = async () => {
-    await handleSave(titleInput, headerColorInput, contentColorInput);
+    await handleSave(
+      titleInput,
+      headerColorInput,
+      contentColorInput,
+      containerColorInput
+    );
   };
 
   const handleLogoUpdateWrapper = async (file) => {
@@ -45,9 +60,11 @@ export const useGeneralConfig = (config, safeMessage) => {
     titleInput,
     headerColorInput,
     contentColorInput,
+    containerColorInput,
     setTitleInput,
     setHeaderColorInput,
     setContentColorInput,
+    setContainerColorInput,
     handleSave: handleSaveWrapper,
     handleLogoUpdate: handleLogoUpdateWrapper,
   };

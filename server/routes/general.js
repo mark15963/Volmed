@@ -14,18 +14,16 @@ router.get("/title", async (req, res) => {
   try {
     const cached = getCachedConfig();
     if (cached?.title) {
-      return res.json(cached.title);
+      return res.json({ title: cached.title });
     }
 
     const row = await fetchRow('SELECT "title" FROM general WHERE id = 1');
     if (!row) return res.status(404).json({ error: "Data not found" });
 
-    const data = {
-      title: row.title,
-    };
-    saveCachedConfig({ title: data });
+    const title = row.title;
+    saveCachedConfig({ title });
 
-    res.json(data);
+    res.json({ title });
   } catch (err) {
     console.error("Error fetching title:", err);
     res.status(500).json({ error: "Failed to fetch title" });
@@ -45,10 +43,9 @@ router.put("/title", async (req, res) => {
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    const data = { title: row.title };
-    saveCachedConfig({ title: data });
+    saveCachedConfig({ title: row.title });
 
-    res.json(data);
+    res.json({ title: row.title });
   } catch (err) {
     console.error("Error updating title:", err);
     res.status(500).json({ error: "Failed to update title" });
@@ -62,47 +59,66 @@ router.get("/color", async (req, res) => {
     if (cached?.color) {
       return res.json(cached.color);
     }
-    const row = await fetchRow(
-      'SELECT "headerColor", "contentColor" FROM general WHERE id = 1'
-    );
+    const row = await fetchRow(`
+      SELECT "headerColor", "contentColor", "containerColor" 
+      FROM general 
+      WHERE id = 1
+    `);
+
     if (!row) return res.status(404).json({ error: "Data not found" });
 
-    const data = {
+    const color = {
       headerColor: row.headerColor,
       contentColor: row.contentColor,
+      containerColor: row.containerColor,
     };
-    saveCachedConfig({ color: data });
+    saveCachedConfig({ color });
 
-    res.json(data);
+    res.json(color);
   } catch (err) {
     console.error("Error fetching color:", err);
     res.status(500).json({ error: "Failed to fetch color" });
   }
 });
 router.put("/color", async (req, res) => {
-  const { headerColor, contentColor } = req.body;
+  const { headerColor, contentColor, containerColor } = req.body;
 
-  debug.log("🎨 Received color update:", { headerColor, contentColor });
+  debug.log("🎨 Received color update:", {
+    headerColor,
+    contentColor,
+    containerColor,
+  });
   debug.log("🎨 Request body:", req.body);
 
   try {
     const row = await updateRow(
-      'UPDATE general SET "headerColor" = $1, "contentColor" = $2 WHERE id = 1 RETURNING *',
-      [{ value: headerColor }, { value: contentColor }],
+      `
+      UPDATE general 
+      SET "headerColor" = $1, "contentColor" = $2, "containerColor" = $3 
+      WHERE id = 1 
+      RETURNING *
+      `,
+      [
+        { value: headerColor },
+        { value: contentColor },
+        { value: containerColor },
+      ],
       [
         { index: 0, name: "Header color" }, // Required
         { index: 1, name: "Content color" }, // Required
+        { index: 2, name: "Container color" }, // Required
       ]
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    const data = {
+    const color = {
       headerColor: row.headerColor,
       contentColor: row.contentColor,
+      containerColor: row.containerColor,
     };
-    saveCachedConfig({ color: data });
+    saveCachedConfig({ color });
 
-    res.json(data);
+    res.json(color);
   } catch (err) {
     console.error("Error updating color:", err);
     res.status(500).json({ error: "Failed to update color" });

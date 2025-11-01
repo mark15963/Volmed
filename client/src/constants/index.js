@@ -12,6 +12,7 @@ export const CONFIG_DEFAULTS = {
     COLOR: {
       HEADER: "#3c97e6",
       CONTENT: "#a5c6e2",
+      CONTAINER: "#0073c7",
     },
     LOGO: "/assets/images/logo.webp",
   },
@@ -34,6 +35,7 @@ export const CONFIG_KEYS = {
   COLOR: {
     HEADER: "general.color.headerColor",
     CONTENT: "general.color.contentColor",
+    CONTAINER: "general.color.containerColor",
   },
   LOGO: "general.logoUrl",
 };

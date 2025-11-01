@@ -67,6 +67,7 @@ export const ConfigProvider = ({ children }) => {
       setColorState({
         header: getNestedValue(cache, CONFIG_KEYS.COLOR.HEADER) || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
         content: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTENT) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+        container: getNestedValue(cache, CONFIG_KEYS.COLOR.CONTAINER) || CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
       })
       const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
       setLogoState(cachedLogo || CONFIG_DEFAULTS.GENERAL.LOGO)
@@ -93,7 +94,8 @@ export const ConfigProvider = ({ children }) => {
       if (colorRes.status === 'fulfilled') {
         setColorState({
           header: colorRes.value.data.headerColor || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
-          content: colorRes.value.data.contentColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT
+          content: colorRes.value.data.contentColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+          container: colorRes.value.data.containerColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER
         })
       }
       if (logoRes.status === 'fulfilled' && logoRes.value.data.logoUrl) {
@@ -125,22 +127,24 @@ export const ConfigProvider = ({ children }) => {
   const setTitle = useCallback(async (titleData) => {
     try {
       const { data } = await api.updateTitle({ title: titleData })
-      setTitleState(data)
+      setTitleState(data.title)
       debug.log("✅ Title updated successfully")
     } catch (err) {
       console.error("Failed to update title:", err)
       throw err
     }
   }, [])
-  const setColor = useCallback(async ({ header, content }) => {
+  const setColor = useCallback(async ({ header, content, container }) => {
     try {
       const { data } = await api.updateColor({
         headerColor: header,
         contentColor: content,
+        containerColor: container
       })
       setColorState({
         header: data.headerColor,
         content: data.contentColor,
+        container: data.containerColor
       })
       debug.log("✅ Colors updated successfully")
     } catch (err) {

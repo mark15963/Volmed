@@ -13,13 +13,15 @@ import Button from "../../components/Button"
 // UI
 import styles from './styles/dashboard.module.scss'
 import { PAGES } from "../../constants"
+import { useConfig } from "../../context"
 
 export const Dashboard = () => {
   const navigate = useNavigate()
+  const { color } = useConfig()
 
   return (
     <div className={styles.container}>
-      <div className={styles.mainBlock}>
+      <div className={styles.mainBlock} style={{ backgroundColor: color.container }}>
         <div className={styles.title}>
           ПАНЕЛЬ УПРАВЛЕНИЯ
         </div>
