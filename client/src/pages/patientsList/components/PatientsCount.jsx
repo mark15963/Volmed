@@ -49,11 +49,19 @@ export const PatientCount = () => {
   return (
     <div
       className={styles.countContainer}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{ position: "relative" }}
+      style={{
+        position: "relative"
+      }}
     >
-      <span style={{ marginRight: '10px' }}>Активных пациентов: </span>
+      <span
+        style={{
+          marginRight: '10px',
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        Активных пациентов:
+      </span>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
           <Skeleton
