@@ -7,18 +7,39 @@
   align-items: center;
   justify-content: center;
   background-color: #0073c7;
-  border-style: solid;
   border-radius: 15px;
+  box-shadow: 6px 6px 18px -10px black;
 
   .buttonsContainer {
+    margin-top: 10px;
     display: flex;
   }
 }
-// }
 
 @media screen and (orientation: portrait) {
   .mainBlock {
     width: fit-content;
-    padding: 10px 5px;
+    padding: 10px 5px 20px;
+
+    .divider {
+      margin-top: 5px;
+      width: 100%;
+      box-shadow: 0px 0px 7px 2px #0063aa;
+    }
+
+    .buttonsContainer {
+      flex-direction: column;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0 30px;
+
+      .buttons {
+        width: 100%;
+        &:first-child {
+          margin-top: 5px;
+        }
+      }
+    }
   }
 }

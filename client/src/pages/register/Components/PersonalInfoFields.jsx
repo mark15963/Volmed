@@ -2,7 +2,7 @@ import { DatePicker, Form, Input, Radio, Select } from 'antd';
 
 const { default: dayjs, datePickerLocale } = await import('../dayjs.config')
 
-import styles from '../register.module.css'
+import styles from '../register.module.scss'
 import { IMaskInput } from 'react-imask';
 
 export const PersonalInfoFields = ({ form, messageApi }) => {
@@ -52,17 +52,7 @@ export const PersonalInfoFields = ({ form, messageApi }) => {
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item
-                        label={<span className={styles.formLabel}>Поступил</span>}
-                        name="freq"
-                    >
-                        <Select
-                            options={[
-                                { value: 'Впервые', label: 'Впервые' },
-                                { value: 'Повторно', label: 'Повторно' }
-                            ]}
-                        />
-                    </Form.Item>
+
                 </div>
 
                 <div className={styles.topFormsB}>
@@ -168,12 +158,23 @@ export const PersonalInfoFields = ({ form, messageApi }) => {
                         />
                     </Form.Item>
                 </div>
-
+                <Form.Item
+                    label={<span className={styles.formLabel}>Поступил</span>}
+                    name="freq"
+                    className={styles.freq}
+                >
+                    <Select
+                        options={[
+                            { value: 'Впервые', label: 'Впервые' },
+                            { value: 'Повторно', label: 'Повторно' }
+                        ]}
+                    />
+                </Form.Item>
             </div>
             <Form.Item
                 label={<span className={styles.formLabel}>Диагноз при направлении</span>}
                 name="firstDiag"
-                style={{ borderBottomStyle: 'solid', borderBottomColor: 'black', borderBottomWidth: '1px', paddingBottom: '20px' }}
+                className={styles.firstDiag}
             >
                 <Input placeholder='Диагноз при направлении' />
             </Form.Item>

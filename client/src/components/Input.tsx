@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, CSSProperties, FC } from "react";
-
+import { Search } from "lucide-react"; // not permanent
 import "./styles/Input.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -11,6 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   style?: CSSProperties;
   loading?: boolean;
   loadingPosition?: "left" | "right";
+  onSubmitClick?: () => void;
 }
 
 const Input: FC<InputProps> = ({
@@ -26,25 +27,55 @@ const Input: FC<InputProps> = ({
   loading = false,
   loadingPosition = "right",
   disabled,
+  onSubmitClick,
   ...props
 }) => {
   const inputClass = ["input", loading ? "input--loading" : "", className]
     .filter(Boolean)
     .join(" ");
 
+  // if input type is COLOR - default color is black
   const inputValue = type === "color" ? value || "#000000" : value;
 
+  // style of input type COLOR
   const mergedStyle: CSSProperties =
     type === "color"
-      ? { width: "50px", height: "30px", padding: 0, border: "none", ...style }
+      ? {
+          width: "50px",
+          height: "30px",
+          padding: 0,
+          border: "none",
+          ...style,
+        }
       : style || {};
 
+  // style of input type SEARCH
+  if (type === "search") {
+    mergedStyle.borderWidth = "0px";
+    mergedStyle.borderRadius = "25px";
+  }
+
   return (
-    <div className="input-wrapper">
-      {loading && loadingPosition === "left" && (
+    <div
+      className={`input-wrapper ${
+        type === "search" ? "input-wrapper--search" : ""
+      }`}
+    >
+      {loading && loadingPosition === "left" ? (
         <div className="input-loader input-loader--left">
           <div className="input-loader-spinner"></div>
         </div>
+      ) : (
+        type === "search" && (
+          <button
+            type="submit"
+            className="input-search-button"
+            onClick={onSubmitClick}
+            disabled={disabled}
+          >
+            <Search size={18} />
+          </button>
+        )
       )}
 
       <input

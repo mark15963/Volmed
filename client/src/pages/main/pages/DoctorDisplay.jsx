@@ -9,6 +9,7 @@ export default function DoctorDisplay() {
     <div className={styles.container}>
       <div className={styles.mainBlock}>
         <SearchBar />
+        <div className={styles.divider} />
         {control()}
       </div>
     </div>
@@ -25,12 +26,14 @@ function control() {
           icon='patients'
           margin='0 0 0 5px'
           navigateTo='PATIENTS'
+          className={styles.buttons}
         />
         <Button
           text='Новый пациент'
           icon='newPatient'
           margin='0 0 0 5px'
           navigateTo='REGISTER'
+          className={styles.buttons}
         />
       </div>
     </>

@@ -48,7 +48,7 @@ export const SearchBar = () => {
     }
 
     // navigate if searched patient exists
-    navigate('/search', {
+    navigate(`/search/${searchValue}`, {
       state: {
         results: [res.data],
         searchQuery: searchValue
@@ -61,12 +61,11 @@ export const SearchBar = () => {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+      <form>
         <div className={styles.searchtitle}>
           Поиск пациентов:
         </div>
-        <search className={styles.searchContainer}>
-          <div className={styles.space}></div>
+        <search>
           <Input
             id='searchfield'
             type='search'
@@ -77,11 +76,7 @@ export const SearchBar = () => {
             inputMode='numeric'
             pattern='[0-9]*'
             className={styles.searchfield}
-          />
-          <Button
-            type='submit'
-            shape='circle'
-            icon='search'
+            onSubmitClick={handleSubmit}
           />
         </search>
       </form>

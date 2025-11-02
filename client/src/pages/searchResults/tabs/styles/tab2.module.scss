@@ -7,17 +7,17 @@
   height: 100%;
   width: 100%;
   margin-bottom: 20px;
-  border: solid, black, 2px;
+  // border: solid, black, 2px;
   border-radius: 10px;
   border-top-left-radius: 0;
   padding: 10px 10px;
   cursor: default;
+  z-index: 5;
 
   .bg {
     background-color: #0075c9;
     padding: 10px;
     border-radius: 8px;
-    border: solid, black, 1px;
 
     .fileSection {
       margin-top: 20px;

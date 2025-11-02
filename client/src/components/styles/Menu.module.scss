@@ -1,30 +1,28 @@
 .menuContainer {
   display: flex;
-  width: 100%;
-  margin-bottom: 0;
+  align-items: flex-start;
   position: relative;
-  z-index: 1;
   gap: 0;
-  max-width: 100%;
+  width: 100%;
   box-sizing: border-box;
 
   .menuCard {
-    border: 2px solid black;
+    position: relative;
+    background-color: #0073c7;
     border-radius: 10px 10px 0 0;
     border-bottom: none;
     padding: 4px 15px;
-    background-color: #0073c7;
-    cursor: pointer;
     border-right: none;
     box-sizing: border-box;
     min-width: 0;
     z-index: 1;
-    position: relative;
-    &:last-child {
-      border-right: 2px solid black;
-    }
+    color: aliceblue;
+    cursor: pointer;
+    box-shadow: 5px 0px 6px -4px black;
+
     &:hover {
       background-color: #0067b1;
+      transform: translateY(1px);
     }
     //When clicked
     &:active {
@@ -35,6 +33,17 @@
       background-color: #0086e6;
       border-color: black;
       margin-bottom: -2px;
+      transform: none;
+      z-index: 4 !important;
+      &:not(:first-child) {
+        box-shadow: 0px 4px 6px 0px black;
+      }
+    }
+    &:first-child:not(.active) {
+      z-index: 3;
+    }
+    &:nth-child(2) {
+      // transform: translate(10px, 15px);
       z-index: 2;
     }
   }

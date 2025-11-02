@@ -17,7 +17,7 @@ import { useAuth } from "../../context"
 import { useSafeMessage } from '../../hooks/useSafeMessage'
 
 // UI & Services
-import styles from './register.module.css'
+import styles from './register.module.scss'
 import api from '../../services/api'
 //#endregion
 
@@ -131,9 +131,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
       >
         <div className={styles.info}>
           <div className={styles.bg}>
-            <div className={styles.title}>
-              <p>Заполните ниформацию:</p>
-            </div>
 
             {error &&
               <Alert

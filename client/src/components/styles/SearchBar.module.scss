@@ -17,34 +17,29 @@
     user-select: none;
   }
 
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
   search {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
     color: aliceblue;
-    width: 100%;
+    width: 85%;
 
-    .space {
-      width: 32px;
+    .searchfield {
+      &::placeholder {
+        text-align: center;
+      }
+      &:focus-visible {
+        border-width: 0;
+      }
     }
-
-    .searchfield::placeholder {
-      text-align: center;
-    }
-  }
-
-  .submit {
-    cursor: pointer;
-    width: fit-content;
-    padding: 6px 10px;
-    font-size: 15px;
-    border-radius: 30px;
-    border: 1px solid black;
-  }
-
-  .error {
-    font-weight: 700;
-    color: rgb(255, 87, 87);
   }
 }
 
@@ -56,10 +51,7 @@
 
     .searchtitle {
       font-size: 1.2em;
-    }
-
-    .space {
-      width: 0px;
+      margin-bottom: 10px;
     }
   }
 }
