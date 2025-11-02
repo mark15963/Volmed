@@ -4,6 +4,7 @@ import Input from '../../../components/Input';
 import ErrorDisplay from './ErrorDisplay';
 
 import styles from '../styles/login.module.scss';
+import { debug } from '../../../utils/debug';
 
 const LoginForm = ({
   credentials,
@@ -18,19 +19,22 @@ const LoginForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault()
     onLoadingChange(true);
-    onErrorsChange({});
+    onErrorsChange({}); // sets no errors in the beginning
 
-    try {
-      const response = await onLogin(credentials)
-      const redirectUrl = response.data.redirect || '/';
-      navigate(redirectUrl)
-    } catch (error) {
+    const res = await onLogin(credentials)
+
+    // if login error
+    if (res.error) {
       onErrorsChange({
-        general: error.message || 'Login failed. Please check your credentials.'
+        general: res.message // Under title error UI
       })
-    } finally {
       onLoadingChange(false)
+      return
     }
+
+    const redirectUrl = res.data?.redirect || '/';
+    navigate(redirectUrl)
+    onLoadingChange(false)
   }
 
   return (
@@ -38,9 +42,7 @@ const LoginForm = ({
       <div className={styles.mainBlock}>
         <h2>Вход</h2>
         <ErrorDisplay errors={errors} />
-        <form
-          onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <label htmlFor="username">
             Имя пользователя:
           </label>

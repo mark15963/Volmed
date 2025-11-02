@@ -1,81 +1,90 @@
+//#region ===== IMPORTS =====
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { message } from 'antd';
 
-import Button from './Button.js';
+import Button from './Button';
 import Input from './Input';
 
-import api from '../../src/services/api.js'
-import debug from '../utils/debug.js';
+import { useSafeMessage } from '../hooks/useSafeMessage';
+
+import api from '../services/api';
+import debug from '../utils/debug';
 
 import styles from './styles/SearchBar.module.scss'
+//#endregion
 
 export const SearchBar = () => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const [searchValue, setSearchValue] = useState('')
-    const navigate = useNavigate()
-    const [isLoading, setIsLoading] = useState(false);
+  //#region ===== CONSTS =====
+  const [searchValue, setSearchValue] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate()
+  const safeMessage = useSafeMessage()
+  //#endregion
+  //#region ===== HANDLERS =====
+  const handleChange = (e) => {
+    const inputValue = e.target.value
+    if (/^\d*$/.test(inputValue)) {
+      setSearchValue(e.target.value)
+    }
+  }
 
-    const handleChange = (e) => {
-        const inputValue = e.target.value
-        if (/^\d*$/.test(inputValue)) {
-            setSearchValue(e.target.value)
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    // if nothing in input field
+    if (!searchValue.trim()) {
+      safeMessage("warning", "Введите № карты")
+      return
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    setIsLoading(true)
 
-        if (!searchValue.trim()) {
-            messageApi.error("Введите № карты")
-            return
-        }
-
-        setIsLoading(true)
-
-        try {
-            const response = await api.getPatient(searchValue.trim())
-            navigate('/search', {
-                state: {
-                    results: [response.data],
-                    searchQuery: searchValue
-                }
-            })
-        } catch (err) {
-            messageApi.error(err.message)
-        } finally {
-            setIsLoading(false)
-        }
+    const res = await api.getPatient(searchValue.trim())
+    if (!res.ok) {
+      safeMessage("error", res.message || "Пациент не найден")
+      setIsLoading(false)
+      return
     }
 
-    return (
-        <div className={styles.container}>
-            {contextHolder}
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                <div className={styles.searchtitle}>
-                    Поиск пациентов:
-                </div>
-                <search className={styles.searchContainer}>
-                    <div className={styles.space}></div>
-                    <Input
-                        id='searchfield'
-                        type='search'
-                        value={searchValue}
-                        onChange={handleChange}
-                        placeholder='№ карты'
-                        autoComplete='off'
-                        inputMode='numeric'
-                        pattern='[0-9]*'
-                        className={styles.searchfield}
-                    />
-                    <Button
-                        type='submit'
-                        shape='circle'
-                        icon='search'
-                    />
-                </search>
-            </form>
+    // navigate if searched patient exists
+    navigate('/search', {
+      state: {
+        results: [res.data],
+        searchQuery: searchValue
+      }
+    })
+
+    setIsLoading(false)
+  }
+  //#endregion
+
+  return (
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <div className={styles.searchtitle}>
+          Поиск пациентов:
         </div>
-    )
+        <search className={styles.searchContainer}>
+          <div className={styles.space}></div>
+          <Input
+            id='searchfield'
+            type='search'
+            value={searchValue}
+            onChange={handleChange}
+            placeholder='№ карты'
+            autoComplete='off'
+            inputMode='numeric'
+            pattern='[0-9]*'
+            className={styles.searchfield}
+          />
+          <Button
+            type='submit'
+            shape='circle'
+            icon='search'
+          />
+        </search>
+      </form>
+    </div>
+  )
 }

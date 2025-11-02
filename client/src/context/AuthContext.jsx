@@ -1,110 +1,165 @@
+//#region ===== IMPORTS =====
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import api from "../services/api";
-import debug from "../utils/debug";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "../services/api";
+
+import debug from "../utils/debug";
+import { parseApiResponse, parseApiError } from "../utils/parseApiResponse";
+import { fetchUserStatus } from "../api";
+//#endregion
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [authState, setAuthState] = useState({
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    isAdmin: false,
+    isLoading: true,
+    user: null
+  });
+  const navigate = useNavigate()
+
+
+  // Check if user authenticated. If not => login page
+  const checkAuthStatus = useCallback(async () => {
+    const res = await fetchUserStatus();
+
+    if (!res.ok || !res.isAuthenticated) {
+      debug.error("Auth check failed:", res.message)
+      setAuthState({
         isAuthenticated: false,
         isAdmin: false,
-        isLoading: true,
+        isLoading: false,
         user: null
+      });
+      return {
+        ok: false,
+        error: res.message
+      }
+    }
+
+    setAuthState({
+      isAuthenticated: true,
+      isAdmin: res.isAdmin,
+      isLoading: false,
+      user: res.user
     });
-    const navigate = useNavigate()
 
+    return {
+      ok: true,
+      user: res.user,
+      isAdmin: res.isAdmin
+    }
+  }, [])
 
-    // Check if user authenticated. If not => login page
-    const checkAuthStatus = useCallback(async () => {
-        try {
-            const { data } = await api.status();
+  useEffect(() => {
+    const checkAndRedirect = async () => {
+      const result = await checkAuthStatus()
+      if (!result.ok && window.location.pathname !== '/login') {
+        navigate('/login');
+      }
+    }
+    checkAndRedirect();
+  }, [checkAuthStatus, navigate]);
 
-            const isAdmin = ['admin'].includes(data.user?.status)
-            setAuthState({
-                isAuthenticated: data.isAuthenticated,
-                isAdmin,
-                isLoading: false,
-                user: data.user
-            });
+  // Login function
+  const login = useCallback(async (credentials) => {
+    debug.log("Trying to login...")
+    setAuthState(prev => ({ ...prev, isLoading: true }));
 
-            return data.isAuthenticated
-        } catch (error) {
-            console.error('Auth check error:', error);
-            setAuthState({
-                isAuthenticated: false,
-                isAdmin: false,
-                isLoading: false,
-                user: null
-            });
-            return false
+    try {
+      // posting creds and getting response
+      const res = await api.postLogin(credentials);
+
+      // error from backend to parent
+      const parsed = parseApiResponse(res)
+      if (!parsed.ok) {
+        return {
+          error: true,
+          message: parsed.message,
+          status: parsed.status
         }
-    }, [])
+      }
 
-    useEffect(() => {
-        const checkAndRedirect = async () => {
-            const isAuthenticated = await checkAuthStatus()
-            if (!isAuthenticated && window.location.pathname !== '/login') {
-                navigate('/login');
-            }
+      const authRes = await checkAuthStatus();
+      if (!authRes.ok) {
+        return {
+          error: true,
+          message: "Authentication failed after login"
         }
-        checkAndRedirect();
-    }, [checkAuthStatus, navigate]);
+      }
 
-    // Login function
-    const login = useCallback(async (credentials) => {
-        debug.log("Trying to login...")
-        setAuthState(prev => ({ ...prev, isLoading: true }));
-        try {
-            const response = await api.postLogin(credentials);
+      // return data to parent
+      return {
+        error: false,
+        data: parsed.data
+      }
+    } catch (error) {
+      const parsed = parseApiError(error)
+      debug.error(`Login error:`, parsed.message)
+      return {
+        error: true,
+        message: parsed.message,
+        status: parsed.status
+      }
+    } finally {
+      setAuthState(prev => ({ ...prev, isLoading: false }));
+    }
+  }, [checkAuthStatus]);
 
-            const isAuth = await checkAuthStatus();
-            if (!isAuth) {
-                throw new Error('Authentication failed after login');
-            }
+  // Logout function
+  const logout = useCallback(async () => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const res = await api.logout()
+      console.log("Logout result:", res);
+      if (!res.ok) {
+        debug.error("Logout failed:", res.message)
+        return { ok: false, message: res.message }
+      }
 
-            return response
-        } catch (error) {
-            setAuthState(prev => ({ ...prev, isLoading: false }));
-            throw error;  // Let the Login component handle the error
-        }
-    }, [checkAuthStatus]);
+      setAuthState({
+        isAuthenticated: false,
+        isAdmin: false,
+        isLoading: false,
+        user: null,
+      });
 
-    // Logout function
-    const logout = useCallback(async () => {
-        setAuthState(prev => ({ ...prev, isLoading: true }));
-        try {
-            await api.logout()
-        } finally {
-            setAuthState({
-                isAuthenticated: false,
-                isAdmin: false,
-                isLoading: false,
-                user: null,
-            });
-            navigate('/login');
-        }
-    }, [navigate])
+      document.cookie = "";
 
-    // Auth check every 10 min
-    useEffect(() => {
-        const interval = setInterval(checkAuthStatus, 1000 * 60 * 10);
-        return () => clearInterval(interval);
-    }, [checkAuthStatus]);
+      navigate('/login');
+      return { ok: true }
+    } catch (error) {
+      debug.error("Logout error:", error)
+      return { ok: false, error }
+    } finally {
+      setAuthState(prev => ({ ...prev, isLoading: false }));
+    }
+  }, [navigate])
 
-    return (
-        <AuthContext.Provider value={{ authState, checkAuthStatus, logout, login }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  // Auth check every 10 min
+  useEffect(() => {
+    const interval = setInterval(checkAuthStatus, 1000 * 60 * 10);
+    return () => clearInterval(interval);
+  }, [checkAuthStatus]);
+
+  return (
+    <AuthContext.Provider value={{
+      authState,
+      checkAuthStatus,
+      logout,
+      login
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => {
-    const context = useContext(AuthContext)
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

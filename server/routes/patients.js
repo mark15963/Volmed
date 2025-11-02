@@ -92,11 +92,21 @@ router.get("/patients/:id", isAuth, async (req, res) => {
 // Amount of ID's in DB
 router.get("/patient-count", isAuth, async (req, res) => {
   try {
-    const { rows } = await db.query("SELECT COUNT(id) AS count FROM patients");
-    res.json({ count: parseInt(rows[0].count, 10) || 0 });
+    const { rows } = await db.query(`
+      SELECT COUNT(id) AS count 
+      FROM patients
+      `);
+    res.json({
+      ok: true,
+      count: parseInt(rows[0].count, 10) || 0,
+    });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "DB error", count: 0 });
+    console.error("Error fetching patient count:", e);
+    res.status(500).json({
+      ok: false,
+      error: "DB error",
+      count: 0,
+    });
   }
 });
 // Add a new patient

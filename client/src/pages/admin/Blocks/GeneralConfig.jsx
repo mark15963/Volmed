@@ -119,6 +119,7 @@ const GeneralConfig = () => {
           text="Сохранить"
           onClick={handleSave}
           loading={isLoading}
+          loadingText="Сохраняется..."
         />
       </div>
     </>

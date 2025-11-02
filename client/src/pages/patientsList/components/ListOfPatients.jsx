@@ -1,16 +1,15 @@
+//#region ===== IMPORTS =====
 import { useEffect, useState } from "react";
-import axios from "axios";
 import moment from 'moment';
 import { useNavigate } from "react-router";
-
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from './styles/patientList.module.scss'
 
-import api from "../../../services/api";
+import { fetchPatients } from "../../../api";
 import debug from "../../../utils/debug";
-import Block from "./Block";
+//#endregion
 
 export const ListOfPatients = () => {
   const [patients, setPatients] = useState([])
@@ -20,41 +19,39 @@ export const ListOfPatients = () => {
   // State elements UI
   const getStateClass = (state) => {
     switch (state) {
-      case 'Стабильно': return styles.stable;
-      case 'Cредней степени тяжести': return styles.moderate;
-      case 'Критическое': return styles.critical;
+      case 'Стабильно':
+        return styles.stable;
+      case 'Cредней степени тяжести':
+        return styles.moderate;
+      case 'Критическое':
+        return styles.critical;
       case 'Выписан':
       case 'Выписана':
         return styles.leave;
-      default: return '';
+      default:
+        return '';
     }
   }
 
   // Fetching all patients
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const response = await api.getPatients()
-        const data = Array.isArray(response.data)
-          ? response.data
-          : [];
-        // debug.table(data, ['id', 'lastName', 'firstName', 'patr', 'birthDate', 'created_at', 'state'])
-        setPatients(data);
-      } catch (error) {
-        console.error("Error fetching patients:", error);
-        setPatients([]);
-      } finally {
-        setLoading(false);
+    const loadPatients = async () => {
+      const res = await fetchPatients()
+      if (res.ok) {
+        setPatients(res.patients);
+      } else {
+        debug.error("Error fetching patients:", res.message)
+        setPatients([])
       }
-    };
-    fetchPatients();
+      setLoading(false)
+    }
+
+    loadPatients();
   }, []);
 
   const handlePatientClick = (patientId, e) => {
     if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
-      if (e.key === ' ') {
-        e.preventDefault();
-      }
+      if (e.key === ' ') e.preventDefault();
       debug.log(`Clicked on patient ID ${patientId}`)
       navigate(`/search/${patientId}`)
     }
@@ -88,7 +85,6 @@ export const ListOfPatients = () => {
               </SkeletonTheme>
             ) : patients.length > 0 ? (
               patients.map(patient => (
-                // <Block />
                 <tr
                   key={patient.id}
                   className={styles.rows}
