@@ -1,6 +1,6 @@
 import { Form, Input, Select, Tooltip } from 'antd';
 
-import styles from '../register.module.css'
+import styles from '../register.module.scss'
 import { useState } from 'react';
 
 const isPastCutoffDate = new Date() > new Date('2025-05-31');

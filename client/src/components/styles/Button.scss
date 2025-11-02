@@ -4,6 +4,7 @@
   margin: 5px 10px;
   box-sizing: border-box;
   border-radius: 10px;
+  border-width: 0;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -12,15 +13,16 @@
   width: fit-content;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 1px 1px 3px 1px #374960;
   &:hover {
-    transition: all 0.2s;
+    transition: all 0.15s;
     color: #1677ff;
-    border: 2px solid #1677ff;
+    box-shadow: none;
   }
   &:active {
     color: #1677ff;
-    border: 2px solid #1677ff;
-    background-color: #e6f7ff;
+    // border: 2px solid #1677ff;
+    background-color: #cfeffe;
   }
   &:focus {
     outline: none;
