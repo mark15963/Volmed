@@ -84,7 +84,22 @@ const Button: FC<ButtonProps> = ({
   };
 
   const handleClick = () => {
-    debug.log(`Button clicked: ${text || "(no text)"}`);
+    debug.log(
+      `Button clicked: ${
+        text ||
+        (icon === "search"
+          ? "search"
+          : icon === "logout"
+          ? "logout"
+          : icon === "login"
+          ? "login"
+          : icon === "newPatient"
+          ? "newPatient"
+          : icon === "patients"
+          ? "patients"
+          : "(no text)")
+      }`
+    );
 
     // Handle navigation if navigateTo is provided
     if (navigateTo) {

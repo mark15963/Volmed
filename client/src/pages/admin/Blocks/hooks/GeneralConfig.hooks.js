@@ -36,12 +36,6 @@ export const useGeneralConfig = (config, safeMessage) => {
     });
   }, [config]);
 
-  // useEffect(() => {
-  //   setHeaderColorInput(config.color.header);
-  //   setContentColorInput(config.color.content);
-  //   setContainerColorInput(config.color.container);
-  // }, [config.color]);
-
   const handleChange = (key, value) => {
     setInputs((prev) => ({ ...prev, [key]: value }));
   };

@@ -86,7 +86,6 @@ const ProtectedRoute = ({ children, roles = [] }) => {
   }
 
   // Access granted
-  debug.log('Access GRANTED');
   return children;
 };
 

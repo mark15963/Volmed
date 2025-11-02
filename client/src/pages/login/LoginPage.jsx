@@ -11,13 +11,14 @@ import LoginForm from "./components/LoginForm";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading: authLoading, isAuthenticated } = useRedirectIfAuth()
+
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
   });
-  const { isLoading: authLoading, isAuthenticated } = useRedirectIfAuth()
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   // Loading state + checking if auth
   if (authLoading) return <Loader />

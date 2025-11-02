@@ -21,7 +21,7 @@ export const useSafeMessage = () => {
   const messageApi = useMessageApi();
   const lockRef = useRef(false);
 
-  const showMessage = (type, content, duration = 1) => {
+  const showMessage = (type, content, duration = 2) => {
     if (lockRef.current) return;
     lockRef.current = true;
 

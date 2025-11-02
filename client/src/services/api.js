@@ -1,91 +1,98 @@
+//#region ===== USAGE =====
+/**
+ * API Service
+ * ------------
+ * Centralized axios wrapper for all backend requests.
+ * Provides automatic JSON handling, response parsing, and debugging logs.
+ *
+ * ✅ Usage example:
+ *    import api from "@/services/api";
+ *    const { ok, data } = await api.getPatients();
+ *    if (ok) console.log(data);
+ */
+//#endregion
+//#region ===== IMPORTS =====
 import axios from "axios";
 import debug from "../utils/debug";
-import { useNavigate } from "react-router";
+import { parseApiResponse, parseApiError } from "../utils/parseApiResponse";
+//#endregion
 
 const environment = import.meta.env.VITE_ENV;
-
+// Always send cookies/session data with requests
 axios.defaults.withCredentials = true;
 
-const api = axios.create({
+/**
+ * Axios instance configuration
+ * ----------------------------
+ * Sets baseURL from environment variable,
+ * adds default headers, and disables strict status validation
+ * (we handle success/error manually in parseApiResponse()).
+ */
+const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
+  validateStatus: () => true,
 });
 
-// Global error handling
-api.interceptors.response.use(
-  (response) => {
-    // if (environment === "development") {
-    //   debug.log("Response:", {
-    //     data: response.data,
-    //     headers: response.headers,
-    //     method: response.config.method?.toUpperCase(),
-    //     url: response.config.url,
-    //   });
-    // }
+/**
+ * requestWrapper()
+ * ----------------
+ * Generic helper for all HTTP methods.
+ * Automatically handles:
+ *  - missing payloads (avoids sending `null` which breaks Express)
+ *  - consistent error handling
+ *  - development logs
+ */
+async function requestWrapper(method, url, data = null, config = {}) {
+  try {
+    // Ensure `null` isn't sent to the backend
+    const payload =
+      data === null || data === undefined
+        ? method === "post" || method === "put"
+          ? {}
+          : undefined
+        : data;
 
-    return response;
-  },
-  (error) => {
-    const status = error.response?.status;
+    // Perform the HTTP request
+    const response = await apiInstance[method](url, payload, config);
 
-    debug.log("❌ Axios Error:", error);
-    debug.log("🔍 Response:", error.response);
-    debug.log("🔍 Config:", error.config);
+    // Parse unified format: { ok, data, status, message }
+    const parsed = parseApiResponse(response);
 
-    // Backend tells frontend to redirect
-    if (status === 401 && error.response.data?.redirectToFrontend) {
-      if (typeof window !== "undefined") {
-        window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
-      }
-      return Promise.reject(new Error("Session expired"));
+    if (environment === "developer") {
+      debug.log(`[API ${method.toUpperCase()}] ${url}`, parsed);
     }
 
-    const errorDetails = {
-      code: error.code,
-      status,
-      url: error.config?.url,
-      message: error.message,
-    };
-
-    let errorMessage = "Произошла ошибка";
-
-    // Handle specific error cases
-    if (error.code === "ECONNABORTED") {
-      errorMessage = "Сервер не ответил вовремя.";
-    } else if (!error.response) {
-      errorMessage = "Ошибка сети. Проверьте подключение.";
-    } else {
-      const statusMessages = {
-        400: "Некорректный запрос",
-        401: "Не авторизован",
-        403: "Доступ запрещен",
-        404: "Не найдено",
-        408: "Истекло время ожидания",
-        409: "Конфликт",
-        500: "Ошибка сервера",
-        502: "Ошибочный шлюз",
-        503: "Сервис недоступен",
-        504: "Шлюз не отвечает",
-      };
-      errorMessage =
-        error.response.data?.message ||
-        statusMessages[status] ||
-        `Ошибка (${status})`;
-    }
-
-    const customError = new Error(errorMessage);
-    customError.details = errorDetails;
-
-    return Promise.reject(customError);
+    return parsed;
+  } catch (error) {
+    // Normalize network or parsing errors
+    const parsedError = parseApiError(error);
+    debug.error(`[API ERROR] ${method.toUpperCase()} ${url}:`, parsedError);
+    return parsedError;
   }
-);
+}
 
-export default {
-  // Config
+/**
+ * The main API object
+ * -------------------
+ * Each property here is a preconfigured endpoint call.
+ * These can be imported anywhere in the frontend codebase.
+ *
+ * Example:
+ *    const result = await api.getPatients();
+ *    if (result.ok) setPatients(result.data);
+ */
+const api = {
+  // Generic CRUD helpers (used by all specific endpoints)
+  get: (url, config) => requestWrapper("get", url, null, config),
+  post: (url, data, config) => requestWrapper("post", url, data, config),
+  put: (url, data, config) => requestWrapper("put", url, data, config),
+  delete: (url, config) => requestWrapper("delete", url, null, config),
+
+  /* =======================
+     🔧 GENERAL CONFIGURATION
+     ======================= */
   getTitle: () => api.get(`/general/title`),
   updateTitle: (data) => api.put(`/general/title`, data),
   getColor: () => api.get(`/general/color`),
@@ -96,7 +103,9 @@ export default {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 
-  // Patients
+  /* ===============
+     👩‍⚕️ PATIENTS API
+     =============== */
   getPatients: () => api.get(`/patients`),
   getPatient: (id) => api.get(`/patients/${id}`),
   getPatientCount: () => api.get(`/patient-count`),
@@ -104,14 +113,18 @@ export default {
   updatePatient: (id, data) => api.put(`/patients/${id}`, data),
   deletePatient: (id) => api.delete(`/patients/${id}`),
 
-  // Medications
+  /* =================
+     💊 MEDICATION API
+     ================= */
   deleteMedication: (medId) => api.delete(`/medications/${medId}`),
   getMedications: (patientId) => api.get(`/patients/${patientId}/medications`),
   createMedication: (patientId, data) =>
     api.post(`/patients/${patientId}/medications`, data),
   updateMedication: (medId, data) => api.put(`/medications/${medId}`, data),
 
-  // Files
+  /* ===================
+     📂 PATIENT FILES API
+     =================== */
   getPatientFiles: (patientId) => api.get(`/patients/${patientId}/files`),
   uploadFile: (patientId, file) => {
     const formData = new FormData();
@@ -130,7 +143,9 @@ export default {
       },
     }),
 
-  // Vital Signs (Pulse)
+  /* ==================
+     ❤️ VITAL SIGNS API
+     ================== */
   savePulse: (patientId, pulseValue) => {
     if (!patientId) throw new Error("Patient ID is required");
     return api.post(`/patients/${patientId}/pulse`, {
@@ -142,20 +157,32 @@ export default {
     api.post(`/patients/${patientId}/o2`, { o2Value }),
   getO2Data: (patientId) => api.get(`/patients/${patientId}/o2`),
 
-  // Auth
+  /* ==============
+     🔐 AUTH ENDPOINTS
+     ============== */
   postLogin: (data) => api.post(`/login`, data),
-  logout: () => api.post(`/logout`),
+  logout: () =>
+    api.post(`/logout`).then((res) => {
+      debug.log("Logout API response:", res);
+      return res;
+    }),
   status: () => api.get(`/status`),
 
-  // Chat
+  /* ==========
+     💬 CHAT API
+     ========== */
   getChatHistory: (room) => api.get(`/chat/room/${room}/messages`),
   saveMessage: (data) => api.post(`/chat/save-message`, data),
   getActiveRooms: () => api.get(`/chat/active-rooms`),
   deleteChatRoom: (room) => api.delete(`chat/room/${room}`),
 
-  // Users
+  /* ===========
+     👤 USERS API
+     =========== */
   getUsers: () => api.get(`/users`),
   createUser: (data) => api.post(`/users`, data),
   updateUser: (id, data) => api.put(`/users/${id}`, data),
   deleteUser: (id) => api.delete(`/users/${id}`),
 };
+
+export default api;

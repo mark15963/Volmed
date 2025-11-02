@@ -31,26 +31,34 @@ router.get("/login", (req, res) => {
 router.post("/login", originMiddleware, async (req, res) => {
   const { username, password } = req.body;
 
+  // no user or pass
   if (!username || !password) {
     return res.status(400).json({ error: "Username and password required" });
   }
 
   try {
-    const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
-      username,
-    ]);
-
-    if (!rows.length) {
-      debug.log("User not found");
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
+    // look for user in db
     const user = await User.findByUsername(username);
     if (!user) {
-      return res.redirect("/login");
+      debug.log("User not found");
+
+      // If AJAX/React client (JSON request)
+      if (
+        req.xhr ||
+        req.headers.accept?.includes("application/json") ||
+        req.is("application/json")
+      ) {
+        return res.status(401).json({
+          error: "Invalid credentials", // to login() in AuthContext
+        });
+      }
+
+      // Browser form submit -> rederect back with query param
+      return res.redirect("/api/login?error=Invalid+credentials");
     }
 
-    const match = await bcrypt.compare(password, rows[0].password);
+    // checking password match
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
       debug.log("Wrong password");
 
@@ -61,11 +69,11 @@ router.post("/login", originMiddleware, async (req, res) => {
         req.is("application/json")
       ) {
         return res.status(401).json({
-          error: "Invalid credentials",
+          error: "Invalid credentials", // to login() in AuthContext
         });
       }
 
-      // Browser form submit -> rederect back with query param
+      // [Backend] Browser form submit -> redirect back with query param
       return res.redirect("/api/login?error=Invalid+credentials");
     }
 
@@ -74,13 +82,13 @@ router.post("/login", originMiddleware, async (req, res) => {
       if (error) {
         console.error("Login error:", error);
         res.status(500).json({
-          error: "Internal server error",
+          error: "Internal server auth error",
           details:
             process.env.NODE_ENV === "development" ? error.message : undefined,
         });
       }
 
-      if (user.status === "admin" || user.status === "Администратор") {
+      if (user.status === "admin") {
         req.session.isAdmin = true;
       }
       req.session.isAuth = true;
@@ -104,16 +112,17 @@ router.post("/login", originMiddleware, async (req, res) => {
           maxAge: 1000 * 60 * 60 * 24,
         });
 
+        // returns for dev mode
         if (process.env.NODE_ENV === "development") {
           if (
-            req.xhr ||
+            req.xhr || // frontend
             req.headers.accept?.includes("application/json") ||
             req.is("application/json")
           ) {
             return res.status(200).json({
               success: true,
               message: "Logged in successfully",
-              redirect: "/api/dashboard",
+              redirect: "/",
               user: {
                 username: user.username,
                 lastName: user.lastName,
@@ -128,7 +137,7 @@ router.post("/login", originMiddleware, async (req, res) => {
         }
 
         let redirectUrl = "/";
-        if (user.status === "Сестра" || user.status === "Nurse") {
+        if (user.status === "Nurse") {
           redirectUrl = "/nurse-menu";
         }
 
@@ -186,50 +195,35 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/logout", isAuth, async (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error("Logout error:", error);
-      if (debug?.error) {
-        debug.error("Logout error:", error);
-      }
-      return res.status(500).json({ error: "Logout failed" });
-    }
+  try {
+    await new Promise((resolve, reject) => {
+      req.session.destroy((err) => (err ? reject(err) : resolve()));
+    });
 
-    try {
-      // Clear session cookie
-      res.clearCookie("volmed.sid", {
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        httpOnly: true,
-      });
+    res.clearCookie("volmed.sid", {
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      httpOnly: true,
+    });
+    res.clearCookie("user", {
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
 
-      // Clear user cookie
-      res.clearCookie("user", {
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      });
-
-      if (process.env.NODE_ENV === "development") {
-        res.redirect("/api");
-      } else {
-        if (req.accepts("json")) {
-          return res.status(200).json({
-            success: true,
-            message: "Logged out successfully",
-            redirect: `${process.env.FRONTEND_URL}/login`,
-          });
-        }
-        return res.redirect(`${process.env.FRONTEND_URL}/login`);
-      }
-    } catch (clearCookieError) {
-      console.error("Clear cookie error:", clearCookieError);
-      res.status(500).json({
-        error: "Logout failed during cookie cleanup",
-      });
-    }
-  });
+    return res.status(200).json({
+      ok: true,
+      message: "Logged out successfully",
+      redirect: `${process.env.FRONTEND_URL}/login`,
+    });
+  } catch (err) {
+    console.error("Logout failed:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Logout failed",
+    });
+  }
 });
 
 router.get("/status", originMiddleware, async (req, res) => {

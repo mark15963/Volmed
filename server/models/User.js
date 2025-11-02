@@ -18,7 +18,7 @@ const User = {
       );
       return rows[0] || null;
     } catch (err) {
-      console.error("Database error in findByUsername:", err);
+      console.error("Database error at findByUsername:", err);
       return null;
     }
   },
