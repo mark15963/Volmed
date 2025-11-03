@@ -1,9 +1,18 @@
-import { InputHTMLAttributes, CSSProperties, FC } from "react";
-import { Search } from "lucide-react"; // not permanent
+import { InputHTMLAttributes, CSSProperties, FC, useRef } from "react";
+import { Search, Upload } from "lucide-react"; // not permanent
 import "./styles/Input.scss";
+import Button from "./Button";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  type?: "text" | "password" | "email" | "tel" | "search" | "number" | "color";
+  type?:
+    | "text"
+    | "password"
+    | "email"
+    | "tel"
+    | "search"
+    | "number"
+    | "color"
+    | "file";
   value?: string;
   placeholder?: string;
   name?: string;
@@ -11,6 +20,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   style?: CSSProperties;
   loading?: boolean;
   loadingPosition?: "left" | "right";
+  loadingText?: string;
   onSubmitClick?: () => void;
 }
 
@@ -26,10 +36,13 @@ const Input: FC<InputProps> = ({
   value,
   loading = false,
   loadingPosition = "right",
+  loadingText,
   disabled,
   onSubmitClick,
   ...props
 }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const inputClass = ["input", loading ? "input--loading" : "", className]
     .filter(Boolean)
     .join(" ");
@@ -53,6 +66,33 @@ const Input: FC<InputProps> = ({
   if (type === "search") {
     mergedStyle.borderWidth = "0px";
     mergedStyle.borderRadius = "25px";
+  }
+
+  if (type === "file") {
+    return (
+      <div className="input-file-wrapper">
+        <input
+          ref={fileInputRef}
+          id={name || "file-upload"}
+          type="file"
+          onChange={onChange}
+          disabled={disabled || loading}
+          className="input-file-hidden"
+          {...props}
+        />
+        <Button
+          text={placeholder || "Выбрать файл"}
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={disabled || loading}
+          className="input-file-button"
+          icon="upload"
+          loading={loading}
+          loadingText={loadingText}
+        />
+        {value && <span className="input-file-name">{value}</span>}
+      </div>
+    );
   }
 
   return (

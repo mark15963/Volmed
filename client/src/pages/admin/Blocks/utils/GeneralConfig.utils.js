@@ -91,12 +91,17 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
       formData.append("logo", file);
 
       const res = await api.uploadLogo(formData);
+
+      if (!res || !res.data || !res.data.logoUrl) {
+        debug.error("[API ERROR] uploadLogo: no logoUrl in response", res);
+        throw new Error("No logoUrl returned from server");
+      }
+
       setLogo(`${res.data.logoUrl}?t=${Date.now()}`);
       safeMessage("success", "Логотип загружен!");
     } catch (err) {
-      console.error("Failed to upload logo:", err);
-      safeMessage("error", "Ошибка загрузки логотипа!");
-      throw err;
+      debug.error("[API ERROR] uploadLogo:", err);
+      safeMessage("error", "Ошибка загрузки логотипа! Проверьте сервер.");
     } finally {
       setIsLoading(false);
     }

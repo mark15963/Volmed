@@ -1,12 +1,8 @@
 import { useSafeMessage } from "../../../hooks/useSafeMessage"
-
 import { useConfig } from "../../../context"
-
 import Button from "../../../components/Button"
 import Input from "../../../components/Input"
-
 import debug from "../../../utils/debug"
-
 import styles from "./styles/GeneralConfig.module.scss"
 import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
 import { useEffect } from "react"
@@ -14,14 +10,7 @@ import { useEffect } from "react"
 const GeneralConfig = () => {
   const config = useConfig()
   const safeMessage = useSafeMessage();
-
-  const {
-    isLoading,
-    inputs,
-    handleChange,
-    handleSave,
-    handleLogoUpdate
-  } = useGeneralConfig(config, safeMessage)
+  const { isLoading, inputs, handleChange, handleSave, handleLogoUpdate } = useGeneralConfig(config, safeMessage)
 
   useEffect(() => {
     debug.log('Config context:', config)
@@ -33,7 +22,9 @@ const GeneralConfig = () => {
     try {
       await handleLogoUpdate(file);
       e.target.value = ''
-    } catch { }
+    } catch {
+
+    }
   };
 
   return (
@@ -62,16 +53,16 @@ const GeneralConfig = () => {
               className={styles.image}
             />
           )}
-          <input
+          <Input
+            id="file-upload"
             type="file"
             accept="image/*"
             onChange={handleLogoUpdateWrapper}
-            className={styles.imageButton}
+            loading={isLoading}
+            loadingText="Сохраняется..."
           />
         </div>
-
         <div className={styles.separator} />
-
         <div className={styles.colorBlocksContainer}>
           <div className={styles.palateTitle}>
             Цветавая палитра:
@@ -111,7 +102,6 @@ const GeneralConfig = () => {
               <span>{inputs.container.toUpperCase()}</span>
             </div>
           </div>
-
         </div>
       </div>
       <div className={styles.button}>
@@ -125,5 +115,4 @@ const GeneralConfig = () => {
     </>
   )
 }
-
 export default GeneralConfig

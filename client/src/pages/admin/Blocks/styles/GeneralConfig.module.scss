@@ -79,3 +79,9 @@
   justify-content: center;
   margin-bottom: 10px;
 }
+
+@media screen and (orientation: portrait) {
+  .textInput {
+    font-size: 1em;
+  }
+}
