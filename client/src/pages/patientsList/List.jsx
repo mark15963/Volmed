@@ -14,7 +14,13 @@ export const List = () => {
   const navigate = useNavigate()
 
   return (
-    <div className='mainBlock'>
+    <div
+      className='mainBlock'
+      style={{
+        width: 'calc(100% - 40px)',
+        maxWidth: 'none'
+      }}
+    >
       <div className={styles.list}>
         <div className={styles.searchbar}>
           <SearchBar />

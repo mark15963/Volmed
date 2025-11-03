@@ -1,6 +1,6 @@
 //#region ===== USAGE =====
 //
-// <ProtectedRoute roles={["nurse", "Сестра"]}> {/* Mentioned users and admins */}
+// <ProtectedRoute roles={["nurse"]}> {/* Mentioned users and admins */}
 //   <TestRoute />
 // </ProtectedRoute>
 //
@@ -27,6 +27,7 @@
 //
 //#endregion
 
+import { useEffect } from "react";
 import { Navigate, useLocation } from "react-router";
 
 import { useAuth } from "../context";
@@ -34,16 +35,19 @@ import Loader from "../components/Loader";
 import Button from "../components/Button";
 
 import { enhancedDebug as debug } from "../utils/debug";
+import { AccessDenied } from "./AccessDenied";
 
 const ProtectedRoute = ({ children, roles = [] }) => {
-  const { authState } = useAuth();
+  const { authState, checkAuthStatus } = useAuth();
   const location = useLocation();
 
-  const adminRoles = ["admin"]
+  useEffect(() => {
+    // Refresh authState on route change
+    checkAuthStatus(false);
+  }, [checkAuthStatus, location.pathname]);
 
-  if (authState.isLoading) {
-    return <Loader />;
-  }
+  if (authState.isLoading) return <Loader />
+
   // Redirect if not auth
   if (!authState.isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -51,36 +55,13 @@ const ProtectedRoute = ({ children, roles = [] }) => {
 
   // If user roles are defined, check if matches
   if (roles.length > 0) {
-    const userRole = authState.user?.status;
+    const hasAccess =
+      authState.isAdmin ||                   // Admin access
+      roles.includes(authState.user?.status) // Access to specified role
 
-    const hasAdminRole = adminRoles.includes(userRole)
-    const hasRequiredRole = roles.includes(userRole)
-
-    const displayUserRoles = authState.user?.status
-
-    if (!hasAdminRole && !hasRequiredRole) {
+    if (!hasAccess) {
       return (
-        <div>
-          <div style={{ padding: '20px', border: '2px solid black', borderRadius: '8px' }}>
-            <h2 style={{ textAlign: 'center' }}>Доступ запрещен</h2>
-            <br />
-            <p>
-              У вас недостаточно прав для просмотра этой страницы.
-            </p>
-            <p>
-              <br />
-              Требуемые роли: {roles.join(", ")}
-              <br />
-              Ваша роль: {displayUserRoles || "Не определена"}
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button
-                navigateTo='INDEX'
-                text="Назад"
-              />
-            </div>
-          </div>
-        </div>
+        <AccessDenied roles={roles} userRole={authState.user?.displayStatus} />
       )
     }
   }

@@ -14,7 +14,6 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
   `http://${localIp}:5173`,
-  "http://192.168.0.102:5173",
 ];
 
 const corsOptions = {

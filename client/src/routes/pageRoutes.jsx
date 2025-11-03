@@ -1,3 +1,5 @@
+// Used in Content.jsx
+
 import { lazy } from "react";
 import ProtectedRoute from "../layouts/ProtectedRoute";
 

@@ -14,7 +14,6 @@ const LoginForm = ({
   onLogin,
   onErrorsChange,
   onLoadingChange,
-  navigate
 }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,9 +30,6 @@ const LoginForm = ({
       onLoadingChange(false)
       return
     }
-
-    const redirectUrl = res.data?.redirect || '/';
-    navigate(redirectUrl)
     onLoadingChange(false)
   }
 
