@@ -2,16 +2,15 @@ import { useNavigate } from "react-router"
 import Button from "../../../components/Button"
 import { SearchBar } from "../../../components/SearchBar"
 
+import '../../../layouts/content/content.scss'
 import styles from '../main.module.scss'
 
 export default function DoctorDisplay() {
   return (
-    <div className={styles.container}>
-      <div className={styles.mainBlock}>
-        <SearchBar />
-        <div className={styles.divider} />
-        {control()}
-      </div>
+    <div className='mainBlock'>
+      <SearchBar />
+      <div className={styles.divider} />
+      {control()}
     </div>
   )
 }

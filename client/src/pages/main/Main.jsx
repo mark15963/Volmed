@@ -6,7 +6,8 @@ import DoctorDisplay from './pages/DoctorDisplay';
 import NurseDisplay from './pages/NurseDisplay';
 import Loader from '../../components/Loader';
 
-import styles from './main.module.scss'
+import '../../layouts/content/content.scss'
+// import styles from './main.module.scss'
 
 export default function Main() {
   const { authState } = useAuth()
@@ -38,12 +39,10 @@ export default function Main() {
 
   // Not auth
   return (
-    // <div className={styles.container}>
-    <div className={styles.mainBlock}>
+    <div className='mainBlock'>
       <div style={{ color: 'aliceblue' }}>
         Пользователь не авторизован
       </div>
     </div>
-    // </div>
   )
 }

@@ -46,6 +46,7 @@ const UsersList = () => {
 
   const [addLoading, setAddLoading] = useState(false)
 
+  //#region ===== HANDLERS =====
   const handleStatusChange = async (id, newStatusDisplay) => {
     try {
       setStatusLoading(id, true)
@@ -59,7 +60,6 @@ const UsersList = () => {
       setStatusLoading(id, false)
     }
   }
-
   const handleAddUser = async () => {
     const username = prompt("Введите имя пользователя:");
     if (!username) return;
@@ -93,7 +93,6 @@ const UsersList = () => {
       setAddLoading(false)
     }
   }
-
   const handleUserDelete = async (id) => {
     if (!window.confirm("Удалить?")) return
     try {
@@ -107,6 +106,7 @@ const UsersList = () => {
       setDeleteLoading(id, false)
     }
   }
+  //#endregion
 
   if (loading) {
     return <SpinLoader color="black" size="30px" />
@@ -176,6 +176,9 @@ const UsersList = () => {
         size="s"
         loading={addLoading}
         onClick={() => handleAddUser()}
+        style={{
+          marginBottom: '10px'
+        }}
       />
     </>
   )

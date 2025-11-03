@@ -305,10 +305,12 @@
   .topForms {
     border: 1px solid black;
     padding: 20px;
+    margin-bottom: 20px;
   }
 
   .title {
     font-size: 11px !important;
+    padding: 0;
   }
 
   span {

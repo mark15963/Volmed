@@ -73,6 +73,10 @@ footer {
   main {
     background-color: white;
   }
+
+  footer {
+    display: none;
+  }
 }
 
 @media screen and (orientation: portrait) {

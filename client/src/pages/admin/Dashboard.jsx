@@ -21,7 +21,12 @@ export const Dashboard = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.mainBlock} style={{ backgroundColor: color.container }}>
+      <div
+        className={styles.mainBlock}
+        style={{
+          backgroundColor: color.container
+        }}
+      >
         <div className={styles.title}>
           ПАНЕЛЬ УПРАВЛЕНИЯ
         </div>

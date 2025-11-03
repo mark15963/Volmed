@@ -1,5 +1,5 @@
 import { AppProviders } from './context/index'
-import Content from './layouts/Content'
+import Content from './layouts/content/Content'
 import Header from './layouts/header/Header'
 import Footer from './layouts/footer/Footer'
 

@@ -52,7 +52,6 @@ const GeneralConfig = () => {
           }
         }}
       />
-      <div style={{ height: '20px' }} />
       <div className={styles.row}>
         <div className={styles.logoBlockContainer}>
           Загрузить логотип:
@@ -74,7 +73,9 @@ const GeneralConfig = () => {
         <div className={styles.separator} />
 
         <div className={styles.colorBlocksContainer}>
-          Цветавая палитра:
+          <div className={styles.palateTitle}>
+            Цветавая палитра:
+          </div>
           <div className={styles.colorBlocks}>
             Цвет шапки
             <div className={styles.colorPicker}>
@@ -113,7 +114,6 @@ const GeneralConfig = () => {
 
         </div>
       </div>
-      <br />
       <div className={styles.button}>
         <Button
           text="Сохранить"

@@ -7,18 +7,18 @@ const { Form, Alert, message } = await import('antd/es')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 // Components
-import { usePageTitle } from '../../utils/usePageTitle.js'
+import { usePageTitle } from '@/utils/usePageTitle.js'
 import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
 import { Buttons } from './Components/Buttons.jsx'
 import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
 
 // Hooks & Context
-import { useAuth } from "../../context"
-import { useSafeMessage } from '../../hooks/useSafeMessage'
+import { useAuth } from "@/context"
+import { useSafeMessage } from '@/hooks/useSafeMessage'
 
 // UI & Services
 import styles from './register.module.scss'
-import api from '../../services/api'
+import api from '@/services/api'
 //#endregion
 
 
