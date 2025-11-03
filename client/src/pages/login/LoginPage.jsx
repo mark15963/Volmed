@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 
 import { useAuth } from '../../context/AuthContext';
 
 import Loader from "../../components/Loader";
-
-import useRedirectIfAuth from "../../hooks/useRedirectIfAuth";
 import LoginForm from "./components/LoginForm";
+import { fetchUserStatus } from "../../api";
+import { debug } from "../../utils/debug";
+import { useNavigate } from "react-router";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { login } = useAuth();
-  const { isLoading: authLoading, isAuthenticated } = useRedirectIfAuth()
 
   const [credentials, setCredentials] = useState({
     username: '',
@@ -19,10 +18,22 @@ export default function LoginPage() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
-  // Loading state + checking if auth
-  if (authLoading) return <Loader />
-  if (isAuthenticated) return null
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await fetchUserStatus()
+      debug.log("Auth check:", res.message)
+
+      // Redirect to home if user came from another page
+      if (res.isAuthenticated) {
+        navigate('/')
+      } else {
+        setIsCheckingAuth(false)
+      }
+    }
+    checkAuth()
+  }, [navigate])
 
   // Sets the credentials while typing
   const handleChange = (e) => {
@@ -33,6 +44,8 @@ export default function LoginPage() {
     }))
   }
 
+  if (isCheckingAuth || isLoading) return <Loader />
+
   return (
     <LoginForm
       credentials={credentials}
@@ -42,7 +55,6 @@ export default function LoginPage() {
       onLogin={login}
       onErrorsChange={setErrors}
       onLoadingChange={setIsLoading}
-      navigate={navigate}
     />
   )
 }

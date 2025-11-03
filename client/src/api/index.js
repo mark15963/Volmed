@@ -1,3 +1,3 @@
 export * from "./fetchPatientCount";
 export * from "./fetchPatients";
-export * from "./fetchUserStatus";
+export * from "./fetchUserStatus.ts";

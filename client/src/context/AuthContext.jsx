@@ -1,3 +1,5 @@
+// Use in components to get state & login/logout
+
 //#region ===== IMPORTS =====
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
@@ -5,7 +7,7 @@ import { useNavigate } from "react-router";
 import api from "../services/api";
 
 import debug from "../utils/debug";
-import { parseApiResponse, parseApiError } from "../utils/parseApiResponse";
+import { parseApiError, parseApiResponse } from "../utils/parseApiResponse";
 import { fetchUserStatus } from "../api";
 //#endregion
 
@@ -20,42 +22,40 @@ export const AuthProvider = ({ children }) => {
   });
   const navigate = useNavigate()
 
-
-  // Check if user authenticated. If not => login page
-  const checkAuthStatus = useCallback(async () => {
+  // Check if user is authenticated. Always returns the same shape
+  const checkAuthStatus = useCallback(async (redirectIfUnauth = true) => {
     const res = await fetchUserStatus();
 
-    if (!res.ok || !res.isAuthenticated) {
-      debug.error("Auth check failed:", res.message)
-      setAuthState({
-        isAuthenticated: false,
-        isAdmin: false,
-        isLoading: false,
-        user: null
-      });
-      return {
-        ok: false,
-        error: res.message
-      }
-    }
+    const isAuthenticated = res.ok && res.isAuthenticated
+    const user = isAuthenticated ? res.user : null
+    const isAdmin = isAuthenticated ? res.isAdmin : false
+    const error = !isAuthenticated ? res.message : undefined
 
+    // Update local auth state
     setAuthState({
-      isAuthenticated: true,
-      isAdmin: res.isAdmin,
-      isLoading: false,
-      user: res.user
-    });
+      isAuthenticated,
+      isAdmin,
+      user,
+      isLoading: false
+    })
 
-    return {
-      ok: true,
-      user: res.user,
-      isAdmin: res.isAdmin
+    // Redirect to login if unauthenticated
+    if (!isAuthenticated && redirectIfUnauth && window.location.pathname !== '/login') {
+      navigate('/login')
     }
-  }, [])
+
+    // If auth success
+    return {
+      ok: isAuthenticated,
+      user,
+      isAdmin,
+      error
+    }
+  }, [navigate])
 
   useEffect(() => {
     const checkAndRedirect = async () => {
-      const result = await checkAuthStatus()
+      const result = await checkAuthStatus(false)
       if (!result.ok && window.location.pathname !== '/login') {
         navigate('/login');
       }
@@ -69,11 +69,10 @@ export const AuthProvider = ({ children }) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
 
     try {
-      // posting creds and getting response
       const res = await api.postLogin(credentials);
-
-      // error from backend to parent
+      // error from backend
       const parsed = parseApiResponse(res)
+
       if (!parsed.ok) {
         return {
           error: true,
@@ -82,6 +81,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      // Refresh authState and automatically redirect if unauthenticated
       const authRes = await checkAuthStatus();
       if (!authRes.ok) {
         return {
@@ -90,7 +90,11 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      // return data to parent
+      debug.log(`${authRes.user.lastName} ${authRes.user.firstName} ${authRes.user.patr} logged as ${authRes.user.status}`)
+
+      navigate('/')
+
+      // Return successful result to parent
       return {
         error: false,
         data: parsed.data
@@ -106,33 +110,40 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setAuthState(prev => ({ ...prev, isLoading: false }));
     }
-  }, [checkAuthStatus]);
+  }, [checkAuthStatus, navigate]);
 
   // Logout function
   const logout = useCallback(async () => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
+
     try {
+      debug.log("Logging out...")
+
+      // Call backend logout
       const res = await api.logout()
-      console.log("Logout result:", res);
-      if (!res.ok) {
-        debug.error("Logout failed:", res.message)
-        return { ok: false, message: res.message }
+      const parsed = parseApiResponse(res)
+
+      if (!parsed.ok) {
+        debug.error("Logout failed:", parsed.message)
+        return { ok: false, message: parsed.message }
       }
 
+      // Clear authState locally
       setAuthState({
         isAuthenticated: false,
         isAdmin: false,
         isLoading: false,
         user: null,
       });
-
       document.cookie = "";
 
       navigate('/login');
-      return { ok: true }
+      debug.log(parsed.message) // From backend
+      return { ok: true, message: "Logged out" }
     } catch (error) {
-      debug.error("Logout error:", error)
-      return { ok: false, error }
+      const parsed = parseApiError(error)
+      debug.error("Logout error:", parsed.message, "Status:", parsed.status)
+      return { ok: false, message: parsed.message }
     } finally {
       setAuthState(prev => ({ ...prev, isLoading: false }));
     }

@@ -58,7 +58,6 @@ export const ListOfPatients = () => {
   }
 
   return (
-    // <div className={styles.container}>
     <table className={styles.table}>
 
       <thead className={styles.head}>
@@ -126,6 +125,5 @@ export const ListOfPatients = () => {
           )}
       </tbody>
     </table>
-    // </div >
   )
 }

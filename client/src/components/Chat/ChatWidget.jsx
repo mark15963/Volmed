@@ -42,7 +42,7 @@ export const ChatWidget = memo(() => {
       document.addEventListener('touchstart', handleClickOutside, { passive: true });
     }
 
-    debug.log(`Chat visible: ${chatVisible}`)
+    // debug.log(`Chat visible: ${chatVisible}`)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)

@@ -79,7 +79,7 @@ async function requestWrapper(method, url, data = null, config = {}) {
  * Each property here is a preconfigured endpoint call.
  * These can be imported anywhere in the frontend codebase.
  *
- * Example:
+ * @example
  *    const result = await api.getPatients();
  *    if (result.ok) setPatients(result.data);
  */
@@ -161,11 +161,7 @@ const api = {
      🔐 AUTH ENDPOINTS
      ============== */
   postLogin: (data) => api.post(`/login`, data),
-  logout: () =>
-    api.post(`/logout`).then((res) => {
-      debug.log("Logout API response:", res);
-      return res;
-    }),
+  logout: () => api.post(`/logout`),
   status: () => api.get(`/status`),
 
   /* ==========

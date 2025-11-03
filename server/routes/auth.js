@@ -229,8 +229,9 @@ router.post("/logout", isAuth, async (req, res) => {
 router.get("/status", originMiddleware, async (req, res) => {
   try {
     res.json({
+      ok: true,
       isAuthenticated: !!req.session.isAuth,
-      isAdmin: req.session.isAdmin,
+      isAdmin: !!req.session.isAdmin,
       user: req.session.user
         ? {
             username: req.session.user,
@@ -241,12 +242,16 @@ router.get("/status", originMiddleware, async (req, res) => {
             displayStatus: req.session.displayStatus,
           }
         : null,
+      message: req.session.isAuth
+        ? "User is authenticated"
+        : "User not logged in",
     });
   } catch (error) {
     console.error("Auth status check failed:", error);
     res.status(500).json({
       isAuthenticated: false,
       error: "Authentication service unavailable",
+      message: "Internal auth error",
     });
   }
 });
