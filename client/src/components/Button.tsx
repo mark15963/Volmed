@@ -5,6 +5,7 @@ import {
   LogoutOutlined,
   SearchOutlined,
   TeamOutlined,
+  UploadOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 import "./styles/Button.scss";
@@ -14,7 +15,14 @@ import { useNavigate } from "react-router";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   shape?: "default" | "circle";
-  icon?: "none" | "login" | "logout" | "newPatient" | "patients" | "search";
+  icon?:
+    | "none"
+    | "login"
+    | "logout"
+    | "newPatient"
+    | "patients"
+    | "search"
+    | "upload";
   text?: string;
   style?: CSSProperties;
   className?: string;
@@ -78,6 +86,8 @@ const Button: FC<ButtonProps> = ({
         return <TeamOutlined />;
       case "search":
         return <SearchOutlined />;
+      case "upload":
+        return <UploadOutlined />;
       default:
         return icon ? <i className={icon} /> : null;
     }

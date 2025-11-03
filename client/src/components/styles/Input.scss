@@ -114,3 +114,78 @@
     transform: rotate(360deg);
   }
 }
+
+/* === File input styling === */
+.input-file-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.input-file-hidden {
+  display: none;
+}
+
+.input-file-button {
+  svg {
+    margin-right: 4px;
+  }
+}
+
+.input-file-name {
+  font-size: 0.85em;
+  color: #333;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (orientation: portrait) {
+  /* === File input styling === */
+  .input-file-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+    .input-file-hidden {
+      display: none;
+    }
+
+    .input-file-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: aliceblue;
+      color: #000;
+      font-size: 0.6em;
+      font-weight: 300;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      &:hover {
+        background-color: #c5e1ff;
+      }
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      svg {
+        margin-right: 4px;
+      }
+    }
+
+    .input-file-name {
+      font-size: 0.85em;
+      color: #333;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

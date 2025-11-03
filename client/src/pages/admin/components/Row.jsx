@@ -5,6 +5,7 @@ const Row = ({ children, center = false }) => {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: center ? "center" : "flex-start",
+        width: '100%'
     }
 
     return (
