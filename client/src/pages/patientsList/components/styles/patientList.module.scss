@@ -1,24 +1,14 @@
-:root {
-  --table: #005fa3;
-  --table-rows: #006fbe;
-  --table-rows-hover: #005490;
-  --table-rows-active: #004474;
+// .container {
+//   width: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   color: aliceblue;
+//   background-color: var(--table);
+//   padding: 5px;
+//   border-radius: 5px;
+//   margin: 10px 0;
 
-  --mobile-table-row-hover: #4a97cf;
-  --mobile-table-row-active: #005fa2;
-
-  --state-stable: #4caf50bf;
-  --state-moderate: #c9c318bf;
-  --state-critical: #f44336bf;
-  --state-leave: #ffffffbf;
-  --mobile-state-leave: #86e5ffbf;
-
-  --loading-skeleton: #488ab9;
-
-  --font-size: 0.8rem;
-}
-
-.container {
+.table {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -27,154 +17,153 @@
   padding: 5px;
   border-radius: 5px;
   margin: 10px 0;
+  table-layout: fixed;
 
-  .table {
-    width: 100%;
-    table-layout: fixed;
-    &:hover {
-      transition: all 0.3s;
-    }
+  &:hover {
+    transition: all 0.3s;
+  }
 
-    .head {
-      .rows {
-        display: flex;
-        text-align: center;
-        background-color: var(--table);
-        align-items: center;
-        padding: 5px 5px 10px 5px;
-
-        th {
-          font-size: var(--font-size);
-          &:nth-child(1) {
-            flex: 0.2;
-            text-align: center;
-          }
-          &:nth-child(2) {
-            flex: 0.9;
-          }
-          &:nth-child(3) {
-            flex: 0.5;
-            text-align: center;
-          }
-          &:nth-child(4) {
-            flex: 0.5;
-            text-align: center;
-          }
-          &:nth-child(5) {
-            flex: 0.5;
-            text-align: center;
-            margin: 0 5px;
-          }
-        }
-      }
-    }
-
-    .tbody {
+  .head {
+    .rows {
+      padding: 5px 5px 10px 5px;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
+      align-items: center;
+      text-align: center;
+      background-color: var(--table);
 
-      .rowsLoading {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        background-color: var(--table-rows);
-        padding: 5px 10px;
-        overflow: hidden;
-
-        td {
-          flex: 1;
+      th {
+        font-size: var(--font-size);
+        &:nth-child(1) {
+          flex: 0.2;
+          text-align: center;
         }
-      }
-
-      .rows {
-        display: flex;
-        width: 100%;
-        padding: 5px;
-        justify-content: space-between;
-        background-color: var(--table-rows);
-        cursor: default;
-        align-items: center;
-        border-radius: 6px;
-        &:hover {
-          transition: all 0.3s;
-          background-color: var(--table-rows-hover);
-          // color: aliceblue;
+        &:nth-child(2) {
+          flex: 0.9;
         }
-        &:active {
-          transition: all 0.3s;
-          background-color: var(--table-rows-active);
-          // color: aliceblue;
+        &:nth-child(3) {
+          flex: 0.5;
+          text-align: center;
         }
-
-        td {
-          &:nth-child(1) {
-            flex: 0.2;
-            text-align: center;
-            position: relative;
-            font-size: var(--font-size);
-          }
-          &:nth-child(2) {
-            flex: 0.9;
-            font-size: var(--font-size);
-            position: relative;
-            left: 5px;
-            white-space: normal;
-            word-break: normal;
-            overflow-wrap: break-word;
-            hyphens: auto;
-          }
-          &:nth-child(3) {
-            flex: 0.5;
-            text-align: center;
-            font-size: var(--font-size);
-          }
-          &:nth-child(4) {
-            flex: 0.5;
-            text-align: center;
-            font-size: var(--font-size);
-          }
-          &:nth-child(5) {
-            flex: 0.5;
-            text-align: center;
-            font-weight: 600;
-            font-size: var(--font-size);
-            margin: 0 5px;
-            padding: 5px 0;
-            box-sizing: border-box;
-            border-radius: 6px;
-            align-content: center;
-            &.stable {
-              background-color: var(--state-stable);
-            }
-            &.moderate {
-              background-color: var(--state-moderate);
-              font-size: 0.7em;
-            }
-            &.critical {
-              background-color: var(--state-critical);
-            }
-            &.leave {
-              background-color: var(--state-leave);
-              color: #000;
-            }
-          }
+        &:nth-child(4) {
+          flex: 0.5;
+          text-align: center;
         }
-      }
-
-      .noData {
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-        text-align: center;
-        color: aliceblue;
-        font-size: 1em;
-        border-radius: 5px;
-        background: var(--table-rows);
+        &:nth-child(5) {
+          flex: 0.3;
+          margin: 0 5px;
+          padding: 0 10px;
+          text-align: center;
+          margin: 0 5px;
+        }
       }
     }
   }
+
+  .tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .rowsLoading {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      background-color: var(--table-rows);
+      padding: 5px 10px;
+      overflow: hidden;
+
+      td {
+        flex: 1;
+      }
+    }
+
+    .rows {
+      display: flex;
+      width: 100%;
+      padding: 5px;
+      justify-content: space-between;
+      background-color: var(--table-rows);
+      cursor: default;
+      align-items: center;
+      border-radius: 6px;
+      &:hover {
+        transition: all 0.3s;
+        background-color: var(--table-rows-hover);
+        // color: aliceblue;
+      }
+      &:active {
+        transition: all 0.3s;
+        background-color: var(--table-rows-active);
+        // color: aliceblue;
+      }
+
+      td {
+        &:nth-child(1) {
+          flex: 0.2;
+          text-align: center;
+          position: relative;
+          font-size: var(--font-size);
+        }
+        &:nth-child(2) {
+          flex: 0.9;
+          font-size: var(--font-size);
+          position: relative;
+          left: 5px;
+          white-space: normal;
+          word-break: normal;
+          overflow-wrap: break-word;
+          hyphens: auto;
+        }
+        &:nth-child(3) {
+          flex: 0.5;
+          text-align: center;
+          font-size: var(--font-size);
+        }
+        &:nth-child(4) {
+          flex: 0.5;
+          text-align: center;
+          font-size: var(--font-size);
+        }
+        &:nth-child(5) {
+          flex: 0.3;
+          text-align: center;
+          font-weight: 600;
+          font-size: 0.85em;
+          margin: 0 5px;
+          padding: 5px 10px;
+          box-sizing: border-box;
+          border-radius: 6px;
+          align-content: center;
+          &.stable {
+            background-color: var(--state-stable);
+          }
+          &.moderate {
+            background-color: var(--state-moderate);
+          }
+          &.critical {
+            background-color: var(--state-critical);
+          }
+          &.leave {
+            background-color: var(--state-leave);
+            color: black;
+          }
+        }
+      }
+    }
+
+    .noData {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      color: aliceblue;
+      font-size: 1em;
+      border-radius: 5px;
+      background: var(--table-rows);
+    }
+  }
 }
+// }
 
 @keyframes pulse {
   0% {
@@ -325,9 +314,7 @@
             &:nth-child(5) {
               grid-column: 2;
               grid-row: 2 / span 4;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              @include flex-center;
               height: 100%;
               place-self: end;
 
@@ -335,13 +322,11 @@
               &.moderate,
               &.critical,
               &.leave {
-                padding: 8px 5px;
                 width: 130px;
                 height: 60px;
+                padding: 8px 5px;
+                @include flex-center;
                 text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 font-size: 0.8em;
               }
               &.leave {

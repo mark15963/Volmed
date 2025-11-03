@@ -4,9 +4,10 @@
 }
 
 .row {
-  padding: 10px;
   height: 100%;
   width: 100%;
+  padding: 10px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   .logoBlockContainer {
@@ -37,21 +38,25 @@
   }
 
   .colorBlocksContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5 1fr 1fr;
+    align-items: center;
     font-weight: 600;
     font-size: 1.3em;
     width: 50%;
-    padding-left: 10%;
+    .palateTitle {
+      grid-row: span 1 / span 1;
+      text-align: center;
+    }
     .colorBlocks {
       display: flex;
       flex-direction: column;
-      align-items: start;
+      align-items: center;
       justify-content: left;
+      text-align: center;
       font-weight: 300;
       font-size: 0.7em;
-      gap: 3px;
       &:first-child {
         margin-top: 10px;
       }
@@ -60,9 +65,10 @@
       }
       .colorPicker {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 10px;
         padding: 0;
+        margin-bottom: 10px;
       }
     }
   }
@@ -71,4 +77,5 @@
 .button {
   display: flex;
   justify-content: center;
+  margin-bottom: 10px;
 }

@@ -3,37 +3,38 @@ import { useNavigate } from 'react-router'
 import { PatientCount } from './components/PatientsCount'
 import { ListOfPatients } from './components/ListOfPatients'
 
-import { SearchBar } from '../../components/SearchBar'
-import Button from '../../components/Button'
+import { SearchBar } from '@/components/SearchBar'
+import Button from '@/components/Button'
 
-import styles from './styles/list.module.css'
+import styles from './styles/list.module.scss'
+import '@/layouts/content/content.scss'
+import '@/styles/index.scss'
 
 export const List = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.list}>
-
-                <div className={styles.searchbar}>
-                    <SearchBar />
-                </div>
-
-                <ListOfPatients />
-
-                <div className={styles.counter}>
-                    <PatientCount />
-                </div>
-
-                <div className={styles.buttonContainer}>
-                    <Button
-                        text='На главную'
-                        navigateTo='INDEX'
-                    />
-                </div>
-            </div>
+  return (
+    <div className='mainBlock'>
+      <div className={styles.list}>
+        <div className={styles.searchbar}>
+          <SearchBar />
         </div>
-    )
+
+        <ListOfPatients />
+
+        <div className={styles.counter}>
+          <PatientCount />
+        </div>
+
+        <div className={styles.buttonContainer}>
+          <Button
+            text='На главную'
+            navigateTo='INDEX'
+          />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default List

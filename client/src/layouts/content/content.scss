@@ -1,0 +1,23 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  .mainBlock {
+    min-width: fit-content;
+    max-width: calc(100vw - 20%);
+    min-height: 100px;
+    box-sizing: border-box;
+    height: fit-content;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--main-block);
+    border-radius: 15px;
+    box-shadow: 6px 6px 18px -10px black;
+  }
+}
