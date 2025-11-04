@@ -21,7 +21,9 @@
   opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
 }
-
+.space {
+  width: 100%;
+}
 .logoPrint {
   display: none;
 }
@@ -86,6 +88,10 @@
       padding: 0;
     }
 
+    .space {
+      width: 100%;
+    }
+
     .title {
       color: aliceblue;
       font-size: 0.8em;
@@ -128,15 +134,20 @@
 
 @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
   .content {
-    padding: 0 10px 0 30px !important;
-    gap: 10px !important;
+    padding: 0 30px;
+    gap: 10px;
+    resize: horizontal;
     .logo {
       margin-bottom: 5px !important;
-      height: calc(100% - 10px);
+      height: calc(100% - 20px);
+      flex: 1;
+    }
+    .space {
+      width: 0;
     }
     .title {
       font-size: 1.7rem !important;
-      flex: 1 0 auto;
+      flex: 6;
     }
 
     .userContainer {
