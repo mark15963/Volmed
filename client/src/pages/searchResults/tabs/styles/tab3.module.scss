@@ -208,6 +208,17 @@ hr {
   }
 }
 
+@media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
+  .info {
+    width: calc(100% - 40px) !important;
+    @include flex-center;
+
+    .bg {
+      width: calc(100% - 20px) !important;
+    }
+  }
+}
+
 @media print {
   * {
     background-color: white;
