@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from '../../context/AuthContext';
 
-import Loader from "../../components/Loader";
+import Loader from "../../components/loaders/Loader";
 import LoginForm from "./components/LoginForm";
 import { fetchUserStatus } from "../../api";
 import { debug } from "../../utils/debug";
