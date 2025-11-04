@@ -22,7 +22,7 @@ export const Header = memo(() => {
 
         <Title />
 
-        <div style={{ width: "100%" }} />
+        <div className={styles.space} />
 
         <UserContainer />
 
