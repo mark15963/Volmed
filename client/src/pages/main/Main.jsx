@@ -4,14 +4,13 @@ import { useAuth } from '../../context/AuthContext'
 
 import DoctorDisplay from './pages/DoctorDisplay';
 import NurseDisplay from './pages/NurseDisplay';
-import Loader from '../../components/Loader';
+import Loader from '../../components/loaders/Loader';
 
 import '../../layouts/content/content.scss'
 // import styles from './main.module.scss'
 
 export default function Main() {
   const { authState } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
   const userRole = authState.user.status;
 
   const allowedDoctorUsers = [
@@ -23,8 +22,6 @@ export default function Main() {
     "nurse",
   ]
 
-  // if (authState.isLoading) return <Loader />
-  if (authState.isLoading) return
   if (!authState.isAuthenticated) return null
 
   // User role -> Doctor, tester, admin

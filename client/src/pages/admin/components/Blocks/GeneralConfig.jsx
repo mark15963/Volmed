@@ -1,21 +1,54 @@
-import { useSafeMessage } from "../../../hooks/useSafeMessage"
-import { useConfig } from "../../../context"
-import Button from "../../../components/Button"
-import Input from "../../../components/Input"
-import debug from "../../../utils/debug"
-import styles from "./styles/GeneralConfig.module.scss"
-import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
+//#region ===== IMPORTS ===== 
 import { useEffect } from "react"
 
+import { useSafeMessage } from "@/hooks/useSafeMessage"
+import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
+
+import { useConfig } from "@/context"
+import Button from "@/components/Button"
+import Input from "@/components/Input"
+import debug from "@/utils/debug"
+import styles from "./styles/GeneralConfig.module.scss"
+//#endregion
+/**
+ * GeneralConfig Component
+ * -----------------------
+ * Displays and manages the application's general configuration settings, including the site title, logo, and color palette customization.
+ *
+ * This component interacts with the global configuration context and uses the `useGeneralConfig` hook to handle local input state, updates, and saving. It also integrates `useSafeMessage` for user feedback and `debug` for development logging.
+ *
+ * @description
+ * **Features:**
+ * - Edit the website title and save changes.
+ * - Upload and preview a logo image.
+ * - Adjust and preview header, background, and container colors.
+ * - Disable inputs and show loading states during save operations.
+ */
 const GeneralConfig = () => {
   const config = useConfig()
   const safeMessage = useSafeMessage();
+
+  /** @type {{ isLoading: boolean, inputs: GeneralConfigInputs, handleChange: Function, handleSave: Function, handleLogoUpdate: Function }} */
   const { isLoading, inputs, handleChange, handleSave, handleLogoUpdate } = useGeneralConfig(config, safeMessage)
 
   useEffect(() => {
     debug.log('Config context:', config)
   }, [])
 
+  /**
+   * Handles logo file selection and preview before saving.
+   *
+   * @async
+   * @function handleLogoUpdateWrapper
+   * @param {React.ChangeEvent<HTMLInputElement>} e - File input change event.
+   * @returns {Promise<void>} Resolves when the logo preview is updated.
+   *
+   * @description
+   * This function:
+   * - Extracts the uploaded file from the input event.
+   * - Passes it to `handleLogoUpdate()`.
+   * - Saves in local, server and cache.
+   */
   const handleLogoUpdateWrapper = async (e) => {
     const file = e.target.files[0];
     if (!file) return
@@ -64,7 +97,7 @@ const GeneralConfig = () => {
         </div>
         <div className={styles.separator} />
         <div className={styles.colorBlocksContainer}>
-          <div className={styles.palateTitle}>
+          <div className={styles.paletteTitle}>
             Цветавая палитра:
           </div>
           <div className={styles.colorBlocks}>

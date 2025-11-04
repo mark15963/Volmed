@@ -31,6 +31,53 @@ import debug from "../utils/debug";
 
 const ConfigContext = createContext(null);
 
+/**
+ * configContext
+ * ---------
+ *
+ * Provides global configuration data (title, color palette, and logo) across the app.
+ *
+ * The ConfigProvider loads data from:
+ * 1. A remote or local cache (fast initialization)
+ * 2. The backend API (for fresh data)
+ *
+ * It exposes the configuration state and updater methods via React Context,
+ * so that any component can access and update configuration values using `useConfig()`.
+ *
+ * @example
+ * // ===== USAGE =====
+ * import { useConfig } from "@/context"
+ *
+ * const ExampleComponent = () => {
+ *   const { title, setTitle, color, setColor, logo, setLogo } = useConfig()
+ *
+ *   return (
+ *     <div style={{ backgroundColor: color.content }}>
+ *       <img src={logo} alt="Site logo" />
+ *       <h1>{title}</h1>
+ *     </div>
+ *   )
+ * }
+ *
+ * @component
+ * @param {Object} props - React component props.
+ * @param {React.ReactNode} props.children - The components that will have access to the configuration context.
+ *
+ * @returns {JSX.Element} A context provider wrapping its children.
+ *
+ * @typedef {Object} ConfigContextValue
+ * @property {Object} title - Current site title.
+ * @property {Function} setTitle - Updates the title both locally and via API.
+ * @property {Object} color - Color palette for different UI areas.
+ * @property {string} color.header - Header background color.
+ * @property {string} color.content - Main background color.
+ * @property {string} color.container - Container color.
+ * @property {Function} setColor - Updates the color palette both locally and via API.
+ * @property {?string} logo - URL of the site logo image.
+ * @property {Function} setLogo - Updates the logo URL (client-side only).
+ * @property {boolean} isLoading - Indicates if configuration data is still loading.
+ * @property {Object} defaults - Default configuration constants.
+ */
 export const ConfigProvider = ({ children }) => {
   const [title, setTitleState] = useState("");
   const [color, setColorState] = useState({
@@ -174,6 +221,21 @@ export const ConfigProvider = ({ children }) => {
   );
 };
 
+/**
+ * useConfig
+ * ---------
+ * Custom React hook for accessing the global configuration context.
+ *
+ * Must be used within a `<ConfigProvider>`.
+ *
+ * @throws {Error} Throws if used outside of a ConfigProvider.
+ *
+ * @returns {ConfigContextValue} The current configuration state and updater functions.
+ * 
+ * @example
+ * const { color, title } = useConfig();
+ * console.log(color.header, title);
+ */
 export const useConfig = () => {
   const context = useContext(ConfigContext)
   if (!context) {

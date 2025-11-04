@@ -1,20 +1,22 @@
+//#region ===== IMPORTS =====
 import { useNavigate } from "react-router"
 
 // Blocks of page
-import GeneralConfig from "./Blocks/GeneralConfig"
-import { PatientsStats, UsersStats } from "./Blocks/Stats"
-import UsersList from "./Blocks/UsersList"
+import GeneralConfig from "./components/Blocks/GeneralConfig"
+import { PatientsStatus, UsersStatus } from "./components/Blocks/Status"
+import UsersList from "./components/Blocks/UsersList"
 
 // Components
 import Block from "./components/Block"
 import Row from "./components/Row"
-import Button from "../../components/Button"
+import Button from "@/components/Button"
 
 // UI
-import styles from './styles/dashboard.module.scss'
+import styles from './dashboard.module.scss'
 import '@/styles/index.scss'
-import { PAGES } from "../../constants"
-import { useConfig } from "../../context"
+import { PAGES } from "@/constants"
+import { useConfig } from "@/context"
+//#endregion
 
 export const Dashboard = () => {
   const navigate = useNavigate()
@@ -40,11 +42,11 @@ export const Dashboard = () => {
 
       <Row>
         <Block title='ОБЩИЕ ДАННЫЕ ПАЦИЕНТОВ'>
-          <PatientsStats />
+          <PatientsStatus />
         </Block>
 
         <Block title='ОБЩИЕ ДАННЫЕ ПЕРСОНАЛА'>
-          <UsersStats />
+          <UsersStatus />
         </Block>
       </Row>
 

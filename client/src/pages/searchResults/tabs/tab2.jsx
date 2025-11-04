@@ -9,7 +9,7 @@ const { Panel } = Collapse;
 
 import Input from '../../../components/Input';
 import Graph from './Components/Graph';
-import { SpinLoader } from '../../../components/Loading/SpinLoader';
+import { SpinLoader } from '../../../components/loaders/SpinLoader';
 
 import api from '../../../services/api'
 import debug from '../../../utils/debug';
