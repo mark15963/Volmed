@@ -22,7 +22,7 @@ import { useSearchResultsActions } from './hooks/useSearchResultsActions.js'
 
 // Styles & Utils
 import debug from '../../utils/debug'
-import styles from './searchResults.module.css'
+import styles from './searchResults.module.scss'
 //#endregion
 
 //#region ===== Constants =====

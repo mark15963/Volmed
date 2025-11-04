@@ -1,4 +1,4 @@
-import styles from '../../../searchResults.module.css'
+import styles from '../../../searchResults.module.scss'
 
 const NotFoundState = () => {
   return (

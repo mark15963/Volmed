@@ -1,9 +1,10 @@
 import { Divider } from 'antd';
-import styles from '../searchResults.module.css';
 import moment from 'moment';
 import { Block } from './Components/Block';
 
-export const Tab1 = ({ data }) => {
+import styles from '../searchResults.module.scss';
+
+const Tab1 = ({ data }) => {
   function formatPhoneNumber(phone) {
     if (!phone) return '';
     const digits = phone.replace(/\D/g, '');

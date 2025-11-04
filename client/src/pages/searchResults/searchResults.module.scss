@@ -7,9 +7,8 @@
   flex-direction: column;
   font-size: 17px;
   color: aliceblue;
-  background-color: #0073c7;
+  background-color: var(--main-block);
   box-sizing: border-box;
-  /* border: solid black 2px; */
   border-radius: 10px;
 }
 
@@ -30,7 +29,6 @@
   height: 100%;
   width: 100%;
   margin-bottom: 20px;
-  /* border: solid, black, 2px; */
   border-radius: 10px;
   border-top-left-radius: 0;
   padding: 10px 10px;
@@ -42,7 +40,6 @@
   background-color: #0075c9;
   padding: 20px;
   border-radius: 8px;
-  /* border: solid, black, 1px; */
 }
 
 .topForms {
@@ -173,7 +170,7 @@
   width: 100%;
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (orientation: portrait) and (max-device-width: 600px) {
   body {
     width: 100vw;
   }
