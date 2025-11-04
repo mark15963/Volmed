@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
 
-import Button from "../../../../components/Button";
+import Button from "@/components/Button";
 
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
-import styles from '../../searchResults.module.css'
+import styles from '../../searchResults.module.scss'
 
 export const ActionButtons = ({
   activeTab,
