@@ -54,3 +54,5 @@ export const useUsers = () => {
     }
     return context
 }
+
+export default UsersDataProvider

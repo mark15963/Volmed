@@ -53,3 +53,4 @@ export const usePatients = () => {
     }
     return context;
 }
+export default PatientDataProvider

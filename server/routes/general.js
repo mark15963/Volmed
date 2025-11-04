@@ -30,6 +30,14 @@ router.get("/title", async (req, res) => {
   }
 });
 router.put("/title", async (req, res) => {
+  debug.log("📝 Raw headers:", req.headers);
+  debug.log("📝 Raw body type:", typeof req.body, req.body);
+
+  if (!req.body || !req.body.title) {
+    debug.error("❌ Missing title in request body!");
+    return res.status(400).json({ error: "Missing title in request body" });
+  }
+
   const { title } = req.body;
 
   debug.log("📝 Received title update:", { title });
@@ -81,7 +89,11 @@ router.get("/color", async (req, res) => {
   }
 });
 router.put("/color", async (req, res) => {
-  const { headerColor, contentColor, containerColor } = req.body;
+  const {
+    headerColor = req.body.header,
+    contentColor = req.body.content,
+    containerColor = req.body.container,
+  } = req.body;
 
   debug.log("🎨 Received color update:", {
     headerColor,

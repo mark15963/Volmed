@@ -1,52 +1,73 @@
-.list {
+.mainBlock {
+  min-width: 750px;
+  width: calc(100vw - 20%);
+  max-width: 800px;
+  min-height: 100px;
+  box-sizing: border-box;
   height: fit-content;
-  width: 100%;
-  margin: 0;
-  padding: 10px 10px 20px 10px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  background-color: var(--main-block);
+  border-radius: 15px;
+  box-shadow: 6px 6px 18px -10px black;
 
-  .searchbar {
-    @include flex-center;
-    flex-direction: column;
-  }
-
-  // .
-  // ...
-  // patientsList.module.scss
-  // ...
-  // .
-
-  .counter {
-    margin-left: 10px;
-  }
-
-  .buttonContainer {
-    width: 100%;
-    @include flex-center;
-  }
-}
-
-@media screen and (orientation: portrait) {
   .list {
     height: fit-content;
     width: 100%;
     margin: 0;
-    padding: 0px;
+    padding: 10px 10px 20px 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: #000;
     box-sizing: border-box;
-  }
 
-  .counter {
-    margin: 10px;
-  }
+    .searchbar {
+      @include flex-center;
+      flex-direction: column;
+    }
 
-  .buttonContainer {
-    margin: 10px 0;
+    // .
+    // ...
+    // patientsList.module.scss
+    // ...
+    // .
+
+    .counter {
+      margin-left: 10px;
+    }
+
+    .buttonContainer {
+      width: 100%;
+      @include flex-center;
+    }
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .mainBlock {
+    min-width: fit-content;
+    max-width: calc(100vw - 10px);
+    .list {
+      height: fit-content;
+      width: 100%;
+      margin: 0;
+      padding: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #000;
+      box-sizing: border-box;
+    }
+
+    .counter {
+      margin: 10px;
+    }
+
+    .buttonContainer {
+      margin: 10px 0;
+    }
   }
 }

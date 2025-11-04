@@ -6,7 +6,7 @@ const debug = require("./debug");
 async function initCacheOnStartup() {
   try {
     const cached = getCachedConfig();
-    if (cached && cached.title && cached.color) {
+    if (cached && cached.title && cached.color && cached.logoUrl) {
       debug.log("Cache already loaded");
       return;
     }
@@ -14,7 +14,7 @@ async function initCacheOnStartup() {
     debug.log("Building cache from database...");
 
     const row = await fetchRow(`
-      SELECT "topTitle", "bottomTitle", "headerColor", "contentColor"
+      SELECT "title", "headerColor", "contentColor", "containerColor", "logoUrl"
       FROM general
       WHERE id = 1
       `);
@@ -30,6 +30,7 @@ async function initCacheOnStartup() {
         contentColor: row.contentColor,
         containerColor: row.containerColor,
       },
+      logo: row.logoUrl,
     };
 
     saveCachedConfig(data);

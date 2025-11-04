@@ -1,0 +1,13 @@
+{
+  "watch": ["."],
+  "ext": "js, json",
+  "ignore": [
+    "cache/*",
+    "client/*",
+    "../client/*",
+    "public/*",
+    "uploads/*",
+    "node_modules/*"
+  ],
+  "exec": "node server.js"
+}

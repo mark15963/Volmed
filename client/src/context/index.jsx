@@ -1,8 +1,8 @@
-import { AuthProvider } from "./AuthContext";
-import { UsersDataProvider } from "./UsersDataContext";
-import { PatientDataProvider } from "./PatientDataContext";
-import { MessageProvider } from './MessageContext'
-import { ConfigProvider } from "./ConfigContext";
+import AuthProvider from "./AuthContext";
+import UsersDataProvider from "./UsersDataContext";
+import PatientDataProvider from "./PatientDataContext";
+import MessageProvider from './MessageContext'
+import ConfigProvider from "./ConfigContext";
 
 export const AppProviders = ({ children }) => {
   return (

@@ -1,5 +1,5 @@
 //#region ===== USEAGE =====
-// import { useConfig } from "...../context"
+// import { useConfig } from "@/context"
 //
 // const config = useConfig()
 // const { title, setTitle, color, setColor, logo, setLogo } = config
@@ -135,22 +135,37 @@ export const ConfigProvider = ({ children }) => {
         api.getLogo()
       ])
 
-      if (titleRes.status === 'fulfilled') {
-        setTitleState(titleRes.value.data.title || CONFIG_DEFAULTS.GENERAL.TITLE)
+      // --- TITLE ---
+      if (titleRes.status === 'fulfilled' && titleRes.value?.data) {
+        setTitleState(titleRes.value.data.title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
+      } else {
+        debug.warn("getTitle returned no data or failed:", titleRes);
+        setTitleState(CONFIG_DEFAULTS.GENERAL.TITLE);
       }
-      if (colorRes.status === 'fulfilled') {
+
+      // --- COLOR ---
+      if (colorRes.status === 'fulfilled' && colorRes.value?.data) {
+        const { headerColor, contentColor, containerColor } = colorRes.value.data
         setColorState({
-          header: colorRes.value.data.headerColor || CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
-          content: colorRes.value.data.contentColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
-          container: colorRes.value.data.containerColor || CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER
+          header: headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+          content: contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+          container: containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER
         })
+      } else {
+        debug.warn("getColor returned no data or failed:", colorRes);
+        setColorState(CONFIG_DEFAULTS.GENERAL.COLOR);
       }
-      if (logoRes.status === 'fulfilled' && logoRes.value.data.logoUrl) {
+
+      // --- LOGO ---
+      if (logoRes.status === 'fulfilled' && logoRes.value?.data?.logoUrl) {
         setLogoState(logoRes.value.data.logoUrl)
+      } else {
+        debug.warn("getLogo returned no logoUrl or failed:", logoRes);
+        setLogoState(CONFIG_DEFAULTS.GENERAL.LOGO);
       }
 
     } catch (error) {
-      console.error("Error fetching from API:", error)
+      console.error("[API ERROR] fetchFromApi failed:", error)
     } finally {
       setIsLoading(false)
     }
@@ -171,37 +186,49 @@ export const ConfigProvider = ({ children }) => {
   }, [loadFromCache, fetchFromApi])
 
   // --- Update setters ---
-  const setTitle = useCallback(async (titleData) => {
-    try {
-      const { data } = await api.updateTitle({ title: titleData })
-      setTitleState(data.title)
-      debug.log("✅ Title updated successfully")
-    } catch (err) {
-      console.error("Failed to update title:", err)
-      throw err
-    }
-  }, [])
-  const setColor = useCallback(async ({ header, content, container }) => {
-    try {
-      const { data } = await api.updateColor({
-        headerColor: header,
-        contentColor: content,
-        containerColor: container
-      })
-      setColorState({
-        header: data.headerColor,
-        content: data.contentColor,
-        container: data.containerColor
-      })
-      debug.log("✅ Colors updated successfully")
-    } catch (err) {
-      console.error("Failed to update colors:", err)
-      throw err
-    }
-  }, [])
+  const setTitle = async (newTitle) => {
+    await updateConfig(
+      () => api.updateTitle({ title: newTitle }),
+      (data) => setTitleState(data.title ?? CONFIG_DEFAULTS.GENERAL.TITLE),
+      () => setTitleState(CONFIG_DEFAULTS.GENERAL.TITLE),
+      "PUT /general/title"
+    )
+  }
+  const setColor = async (colorData) => {
+    await updateConfig(
+      () => api.updateColor(colorData),
+      (data) =>
+        setColorState({
+          header: data.headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+          content: data.contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+          container: data.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER
+        }),
+      () => setColorState(CONFIG_DEFAULTS.GENERAL.COLOR),
+      "PUT /general/color"
+    )
+  }
   const setLogo = useCallback(async (fileUrl) => {
     setLogoState(fileUrl)
+    debug.log("✅ Logo updated locally")
   }, [])
+
+  const updateConfig = async (apiCall, onSuccess, onerror, label) => {
+    try {
+      const res = await apiCall()
+      debug.log(`[API RESPONSE] ${label}:`, res.data)
+
+      if (res?.data) {
+        onSuccess(res.data)
+        debug.log(`${label} updated successfully`)
+      } else {
+        debug.warn(`${label} update returned null data:`, res)
+        onError?.()
+      }
+    } catch (error) {
+      debug.error(`[API ERROR] ${label}:`, err)
+      onError?.()
+    }
+  }
 
   const value = {
     title,
@@ -243,3 +270,4 @@ export const useConfig = () => {
   }
   return context
 }
+export default ConfigProvider

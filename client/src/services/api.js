@@ -93,7 +93,19 @@ const api = {
   getTitle: () => api.get(`/general/title`),
   updateTitle: (data) => api.put(`/general/title`, data),
   getColor: () => api.get(`/general/color`),
-  updateColor: (data) => api.put(`/general/color`, data),
+  updateColor: async (payload) => {
+    try {
+      const res = await api.put(`/general/color`, payload);
+      return { ok: true, data: res.data };
+    } catch (err) {
+      return {
+        ok: false,
+        data: null,
+        message: err.message || "Request failed. Try again.",
+        status: err.response?.status || 0,
+      };
+    }
+  },
   getLogo: () => api.get(`/general/get-logo`),
   uploadLogo: (formData) =>
     api.post(`/general/upload-logo`, formData, {
