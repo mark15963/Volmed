@@ -4,7 +4,7 @@ import { Menu } from "../../components/Menu";
 import ActionButtons from "./tabs/Components/ActionButton";
 import ErrorState from "./tabs/Components/States/ErrorState";
 import NotFoundState from "./tabs/Components/States/NotFoundState";
-import { SpinLoader } from "../../components/Loading/SpinLoader";
+import { SpinLoader } from "../../components/loaders/SpinLoader";
 
 // Menu tabs
 import { Tab1 } from './tabs/tab1'

@@ -8,12 +8,12 @@ import { useConfig } from '../../context'
 import { usePageTitle } from "../../utils/usePageTitle";
 
 import debug from "../../utils/debug";
-import ProtectedRoute from '../ProtectedRoute'
+import ProtectedRoute from './ProtectedRoute'
 
 import { appRoutes } from "../../routes/pageRoutes";
 
 //----- COMPONENTS -----
-import Loader from "../../components/Loader";
+import Loader from "../../components/loaders/Loader";
 
 // ----- STYLE -----
 import './content.scss'

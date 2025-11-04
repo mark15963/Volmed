@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { useAuth } from '../../../context/AuthContext'
-import { useUsers } from "../../../context/UsersDataContext"
-import { usePerItemLoading } from '../../../hooks/usePerItemLoading'
+import { useAuth } from '@/context/AuthContext'
+import { useUsers } from "@/context/UsersDataContext"
+import { usePerItemLoading } from '@/hooks/usePerItemLoading'
 
-import Button from '../../../components/Button'
-import { SpinLoader } from '../../../components/Loading/SpinLoader'
+import Button from '@/components/Button'
+import { SpinLoader } from '@/components/loaders/SpinLoader'
 
-import api from '../../../services/api'
+import api from '@/services/api'
 
 import styles from './styles/UsersList.module.scss'
 

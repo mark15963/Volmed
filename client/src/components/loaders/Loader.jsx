@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import debug from '../utils/debug'
+import debug from '@/utils/debug'
 
-import styles from './styles/Loader.module.scss'
-import loader from '../assets/images/Loader.gif'
+import styles from './Loader.module.scss'
+import loader from '@/assets/images/Loader.gif'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 

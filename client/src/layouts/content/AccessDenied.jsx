@@ -1,6 +1,6 @@
-import Button from "../components/Button"
+import Button from "@/components/Button"
 import '@/styles/index.scss'
-import { statusDisplayMap } from "../utils/statusMap"
+import { statusDisplayMap } from "@/utils/statusMap"
 
 export const AccessDenied = ({ roles, userRole }) => {
   const displayRoles = roles.map(r => statusDisplayMap[r] || r)

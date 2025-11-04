@@ -1,16 +1,3 @@
-//#region ===== USAGE =====
-/**
- * API Service
- * ------------
- * Centralized axios wrapper for all backend requests.
- * Provides automatic JSON handling, response parsing, and debugging logs.
- *
- * ✅ Usage example:
- *    import api from "@/services/api";
- *    const { ok, data } = await api.getPatients();
- *    if (ok) console.log(data);
- */
-//#endregion
 //#region ===== IMPORTS =====
 import axios from "axios";
 import debug from "../utils/debug";
@@ -74,6 +61,11 @@ async function requestWrapper(method, url, data = null, config = {}) {
 }
 
 /**
+ * API Service
+ * ------------
+ * Centralized axios wrapper for all backend requests.
+ * Provides automatic JSON handling, response parsing, and debugging logs.
+ *
  * The main API object
  * -------------------
  * Each property here is a preconfigured endpoint call.
@@ -82,6 +74,11 @@ async function requestWrapper(method, url, data = null, config = {}) {
  * @example
  *    const result = await api.getPatients();
  *    if (result.ok) setPatients(result.data);
+ *
+ * @example
+ *    import api from "@/services/api";
+ *    const { ok, data } = await api.getPatients();
+ *    if (ok) console.log(data);
  */
 const api = {
   // Generic CRUD helpers (used by all specific endpoints)

@@ -1,9 +1,9 @@
-import { SpinLoader } from "../../../components/Loading/SpinLoader"
-import { usePatients, useUsers } from "../../../context"
+import { SpinLoader } from "@/components/loaders/SpinLoader"
+import { usePatients, useUsers } from "@/context"
 
-import styles from '../styles/dashboard.module.scss'
+import styles from '../../dashboard.module.scss'
 
-export const PatientsStats = () => {
+export const PatientsStatus = () => {
   const { patients, loading: patientsLoading } = usePatients()
   const countPatients = patients.length
   const stablePatients = patients.filter(patient => patient.state === 'Стабильно').length
@@ -36,7 +36,7 @@ export const PatientsStats = () => {
   )
 }
 
-export const UsersStats = () => {
+export const UsersStatus = () => {
   const { users, loading: usersLoading } = useUsers()
 
   const countUsers = users.length

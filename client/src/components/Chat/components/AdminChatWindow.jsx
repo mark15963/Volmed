@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 
 import Button from "../../Button"
 import Input from "../../Input"
-import { SpinLoader } from "../../Loading/SpinLoader"
+import { SpinLoader } from "../../loaders/SpinLoader"
 import { formatChatTime } from "../../../utils/time"
 
 import styles from '../styles/Chat.module.scss'
