@@ -108,7 +108,7 @@
       border-radius: 13px;
       background-color: #3584c9;
       justify-content: start;
-      box-shadow: 0 0 10px 5px #3584c9 !important;
+      box-shadow: 0 0 10px 5px #3584c9;
 
       .userNameContainer {
         .userNameText {
@@ -121,6 +121,31 @@
       }
       .authButton {
         margin: 0;
+      }
+    }
+  }
+}
+
+@media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
+  .content {
+    padding: 0 10px 0 30px !important;
+    gap: 10px !important;
+    .logo {
+      margin-bottom: 5px !important;
+      height: calc(100% - 10px);
+    }
+    .title {
+      font-size: 1.7rem !important;
+      flex: 1 0 auto;
+    }
+
+    .userContainer {
+      box-shadow: 0 0 13px 8px #3584c9;
+
+      .userNameContainer {
+        .userNameText {
+          font-size: 1.1em !important;
+        }
       }
     }
   }

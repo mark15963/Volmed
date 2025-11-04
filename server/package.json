@@ -16,7 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^1.12.2",
+    "axios": "^1.13.1",
     "bcrypt": "^6.0.0",
     "combined-stream": "^1.0.8",
     "connect-pg-simple": "^10.0.0",

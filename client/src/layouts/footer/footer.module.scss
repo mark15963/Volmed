@@ -1,5 +1,5 @@
 footer {
-  padding: 5px !important;
+  padding: 5px;
 
   .content {
     width: 100%;
@@ -13,10 +13,21 @@ footer {
 }
 @media screen and (orientation: portrait) {
   footer {
-    padding: 0 !important;
+    padding: 0;
     .content {
       font-size: 0.8em;
       padding: 0 10px !important;
+    }
+  }
+}
+
+@media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
+  footer {
+    .content {
+      margin-left: 10px;
+    }
+    .right {
+      margin-right: 20px;
     }
   }
 }
