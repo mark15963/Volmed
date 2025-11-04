@@ -34,7 +34,7 @@ import { useAuth } from "../../context";
 import Loader from "../../components/loaders/Loader";
 import Button from "../../components/Button";
 
-import { enhancedDebug as debug } from "../../utils/debug";
+import { debug } from "../../utils/debug";
 import { AccessDenied } from "./AccessDenied";
 //#endregion
 

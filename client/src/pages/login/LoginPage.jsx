@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import Loader from "../../components/loaders/Loader";
 import LoginForm from "./components/LoginForm";
 import { fetchUserStatus } from "../../api";
-import { debug } from "../../utils/debug";
+import debug from "../../utils/debug";
 import { useNavigate } from "react-router";
 
 export default function LoginPage() {

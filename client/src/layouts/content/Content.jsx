@@ -10,7 +10,7 @@ import { usePageTitle } from "../../utils/usePageTitle";
 import debug from "../../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
 
-import { appRoutes } from "../../routes/pageRoutes";
+import { appRoutes } from "../../pages/routes/pageRoutes";
 
 //----- COMPONENTS -----
 import Loader from "../../components/loaders/Loader";

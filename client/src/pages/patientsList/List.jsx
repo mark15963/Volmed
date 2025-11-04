@@ -15,11 +15,7 @@ export const List = () => {
 
   return (
     <div
-      className='mainBlock'
-      style={{
-        width: 'calc(100% - 40px)',
-        maxWidth: 'none'
-      }}
+      className={styles.mainBlock}
     >
       <div className={styles.list}>
         <div className={styles.searchbar}>

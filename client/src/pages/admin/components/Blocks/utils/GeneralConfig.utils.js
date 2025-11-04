@@ -106,13 +106,25 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
           contentColor: contentColorInput,
           containerColor: containerColorInput,
         });
+
+        if (!colors?.ok || !colors?.data) {
+          debug.error("[API ERROR] updateColor failed:", colors);
+          throw new Error(
+            colors?.message || "Color update failed: No data returned"
+          );
+        }
+
         if (
           colors.data.headerColor === headerColorInput &&
           colors.data.contentColor === contentColorInput &&
           colors.data.containerColor === containerColorInput
         )
           debug.log("✅ Colors updated successfully");
-        else debug.error("❌ Color update failed");
+        else
+          debug.error(
+            "❌ Color mismatch between request and response:",
+            colors.data
+          );
       } catch (colorErr) {
         console.error("❌ Color update failed:", colorErr);
         throw new Error(`Color update failed: ${colorErr.message}`);
@@ -149,9 +161,13 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
    * Displays progress and success/error messages via `safeMessage`.
    */
   const handleLogoUpdate = async (file) => {
-    if (!file) return;
+    if (!file) {
+      debug.warn("⚠️ No file provided to handleLogoUpdate");
+      return;
+    }
     if (!file.type.startsWith("image/")) {
       safeMessage("error", "Пожалуйста, выберите файл изображения");
+      debug.warn("⚠️ Provided file is not an image:", file.type);
       return;
     }
 
@@ -162,21 +178,40 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
       const formData = new FormData();
       formData.append("logo", file);
 
-      debug.log("🔄 Updating logo...");
+      debug.log("🔄 Updating logo via api.uploadLogo...");
 
       const res = await api.uploadLogo(formData);
-      if (!res || !res.data || !res.data.logoUrl) {
-        debug.error("[API ERROR] uploadLogo: no logoUrl in response", res);
-        throw new Error("No logoUrl returned from server");
+
+      debug.log("uploadLogo response:", res);
+
+      if (!res || !res.data) {
+        debug.error("[API ERROR] uploadLogo failed: no response data", res);
+        throw new Error("No response data from server");
       }
 
-      const logo = await api.getLogo();
-      if (logo) debug.log("Returned updated logo from server");
+      if (!res.data.logoUrl) {
+        debug.error(
+          "[API ERROR] uploadLogo: no logoUrl field in response",
+          res.data
+        );
+        throw new Error("Server did not return a logoUrl");
+      }
+
+      debug.log("uploadLogo returned valid logoUrl:", res.data.logoUrl);
+
+      const logoRes = await api.getLogo();
+      debug.log("getLogo response:", logoRes);
+
+      if (logoRes?.data) {
+        debug.log("✅ Server confirmed updated logo");
+      } else {
+        debug.warn("getLogo returned unexpected format", logoRes);
+      }
 
       setLogo(`${res.data.logoUrl}?t=${Date.now()}`);
       safeMessage("success", "Логотип загружен!");
     } catch (err) {
-      debug.error("[API ERROR] uploadLogo:", err);
+      debug.error("[API ERROR] handleLogoUpdate caught error:", err);
       safeMessage("error", "Ошибка загрузки логотипа! Проверьте сервер.");
     } finally {
       setIsLoading(false);
