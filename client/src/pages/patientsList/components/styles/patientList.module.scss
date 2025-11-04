@@ -18,9 +18,6 @@
     .rows {
       width: 100%;
       padding: 5px 5px 10px 5px;
-      // display: flex;
-      // align-items: center;
-      // text-align: center;
       display: grid;
       grid-template-rows: 1fr;
       grid-template-columns: 0.15fr 0.8fr 0.4fr 0.4fr 0.4fr;

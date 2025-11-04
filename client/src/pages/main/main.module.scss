@@ -1,5 +1,5 @@
 :global(.mainBlock) {
-  width: 445px !important;
+  width: 445px;
 }
 :global(.mainBlock) {
   .buttonsContainer {
@@ -33,5 +33,11 @@
         }
       }
     }
+  }
+}
+
+@media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
+  :global(.mainBlock) {
+    width: 50%;
   }
 }

@@ -1,11 +1,11 @@
 import { memo } from 'react';
 
 import ChatWidget from '../../components/Chat/ChatWidget';
+import InDev from '../../components/InDev';
 
 import { services } from '../../constants';
 
 import styles from './footer.module.scss'
-import InDev from '../../components/InDev';
 
 export const Footer = memo(() => {
   const year = new Date().getFullYear()
@@ -22,9 +22,11 @@ export const Footer = memo(() => {
       <div className={styles.content}>
         © {projectContent} {adjustedYear}
       </div>
-      <InDev>
-        <ChatWidget />
-      </InDev>
+      <div className={styles.right}>
+        <InDev>
+          <ChatWidget />
+        </InDev>
+      </div>
     </footer>
   )
 })
