@@ -3,10 +3,10 @@ import { useEffect, useState, lazy } from 'react';
 
 const RegisterPatient = lazy(() => import('../register/RegisterPatient'))
 
-import { usePageTitle } from '../../utils/usePageTitle';
+import { usePageTitle } from '@/utils/usePageTitle';
 
-import api from '../../services/api';
-import Loader from '../../components/Loader';
+import api from '@/services/api';
+import Loader from '@/components/loaders/Loader';
 
 export const EditPatient = () => {
     const { id } = useParams();
