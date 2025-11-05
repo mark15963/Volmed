@@ -6,14 +6,19 @@ import { message } from 'antd';
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
 import { useSafeMessage } from '../../../hooks/useSafeMessage';
+import { useApi } from '../../../hooks/useApi';
+
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
 import styles from './styles/tab3.module.scss'
 
+
 import api from '../../../services/api';
 import debug from '../../../utils/debug';
+import { fetchMedications } from '../../../api/fetchMedications';
+import { SpinLoader } from '../../../components/loaders/SpinLoader';
 //#endregion
 
 axios.defaults.withCredentials = true;
@@ -22,9 +27,17 @@ export const Tab3 = ({
   medications,
   isEditing,
   setMedications,
+  patientId
 }) => {
-  const safeMessage = useSafeMessage()
   const [isLoading, setIsLoading] = useState(false)
+  const safeMessage = useSafeMessage()
+  const { data: fetchedMedications = [], loading, error } = useApi(
+    fetchMedications, [patientId], [patientId]
+  )
+
+  const medList = Array.isArray(isEditing ? medications : fetchedMedications)
+    ? (isEditing ? medications : fetchedMedications)
+    : [];
 
   const handleAdd = async () => {
     if (medications.length === 0 || medications[medications.length - 1].name.trim()) {
@@ -94,18 +107,33 @@ export const Tab3 = ({
     }
   }
 
+  if (!patientId) {
+    return (
+      <div className={styles.info}>
+        <div className={styles.bg}>
+          <p style={{ textAlign: "center", marginTop: "1rem" }}>
+            Ошибка: отсутствует идентификатор пациента
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.info}>
       <div className={styles.bg}>
         <h2>Назначения</h2>
 
+        {loading && <SpinLoader />}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         {/* EMPTY LIST */}
-        {medications.length === 0 && !isEditing && (
+        {!loading && medList.length === 0 && !isEditing && (
           <p style={{ marginTop: '10px', textAlign: 'center' }}>Нет назначений</p>
         )}
 
         {/* MED LIST */}
-        {(medications.length > 0 || isEditing) && (
+        {(medList.length > 0 || isEditing) && (
           <div className={styles.listContainer}>
             <table className={styles.table}>
               <thead className={styles.head}>
@@ -122,7 +150,7 @@ export const Tab3 = ({
                 </tr>
               </thead>
               <tbody className={styles.body}>
-                {medications.map((item, index) => (
+                {medList.map((item, index) => (
                   <tr
                     key={index}
                     className={styles.rows}
@@ -140,7 +168,7 @@ export const Tab3 = ({
                         <Input
                           value={item.name}
                           onChange={(e) => {
-                            const newList = [...medications];
+                            const newList = [...medList];
                             newList[index].name = e.target.value;
                             setMedications(newList);
                           }}
@@ -160,7 +188,7 @@ export const Tab3 = ({
                         <Input
                           value={item.dosage}
                           onChange={(e) => {
-                            const newList = [...medications];
+                            const newList = [...medList];
                             newList[index].dosage = e.target.value;
                             setMedications(newList);
                           }}
@@ -184,7 +212,7 @@ export const Tab3 = ({
                           <Input
                             value={item.frequency}
                             onChange={(e) => {
-                              const newList = [...medications];
+                              const newList = [...medList];
                               newList[index].frequency = e.target.value;
                               setMedications(newList);
                             }}
@@ -222,7 +250,7 @@ export const Tab3 = ({
           />
         )}
       </div>
-    </div >
+    </div>
   )
 }
 

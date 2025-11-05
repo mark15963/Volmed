@@ -4,6 +4,7 @@ import Input from '../../../components/Input';
 import ErrorDisplay from './ErrorDisplay';
 
 import styles from '../styles/login.module.scss';
+import '@/styles/index.scss'
 import { debug } from '../../../utils/debug';
 
 const LoginForm = ({
@@ -35,7 +36,7 @@ const LoginForm = ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.mainBlock}>
+      <div className="mainBlock">
         <h2>Вход</h2>
         <ErrorDisplay errors={errors} />
         <form onSubmit={handleSubmit}>

@@ -52,7 +52,7 @@ export const debug = {
     console.trace();
     console.groupEnd();
   },
-  table: (title = "Debug Table", data, columns) => {
+  table: (data, columns, title = "Debug Table") => {
     if (!isDebug) return;
     console.groupCollapsed(...formatTitle("table", title));
     console.table(data, columns);

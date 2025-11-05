@@ -17,9 +17,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #0073c7;
-    border: 2px solid black;
+    background-color: var(--main-block);
     border-radius: 15px;
+    box-shadow: 6px 6px 18px -10px black;
 
     .title {
       margin: 20px 0;
@@ -27,50 +27,46 @@
     }
 
     .table {
-      width: auto;
-      min-width: 600px;
-      max-width: 100%;
-      background-color: #016ebb;
-      table-layout: auto;
-      border-collapse: collapse;
-      border-radius: 6px;
+      width: 100%;
+      // min-width: 600px;
+      // max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      color: aliceblue;
+      background-color: var(--table);
+      padding: 5px;
+      border-radius: 5px;
+      table-layout: fixed;
+      // border-collapse: collapse;
       &:hover {
         transition: all 0.3s;
       }
 
       .head {
+        width: 100%;
         .rows {
-          display: flex;
-          background-color: #0060a4;
-          align-items: center;
-          margin-bottom: 2px;
-          border-radius: 6px 6px 0 0;
-          cursor: default;
+          width: 100%;
+          padding: 5px 5px 10px 5px;
+          display: grid;
+          grid-template-rows: 1fr;
+          grid-template-columns: 0.15fr 0.3fr 0.8fr 0.5fr;
+          background-color: var(--table);
 
           th {
-            padding: 10px 5px;
-            white-space: nowrap;
-            text-align: center;
-            font-size: 0.9em;
+            font-size: var(--font-size);
             &:nth-child(1) {
-              max-width: 40px;
-              flex: 0.2;
+              flex: 0.15;
               text-align: center;
             }
-
             &:nth-child(2) {
-              max-width: 120px;
-              flex: 0.5;
+              flex: 0.4;
             }
-
             &:nth-child(3) {
-              max-width: 250px;
-              flex: 1;
+              flex: 0.9;
               text-align: center;
             }
-
             &:nth-child(4) {
-              flex: 0.5;
+              flex: 0.4;
               text-align: center;
             }
           }
@@ -79,34 +75,47 @@
       .tbody {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 5px;
 
-        .rows {
+        .rowsLoading {
           display: flex;
           width: 100%;
-          padding: 5px 0;
           justify-content: space-between;
-          background-color: #0066b0;
+          background-color: var(--table-rows);
+          padding: 5px 10px;
+          overflow: hidden;
+
+          td {
+            flex: 1;
+          }
+        }
+
+        .rows {
+          width: 100%;
+          padding: 5px 0;
+          display: grid;
+          grid-template-rows: 1fr;
+          grid-template-columns: 0.15fr 0.3fr 0.8fr 0.5fr;
+          border-radius: 3px;
+          background-color: var(--table-rows);
           cursor: default;
-          align-items: center;
           &:last-child {
-            border-radius: 0 0 6px 6px;
+            border-radius: 3px 3px 6px 6px;
           }
           &:hover {
             transition: all 0.3s;
-            background-color: #005fa2;
+            background-color: var(--table-rows-hover);
           }
 
           td {
             white-space: wrap;
-            padding: 0 5px;
-            font-size: 0.8em;
+            font-size: var(--font-size);
             &:nth-child(1) {
+              position: relative;
               max-width: 40px;
+              left: 10px;
               flex: 0.2;
               text-align: left;
-              position: relative;
-              left: 10px;
             }
             &:nth-child(2) {
               max-width: 120px;
@@ -122,18 +131,6 @@
               text-align: center;
             }
           }
-        }
-      }
-      .rowsLoading {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        background-color: #006fbe;
-        padding: 5px 10px;
-        overflow: hidden;
-
-        td {
-          flex: 1;
         }
       }
       .noData {
@@ -143,69 +140,68 @@
         text-align: center;
         color: aliceblue;
         font-size: 1em;
-        border-radius: 5px;
-        background: #006fbe;
+        border-radius: 6px;
+        background: var(--table-rows);
       }
     }
   }
 }
 
 @media screen and (orientation: portrait) {
-  body {
-    height: 100%;
-  }
-  .container {
-    padding: 10px;
-  }
   .table {
+    padding: 5px;
     .head {
-      .rows {
-        th:nth-child(1) {
-          flex: 0.2;
-          font-size: 0.8em !important;
-        }
-
-        th:nth-child(2) {
-          flex: 0.5;
-          font-size: 0.8em !important;
-        }
-
-        th:nth-child(3) {
-          flex: 0.9;
-          text-align: center;
-          font-size: 0.8em !important;
-        }
-
-        th:nth-child(4) {
-          flex: 0.5;
-          text-align: center;
-          font-size: 0.8em !important;
-        }
-      }
+      display: none;
     }
     .tbody {
       .rows {
+        padding: 10px !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto auto auto !important;
+        gap: 5px;
+        background-color: aliceblue !important;
+        color: #000;
+        border-radius: 6px !important;
+        font-weight: 500;
+        align-items: center;
         td {
           &:nth-child(1) {
-            flex: 0.2;
+            grid-column: 1;
+            grid-row: 1;
+            left: 0 !important;
             text-align: left;
-            position: relative;
-            left: 10px;
-            font-size: 0.8em !important;
-          }
-          &:nth-child(2) {
-            flex: 0.5;
-            font-size: 0.8em !important;
+            font-weight: 700;
+            &::before {
+              content: "№";
+            }
           }
           &:nth-child(3) {
-            flex: 1;
-            text-align: center;
-            font-size: 0.8em !important;
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            left: 0 !important;
+            flex: 0.8;
+            text-align: start;
+            padding: 10px 0;
+          }
+          &:nth-child(2) {
+            grid-column: 1 / span 2;
+            grid-row: 3;
+            left: 0 !important;
+            text-align: start !important;
+            align-items: start !important;
+            &::before {
+              content: "Поступление: ";
+            }
           }
           &:nth-child(4) {
-            flex: 0.5;
-            text-align: center;
-            font-size: 0.8em !important;
+            left: 0 !important;
+            grid-column: 1 / span 2;
+            grid-row: 4;
+            flex: 0.7;
+            text-align: left !important;
+            &::before {
+              content: "Диагноз: ";
+            }
           }
         }
       }

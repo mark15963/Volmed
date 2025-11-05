@@ -35,20 +35,19 @@ async function requestWrapper(method, url, data = null, config = {}) {
   try {
     // Ensure `null` isn't sent to the backend
     const payload =
-      data === null || data === undefined
-        ? method === "post" || method === "put"
+      data === null
+        ? ["post", "put"].includes(method)
           ? {}
           : undefined
         : data;
 
     // Perform the HTTP request
     const response = await apiInstance[method](url, payload, config);
-
     // Parse unified format: { ok, data, status, message }
     const parsed = parseApiResponse(response);
 
     if (environment === "developer") {
-      debug.log(`[API ${method.toUpperCase()}] ${url}`, parsed);
+      debug.log(`[API ${method}] ${url}`, parsed);
     }
 
     return parsed;
@@ -82,6 +81,7 @@ async function requestWrapper(method, url, data = null, config = {}) {
  */
 const api = {
   // Generic CRUD helpers (used by all specific endpoints)
+  // example: api.get(/patients)
   get: (url, config) => requestWrapper("get", url, null, config),
   post: (url, data, config) => requestWrapper("post", url, data, config),
   put: (url, data, config) => requestWrapper("put", url, data, config),

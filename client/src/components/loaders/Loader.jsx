@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import debug from '@/utils/debug'
 
-import styles from './Loader.module.scss'
 import loader from '@/assets/images/Loader.gif'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
+
+import '@/styles/index.scss'
+import styles from './Loader.module.scss'
 
 export const Loader = () => {
     const [showSlowMessage, setShowSlowMessage] = useState(false)
