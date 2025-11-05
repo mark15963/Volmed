@@ -1,3 +1,6 @@
+// Used in:
+// - SearchResults.jsx
+
 //#region ===== IMPORTS =====
 import React, { lazy, Suspense, useMemo } from "react";
 import { Menu } from "../../components/Menu";
@@ -7,9 +10,9 @@ import NotFoundState from "./tabs/Components/States/NotFoundState";
 import { SpinLoader } from "../../components/loaders/SpinLoader";
 
 // Menu tabs
-import Tab1 from './tabs/tab1'
-const Tab2 = lazy(() => import('./tabs/tab2'))
-const Tab3 = lazy(() => import('./tabs/tab3'))
+import Tab1 from './tabs/Tab1'
+const Tab2 = lazy(() => import('./tabs/Tab2'))
+const Tab3 = lazy(() => import('./tabs/Tab3'))
 
 import styles from './searchResults.module.scss'
 //#endregion ================
@@ -49,7 +52,7 @@ const SearchResultsView = ({
   const tabContents = useMemo(() => [
     <Tab1 data={data} />,
     <Tab2 {...filesHook} isLoading={filesHook.isLoading} />,
-    <Tab3 {...medsHook} />,
+    <Tab3 {...medsHook} patientId={id} />,
   ], [data, filesHook, medsHook])
 
   return (

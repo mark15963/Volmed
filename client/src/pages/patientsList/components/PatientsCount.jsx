@@ -2,23 +2,22 @@
 import { useEffect, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { fetchPatientCount } from "../../../api/fetchPatientCount";
-
 import debug from "../../../utils/debug";
 
 import styles from './styles/patientList.module.scss'
-import { fetchPatients } from "../../../api";
+import { fetchPatientCount, fetchPatients } from "../../../api";
 //#endregion
 
 export const PatientCount = () => {
-  const [count, setCount] = useState(0)           // total from backend
+  const [count, setCount] = useState(0)             // total from backend
   const [activeCount, setActiveCount] = useState(0) // filtered
   const [loading, setLoading] = useState(true)
-  const [patients, setPatients] = useState([])    // from /patients
+  const [patients, setPatients] = useState([])      // from /patients
   const [showTooltip, setShowTooltip] = useState(false)
 
+  // Load filtered patients count without the discharged
   useEffect(() => {
-    const loadCount = async () => {
+    const loadFilteredCount = async () => {
       try {
         const [countRes, patientsRes] = await Promise.all([
           fetchPatientCount(),
@@ -34,29 +33,36 @@ export const PatientCount = () => {
           setActiveCount(active.length)
         }
       } catch (err) {
-        debug.error("ParientCount error:", err)
+        debug.error("PatientCount error:", err)
         setCount("N/A")
       } finally {
         setLoading(false)
       }
     };
-    loadCount();
+    loadFilteredCount();
   }, []);
+
+  useEffect(() => {
+    const loadPatientCount = async () => {
+      const res = await fetchPatientCount()
+      if (res.ok) {
+        setCount(res.count)
+      } else {
+        debug.error("Error fetching patients count", res.message)
+        setCount("N/A")
+      }
+      setLoading(false)
+    }
+    loadPatientCount()
+  }, [])
 
   const handleMouseEnter = async () => setShowTooltip(true)
   const handleMouseLeave = () => setShowTooltip(false)
 
   return (
-    <div
-      className={styles.countContainer}
-      style={{
-        position: "relative"
-      }}
-    >
+    <div className={styles.countContainer}>
       <span
-        style={{
-          marginRight: '10px',
-        }}
+        style={{ marginRight: '10px' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -76,7 +82,7 @@ export const PatientCount = () => {
 
       {showTooltip && (
         <div className={styles.tooltipBox}>
-          <strong>Всего пациентов:</strong> {count}
+          <strong>Всего пациентов: </strong> {loading ? '' : count}
         </div>
       )}
     </div>

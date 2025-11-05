@@ -1,41 +1,34 @@
+/* 
+fetchPatients.js → for API utilities
+usePatientData.js → for UI hooks (built on top of those API utilities)
+
+That’s the same pattern used in scalable React apps:
+Hooks = UI state + lifecycle
+API helpers = pure network logic 
+ */
+
 import { useEffect, useState } from "react";
+import { fetchPatientById } from "../../api";
 import api from "../../services/api";
+import debug from "../../utils/debug";
+import { useApi } from "../useApi";
 
 export function usePatientData(id, state) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    data: fetchedPatient,
+    loading,
+    error,
+  } = useApi(
+    () =>
+      id ? fetchPatientById(id) : Promise.resolve({ ok: false, data: null }),
+    [id]
+  );
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchPatientData = async () => {
-      try {
-        if (!isMounted) return;
-
-        let patientData =
-          state?.patientData ||
-          (state?.results?.length > 0 && state.results[0]) ||
-          (id && (await api.getPatient(id).then((res) => res.data)));
-
-        if (!patientData) throw new Error("Данные пациента не найдены");
-
-        if (!isMounted) return;
-
-        setData(patientData);
-      } catch (err) {
-        if (isMounted) setError(err.message);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchPatientData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id, state]);
+  const patientData =
+    state?.patientData ||
+    (state?.results?.length > 0 && state.results[0]) ||
+    fetchedPatient ||
+    null;
 
   // Set document title
   useEffect(() => {
@@ -43,10 +36,10 @@ export function usePatientData(id, state) {
       ? "Загрузка данных пациента..."
       : error
       ? "Ошибка загрузки"
-      : !data
+      : !patientData
       ? "Пациент не найден"
-      : `Карта пациента: ${data.lastName} ${data.firstName}${
-          data.patr ? ` ${data.patr}` : ""
+      : `Карта пациента: ${patientData.lastName} ${patientData.firstName}${
+          patientData.patr ? ` ${patientData.patr}` : ""
         }`;
 
     document.title = title;
@@ -54,7 +47,24 @@ export function usePatientData(id, state) {
     return () => {
       document.title = "ГБУ «Городская больница Волновахского района»";
     };
-  }, [loading, error, data]);
+  }, [loading, error, patientData]);
 
-  return { data, loading, error };
+  // Debug output
+  useEffect(() => {
+    if (patientData) {
+      debug.table(
+        [patientData],
+        ["id", "lastName", "firstName", "diag"],
+        "Patient loaded:"
+      );
+    } else if (error) {
+      debug.error("Failed to load patient:", error);
+    }
+  }, [patientData, error]);
+
+  return {
+    data: patientData,
+    loading,
+    error,
+  };
 }
