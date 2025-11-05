@@ -11,8 +11,8 @@ import { SpinLoader } from "../../components/loaders/SpinLoader";
 
 // Menu tabs
 import Tab1 from "./tabs/Tab1";
-const Tab2 = lazy(() => import('./tabs/Tab2.jsx'))
-const Tab3 = lazy(() => import('./tabs/Tab3.jsx'))
+const Tab2 = lazy(() => import('./tabs/Tab2'))
+const Tab3 = lazy(() => import('./tabs/Tab3'))
 
 import styles from './searchResults.module.scss'
 //#endregion ================
