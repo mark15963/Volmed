@@ -10,7 +10,7 @@ import NotFoundState from "./tabs/Components/States/NotFoundState";
 import { SpinLoader } from "../../components/loaders/SpinLoader";
 
 // Menu tabs
-import Tab1 from './tabs/Tab1.jsx'
+import Tab1 from "./tabs/Tab1";
 const Tab2 = lazy(() => import('./tabs/Tab2.jsx'))
 const Tab3 = lazy(() => import('./tabs/Tab3.jsx'))
 
