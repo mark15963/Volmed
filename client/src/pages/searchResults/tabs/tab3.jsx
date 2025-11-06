@@ -230,6 +230,9 @@ export const Tab3 = ({
                         <Button
                           text='Удалить'
                           size='s'
+                          style={{
+                            margin: '0'
+                          }}
                           onClick={() => handleDelete(index)}
                         />
                       </td>

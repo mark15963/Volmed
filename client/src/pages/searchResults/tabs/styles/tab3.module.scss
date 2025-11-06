@@ -39,26 +39,15 @@
           width: 100%;
 
           .rows {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 2.5fr 4fr 2fr 2fr 1fr;
             padding: 5px 5px 10px 5px;
+            gap: 5px;
             width: 100%;
 
             th {
               font-size: 0.7em;
               text-align: left;
-              &:nth-child(1) {
-                width: 25%;
-              }
-              &:nth-child(2) {
-                width: 35%;
-              }
-              &:nth-child(3) {
-                width: 20%;
-              }
-              &:nth-child(4) {
-                width: 15%;
-              }
             }
           }
         }
@@ -71,46 +60,38 @@
           .rows {
             width: 100%;
             padding: 5px;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 2.5fr 4fr 2fr 2fr 1fr;
             background-color: #006fbe;
             font-size: 14px;
+            gap: 5px;
 
             td {
-              overflow: hidden;
+              width: 100%;
               white-space: nowrap;
               text-align: center;
               box-sizing: border-box;
               text-align: left;
 
               &:nth-child(1) {
-                width: 25%;
                 font-size: 0.8em;
               }
               &:nth-child(2) {
-                width: 35%;
                 font-size: 1em;
               }
               &:nth-child(3) {
-                width: 20%;
                 font-size: 1em;
               }
               &:nth-child(4) {
-                width: 15%;
                 font-size: 1em;
               }
               &:nth-child(5) {
-                width: fit-content;
               }
 
               .icon,
               .mobile {
                 display: none;
               }
-            }
-            .deleteButton {
-              width: 15%;
-              vertical-align: middle;
             }
             .inputError {
               border: 2px solid red !important;

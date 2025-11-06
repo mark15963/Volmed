@@ -1,9 +1,7 @@
 //#region ===== IMPORTS =====
 import { useState, useEffect, useRef, memo } from 'react';
-import axios from 'axios';
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { Upload, Form, Collapse } from "antd"
-const { message } = await import('antd/es')
 const { Dragger } = Upload;
 const { Panel } = Collapse;
 
@@ -15,6 +13,7 @@ import api from '../../../services/api'
 import debug from '../../../utils/debug';
 
 import styles from './styles/tab2.module.scss'
+import { useSafeMessage } from '../../../hooks/useSafeMessage';
 //#endregion
 
 const environment = import.meta.env.VITE_ENV
@@ -31,7 +30,6 @@ export const Tab2 = memo(({
   id,
 }) => {
   //#region -----CONSTS-----
-  const [messageApi, contextHolder] = message.useMessage()
   const [loadingPulse, setLoadingPulse] = useState(true);
   const [loadingO2, setLoadingO2] = useState(true);
   const [pulseValue, setPulseValue] = useState('');
@@ -40,6 +38,8 @@ export const Tab2 = memo(({
   const [o2Values, setO2Values] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [frameState, setFrameState] = useState(false)
+
+  const safeMessage = useSafeMessage()
   //#endregion
 
   //#region -----PULSE DATA-----
@@ -73,7 +73,7 @@ export const Tab2 = memo(({
     if (e.key === 'Enter' && pulseValue.trim() !== '') {
       if (!id) {
         console.error('Patient ID is missing');
-        messageApi.error('Отсутствует ID пациента')
+        safeMessage("error", 'Отсутствует ID пациента')
         return;
       }
 
@@ -81,7 +81,7 @@ export const Tab2 = memo(({
       if (!isNaN(num)) {
         try {
           await api.savePulse(id, num)
-          messageApi.success('Данные сохранены!', 2.5)
+          safeMessage("success", 'Данные сохранены!', 2.5)
           const newEntry = {
             val: num,
             created_at: new Date().toISOString()
@@ -91,7 +91,7 @@ export const Tab2 = memo(({
           setPulseValues([...pulseValues, newEntry]);
           setPulseValue('');
         } catch (error) {
-          messageApi.error('Ошибка!', 2.5)
+          safeMessage("error", 'Ошибка!', 2.5)
           console.error('Error saving pulse:', error);
         }
       }
@@ -106,7 +106,9 @@ export const Tab2 = memo(({
         <>
           <div className={styles.graphContainer}>
             {loadingPulse ? (
-              <div>Загрузка данных ЧСС...</div>
+              <div style={{ width: '100%', left: '50%' }}>
+                <SpinLoader color='black' />
+              </div>
             ) : pulseValues.length > 0 ? (
               <Graph
                 data={pulseValues}
@@ -142,10 +144,10 @@ export const Tab2 = memo(({
                   .reverse()
                   .map((item, index) => (
                     <tr key={index}>
-                      <td style={{ padding: '8px', border: '1px solid #ddd' }}>
+                      <td style={{ padding: '8px', border: '1px solid #ddd', fontSize: '0.8rem' }}>
                         {new Date(item.created_at).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
                       </td>
-                      <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.val}</td>
+                      <td style={{ padding: '8px', border: '1px solid #ddd', fontSize: '0.8rem' }}>{item.val}</td>
                     </tr>
                   ))}
               </tbody>
@@ -164,9 +166,9 @@ export const Tab2 = memo(({
       setLoadingO2(true)
       try {
         debug.log('Fetching O2 data for patient:', id);
-        const response = await api.getO2Data(id)
-        debug.log('O2 data response:', response.data);
-        const values = response.data.map(item => ({
+        const res = await api.getO2Data(id)
+        debug.log('O2 data response:', res.data);
+        const values = res.data.map(item => ({
           val: Number(item.value),
           created_at: item.timestamp,
         }));
@@ -189,7 +191,7 @@ export const Tab2 = memo(({
       if (!isNaN(num)) {
         try {
           await api.saveO2(id, num)
-          messageApi.success('Данные сохранены!', 2.5)
+          safeMessage("success", 'Данные сохранены!', 2.5)
           const newEntry = {
             val: num,
             created_at: new Date().toISOString()
@@ -199,7 +201,7 @@ export const Tab2 = memo(({
           setO2Values([...o2Values, newEntry]);
           setO2Value('');
         } catch (error) {
-          messageApi.error('Ошибка!', 2.5)
+          safeMessage("error", 'Ошибка!', 2.5)
           console.error('Error saving O2:', error);
         }
       }
@@ -215,7 +217,9 @@ export const Tab2 = memo(({
           <div className={styles.graphContainer}>
             <div className={styles.graph}>
               {loadingO2 ? (
-                <div>Загрузка данных O2...</div>
+                <div style={{ width: '100%', left: '50%' }}>
+                  <SpinLoader color='black' />
+                </div>
               ) : o2Values.length > 0 ? (
                 <Graph
                   data={o2Values}
@@ -249,10 +253,10 @@ export const Tab2 = memo(({
                   .reverse()
                   .map((item, index) => (
                     <tr key={index}>
-                      <td style={{ padding: '8px', border: '1px solid #ddd' }}>
+                      <td style={{ padding: '8px', border: '1px solid #ddd', fontSize: '0.8rem' }}>
                         {new Date(item.created_at).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
                       </td>
-                      <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.val}%</td>
+                      <td style={{ padding: '8px', border: '1px solid #ddd', fontSize: '0.8rem' }}>{item.val}%</td>
                     </tr>
                   ))}
               </tbody>
@@ -328,7 +332,6 @@ export const Tab2 = memo(({
 
   return (
     <div className={styles.info}>
-      {contextHolder}
       <div className={styles.bg}>
         <div className={styles.collapseContainer}>
           <div>

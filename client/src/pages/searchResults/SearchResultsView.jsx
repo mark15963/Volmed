@@ -17,6 +17,18 @@ const Tab3 = lazy(() => import('./tabs/tab3'))
 import styles from './searchResults.module.scss'
 //#endregion ================
 
+/**
+ * SearchResultsView
+ * -----------------
+ * Presentational component displaying the patient’s information, files, and medications tabs.
+ * 
+ * @param {Object} props
+ * @param {Object} props.dataProps - Contains `data`, `loading`, and `error` for patient data.
+ * @param {Object} props.routerProps - Router utilities (`id`, `state`, `navigate`).
+ * @param {Object} props.uiProps - UI state (`activeTab`, `setActiveTab`).
+ * @param {Object} props.hooks - Hook objects for files and medications (`filesHook`, `medsHook`).
+ * @param {Object} props.handlers - Action handlers (`handleEdit`, `handlePrint`, `handleDeletePatient`).
+ */
 const SearchResultsView = ({
   dataProps,
   routerProps,
@@ -28,12 +40,12 @@ const SearchResultsView = ({
   // Regrouping consts from parent component (SearchResult.jsx)  
   const { data, loading, error } = dataProps
   const { id, state, navigate } = routerProps
-  const { activeTab, setActiveTab, contextHolder } = uiProps
+  const { activeTab, setActiveTab } = uiProps
   const { filesHook, medsHook } = hooks
   const { handleEdit, handlePrint, handleDeletePatient } = handlers
   //#endregion
 
-  //#region ===== RENDERS =====
+  //#region ===== LOADER & CONTENT =====
   const renderLoader = () => (
     <div className={styles.info}>
       <div className={styles.bg}>
@@ -47,22 +59,23 @@ const SearchResultsView = ({
     if (data === null) return <NotFoundState />
     return null;
   };
+  const tabContents = useMemo(
+    () => [
+      <Tab1 data={data} />,
+      <Tab2 {...filesHook} isLoading={filesHook.isLoading} />,
+      <Tab3 {...medsHook} patientId={id} />,
+    ],
+    [data, filesHook, medsHook]
+  )
   //#endregion
-
-  const tabContents = useMemo(() => [
-    <Tab1 data={data} />,
-    <Tab2 {...filesHook} isLoading={filesHook.isLoading} />,
-    <Tab3 {...medsHook} patientId={id} />,
-  ], [data, filesHook, medsHook])
 
   return (
     <div className={styles.resultsContainer}>
-
-      {contextHolder} {/* TOP FLOATING MESSAGES */}
-
       {/* PAGE TITLE */}
       <span className={styles.pageTitle}>
-        {state?.searchQuery ? `Результаты поиска: №${id}` : `Карта пациента №${id}`}
+        {state?.searchQuery
+          ? `Результаты поиска: №${id}`
+          : `Карта пациента №${id}`}
       </span>
 
       {/* NAVIGATION MENU */}
