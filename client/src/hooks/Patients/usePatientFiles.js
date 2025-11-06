@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { message } from "antd";
-
 import api from "../../services/api";
 import debug from "../../utils/debug";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export function usePatientFiles(patientId, messageApi, enabled = false) {
+export function usePatientFiles(patientId, safeMessage, enabled = false) {
   const [files, setFiles] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -15,9 +13,6 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
   const [isLoading, setIsLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const timeoutRef = useRef();
-
-  const apiInstance = messageApi?.api ?? { success: () => {}, error: () => {} };
-  const contextHolder = messageApi?.holder;
 
   if (!patientId) {
     console.error("usePatientFiles: No patientId provided");
@@ -45,26 +40,24 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
           setRetryCount((prev) => prev + 1);
         }, delay);
       } else {
-        apiInstance.error("Ошибка загрузки файлов");
+        safeMessage("error", "Ошибка загрузки файлов");
         setRetryCount(0);
       }
     } finally {
       setIsLoading(false);
     }
-  }, [patientId, enabled, apiInstance, retryCount]);
+  }, [patientId, enabled, retryCount, safeMessage]);
 
   useEffect(() => {
-    if (retryCount > 0) {
-      fetchFiles();
-    }
+    if (retryCount > 0) fetchFiles();
   }, [retryCount, fetchFiles]);
 
   const refreshFileList = useCallback(async () => {
     if (!patientId || !enabled) return;
     try {
-      const response = await api.getPatientFiles(patientId);
+      const res = await api.getPatientFiles(patientId);
       setFileList(
-        response.data.map((file) => ({
+        res.data.map((file) => ({
           uid: file.path,
           name: file.originalname,
           status: "done",
@@ -79,39 +72,29 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
 
   // Refresh the list of files
   useEffect(() => {
-    if (enabled) {
-      fetchFiles();
-    } else {
+    if (enabled) fetchFiles();
+    else {
       setFiles([]);
       setFileList([]);
     }
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
+    return () => clearTimeout(timeoutRef.current);
   }, [enabled, fetchFiles]);
 
   const handleSave = useCallback(async () => {
     if (!patientId) return;
     try {
-      // Show loading message
-      await apiInstance.open?.({
-        type: "loading",
-        content: "Идет загрузка...",
-        duration: 1, // 1 second or 0 to keep it until replaced
-      });
-
+      safeMessage("loading", "Идет загрузка...", 1);
       await refreshFileList();
-      const response = await api.getPatientFiles(patientId);
-      setFiles(response.data);
+
+      const res = await api.getPatientFiles(patientId);
+      setFiles(res.data);
       setIsEditing(false);
-      apiInstance.success("Файлы успешно сохранены");
+      safeMessage("success", "Файлы успешно сохранены");
     } catch (error) {
-      apiInstance.error("Ошибка сохранения файлов");
+      safeMessage("error", "Ошибка сохранения файлов");
     }
-  }, [patientId, apiInstance, refreshFileList]);
+  }, [patientId, refreshFileList, safeMessage]);
 
   const handleRemoveFiles = useCallback(
     async (file) => {
@@ -122,7 +105,6 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
         const filePath = path
           .replace(/^\/?(uploads|public)?\/?/, "")
           .replace(/\\/g, "/");
-
         const res = await api.deleteFile(filePath);
 
         if (!res.data.success)
@@ -145,29 +127,31 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
           error: error.message,
           response: error.response?.data,
         });
-        apiInstance.error(`Ошибка при удалении ${file.name}: ${error.message}`);
+        safeMessage(
+          "error",
+          `Ошибка при удалении ${file.name}: ${error.message}`
+        );
         return false;
       }
     },
-    [apiInstance]
+    [safeMessage]
   );
 
   // Upload status
   useEffect(() => {
     if (!uploadFilesStatus) return;
+    const { status, fileName, error } = uploadFilesStatus;
     const messages = {
-      done: `${uploadFilesStatus.fileName} файл успешно загружен.`,
-      error: `${uploadFilesStatus.fileName} ошибка загрузки файла.`,
-      removed: `${uploadFilesStatus.fileName} успешно удален`,
-      remove_error: `${uploadFilesStatus.error}: ${uploadFilesStatus.fileName}`,
+      done: `${fileName} файл успешно загружен.`,
+      error: `${fileName} ошибка загрузки файла.`,
+      removed: `${fileName} успешно удален`,
+      remove_error: `${error}: ${fileName}`,
     };
-    const type = uploadFilesStatus.status.includes("error")
-      ? "error"
-      : "success";
+    const type = status.includes("error") ? "error" : "success";
 
-    apiInstance[type](messages[uploadFilesStatus.status]);
+    safeMessage(type, messages[status]);
     setUploadFilesStatus(null);
-  }, [uploadFilesStatus, apiInstance]);
+  }, [uploadFilesStatus, safeMessage]);
 
   return {
     files,
@@ -179,7 +163,6 @@ export function usePatientFiles(patientId, messageApi, enabled = false) {
     handleRemoveFiles,
     uploadFilesStatus,
     setUploadFilesStatus,
-    contextHolder,
     isLoading,
   };
 }

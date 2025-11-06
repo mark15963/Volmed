@@ -3,25 +3,21 @@
 import { useLocation, useNavigate, useParams } from 'react-router'
 import React, { useState } from 'react'
 
-// UI & Icons
-import { message } from "antd"
-
-// Custom Hooks
-import { usePatientFiles } from '../../hooks/Patients/usePatientFiles'
-import { usePatientData } from '../../hooks/Patients/usePatientData'
-import { usePatientMedications } from '../../hooks/Patients/usePatientMedications'
-
 // Components
 import SearchResultsView from './SearchResultsView.jsx'
 
 // Local Hooks
+import { useSafeMessage } from '../../hooks/useSafeMessage.js'
 import { useSyncFileList } from './hooks/useSyncFileList.js'
 import { useResetEditingOnTabChange } from './hooks/useResetEditingOnTabChange.js'
 import { useExclusiveEditing } from './hooks/useExclusiveEditing.js'
 import { useSearchResultsActions } from './hooks/useSearchResultsActions.js'
+import { usePatientFiles } from '../../hooks/Patients/usePatientFiles.js'
+import { usePatientData } from '../../hooks/Patients/usePatientData.js'
+import { usePatientMedications } from '../../hooks/Patients/usePatientMedications.js'
 
 // Styles & Utils
-import debug from '../../utils/debug'
+import debug from '../../utils/debug.js'
 import styles from './searchResults.module.scss'
 //#endregion
 
@@ -38,7 +34,7 @@ const SearchResults = React.memo(() => {
   const { state } = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [messageApi, contextHolder] = message.useMessage();
+  const safeMessage = useSafeMessage()
   const [activeTab, setActiveTab] = useState(TAB_MAIN)
   //#endregion
 
@@ -46,10 +42,10 @@ const SearchResults = React.memo(() => {
   const { data, loading, error } = usePatientData(id, state)
   const patientId = data?.id || id;
 
-  const filesHook = usePatientFiles(patientId, { api: messageApi, holder: contextHolder }, activeTab === TAB_FILES)
+  const filesHook = usePatientFiles(patientId, safeMessage, activeTab === TAB_FILES)
   filesHook.id = patientId
 
-  const medsHook = usePatientMedications(patientId, { api: messageApi, holder: contextHolder }, activeTab === TAB_MEDS);
+  const medsHook = usePatientMedications(patientId, safeMessage, activeTab === TAB_MEDS);
   //#endregion
 
   //#region ===== Hooks =====
@@ -58,14 +54,22 @@ const SearchResults = React.memo(() => {
   useResetEditingOnTabChange(activeTab, filesHook, medsHook)
   useExclusiveEditing(filesHook, medsHook)
 
-  const { handlePrint, handleEdit, handleDeletePatient } = useSearchResultsActions({ activeTab, data, navigate, filesHook, medsHook, messageApi, id })
+  const { handlePrint, handleEdit, handleDeletePatient } = useSearchResultsActions({
+    activeTab,
+    data,
+    navigate,
+    filesHook,
+    medsHook,
+    safeMessage,
+    id
+  })
   //#endregion
 
   //#region ===== Grouped Props =====
   // Grouped consts to just one
   const dataProps = { data, loading, error }
   const routerProps = { id, state, navigate }
-  const uiProps = { activeTab, setActiveTab, contextHolder }
+  const uiProps = { activeTab, setActiveTab }
   const hooks = { filesHook, medsHook }
   const handlers = { handlePrint, handleEdit, handleDeletePatient }
   //#endregion

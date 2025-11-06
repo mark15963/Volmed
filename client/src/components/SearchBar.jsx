@@ -77,6 +77,7 @@ export const SearchBar = () => {
             pattern='[0-9]*'
             className={styles.searchfield}
             onSubmitClick={handleSubmit}
+            loading={isLoading}
           />
         </search>
       </form>
