@@ -62,16 +62,16 @@ const SearchResultsView = ({
   const tabContents = useMemo(
     () => [
       <Tab1 data={data} />,
-      <Tab2 {...filesHook} isLoading={filesHook.isLoading} />,
+      <Tab2 {...filesHook} isLoading={filesHook.isLoading} id={id} />,
       <Tab3 {...medsHook} patientId={id} />,
     ],
-    [data, filesHook, medsHook]
+    [data, filesHook, medsHook, id]
   )
   //#endregion
 
   return (
     <div className={styles.resultsContainer}>
-      {/* PAGE TITLE */}
+      {/* BLOCK TITLE */}
       <span className={styles.pageTitle}>
         {state?.searchQuery
           ? `Результаты поиска: №${id}`

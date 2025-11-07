@@ -8,7 +8,7 @@ import api from "../services/api";
 
 import debug from "../utils/debug";
 import { parseApiError, parseApiResponse } from "../utils/parseApiResponse";
-import { fetchUserStatus } from "../api";
+import { fetchUserStatus } from "../api/fetchUserStatus";
 //#endregion
 
 const AuthContext = createContext();

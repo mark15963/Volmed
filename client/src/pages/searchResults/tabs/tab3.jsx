@@ -1,24 +1,20 @@
 //#region ===== IMPORTS =====
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import { message } from 'antd';
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
 import { useSafeMessage } from '../../../hooks/useSafeMessage';
-import { useApi } from '../../../hooks/useApi';
-
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
+import { SpinLoader } from '../../../components/loaders/SpinLoader';
 import styles from './styles/tab3.module.scss'
-
 
 import api from '../../../services/api';
 import debug from '../../../utils/debug';
-import { fetchMedications } from '../../../api/fetchMedications';
-import { SpinLoader } from '../../../components/loaders/SpinLoader';
 //#endregion
 
 axios.defaults.withCredentials = true;
@@ -30,13 +26,31 @@ export const Tab3 = ({
   patientId
 }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [medicationsData, setMedicationsData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const safeMessage = useSafeMessage()
-  const { data: fetchedMedications = [], loading, error } = useApi(
-    fetchMedications, [patientId], [patientId]
-  )
 
-  const medList = Array.isArray(isEditing ? medications : fetchedMedications)
-    ? (isEditing ? medications : fetchedMedications)
+  useEffect(() => {
+    if (!patientId || isEditing) return
+
+    const fetchMeds = async () => {
+      setLoading(true)
+      try {
+        const res = await api.getMedications(patientId)
+        if (res.ok) setMedicationsData(res.data)
+        else setError(res.message)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchMeds()
+  }, [patientId, isEditing])
+
+  const medList = Array.isArray(isEditing ? medications : medicationsData)
+    ? (isEditing ? medications : medicationsData)
     : [];
 
   const handleAdd = async () => {
@@ -78,9 +92,9 @@ export const Tab3 = ({
 
     if (!itemToDelete) {
       alert('Не удалось найти назначение для удаления');
+      setIsLoading(false)
       return;
     }
-
     if (!window.confirm('Вы уверены, что хотите удалить это назначение?')) {
       setIsLoading(false)
       return;
@@ -89,18 +103,15 @@ export const Tab3 = ({
     try {
       if (itemToDelete.id) {
         const res = await api.deleteMedication(itemToDelete.id)
-        if (!res.data.success) {
-          throw new Error(res.data.message || "API returned unsuccessful");
+        if (!res.ok) {
+          throw new Error(res.message || "API returned unsuccessful");
         }
       }
 
       setMedications(prev => prev.filter((_, i) => i !== index));
-      debug.log("Deleted successfully")
+      safeMessage("success", "Назначение удалено успешно")
     } catch (err) {
-      debug.error("Full delete error:", {
-        error: err,
-        response: err.res?.data
-      });
+      debug.error("Full delete error:", err);
       alert(`Не удалось удалить назначение: ${err.message}`);
     } finally {
       setIsLoading(false)

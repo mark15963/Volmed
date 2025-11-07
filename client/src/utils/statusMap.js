@@ -1,4 +1,7 @@
-// Used in AccessDenied.jsx
+// Used in
+// - AccessDenied.jsx
+//
+// makes displayStatus from status
 
 export const statusDisplayMap = {
   admin: "Администратор",
