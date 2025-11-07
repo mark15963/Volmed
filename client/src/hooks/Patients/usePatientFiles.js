@@ -3,8 +3,41 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 import debug from "../../utils/debug";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
+/**
+ * Hook for managing a patient's uploaded files.
+ *
+ * Handles fetching, refreshing, removing, and saving files
+ * related to a specific patient. Integrates retry logic,
+ * upload status tracking, and user notifications via `safeMessage`.
+ *
+ * @param {number} patientId - Numeric ID of the patient.
+ * @param {(type: 'success'|'error'|'loading', message: string, [duration]?: number) => void} safeMessage
+ *   - Function for showing UI messages (toast/snackbar notifications).
+ * @param {boolean} [enabled=false] - Whether file fetching is active.
+ *   Typically controlled by a UI tab or visibility state.
+ *
+ * @returns {{
+ *   files: Array<Object>,              // Raw file objects from API
+ *   fileList: Array<Object>,           // Mapped list for Ant Design Upload
+ *   setFileList: Function,             // Manually update the fileList
+ *   isEditing: boolean,                // Whether user is in file-editing mode
+ *   setIsEditing: Function,            // Toggle editing mode
+ *   handleSave: Function,              // Save uploaded files and refresh list
+ *   handleRemoveFiles: Function,       // Remove a file from server and UI
+ *   uploadFilesStatus: Object|null,    // Status of last upload/remove action
+ *   setUploadFilesStatus: Function,    // Manually set upload status
+ *   isLoading: boolean                 // Indicates if files are currently loading
+ * }}
+ *
+ * @example
+ * const {
+ *   files,
+ *   fileList,
+ *   isLoading,
+ *   handleSave,
+ *   handleRemoveFiles
+ * } = usePatientFiles(patientId, safeMessage, activeTab === TAB_FILES);
+ */
 export function usePatientFiles(patientId, safeMessage, enabled = false) {
   const [files, setFiles] = useState([]);
   const [fileList, setFileList] = useState([]);
@@ -61,7 +94,7 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
           uid: file.path,
           name: file.originalname,
           status: "done",
-          url: `${apiUrl}${file.path}`,
+          url: `${import.meta.env.VITE_API_URL}${file.path}`,
           response: { path: file.path },
         }))
       );

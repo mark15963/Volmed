@@ -1,18 +1,21 @@
-/* 
-fetchPatients.js → for API utilities
-usePatientData.js → for UI hooks (built on top of those API utilities)
-
-That’s the same pattern used in scalable React apps:
-Hooks = UI state + lifecycle
-API helpers = pure network logic 
- */
-
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import debug from "../../utils/debug";
 import { useApi } from "../useApi";
 
-export function usePatientData(id, state) {
+/**
+ * Hook for loading patient data by ID.
+ *
+ * Fetches patient info via the API and sets the document title
+ * based on loading or error state. Can use preloaded data from router state.
+ *
+ * @param {number} id - Patient ID. If missing, no request is made.
+ * @param {Object} [locationState] - Optional router state, e.g. from `useLocation()`.
+ * @param {Object} [locationState.patientData] - Preloaded patient data.
+ * @param {Array<Object>} [locationState.results] - Search results to use as a fallback.
+ * @returns {{ data: Object|null, loading: boolean, error: any }}
+ */
+export function usePatientData(id, locationState) {
   const {
     data: fetchedPatient,
     loading,
@@ -29,8 +32,8 @@ export function usePatientData(id, state) {
   );
 
   const patientData =
-    state?.patientData ||
-    (state?.results?.length > 0 && state.results[0]) ||
+    locationState?.patientData ||
+    (locationState?.results?.length > 0 && locationState.results[0]) ||
     fetchedPatient ||
     null;
 
