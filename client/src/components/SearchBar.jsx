@@ -37,9 +37,7 @@ export const SearchBar = () => {
       safeMessage("warning", "Введите № карты")
       return
     }
-
     setIsLoading(true)
-
     const res = await api.getPatient(searchValue.trim())
     if (!res.ok) {
       safeMessage("error", res.message || "Пациент не найден")

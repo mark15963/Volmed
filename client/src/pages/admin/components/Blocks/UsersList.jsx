@@ -1,28 +1,19 @@
 import { useEffect, useState } from 'react'
 
-import { useAuth } from '@/context/AuthContext'
-import { useUsers } from "@/context/UsersDataContext"
-import { usePerItemLoading } from '@/hooks/usePerItemLoading'
+import { useAuth } from '../../../../context'
+import { useUsers } from "../../../../context/UsersDataContext"
+import { usePerItemLoading } from '../../../../hooks/usePerItemLoading'
 
-import Button from '@/components/Button'
-import { SpinLoader } from '@/components/loaders/SpinLoader'
+import Button from '../../../../components/Button'
+import { SpinLoader } from '../../../../components/loaders/SpinLoader'
 
-import api from '@/services/api'
+import { statusDisplayMap, displayStatusMap } from "../../../../utils/statusMap"
+import api from '../../../../services/api'
 
 import styles from './styles/UsersList.module.scss'
+import { useSafeMessage } from '../../../../hooks/useSafeMessage'
 
-const statusMap = {
-  'Администратор': 'admin',
-  'Тестировщик': 'tester',
-  'Сестра': 'nurse',
-  'Врач': 'doctor'
-};
-const reverseStatusMap = {
-  'admin': 'Администратор',
-  'tester': 'Тестировщик',
-  'nurse': 'Сестра',
-  'doctor': 'Врач'
-};
+
 const statusOptions = [
   'Администратор',
   'Тестировщик',
@@ -32,6 +23,7 @@ const statusOptions = [
 
 const UsersList = () => {
   const { authState } = useAuth()
+  const safeMessage = useSafeMessage()
   const { users, loading, fetchUsers } = useUsers()
 
   const {
@@ -50,12 +42,22 @@ const UsersList = () => {
   const handleStatusChange = async (id, newStatusDisplay) => {
     try {
       setStatusLoading(id, true)
+      safeMessage("loading", "Обновление роли...", 1)
       // Convert display name to backend code
-      const backendStatus = statusMap[newStatusDisplay]
-      await api.updateUser(id, { status: backendStatus })
-      await fetchUsers(false) // refresh without global loader
+      const backendStatus = displayStatusMap[newStatusDisplay]
+      const res = await api.updateUser(id, { status: backendStatus })
+      if (res.ok) {
+        await fetchUsers(false)
+        setTimeout(() => {
+          safeMessage("success", "Роль успешно обновлена!")
+        }, 100)
+
+      } else {
+        throw new Error(res.message)
+      }
     } catch (err) {
       console.error('Failed to update status:', err.message)
+      safeMessage("error", "Ошибка обновления роли!")
     } finally {
       setStatusLoading(id, false)
     }
@@ -73,7 +75,7 @@ const UsersList = () => {
     const statusDisplay = prompt("Введите статус (Администратор, Тестировщик, Сестра, Врач):");
     if (!statusDisplay) return;
 
-    const backendStatus = statusMap[statusDisplay] || 'nurse'
+    const backendStatus = displayStatusMap[statusDisplay] || 'nurse'
 
     try {
       setAddLoading(true)
@@ -108,9 +110,7 @@ const UsersList = () => {
   }
   //#endregion
 
-  if (loading) {
-    return <SpinLoader color="black" size="30px" />
-  }
+  if (loading) return <SpinLoader color="black" size="30px" />
 
   if (users.length === 0) {
     return (
@@ -124,7 +124,7 @@ const UsersList = () => {
     <>
       <table>
         <tbody>
-          {users.map((user) => (
+          {users.map((user, i) => (
             <tr
               key={user.id}
               className={styles.userRow}
@@ -136,7 +136,7 @@ const UsersList = () => {
               </td>
               <td className={styles.actionCell}>
                 <select
-                  value={reverseStatusMap[user.status] || user.status}
+                  value={statusDisplayMap[user.status] || user.status}
                   disabled={
                     user.status === "admin" ||
                     statusLoading[user.id]
@@ -151,9 +151,9 @@ const UsersList = () => {
                     handleStatusChange(user.id, e.target.value)
                   }}
                 >
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
+                  {Object.values(statusDisplayMap).map((displayName) => (
+                    <option key={displayName} value={displayName}>
+                      {displayName}
                     </option>
                   ))}
                 </select>

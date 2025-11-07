@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect, memo } from "react";
+// Used in Footer.jsx
+
+import { Activity, useState, useRef, useEffect, memo } from "react";
 import { createPortal } from "react-dom";
 import UserChat from "./UserChat";
 import AdminChat from "./AdminChat";
@@ -32,7 +34,8 @@ export const ChatWidget = memo(() => {
 
       if (chatRef.current &&
         !chatRef.current.contains(e.target) &&
-        !buttonRef.current?.contains(e.target)) {
+        !buttonRef.current?.contains(e.target)
+      ) {
         setChatVisible(false)
       }
     }
@@ -41,8 +44,6 @@ export const ChatWidget = memo(() => {
       document.addEventListener('mousedown', handleClickOutside)
       document.addEventListener('touchstart', handleClickOutside, { passive: true });
     }
-
-    // debug.log(`Chat visible: ${chatVisible}`)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
@@ -63,18 +64,26 @@ export const ChatWidget = memo(() => {
         />
       </div>
 
-      {chatVisible && createPortal(
-        <div
-          ref={chatRef}
-          className={styles.chatContainer}
-        >
-          {authState.user.status === "admin"
-            ? <AdminChat />
-            : <UserChat />
-          }
-        </div>,
-        document.body
-      )}
+      <Activity
+        mode={
+          chatVisible
+            ? 'visible'
+            : 'hidden'
+        }
+      >
+        {createPortal(
+          <div
+            ref={chatRef}
+            className={styles.chatContainer}
+          >
+            {authState.user.status === "admin"
+              ? <AdminChat />
+              : <UserChat />
+            }
+          </div>,
+          document.body
+        )}
+      </Activity>
     </>
   )
 })

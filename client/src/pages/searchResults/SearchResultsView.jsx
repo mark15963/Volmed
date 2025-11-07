@@ -4,7 +4,7 @@
 //#region ===== IMPORTS =====
 import React, { lazy, Suspense, useMemo } from "react";
 import { Menu } from "../../components/Menu";
-import ActionButtons from "./tabs/Components/ActionButton";
+import ActionButtons from "./tabs/Components/ActionButtons";
 import ErrorState from "./tabs/Components/States/ErrorState";
 import NotFoundState from "./tabs/Components/States/NotFoundState";
 import { SpinLoader } from "../../components/loaders/SpinLoader";
@@ -28,7 +28,7 @@ import styles from './searchResults.module.scss'
 /**
  * @typedef {Object} RouterProps
  * @property {string} id - Patient ID from the route
- * @property {Object} state - Location state from React Router (optional searchQuery, results, etc.)
+ * @property {Object} state - Location state from React Router (e.g. `{ searchQuery, results }`)
  * @property {Function} navigate - React Router navigate function
  */
 
@@ -45,6 +45,26 @@ import styles from './searchResults.module.scss'
  */
 
 /**
+ * @typedef {Object} FilesHook
+ * @property {boolean} isLoading - Whether patient files are being loaded
+ * @property {boolean} isEditing - Whether files are currently being edited
+ * @property {Array<Object>} files - Array of patient files
+ * @property {Function} handleUpload - Upload a new file
+ * @property {Function} handleDelete - Delete a file
+ * @property {Function} handleSave - Save file changes
+ */
+
+/**
+ * @typedef {Object} MedsHook
+ * @property {boolean} isLoading - Whether patient medications are being loaded
+ * @property {boolean} isEditing - Whether medications are currently being edited
+ * @property {Array<Object>} medications - Array of patient medications
+ * @property {Function} handleAddMedication - Add a new medication entry
+ * @property {Function} handleRemoveMedication - Remove a medication entry
+ * @property {Function} handleSave - Save medication changes
+ */
+
+/**
  * @typedef {Object} Handlers
  * @property {Function} handleEdit - Function to edit patient
  * @property {Function} handlePrint - Function to print patient info
@@ -52,24 +72,24 @@ import styles from './searchResults.module.scss'
  */
 //#endregion
 
-//#region ===== Component JSDoc =====
+//===== Component JSDoc =====
 /**
  * SearchResultsView
  * -----------------
  * Presentational component displaying a patient’s data, files, and medications in tabs.
  *
  * Responsibilities:
- * - Show loader, error, or not-found states.
- * - Display patient info and tabbed sections (main info, files, medications).
- * - Manage tab navigation and lazy-loading tab content.
- * - Integrate file and medication hooks for editing and saving.
- * - Pass action handlers to `ActionButtons`.
+ * - Show loader, error, or not-found states at `renderContent()`.
+ * - Display patient info and tabbed sections (main info, files, medications) at `tabContents[activeTab]`.
+ * - Manage tab switching and lazy-load tab content.
+ * - Connect UI to file and medication hooks for editing and saving.
+ * - Provide action buttons for print, edit, and delete actions.
  *
  * @param {Object} props - Component props
  * @param {DataProps} props.dataProps - Patient data and loading/error states
  * @param {RouterProps} props.routerProps - Router utilities including `id`, `state`, and `navigate`
- * @param {UIProps} props.uiProps - UI state for tabs
- * @param {Hooks} props.hooks - Hook objects for files and medications
+ * @param {UIProps} props.uiProps - UI state for tabs (`activeTab` and `setActiveTab`)
+ * @param {Hooks} props.hooks - Hook objects for `filesHook` and `medsHook`
  * @param {Handlers} props.handlers - Action handlers (edit, print, delete)
  * @returns {JSX.Element} Rendered view of the patient search results
  */
@@ -90,6 +110,12 @@ const SearchResultsView = ({
   //#endregion
 
   //#region ===== LOADER & CONTENT =====
+  const renderContent = () => {
+    if (loading && !data) return renderLoader()
+    if (error) return <ErrorState error={error} />
+    if (data === null) return <NotFoundState />
+    return null
+  };
   const renderLoader = () => (
     <div className={styles.info}>
       <div className={styles.bg}>
@@ -97,12 +123,6 @@ const SearchResultsView = ({
       </div>
     </div>
   )
-  const renderContent = () => {
-    if (loading && !data) return renderLoader();
-    if (error) return <ErrorState error={error} />;
-    if (data === null) return <NotFoundState />
-    return null;
-  };
   const tabContents = useMemo(
     () => [
       <Tab1 data={data} />,

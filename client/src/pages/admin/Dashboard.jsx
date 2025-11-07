@@ -24,10 +24,9 @@ export const Dashboard = () => {
 
   return (
     <div
-      className='mainBlock'
+      className={styles.mainBlock}
       style={{
         backgroundColor: color.container,
-        padding: '10px'
       }}
     >
       <div className={styles.title}>

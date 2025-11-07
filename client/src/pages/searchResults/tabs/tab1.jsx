@@ -3,8 +3,15 @@ import moment from 'moment';
 import { Block } from './Components/Block';
 
 import styles from '../searchResults.module.scss';
+import { useLocation } from 'react-router';
 
 const Tab1 = ({ data }) => {
+  const location = useLocation()
+  const locPatient = location?.state?.patient
+
+  const patient = locPatient || data
+  if (!patient) return <div>No patient data available.</div>
+
   function formatPhoneNumber(phone) {
     if (!phone) return '';
     const digits = phone.replace(/\D/g, '');
@@ -22,79 +29,79 @@ const Tab1 = ({ data }) => {
           <div className={styles.topFormsA}>
             <Block
               text="ФИО:"
-              content={`${data.lastName} ${data.firstName} ${data.patr}`}
+              content={`${patient.lastName} ${patient.firstName} ${patient.patr}`}
             />
             <Block
               text="Дата и время поступления:"
-              content={moment(data.created_at).format('DD.MM.YYYY HH:mm')}
+              content={moment(patient.created_at).format('DD.MM.YYYY HH:mm')}
             />
             <Block
               text="Форма оказания помощи:"
-              content={data.type}
+              content={patient.type}
             />
             <Block
               text="Поступил:"
-              content={data.freq}
+              content={patient.freq}
             />
           </div>
 
           <div className={styles.topFormsB}>
             <Block
               text="Пол:"
-              content={data.sex}
+              content={patient.sex}
             />
             <Block
               text="Дата рождения:"
-              content={moment(data.birthDate).format('DD.MM.YYYY')}
+              content={moment(patient.birthDate).format('DD.MM.YYYY')}
             />
             {data.sender ? (
               <Block
                 text="Направили:"
                 content={
                   <>
-                    {data.sender}
+                    {patient.sender}
                     <br />
-                    {data.sendingTime}
+                    {patient.sendingTime}
                   </>
                 }
               />
             ) : (
               <Block
                 text="Страховой полис:"
-                content={data.insurance}
+                content={patient.insurance}
               />
             )}
 
           </div>
 
           <div className={styles.topFormsC}>
-            {data.sender ? (
+            {patient.sender ? (
               <Block
                 text="Страховой полис:"
-                content={data.insurance}
+                content={patient.insurance}
               />
             ) : (
               <></>
             )}
             <Block
               text="Номер телефона:"
-              content={formatPhoneNumber(data.phone)}
+              content={formatPhoneNumber(patient.phone)}
             />
             <Block
               text="Адрес:"
-              content={data.address}
+              content={patient.address}
             />
             <Block
               text="E-Mail:"
-              content={data.email}
+              content={patient.email}
             />
           </div>
         </div>
 
-        {data.firstDiag ? (
+        {patient.firstDiag ? (
           <Block
             text="Диагноз при направлении:"
-            content={data.firstDiag}
+            content={patient.firstDiag}
           />
         ) : (
           <></>
@@ -105,42 +112,42 @@ const Tab1 = ({ data }) => {
         <div className={styles.bottomForms}>
           <Block
             text="Жалобы при поступлении:"
-            content={data.complaint}
+            content={patient.complaint}
           />
           <br />
           <Block
             text="История настоящего заболевания:"
-            content={data.anam}
+            content={patient.anam}
           />
           <br />
           <Block
             text="Анамнез жизни:"
-            content={data.life}
+            content={patient.life}
           />
           <br />
           <Block
             text="Настоящее состояние больного:"
-            content={data.status}
+            content={patient.status}
           />
           <br />
           <Block
             text="Клинический диагноз:"
             content={
               <>
-                {/* {data.mkb} */}
-                {data.diag}
+                {/* {patient.mkb} */}
+                {patient.diag}
               </>
             }
           />
           <br />
           <Block
             text="Сопутствующие заболевания:"
-            content={data.sop_zab}
+            content={patient.sop_zab}
           />
           <br />
           <Block
             text="Рекомендации:"
-            content={data.rec}
+            content={patient.rec}
           />
         </div>
       </div>

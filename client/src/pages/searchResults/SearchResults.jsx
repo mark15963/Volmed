@@ -13,9 +13,8 @@ import { usePatientFiles } from '../../hooks/Patients/usePatientFiles.js'
 import { usePatientData } from '../../hooks/Patients/usePatientData.js'
 import { usePatientMedications } from '../../hooks/Patients/usePatientMedications.js'
 
-// Styles & Utils
+// Utils
 import debug from '../../utils/debug.js'
-import styles from './searchResults.module.scss'
 //#endregion
 
 //#region ===== Constants =====
@@ -78,14 +77,15 @@ const TAB_MEDS = 2;
  */
 const SearchResults = React.memo(() => {
   //#region ===== Router, Message, States =====
-  const { state } = useLocation();
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { state } = useLocation()
+  const { id } = useParams()
+  const navigate = useNavigate()
   const safeMessage = useSafeMessage()
   const [activeTab, setActiveTab] = useState(TAB_MAIN)
   //#endregion
 
   //#region ===== Patient data =====
+  // Pass patient data if it was sent from ListOfPatients
   const { data, loading, error } = usePatientData(id, state)
   const patientId = data?.id || id;
 

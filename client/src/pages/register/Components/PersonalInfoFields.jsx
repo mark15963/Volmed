@@ -5,7 +5,7 @@ const { default: dayjs, datePickerLocale } = await import('../dayjs.config')
 import styles from '../register.module.scss'
 import { IMaskInput } from 'react-imask';
 
-export const PersonalInfoFields = ({ form, messageApi }) => {
+export const PersonalInfoFields = ({ form, safeMessage }) => {
     return (
         <div>
             <div className={styles.topForms}>
@@ -126,7 +126,7 @@ export const PersonalInfoFields = ({ form, messageApi }) => {
                                 const val = e.target.value;
                                 if (val && val.length < 16) {
                                     // full mask length is 16: "+7(000)000-00-00"
-                                    messageApi.warning('Номер телефона неполный');
+                                    safeMessage("warning", "Номер телефона неполный");
                                 }
                                 form.setFieldsValue({ phone: val });
                             }}

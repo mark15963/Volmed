@@ -1,0 +1,11 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  &[data-align="true"] {
+    justify-content: center;
+  }
+  &[data-align="false"] {
+    justify-content: flex-start;
+  }
+}

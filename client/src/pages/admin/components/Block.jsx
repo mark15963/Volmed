@@ -1,4 +1,4 @@
-import styles from './styles/Block.module.scss'
+import styles from './Block.module.scss'
 
 const Block = ({ children, title }) => {
     return (
