@@ -8,10 +8,7 @@ import SearchResultsView from './SearchResultsView.jsx'
 
 // Local Hooks
 import { useSafeMessage } from '../../hooks/useSafeMessage.js'
-import { useSyncFileList } from './hooks/useSyncFileList.js'
-import { useResetEditingOnTabChange } from './hooks/useResetEditingOnTabChange.js'
-import { useExclusiveEditing } from './hooks/useExclusiveEditing.js'
-import { useSearchResultsActions } from './hooks/useSearchResultsActions.js'
+import { useSearchResultsManager } from './hooks/useSearchResultsManager.js'
 import { usePatientFiles } from '../../hooks/Patients/usePatientFiles.js'
 import { usePatientData } from '../../hooks/Patients/usePatientData.js'
 import { usePatientMedications } from '../../hooks/Patients/usePatientMedications.js'
@@ -22,7 +19,6 @@ import styles from './searchResults.module.scss'
 //#endregion
 
 //#region ===== Constants =====
-const apiUrl = import.meta.env.VITE_API_URL
 const TAB_MAIN = 0;
 const TAB_FILES = 1;
 const TAB_MEDS = 2;
@@ -43,25 +39,19 @@ const SearchResults = React.memo(() => {
   const patientId = data?.id || id;
 
   const filesHook = usePatientFiles(patientId, safeMessage, activeTab === TAB_FILES)
-  filesHook.id = patientId
 
   const medsHook = usePatientMedications(patientId, safeMessage, activeTab === TAB_MEDS);
   //#endregion
 
   //#region ===== Hooks =====
-  // Passing consts to hooks
-  useSyncFileList(filesHook, apiUrl)
-  useResetEditingOnTabChange(activeTab, filesHook, medsHook)
-  useExclusiveEditing(filesHook, medsHook)
-
-  const { handlePrint, handleEdit, handleDeletePatient } = useSearchResultsActions({
+  const { handlePrint, handleEdit, handleDeletePatient } = useSearchResultsManager({
     activeTab,
     data,
     navigate,
     filesHook,
     medsHook,
     safeMessage,
-    id
+    id: patientId
   })
   //#endregion
 

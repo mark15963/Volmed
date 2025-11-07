@@ -3,30 +3,29 @@ import { useCallback, useEffect, useState } from "react";
 import api from "../../services/api";
 import debug from "../../utils/debug";
 
-export function usePatientMedications(patientId, messageApi) {
+export function usePatientMedications(patientId, safeMessage) {
   const [medications, setMedications] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const apiInstance = messageApi?.api ?? {
-    success: () => {},
-    error: () => {},
-    open: () => {},
-  };
-  const contextHolder = messageApi?.holder;
 
   const fetchMedications = useCallback(async () => {
     if (!patientId) return;
     try {
       const res = await api.getMedications(patientId);
-      setMedications(
-        res.data.map((med) => ({
-          ...med,
-          createdAt: med.createdAt || new Date().toISOString(),
-        }))
-      );
+      if (res.ok) {
+        setMedications(
+          res.data.map((med) => ({
+            ...med,
+            createdAt: med.createdAt || new Date().toISOString(),
+          }))
+        );
+      } else {
+        safeMessage("error", "Ошибка при получении назначений");
+      }
     } catch (err) {
       console.error("Ошибка при получении назначений:", err);
+      safeMessage("error", "Ошибка при получении назначений");
     }
-  }, [patientId]);
+  }, [patientId, safeMessage]);
 
   // Reset edit mode when patient changes
   useEffect(() => {
@@ -52,7 +51,6 @@ export function usePatientMedications(patientId, messageApi) {
         }
       } else {
         if (!med.name.trim() || !med.dosage.trim() || !med.frequency.trim()) {
-          // For non-last rows, check ALL required fields
           return true; // Non-last row has no name
         }
       }
@@ -73,27 +71,15 @@ export function usePatientMedications(patientId, messageApi) {
   };
 
   // UI/validation logic
-  const handleSave = () => {
+  const handleSave = async () => {
     // Validation
     if (hasEmptyFields()) {
-      apiInstance.error("Пожалуйста, заполните все поля");
+      safeMessage("error", "Пожалуйста, заполните все поля");
       return;
     }
-    removeEmptyLastRow();
-    handleSaveToAPI();
-  };
-
-  // Internal implementation to API
-  const handleSaveToAPI = useCallback(async () => {
     try {
       debug.log("Saving medication");
-
-      // Show loading message if there are changes
-      await apiInstance.open?.({
-        type: "loading",
-        content: "Идет загрузка...",
-        duration: 1,
-      });
+      safeMessage("loading", "Идет загрузка...", 1);
 
       const validMedications = medications.filter((item) => item.name?.trim());
 
@@ -118,23 +104,26 @@ export function usePatientMedications(patientId, messageApi) {
             // add new medication
             if (!patientId) throw new Error("Отсутствует ID пациента");
             const res = await api.createMedication(patientId, payload);
-
-            setMedications((prev) =>
-              prev.map((item) =>
-                item === med ? { ...item, id: res.data.id } : item
-              )
-            );
+            if (res.ok) {
+              setMedications((prev) =>
+                prev.map((item) =>
+                  item === med ? { ...item, id: res.data.id } : item
+                )
+              );
+            } else {
+              throw new Error(res.message);
+            }
           }
         })
       );
 
       setIsEditing(false);
-      apiInstance.success("Назначения успешно сохранены");
-    } catch (error) {
-      debug.error("Ошибка при сохранении назначений", error);
-      apiInstance.error("Ошибка при сохранении назначений: " + error.message);
+      safeMessage("success", "Назначения успешно сохранены");
+    } catch (err) {
+      debug.error("Ошибка при сохранении назначений", err);
+      safeMessage("error", "Ошибка при сохранении назначений: " + err.message);
     }
-  }, [medications, patientId]);
+  };
 
   return {
     medications,
@@ -142,6 +131,5 @@ export function usePatientMedications(patientId, messageApi) {
     isEditing,
     setIsEditing,
     handleSave,
-    contextHolder,
   };
 }

@@ -5,7 +5,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import debug from "../../../utils/debug";
 
 import styles from './styles/patientList.module.scss'
-import { fetchPatientCount, fetchPatients } from "../../../api";
+import api from "../../../services/api";
 //#endregion
 
 export const PatientCount = () => {
@@ -20,13 +20,13 @@ export const PatientCount = () => {
     const loadFilteredCount = async () => {
       try {
         const [countRes, patientsRes] = await Promise.all([
-          fetchPatientCount(),
-          fetchPatients()
+          api.getPatientCount(),
+          api.getPatients()
         ])
-        if (countRes.ok) setCount(countRes.count)
+        if (countRes.ok) setCount(countRes.data.count)
 
         if (patientsRes.ok) {
-          const active = patientsRes.patients.filter(
+          const active = patientsRes.data.filter(
             p => p.state !== "Выписан" && p.state !== "Выписана"
           )
           setPatients(active)
@@ -44,9 +44,9 @@ export const PatientCount = () => {
 
   useEffect(() => {
     const loadPatientCount = async () => {
-      const res = await fetchPatientCount()
+      const res = await api.getPatientCount()
       if (res.ok) {
-        setCount(res.count)
+        setCount(res.data)
       } else {
         debug.error("Error fetching patients count", res.message)
         setCount("N/A")

@@ -80,7 +80,7 @@ async function requestWrapper(method, url, data = null, config = {}) {
  *    if (ok) console.log(data);
  */
 const api = {
-  // Generic CRUD helpers (used by all specific endpoints)
+  // Generic CRUD helpers for the props bellow(used by all specific endpoints)
   // example: api.get(/patients)
   get: (url, config) => requestWrapper("get", url, null, config),
   post: (url, data, config) => requestWrapper("post", url, data, config),

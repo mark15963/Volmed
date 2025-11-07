@@ -4,8 +4,8 @@ import moment from 'moment';
 import { useNavigate } from "react-router";
 
 // --- TOOLS ---
-import { fetchPatients } from "@/api";
-import debug from "@/utils/debug";
+import api from "../../../services/api";
+import debug from "../../../utils/debug";
 
 // --- UI ---
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -38,9 +38,9 @@ export const ListOfPatients = () => {
   // Fetching all patients
   useEffect(() => {
     const loadPatients = async () => {
-      const res = await fetchPatients()
+      const res = await api.getPatients()
       if (res.ok) {
-        setPatients(res.patients);
+        setPatients(res.data);
       } else {
         debug.error("Error fetching patients:", res.message)
         setPatients([])

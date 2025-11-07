@@ -1,3 +1,4 @@
+//#region ===== USAGE =====
 // CORRECT
 //
 // <Graph data={yourData} />
@@ -32,7 +33,7 @@
 //         console.error('Error saving pulse:', error);
 //     }
 // }
-//---------------------------------------------------------
+//#endregion
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types"

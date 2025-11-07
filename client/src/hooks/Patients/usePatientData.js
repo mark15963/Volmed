@@ -8,7 +8,6 @@ API helpers = pure network logic
  */
 
 import { useEffect, useState } from "react";
-import { fetchPatientById } from "../../api";
 import api from "../../services/api";
 import debug from "../../utils/debug";
 import { useApi } from "../useApi";
@@ -20,7 +19,12 @@ export function usePatientData(id, state) {
     error,
   } = useApi(
     () =>
-      id ? fetchPatientById(id) : Promise.resolve({ ok: false, data: null }),
+      id
+        ? api.getPatient(id)
+        : Promise.resolve({
+            ok: false,
+            data: null,
+          }),
     [id]
   );
 
