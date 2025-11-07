@@ -13,48 +13,43 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import styles from './styles/patientList.module.scss'
 //#endregion
 
+//#region ===== COMPONENT =====
+/**
+ * ListOfPatients
+ * --------------
+ * Displays a table with all patients from the database.
+ *
+ * Responsibilities:
+ * - Fetch and render patient data using `usePatientList()`.
+ * - Show skeleton loader during loading state.
+ * - Navigate to a patient's detail page on click or keyboard action.
+ *
+ * @returns {JSX.Element} Rendered table of patients
+ */
 export const ListOfPatients = () => {
-  const [patients, setPatients] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { patients, loading, error } = usePatientList()
   const navigate = useNavigate()
 
   // State elements UI
   const getStateClass = (state) => {
     switch (state) {
-      case 'Стабильно':
-        return styles.stable;
-      case 'Cредней степени тяжести':
-        return styles.moderate;
-      case 'Критическое':
-        return styles.critical;
+      case 'Стабильно': return styles.stable;
+      case 'Cредней степени тяжести': return styles.moderate;
+      case 'Критическое': return styles.critical;
       case 'Выписан':
-      case 'Выписана':
-        return styles.leave;
-      default:
-        return '';
+      case 'Выписана': return styles.leave;
+      default: return '';
     }
   }
 
-  // Fetching all patients
-  useEffect(() => {
-    const loadPatients = async () => {
-      const res = await api.getPatients()
-      if (res.ok) {
-        setPatients(res.data);
-      } else {
-        debug.error("Error fetching patients:", res.message)
-        setPatients([])
-      }
-      setLoading(false)
-    }
-    loadPatients();
-  }, []);
-
-  const handlePatientClick = (id, e) => {
+  const handlePatientClick = (patient, e) => {
     if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
       if (e.key === ' ') e.preventDefault();
-      debug.log(`Clicked on patient ID ${id}`)
-      navigate(`/search/${id}`)
+      debug.log(`Clicked on patient ID ${patient.id}.`)
+      debug.log(`Sent data:`, patient)
+      navigate(`/search/${patient.id}`, {
+        state: { patient }
+      })
     }
   }
 
@@ -72,7 +67,7 @@ export const ListOfPatients = () => {
       </thead>
 
       <tbody className={styles.tbody}>
-        {loading ? (
+        {loading ? (                  // Loading
           <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
             {Array.from({ length: 6 }).map((_, i) => (
               <tr key={i} className={styles.rowsLoading}>
@@ -82,35 +77,32 @@ export const ListOfPatients = () => {
               </tr>
             ))}
           </SkeletonTheme>
-        ) : patients.length > 0 ? (
+        ) : error ? (
+          <tr>
+            <td className={styles.noData}>
+              Error loading patients
+            </td>
+          </tr>
+
+        ) : patients.length > 0 ? (   // Existing patients
           patients.map(patient => (
             <tr
               key={patient.id}
               className={styles.rows}
-              onClick={(e) => handlePatientClick(patient.id, e)}
-              onKeyDown={(e) => handlePatientClick(patient.id, e)}
+              onClick={(e) => handlePatientClick(patient, e)}
+              onKeyDown={(e) => handlePatientClick(patient, e)}
               tabIndex={0}
               role="button"
               aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
             >
-              <td>
-                {patient.id}
-              </td>
-              <td>
-                {patient.lastName} {patient.firstName} {patient.patr}
-              </td>
-              <td>
-                {moment(patient.birthDate).format('DD.MM.YYYY')}
-              </td>
-              <td>
-                {moment(patient.created_at).format('DD.MM.YYYY')}
-              </td>
-              <td className={`${getStateClass(patient.state)}`}>
-                {patient.state}
-              </td>
+              <td>{patient.id}</td>
+              <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
+              <td>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
+              <td>{moment(patient.created_at).format('DD.MM.YYYY')}</td>
+              <td className={getStateClass(patient.state)}>{patient.state}</td>
             </tr>
           ))
-        ) : patients.length === 0 ? (
+        ) : patients.length === 0 ? ( // No patients
           <tr>
             <td className={styles.noData}>
               No patients!
@@ -119,11 +111,42 @@ export const ListOfPatients = () => {
         ) : (
           <tr>
             <td className={styles.noData}>
-              No data found!
+              No patients!
             </td>
           </tr>
         )}
       </tbody>
     </table>
   )
+}
+
+/**
+ * usePatientList
+ * --------------
+ * Fetches a list of all patients from the API.
+ *
+ * Handles loading and error states automatically and returns the results
+ * in a format ready to use in table components or dropdowns.
+ *
+ * @returns {{
+ *   patients: Array<Object>,
+ *   loading: boolean,
+ *   error: Error|null
+ * }} Patient list state and control flags
+ */
+function usePatientList() {
+  const [patients, setPatients] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    api.getPatients()
+      .then(res => {
+        if (res.ok) setPatients(res.data)
+        else throw new Error(res.message)
+      })
+      .catch(setError)
+      .finally(() => setLoading(false))
+  }, [])
+  return { patients, loading, error }
 }

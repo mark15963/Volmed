@@ -46,7 +46,7 @@ export const PatientCount = () => {
     const loadPatientCount = async () => {
       const res = await api.getPatientCount()
       if (res.ok) {
-        setCount(res.data)
+        setCount(res.data.count)
       } else {
         debug.error("Error fetching patients count", res.message)
         setCount("N/A")

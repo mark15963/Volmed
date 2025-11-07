@@ -1,17 +1,13 @@
+import styles from './Row.module.scss'
 const Row = ({ children, center = false }) => {
-    const costume = 'justify-content: center'
 
-    const style = {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: center ? "center" : "flex-start",
-        width: '100%'
-    }
-
-    return (
-        <div style={style}>
-            {children}
-        </div>
-    )
+  return (
+    <div
+      data-align={center}
+      className={styles.row}
+    >
+      {children}
+    </div>
+  )
 }
 export default Row

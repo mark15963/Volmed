@@ -27,7 +27,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
   const { authState } = useAuth();
   const [form] = Form.useForm()
 
-  const [messageApi, contextHolder] = message.useMessage()
   const safeMessage = useSafeMessage()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -80,8 +79,8 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
         })
       }
 
-      safeMessage('loading', 'Данные сохраняются...', 1)
-      safeMessage("success", 'Данные сохранены!', 2.5)
+      safeMessage("loading", "Данные сохраняются...", 1)
+      safeMessage("success", "Данные сохранены!", 2.5)
 
       form.resetFields(['mkb'])
 
@@ -109,7 +108,6 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
 
   return (
     <div className={styles.container}>
-      {contextHolder}
       <span className={styles.pageTitle}>
         {isEditMode
           ? 'Редактировать пациента'
@@ -143,7 +141,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
             <div className={styles.form}>
               <PersonalInfoFields
                 form={form}
-                messageApi={messageApi}
+                safeMessage={safeMessage}
               />
               <MedHistoryFields
                 form={form}
