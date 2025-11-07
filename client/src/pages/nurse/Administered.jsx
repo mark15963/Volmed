@@ -12,29 +12,16 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from "./administeredStyles.module.scss"
 import { parseApiResponse } from "../../utils/parseApiResponse";
-import { fetchPatients } from "../../api";
 import { useApi } from "../../hooks/useApi";
 
 const Administered = () => {
-  const { data: patients, loading, error } = useApi(fetchPatients, [], [])
+  const { data: patients, loading, error } = useApi(
+    () => api.getPatients(),
+    [],
+    []
+  )
+
   const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   const loadPatients = async () => {
-  //     setLoading(true)
-  //     const res = await fetchPatients()
-
-  //     if (res.ok) {
-  //       setPatients(res.patients)
-  //       debug.table(res.patients, ["id", "created_at", "lastName", "firstName", "patr", "diag"], "Administered patients table:")
-  //     } else {
-  //       debug.error("[API ERROR] fetchPatients failed:", res.message)
-  //       setPatients([])
-  //     }
-  //     setLoading(false)
-  //   }
-  //   loadPatients()
-  // }, []);
 
   return (
     <div className={styles.container}>
@@ -71,7 +58,7 @@ const Administered = () => {
                   <small>{error}</small>
                 </td>
               </tr>
-            ) : patients.length > 0 ? (
+            ) : patients && patients.length > 0 ? (
               patients.map(patient => (
                 <tr
                   key={patient.id}
@@ -94,9 +81,7 @@ const Administered = () => {
         </table>
         <Button
           text="Назад"
-          onClick={() => {
-            navigate("/")
-          }}
+          navigateTo="INDEX"
           style={{
             marginTop: "15px"
           }}
