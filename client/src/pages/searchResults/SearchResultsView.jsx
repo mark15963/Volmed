@@ -17,17 +17,61 @@ const Tab3 = lazy(() => import('./tabs/tab3'))
 import styles from './searchResults.module.scss'
 //#endregion ================
 
+//#region ===== JSDoc Types =====
+/**
+ * @typedef {Object} DataProps
+ * @property {Patient|null} data - Patient object or null if not loaded
+ * @property {boolean} loading - Loading state
+ * @property {Error|null} error - Error object if request failed
+ */
+
+/**
+ * @typedef {Object} RouterProps
+ * @property {string} id - Patient ID from the route
+ * @property {Object} state - Location state from React Router (optional searchQuery, results, etc.)
+ * @property {Function} navigate - React Router navigate function
+ */
+
+/**
+ * @typedef {Object} UIProps
+ * @property {number} activeTab - Currently active tab index
+ * @property {Function} setActiveTab - Setter function for active tab
+ */
+
+/**
+ * @typedef {Object} Hooks
+ * @property {Object} filesHook - Hook object returned from `usePatientFiles`
+ * @property {Object} medsHook - Hook object returned from `usePatientMedications`
+ */
+
+/**
+ * @typedef {Object} Handlers
+ * @property {Function} handleEdit - Function to edit patient
+ * @property {Function} handlePrint - Function to print patient info
+ * @property {Function} handleDeletePatient - Function to delete patient
+ */
+//#endregion
+
+//#region ===== Component JSDoc =====
 /**
  * SearchResultsView
  * -----------------
- * Presentational component displaying the patient’s information, files, and medications tabs.
- * 
- * @param {Object} props
- * @param {Object} props.dataProps - Contains `data`, `loading`, and `error` for patient data.
- * @param {Object} props.routerProps - Router utilities (`id`, `state`, `navigate`).
- * @param {Object} props.uiProps - UI state (`activeTab`, `setActiveTab`).
- * @param {Object} props.hooks - Hook objects for files and medications (`filesHook`, `medsHook`).
- * @param {Object} props.handlers - Action handlers (`handleEdit`, `handlePrint`, `handleDeletePatient`).
+ * Presentational component displaying a patient’s data, files, and medications in tabs.
+ *
+ * Responsibilities:
+ * - Show loader, error, or not-found states.
+ * - Display patient info and tabbed sections (main info, files, medications).
+ * - Manage tab navigation and lazy-loading tab content.
+ * - Integrate file and medication hooks for editing and saving.
+ * - Pass action handlers to `ActionButtons`.
+ *
+ * @param {Object} props - Component props
+ * @param {DataProps} props.dataProps - Patient data and loading/error states
+ * @param {RouterProps} props.routerProps - Router utilities including `id`, `state`, and `navigate`
+ * @param {UIProps} props.uiProps - UI state for tabs
+ * @param {Hooks} props.hooks - Hook objects for files and medications
+ * @param {Handlers} props.handlers - Action handlers (edit, print, delete)
+ * @returns {JSX.Element} Rendered view of the patient search results
  */
 const SearchResultsView = ({
   dataProps,

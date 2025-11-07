@@ -3,33 +3,37 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { Upload, Form, Collapse } from "antd"
 const { Dragger } = Upload;
-const { Panel } = Collapse;
 
 import Input from '../../../components/Input';
 import Graph from './Components/Graph';
 import { SpinLoader } from '../../../components/loaders/SpinLoader';
 
+import { usePatientFiles } from '../../../hooks/Patients/usePatientFiles';
+import { useSafeMessage } from '../../../hooks/useSafeMessage';
+
 import api from '../../../services/api'
 import debug from '../../../utils/debug';
 
 import styles from './styles/tab2.module.scss'
-import { useSafeMessage } from '../../../hooks/useSafeMessage';
 //#endregion
 
-const environment = import.meta.env.VITE_ENV
 const apiUrl = import.meta.env.VITE_API_URL
 
-export const Tab2 = memo(({
-  files,
-  fileList,
-  setFileList,
-  isLoading,
-  isEditing,
-  handleRemoveFile,
-  setUploadStatus,
-  id,
-}) => {
-  //#region -----CONSTS-----
+export const Tab2 = memo(({ id }) => {
+  //#region -----HOOKS-----
+  const safeMessage = useSafeMessage()
+  const {
+    files,
+    fileList,
+    setFileList,
+    isLoading,
+    isEditing,
+    setIsEditing,
+    handleRemoveFile,
+    setUploadFilesStatus
+  } = usePatientFiles(id, safeMessage, true)
+
+  //#region -----LOCAL STATES (Pulse & O₂)-----
   const [loadingPulse, setLoadingPulse] = useState(true);
   const [loadingO2, setLoadingO2] = useState(true);
   const [pulseValue, setPulseValue] = useState('');
@@ -37,9 +41,6 @@ export const Tab2 = memo(({
   const [o2Value, setO2Value] = useState('');
   const [o2Values, setO2Values] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [frameState, setFrameState] = useState(false)
-
-  const safeMessage = useSafeMessage()
   //#endregion
 
   //#region -----PULSE DATA-----
@@ -53,9 +54,9 @@ export const Tab2 = memo(({
       setLoadingPulse(true);
       try {
         debug.log('Fetching pulse data for patient:', id);
-        const response = await api.getPulseData(id)
-        debug.log('Pulse data response:', response.data);
-        const values = response.data.map(item => ({
+        const res = await api.getPulseData(id)
+        debug.log('Pulse data response:', res.data);
+        const values = res.data.map(item => ({
           val: Number(item.value),
           created_at: item.timestamp,
         }));
@@ -72,8 +73,7 @@ export const Tab2 = memo(({
   const handlePulseKeyPress = async (e) => {
     if (e.key === 'Enter' && pulseValue.trim() !== '') {
       if (!id) {
-        console.error('Patient ID is missing');
-        safeMessage("error", 'Отсутствует ID пациента')
+        safeMessage("error", "Отсутствует ID пациента")
         return;
       }
 
@@ -81,18 +81,15 @@ export const Tab2 = memo(({
       if (!isNaN(num)) {
         try {
           await api.savePulse(id, num)
-          safeMessage("success", 'Данные сохранены!', 2.5)
-          const newEntry = {
+          safeMessage("success", "Данные сохранены!", 2.5)
+          // Update local state
+          setPulseValues([...pulseValues, {
             val: num,
             created_at: new Date().toISOString()
-          };
-
-          // Update local state
-          setPulseValues([...pulseValues, newEntry]);
+          }]);
           setPulseValue('');
         } catch (error) {
           safeMessage("error", 'Ошибка!', 2.5)
-          console.error('Error saving pulse:', error);
         }
       }
     }
@@ -163,6 +160,7 @@ export const Tab2 = memo(({
   //#region -----O2 DATA-----
   useEffect(() => {
     const fetchO2Data = async () => {
+      if (!id) return;
       setLoadingO2(true)
       try {
         debug.log('Fetching O2 data for patient:', id);
@@ -180,9 +178,7 @@ export const Tab2 = memo(({
       }
     };
 
-    if (id) {
-      fetchO2Data();
-    }
+    fetchO2Data();
   }, [id]);
 
   const handleO2KeyPress = async (e) => {
@@ -192,17 +188,14 @@ export const Tab2 = memo(({
         try {
           await api.saveO2(id, num)
           safeMessage("success", 'Данные сохранены!', 2.5)
-          const newEntry = {
+          // Update local state
+          setO2Values([...o2Values, {
             val: num,
             created_at: new Date().toISOString()
-          };
-
-          // Update local state
-          setO2Values([...o2Values, newEntry]);
+          }]);
           setO2Value('');
         } catch (error) {
           safeMessage("error", 'Ошибка!', 2.5)
-          console.error('Error saving O2:', error);
         }
       }
     }
@@ -271,7 +264,9 @@ export const Tab2 = memo(({
 
   //#region -----FILES-----
   const frame = (filePath) => {
-    const fullPath = filePath.startsWith('http') ? filePath : `${apiUrl}${filePath}`;
+    const fullPath = filePath.startsWith('http')
+      ? filePath
+      : `${apiUrl}${filePath}`;
     setSelectedFile((prev) => (prev === fullPath ? null : fullPath));
   }
 
@@ -285,9 +280,7 @@ export const Tab2 = memo(({
     multiple: true,
     fileList,
     action: `${apiUrl}/api/patients/${id || 'temp'}/upload`,
-    headers: {
-      'X-Requested-With': null,
-    },
+    headers: { 'X-Requested-With': null },
     withCredentials: true,
     onChange(info) {
       setFileList([...info.fileList])
@@ -322,7 +315,7 @@ export const Tab2 = memo(({
       showRemoveIcon: true,
       removeIcon: (
         <DeleteOutlined
-          onClick={e => console.log('Удаление файла', e)}
+          onClick={e => debug.log('Удаление файла', e)}
         />
       ),
 
@@ -333,6 +326,7 @@ export const Tab2 = memo(({
   return (
     <div className={styles.info}>
       <div className={styles.bg}>
+        {/* GRAPHS */}
         <div className={styles.collapseContainer}>
           <div>
             <Collapse items={HrItems} />
