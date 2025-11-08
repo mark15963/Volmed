@@ -5,6 +5,7 @@ const { default: dayjs, datePickerLocale } = await import('../dayjs.config')
 import Input from '../../../components/Input';
 
 import styles from '../register.module.scss'
+import { PhoneField } from './PhoneField';
 
 export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) => {
   return (
@@ -105,28 +106,10 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
 
         <div className={styles.formItem}>
           <label>Номер телефона</label>
-          <IMaskInput
-            mask="+7(000)000-00-00"
+          <PhoneField
             value={formValues.phone}
-            definitions={{ '0': /[0-9]/ }}
-            onAccept={(val) => handleChange('phone', val === '7' ? '' : val)}
-            onBlur={(e) => {
-              const val = e.target.value;
-              if (val && val.length < 16) {
-                // full mask length is 16: "+7(000)000-00-00"
-                safeMessage("warning", "Номер телефона неполный");
-              }
-              handleChange('phone', val);
-            }}
-            placeholder="+7 (___) ___-__-__"
-            style={{
-              width: '100%',
-              padding: '4px 11px',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              border: '1px solid #d9d9d9',
-              borderRadius: '6px',
-            }}
+            onChange={(val) => handleChange('phone', val)}
+            safeMessage={safeMessage}
           />
         </div>
 
