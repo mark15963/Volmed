@@ -3,48 +3,81 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-const { Form, Alert, message } = await import('antd/es')
 const { default: dayjs, datePickerLocale } = await import('./dayjs.config')
 
 // Components
-import { usePageTitle } from '@/utils/usePageTitle.js'
-import { PersonalInfoFields } from './Components/PersonalInfoFields.jsx'
-import { Buttons } from './Components/Buttons.jsx'
-import { MedHistoryFields } from './Components/MedHistoryFields.jsx'
+import { usePageTitle } from '../../utils/usePageTitle'
+import { PersonalInfoFields } from './Components/PersonalInfoFields'
+import { MedHistoryFields } from './Components/MedHistoryFields'
+import { Buttons } from './Components/Buttons'
 
 // Hooks & Context
-import { useAuth } from "@/context"
-import { useSafeMessage } from '@/hooks/useSafeMessage'
+import { useAuth } from "../../context"
+import { useSafeMessage } from '../../hooks/useSafeMessage'
 
 // UI & Services
 import styles from './register.module.scss'
-import api from '@/services/api'
+import api from '../../services/api.js'
+import debug from '../../utils/debug.js'
 //#endregion
 
 
 export const RegisterPatient = ({ initialValues = null, isEditMode = false, patientId = null }) => {
   const navigate = useNavigate()
   const { authState } = useAuth();
-  const [form] = Form.useForm()
 
   const safeMessage = useSafeMessage()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const [formValues, setFormValues] = useState({
+    lastName: '',
+    firstName: '',
+    patr: '',
+    type: 'Плановая',
+    sex: 'Мужской',
+    birthDate: null,
+    sender: '',
+    sendingTime: '',
+    insurance: '',
+    phone: '',
+    address: '',
+    email: '',
+    freq: 'Впервые',
+    firstDiag: '',
+    complaint: '',
+    anam: '',
+    life: '',
+    status: '',
+    mkb: '',
+    diag: '',
+    sop_zab: '',
+    rec: '',
+    state: 'Стабильно',
+  })
+
   const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
 
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue({
+      setFormValues({
         ...initialValues,
-        birthDate: initialValues.birthDate ? dayjs(initialValues.birthDate) : null
+        birthDate: initialValues.birthDate
+          ? dayjs(initialValues.birthDate)
+          : null
       });
     }
-  }, [initialValues, form]);
+  }, [initialValues]);
 
-  const onFinish = async (formValues) => {
+  const handleChange = (name, value) => {
+    setFormValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
     try {
       setIsLoading(true);
+      safeMessage("loading", "Данные сохраняются...", 1)
       setError('');
 
       const formattedValues = {
@@ -68,39 +101,34 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
         doctor: doctor || "",
       };
 
-      let response
+      let res
       if (isEditMode && patientId) {
-        response = await api.updatePatient(patientId, formattedValues)
+        res = await api.updatePatient(patientId, formattedValues)
+        if (!res.ok) throw new Error(res.message)
       } else {
-        response = await api.createPatient(formattedValues, {
+        res = await api.createPatient(formattedValues, {
           headers: {
             'Content-Type': 'application/json'
           }
         })
+        if (!res.ok) throw new Error(res.message)
       }
 
-      safeMessage("loading", "Данные сохраняются...", 1)
-      safeMessage("success", "Данные сохранены!", 2.5)
-
-      form.resetFields(['mkb'])
+      setFormValues(prev => ({ ...prev, mkb: '' }))
 
       setTimeout(() => {
-        navigate(`/search/${isEditMode ? patientId : response.data.id}`, {
+        safeMessage("success", "Данные сохранены!", 2.5)
+        navigate(`/search/${isEditMode ? patientId : res.data.id}`, {
           state: {
-            results: response.data,
-            searchQuery: `${response.data.lastName} ${response.data.firstName} ${response.data.patr}`
+            results: res.data,
+            searchQuery: `${res.data.lastName} ${res.data.firstName} ${res.data.patr}`
           }
         });
       }, 1000)
 
     } catch (err) {
       setError(err.response?.data?.error || err.message);
-      console.error('Registration error:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        fullError: err,
-      });
+      console.error('Registration error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -114,46 +142,29 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
           : 'Регистрация пациента'
         }
       </span>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        onFinishFailed={(info) => {
-          safeMessage("error", "Ошибка! Проверьте все поля.")
-          console.log('Validation Failed. Check fields', info);
-        }}
-        initialValues={{
-          sex: 'Мужской',
-          state: 'Стабильно'
-        }}
-      >
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <form onSubmit={onSubmit}>
         <div className={styles.info}>
           <div className={styles.bg}>
-
-            {error &&
-              <Alert
-                message={error}
-                type='error'
-                showIcon
-              />
-            }
-
             <div className={styles.form}>
               <PersonalInfoFields
-                form={form}
+                formValues={formValues}
+                handleChange={handleChange}
                 safeMessage={safeMessage}
               />
               <MedHistoryFields
-                form={form}
+                formValues={formValues}
+                handleChange={handleChange}
               />
               <Buttons
-                form={form}
                 isEditMode={isEditMode}
               />
             </div>
           </div>
         </div >
-      </Form>
+      </form>
     </div >
   )
 }

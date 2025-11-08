@@ -28,6 +28,8 @@
 
   &::placeholder {
     align-items: center;
+    color: #cdcdcd;
+    font-size: 14px;
   }
 
   &:focus::placeholder {
