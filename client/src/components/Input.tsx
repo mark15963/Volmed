@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, CSSProperties, FC, useRef } from "react";
-import { Search, Upload } from "lucide-react"; // not permanent
+import { Search } from "lucide-react"; // not permanent
 import "./styles/Input.scss";
 import Button from "./Button";
 
@@ -48,7 +48,7 @@ const Input: FC<InputProps> = ({
     .join(" ");
 
   // if input type is COLOR - default color is black
-  const inputValue = type === "color" ? value || "#000000" : value;
+  const inputValue = type === "color" ? value || "#000000" : value ?? "";
 
   // style of input type COLOR
   const mergedStyle: CSSProperties =
@@ -68,6 +68,7 @@ const Input: FC<InputProps> = ({
     mergedStyle.borderRadius = "25px";
   }
 
+  // style of input type FILE
   if (type === "file") {
     return (
       <div className="input-file-wrapper">
@@ -122,7 +123,9 @@ const Input: FC<InputProps> = ({
         name={name}
         type={type}
         placeholder={placeholder}
-        onChange={onChange}
+        onChange={(e) => {
+          onChange?.(e);
+        }}
         pattern={pattern}
         inputMode={inputMode}
         className={inputClass}

@@ -36,14 +36,6 @@
 
     .form {
       width: 100%;
-      .formLabel {
-        color: aliceblue;
-        font-size: clamp(16px, 1.2vw + 0.5rem, 19px);
-        line-height: 1.2;
-        font-weight: 600;
-        width: 100%;
-      }
-
       .topForms {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -56,11 +48,38 @@
         .topFormsC {
           display: grid;
           grid-template-rows: repeat(4, 1fr);
-          gap: 10px;
+          gap: 5px;
+          .formItem {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            width: 100%;
+
+            label {
+              color: aliceblue;
+              font-size: clamp(16px, 1.2vw + 0.5rem, 19px);
+              line-height: 1.2;
+              font-weight: 600;
+              width: 100%;
+            }
+          }
         }
 
         .freq {
           grid-column: span 3 / span 1;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          margin-bottom: 20px;
+
+          label {
+            color: aliceblue;
+            font-size: clamp(16px, 1.2vw + 0.5rem, 19px);
+            line-height: 1.2;
+            font-weight: 600;
+            width: 100%;
+          }
         }
       }
       .firstDiag {
@@ -68,12 +87,41 @@
         border-bottom-color: black;
         border-bottom-width: 1px;
         padding-bottom: 20px;
+        grid-column: span 3 / span 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        label {
+          color: aliceblue;
+          font-size: clamp(16px, 1.2vw + 0.5rem, 19px);
+          line-height: 1.2;
+          font-weight: 600;
+          width: 100%;
+        }
       }
 
       .bottomForms {
         display: flex;
         flex-direction: column;
         width: 100%;
+        .formItem {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          margin-bottom: 20px;
+          width: 100%;
+          gap: 5px;
+
+          label {
+            color: aliceblue;
+            font-size: clamp(16px, 1.2vw + 0.5rem, 19px);
+            line-height: 1.2;
+            font-weight: 600;
+            width: 100%;
+          }
+        }
       }
 
       .buttonsContainer {

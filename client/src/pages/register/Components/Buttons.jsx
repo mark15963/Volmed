@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Button from '../../../components/Button'
 import styles from '../register.module.scss'
 
-export const Buttons = ({ form, isEditMode = false }) => {
+export const Buttons = ({ isEditMode = false }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   return (
