@@ -18,13 +18,14 @@ const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
 const { initCacheOnStartup } = require("./utils/initCache");
-const initSocket = require("./sockets");
+const http = require("http");
 
 const routes = require("./routes/index");
 const debug = require("./utils/debug");
 //#endregion
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 
 //#region ===== CORS setup =====
@@ -104,7 +105,7 @@ async function startServer() {
     await testDbConnection();
     await initCacheOnStartup();
 
-    const server = app.listen(PORT, () => {
+    server.listen(PORT, () => {
       debug.log(`Server running on port ${PORT}`);
       debug.log(`Enviroment: ${process.env.NODE_ENV}`);
       debug.log(`Website link: ${process.env.FRONTEND_URL}`);
@@ -120,6 +121,7 @@ async function startServer() {
     });
 
     // Socket
+    const initSocket = require("./sockets");
     initSocket(server, app, allowedOrigins, debug);
 
     process.on("SIGTERM", () => {

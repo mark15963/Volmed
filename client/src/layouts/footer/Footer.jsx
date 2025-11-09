@@ -1,7 +1,6 @@
 import { memo } from 'react';
 
 import ChatWidget from '../../components/Chat/ChatWidget';
-import InDev from '../../components/InDev';
 
 import { services } from '../../constants';
 
@@ -23,9 +22,7 @@ export const Footer = memo(() => {
         © {projectContent} {adjustedYear}
       </div>
       <div className={styles.right}>
-        <InDev>
-          <ChatWidget />
-        </InDev>
+        <ChatWidget />
       </div>
     </footer>
   )
