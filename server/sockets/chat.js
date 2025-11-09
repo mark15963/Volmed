@@ -55,4 +55,9 @@ module.exports = function setupChatSocket(io, socket, debug) {
       }
     }
   });
+
+  socket.on("chat_deleted", (room) => {
+    socket.to(room).emit("chat_deleted", room);
+    console.log(`Chat deleted: ${room}, notifying users`);
+  });
 };
