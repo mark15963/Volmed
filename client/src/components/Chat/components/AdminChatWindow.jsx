@@ -22,6 +22,16 @@ export const AdminChatWindow = ({
 }) => {
   const messagesEndRef = useRef(null)
 
+  const getUserNameFromRoom = (room) => {
+    if (!room) return 'Unknown User';
+    // Assuming room format is "chat_{userId}_admin"
+    const parts = room.split('_');
+    if (parts.length > 1) {
+      return parts[1]
+    }
+    return room;
+  }
+
   useEffect(() => {
     debug.log("Messages updated:", messages);
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -43,7 +53,7 @@ export const AdminChatWindow = ({
             }}
           >
             <Button
-              text={room}
+              text={getUserNameFromRoom(room)}
               style={{
                 maxWidth: '100px',
                 fontSize: '0.5em',
@@ -72,7 +82,7 @@ export const AdminChatWindow = ({
       {showChat && (
         <div className={styles.rightSide}>
           <div className={styles.title}>
-            {currentRoom || 'Выбрать чат'}
+            {currentRoom ? `Чат с ${getUserNameFromRoom(currentRoom)}` : 'Выбрать чат'}
           </div>
           <div
             className={styles.screen}

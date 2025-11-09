@@ -71,11 +71,18 @@ export const useChat = (initialRoomName, currentUserId) => {
 
   // Load chat history
   const loadMessages = useCallback(async (room = currentRoomRef.current) => {
-    if (!room) return;
+    if (!room) {
+      debug.log("loadMessages: No room provided");
+      return;
+    }
 
+    debug.log(`loadMessages: Loading history for room: ${room}`);
     setIsLoading(true);
+
     try {
       const res = await api.getChatHistory(room);
+      debug.log(`loadMessages: Received ${(res.data || []).length} messages`);
+
       const normalized = (res.data || []).map((m) => ({
         text: m.message,
         sender: m.sender,
@@ -85,8 +92,10 @@ export const useChat = (initialRoomName, currentUserId) => {
       }));
 
       setMessages(normalized);
+      debug.log("loadMessages: Messages set successfully");
     } catch (err) {
       console.error("Failed to load messages:", err);
+      debug.log("loadMessages: Error loading messages", err);
     } finally {
       setIsLoading(false);
     }
@@ -119,6 +128,11 @@ export const useChat = (initialRoomName, currentUserId) => {
       try {
         const msg = normalizeIncoming(payload);
 
+        debug.log(
+          `Received message for room: ${msg.room}, current room: ${currentRoomRef.current}`
+        );
+        debug.log("Message details:", msg);
+
         // Admin: refresh active chats list
         if (currentUserIdRef.current === "admin") {
           api
@@ -131,6 +145,7 @@ export const useChat = (initialRoomName, currentUserId) => {
 
         // Only add message if it's for the current room
         if (msg.room && msg.room === currentRoomRef.current) {
+          debug.log("Adding message to current room");
           const last = lastMessageRef.current;
           if (
             last &&
@@ -153,9 +168,11 @@ export const useChat = (initialRoomName, currentUserId) => {
           } else {
             setMessages((prev) => [...prev, msg]);
           }
+        } else {
+          debug.log("Message ignored - not for current room");
         }
       } catch (err) {
-        console.error("handleReceiveMessage error:", err);
+        debug.error("handleReceiveMessage error:", err);
       }
     };
 
@@ -177,35 +194,18 @@ export const useChat = (initialRoomName, currentUserId) => {
 
     let mounted = true;
 
-    const changeRoom = async () => {
-      const newRoom = currentRoom;
-      const prevRoom = currentRoomRef.current;
-
-      if (prevRoom === newRoom) {
-        if (newRoom && messages.length === 0 && mounted) {
-          await loadMessages(newRoom);
-        }
-        return;
+    const setupInitialRoom = async () => {
+      if (currentRoom && messages.length === 0 && mounted) {
+        await loadMessages(currentRoom);
       }
-
-      if (prevRoom) socket.emit("leave_room", prevRoom);
-
-      if (newRoom) {
-        socket.emit("join_room", newRoom);
-        if (mounted) await loadMessages(newRoom);
-      } else {
-        if (mounted) setMessages([]);
-      }
-
-      currentRoomRef.current = newRoom;
     };
 
-    changeRoom();
+    setupInitialRoom();
 
     return () => {
       mounted = false;
     };
-  }, [currentRoom]);
+  }, []);
   //#endregion
 
   //#region === MESSAGE SENDING ===
@@ -291,27 +291,60 @@ export const useChat = (initialRoomName, currentUserId) => {
   //#endregion
 
   //#region === ADMIN HELPERS ===
-  const joinRoom = useCallback((room) => {
-    if (currentUserIdRef.current !== "admin") return;
+  const joinRoom = useCallback(
+    (room) => {
+      if (currentUserIdRef.current !== "admin") return;
 
-    setIsLoading(true);
-    setCurrentRoom(room);
-    setShowChat(true);
+      debug.log(
+        `joinRoom called with: ${room}, currentRoom: ${currentRoomRef.current}`
+      );
 
-    const socket = socketRef.current;
-    if (!socket) return;
+      setIsLoading(true);
+      const prevRoom = currentRoomRef.current;
+      setCurrentRoom(room);
+      currentRoomRef.current = room;
 
-    if (socket.connected) {
-      socket.emit("join_room", room);
-    } else {
-      const handleConnect = () => {
-        socket.emit("join_room", room);
-        socket.off("connect", handleConnect); // cleanup
+      setShowChat(true);
+
+      const socket = socketRef.current;
+      if (!socket) {
+        setIsLoading(false);
+        return;
+      }
+
+      const performRoomChange = async () => {
+        try {
+          // Leave previous room if it exists
+          if (prevRoom) {
+            socket.emit("leave_room", prevRoom);
+            debug.log(`Left room: ${prevRoom}`);
+          }
+
+          // Join new room
+          socket.emit("join_room", room);
+          debug.log(`Joined room: ${room}`);
+
+          // Load messages for the new room
+          await loadMessages(room);
+        } catch (error) {
+          console.error("Error changing rooms:", error);
+        } finally {
+          setIsLoading(false);
+        }
       };
-      socket.on("connect", handleConnect);
-    }
-    setIsLoading(false);
-  }, []);
+
+      if (socket.connected) {
+        performRoomChange();
+      } else {
+        const handleConnect = () => {
+          performRoomChange();
+          socket.off("connect", handleConnect); // cleanup
+        };
+        socket.on("connect", handleConnect);
+      }
+    },
+    [loadMessages]
+  );
 
   const deleteChat = useCallback(
     async (room) => {
