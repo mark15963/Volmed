@@ -6,7 +6,6 @@ import UserChatWindow from './components/UserChatWindow'
 import useChat from '../../hooks/useChat'
 
 import debug from '../../utils/debug'
-import api from '../../services/api'
 
 import styles from './styles/Chat.module.scss'
 //#endregion

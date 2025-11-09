@@ -1,9 +1,6 @@
 import { memo } from 'react';
-
 import ChatWidget from '../../components/Chat/ChatWidget';
-
 import { services } from '../../constants';
-
 import styles from './footer.module.scss'
 
 export const Footer = memo(() => {
