@@ -1,5 +1,3 @@
-const axios = require("axios");
-
 module.exports = function setupChatSocket(io, socket, debug) {
   // // Log all events for debugging
   // socket.onAny((event, ...args) => {

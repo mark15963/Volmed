@@ -18,8 +18,10 @@ const UserChat = () => {
   const displayName = isAuthenticated
     ? `${authState.user?.lastName || ''} ${authState.user?.firstName || ''} ${authState.user?.patr || ''}`.trim()
     : "Unauthorized person";
-  const currentUserId = displayName
+
+  const currentUserId = authState.user?.id || displayName
   const roomName = `chat_${currentUserId}_admin`;
+
   const [message, setMessage] = useState('')
   const { messages, sendMessage } = useChat(roomName, currentUserId)
 
