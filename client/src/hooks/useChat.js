@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import api from "../services/api";
-import { getLocalISOTime } from "../utils/time";
+import { getLocalISOTime, getLocalTimestamp } from "../utils/time";
 import debug from "../utils/debug";
 //#endregion
 
@@ -128,11 +128,6 @@ export const useChat = (initialRoomName, currentUserId) => {
       try {
         const msg = normalizeIncoming(payload);
 
-        debug.log(
-          `Received message for room: ${msg.room}, current room: ${currentRoomRef.current}`
-        );
-        debug.log("Message details:", msg);
-
         // Admin: refresh active chats list
         if (currentUserIdRef.current === "admin") {
           api
@@ -145,7 +140,6 @@ export const useChat = (initialRoomName, currentUserId) => {
 
         // Only add message if it's for the current room
         if (msg.room && msg.room === currentRoomRef.current) {
-          debug.log("Adding message to current room");
           const last = lastMessageRef.current;
           if (
             last &&
@@ -215,7 +209,7 @@ export const useChat = (initialRoomName, currentUserId) => {
     const socket = socketRef.current;
     const room = currentRoomRef.current;
     const sender = currentUserIdRef.current;
-    const timestamp = getLocalISOTime();
+    const timestamp = new Date().toISOString(); // DB
 
     if (!socket || !room) {
       debug.log("Socket or room missing, abort send");
@@ -223,11 +217,12 @@ export const useChat = (initialRoomName, currentUserId) => {
     }
 
     // Prevent rapid duplicates
+    const localTimestamp = Date.now();
     const last = lastMessageRef.current;
     if (
       last &&
       last.text === text &&
-      Date.now() - (last.originalTimestamp || 0) < 3000
+      localTimestamp - (last.originalTimestamp || 0) < 3000
     ) {
       debug.log("Preventing duplicate send");
       return;
@@ -238,9 +233,9 @@ export const useChat = (initialRoomName, currentUserId) => {
       text,
       sender,
       senderName,
-      timestamp,
+      timestamp, // ISO for DB/display
       room,
-      originalTimestamp: Date.now(),
+      originalTimestamp: localTimestamp, // ms for dup check
       type: "user",
     };
     lastMessageRef.current = optimistic;
@@ -252,7 +247,7 @@ export const useChat = (initialRoomName, currentUserId) => {
       room,
       sender,
       senderName,
-      timestamp,
+      timestamp, // ISO for DB
     };
     socket.emit("send_message", socketData);
 
