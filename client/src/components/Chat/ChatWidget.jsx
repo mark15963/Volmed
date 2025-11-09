@@ -1,9 +1,9 @@
 // Used in Footer.jsx
 
-import { Activity, useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { createPortal } from "react-dom";
-import UserChat from "./UserChat";
-import AdminChat from "./AdminChat";
+import UserChat from "./UserChat.jsx";
+import AdminChat from "./AdminChat.jsx";
 import Button from "../Button";
 import { useAuth } from "../../context";
 
@@ -30,7 +30,7 @@ export const ChatWidget = memo(() => {
   // Close chat when clicking outside (but not on the button)
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!clickOutsideEnabled.current) return
+      if (!clickOutsideEnabled.current) return;
 
       if (chatRef.current &&
         !chatRef.current.contains(e.target) &&
@@ -64,14 +64,8 @@ export const ChatWidget = memo(() => {
         />
       </div>
 
-      <Activity
-        mode={
-          chatVisible
-            ? 'visible'
-            : 'hidden'
-        }
-      >
-        {createPortal(
+      {chatVisible &&
+        createPortal(
           <div
             ref={chatRef}
             className={styles.chatContainer}
@@ -83,9 +77,8 @@ export const ChatWidget = memo(() => {
           </div>,
           document.body
         )}
-      </Activity>
     </>
   )
 })
 
-export default ChatWidget
+export default memo(ChatWidget)
