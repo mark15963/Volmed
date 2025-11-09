@@ -23,5 +23,5 @@ export const AppProviders = ({ children }) => {
 export * from "./AuthContext";
 export * from "./PatientDataContext";
 export * from "./UsersDataContext";
-export * from "./MessageContext"
+export * from "./MessageContext";
 export * from "./ConfigContext";

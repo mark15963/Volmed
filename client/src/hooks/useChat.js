@@ -2,7 +2,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import api from "../services/api";
-import { getLocalISOTime, getLocalTimestamp } from "../utils/time";
 import debug from "../utils/debug";
 //#endregion
 
@@ -170,10 +169,45 @@ export const useChat = (initialRoomName, currentUserId) => {
       }
     };
 
+    const handleChatDeleted = (deletedRoom) => {
+      debug.log(`Chat deleted notification received: ${deletedRoom}`);
+
+      // If this user is in the deleted room, clear their messages
+      if (currentRoomRef.current === deletedRoom) {
+        debug.log(`Clearing messages for deleted room: ${deletedRoom}`);
+        // Add a system message before clearing
+        const systemMessage = {
+          text: "Чат был удален администратором",
+          sender: "system",
+          senderName: "Система",
+          timestamp: new Date().toISOString(),
+          room: deletedRoom,
+          type: "system",
+        };
+
+        setMessages([systemMessage]);
+
+        // Clear the room after a delay
+        setTimeout(() => {
+          setMessages([]);
+          if (currentUserIdRef.current !== "admin") {
+            setCurrentRoom(null);
+          }
+        }, 3000); // Show system message for 3 seconds
+      }
+
+      // Update active chats list for admin
+      if (currentUserIdRef.current === "admin") {
+        setActiveChats((prev) => prev.filter((room) => room !== deletedRoom));
+      }
+    };
+
     socket.on("receive_message", handleReceiveMessage);
+    socket.on("chat_deleted", handleChatDeleted);
 
     return () => {
       socket.off("receive_message", handleReceiveMessage);
+      socket.off("chat_deleted", handleChatDeleted);
       socket.offAny();
       socket.disconnect();
       socketRef.current = null;
@@ -348,6 +382,13 @@ export const useChat = (initialRoomName, currentUserId) => {
 
       try {
         await api.deleteChatRoom(room);
+
+        const socket = socketRef.current;
+        if (socket) {
+          socket.emit("chat_deleted", room);
+          debug.log(`Emitted chat_deleted event for room: ${room}`);
+        }
+
         setActiveChats((prev) => prev.filter((r) => r !== room));
         if (currentRoom === room) {
           setCurrentRoom(null);

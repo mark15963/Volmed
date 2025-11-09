@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import useChat from "../../hooks/useChat";
 import AdminChatWindow from "./components/AdminChatWindow";
 
@@ -15,10 +14,6 @@ const AdminChat = () => {
     handleSendMessage,
     deleteChat
   } = useChat(null, "admin")
-
-  useEffect(() => {
-    setMessage('')
-  }, [currentRoom, setMessage])
 
   return (
     <AdminChatWindow
