@@ -1,9 +1,10 @@
 export const getLocalISOTime = () => {
-  const now = new Date();
+  // const now = new Date();
 
-  return new Date(
-    now.getTime() - now.getTimezoneOffset() * 60000
-  ).toISOString();
+  // return new Date(
+  //   now.getTime() - now.getTimezoneOffset() * 60000
+  // ).toISOString();
+  return new Date().toISOString();
 };
 
 export const formatChatTime = (timestamp) => {
