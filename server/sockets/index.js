@@ -2,7 +2,6 @@
 
 const { Server } = require("socket.io");
 const setupChatSocket = require("./chat");
-const setupNotificationsSocket = require("./notifications");
 
 module.exports = function initSocket(server, app, allowedOrigins, debug) {
   const io = new Server(server, {
