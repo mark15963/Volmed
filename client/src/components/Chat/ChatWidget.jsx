@@ -30,7 +30,7 @@ export const ChatWidget = memo(() => {
   // Close chat when clicking outside (but not on the button)
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!clickOutsideEnabled.current) return;
+      if (clickOutsideEnabled.current) return;
 
       if (chatRef.current &&
         !chatRef.current.contains(e.target) &&
