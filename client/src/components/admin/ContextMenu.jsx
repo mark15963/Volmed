@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 import { createPortal } from "react-dom"
 
-// import UserChat from "../Chat/UserChat"
-// import AdminChat from "../Chat/AdminChat"
+import UserChat from "../Chat/UserChat"
+import AdminChat from "../Chat/AdminChat"
 import SideMenu from "./SideMenu"
 
 import debug from "../../utils/debug"
@@ -47,7 +47,7 @@ export const ContextMenu = ({ authState, children }) => {
                 break;
             case '5':
                 const serverUrl = `${apiUrl}/dashboard`
-                window.location.href = serverUrl;
+                window.location.href = serverUrl; // Server dashboard
                 break;
             default:
                 break;
@@ -97,7 +97,7 @@ export const ContextMenu = ({ authState, children }) => {
                         zIndex: 1000
                     }}
                 >
-                    {authState.user.status === "Администратор" ? (
+                    {authState.user.status === "admin" ? (
                         <AdminChat />
                     ) : (
                         <UserChat />
