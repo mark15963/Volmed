@@ -124,7 +124,7 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
         </div>
 
         <div className={styles.formItem}>
-          <label>E-Mail</label>
+          <label>E-mail</label>
           <Input
             placeholder="E-Mail"
             autoComplete='off'
