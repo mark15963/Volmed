@@ -18,9 +18,12 @@ export const ChatWidget = memo(() => {
 
   const { authState } = useAuth()
 
-  const handleChatToggle = () => {
+  const handleChatToggle = (e) => {
+    if (e.type === 'touchstart' || e.type === 'touchend') {
+      e.preventDefauld()
+    }
     setChatVisible(prev => !prev)
-    // Disable click outside detection briefly after opening
+
     clickOutsideEnabled.current = false
     setTimeout(() => {
       clickOutsideEnabled.current = true
@@ -42,7 +45,7 @@ export const ChatWidget = memo(() => {
 
     if (chatVisible) {
       document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('touchstart', handleClickOutside, { passive: true });
+      document.addEventListener('touchstart', handleClickOutside, { passive: false });
     }
 
     return () => {
@@ -58,7 +61,7 @@ export const ChatWidget = memo(() => {
       <div ref={buttonRef}>
         <Button
           onClick={handleChatToggle}
-          onTouchEnd={handleChatToggle}
+          onTouchStart={handleChatToggle}
           text='Чат'
           className={styles.chatButton}
         />
