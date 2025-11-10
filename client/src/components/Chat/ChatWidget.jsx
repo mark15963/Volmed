@@ -15,7 +15,6 @@ export const ChatWidget = memo(() => {
   const chatRef = useRef(null)
   const buttonRef = useRef(null)
   const clickOutsideEnabled = useRef(false)
-
   const { authState } = useAuth()
 
   const handleChatToggle = (e) => {
