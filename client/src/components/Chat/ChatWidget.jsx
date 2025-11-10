@@ -19,10 +19,6 @@ export const ChatWidget = memo(() => {
   const { authState } = useAuth()
 
   const handleChatToggle = (e) => {
-    // if (e?.type === 'touchstart' || e?.type === 'touchend') {
-    //   e.preventDefault?.();
-    // }
-
     setChatVisible(prev => !prev)
 
     clickOutsideEnabled.current = false
@@ -62,7 +58,6 @@ export const ChatWidget = memo(() => {
       <div ref={buttonRef}>
         <Button
           onClick={handleChatToggle}
-          // onTouchStart={handleChatToggle}
           text='Чат'
           className={styles.chatButton}
         />
