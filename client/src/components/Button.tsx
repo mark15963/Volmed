@@ -54,6 +54,7 @@ const Button: FC<ButtonProps> = ({
   const navigate = useNavigate();
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     // Force blur to remove active state
     e.currentTarget.blur();
 
