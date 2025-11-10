@@ -62,7 +62,7 @@ export const PatientCount = () => {
   return (
     <div className={styles.countContainer}>
       <span
-        style={{ marginRight: '10px' }}
+        style={{ marginRight: '5px' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
