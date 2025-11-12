@@ -1,8 +1,9 @@
 //#region ===== REQUIRES & CONSTS =====
 const path = require("path");
+const dotenv = require("dotenv");
 
-require("dotenv").config({ path: path.join(__dirname, ".env") });
-require("dotenv").config({
+dotenv.config({ path: path.join(__dirname, ".env") });
+dotenv.config({
   path: path.join(
     __dirname,
     process.env.NODE_ENV === "production"
