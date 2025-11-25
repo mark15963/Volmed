@@ -10,9 +10,10 @@ import { usePageTitle } from "../../utils/usePageTitle";
 import debug from "../../utils/debug";
 import ProtectedRoute from './ProtectedRoute'
 
-import { appRoutes } from "../../pages/routes/pageRoutes";
+import { appRoutes } from "../../routes/appRoutes";
 
 //----- COMPONENTS -----
+{/* Handicap loader */ }
 import Loader from "../../components/loaders/Loader";
 
 // ----- STYLE -----
@@ -26,15 +27,13 @@ const Content = () => {
   usePageTitle()
 
   return (
-    <main
+    <main // Main style is imported
       style={{
         backgroundColor: color.content, // From cache
       }}
     >
-      {/* Оffline/online indicator */}
-      <OfflineFallback />
+      <OfflineFallback /> {/* Оffline/online indicator */}
 
-      {/* Handicap loader */}
       <Suspense fallback={<Loader />}>
         <Routes>
           {appRoutes.map(({ path, element }, i) => (
