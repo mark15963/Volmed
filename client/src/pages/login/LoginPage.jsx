@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 
 import Loader from "../../components/loaders/Loader";
 import LoginForm from "./components/LoginForm";
-import { fetchUserStatus } from "../../api/fetchUserStatus";
+import { fetchUserStatus } from "../../services/fetchUserStatus";
 import debug from "../../utils/debug";
 import { useNavigate } from "react-router";
 
