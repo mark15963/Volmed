@@ -7,7 +7,6 @@ import NurseDisplay from './pages/NurseDisplay';
 import Loader from '../../components/loaders/Loader';
 
 import '../../layouts/content/content.scss'
-// import styles from './main.module.scss'
 
 export default function Main() {
   const { authState } = useAuth()
@@ -18,21 +17,15 @@ export default function Main() {
     "admin",
     "tester",
   ]
-  const allowedNurseUsers = [
-    "nurse",
-  ]
+  const allowedNurseUsers = ["nurse"]
 
   if (!authState.isAuthenticated) return null
 
   // User role -> Doctor, tester, admin
-  if (allowedDoctorUsers.includes(userRole)) {
-    return <DoctorDisplay />
-  }
+  if (allowedDoctorUsers.includes(userRole)) return <DoctorDisplay />
 
   // User role -> Nurse
-  if (allowedNurseUsers.includes(userRole)) {
-    return <NurseDisplay />
-  }
+  if (allowedNurseUsers.includes(userRole)) return <NurseDisplay />
 
   // Not auth
   return (
