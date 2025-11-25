@@ -15,7 +15,7 @@ const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
 
 import styles from './searchResults.module.scss'
-//#endregion ================
+//#endregion
 
 //#region ===== JSDoc Types =====
 /**
@@ -108,18 +108,23 @@ const SearchResultsView = ({
   const { filesHook, medsHook } = hooks
   const { handleEdit, handlePrint, handleDeletePatient } = handlers
   //#endregion
-
-  //#region ===== LOADER & CONTENT =====
+  //#region ===== RENDER LOGIC & CONTENT =====
   const renderContent = () => {
-    if (loading && !data) return renderLoader()
+    if (loading && !data) return renderLoader('main')
     if (error) return <ErrorState error={error} />
     if (data === null) return <NotFoundState />
-    return null
+    return (
+      <Suspense fallback={renderLoader('tab')}>
+        {tabContents[activeTab]}
+      </Suspense>
+    )
   };
-  const renderLoader = () => (
+  const renderLoader = (type = 'main') => (
     <div className={styles.info}>
       <div className={styles.bg}>
         <SpinLoader />
+        {type === 'main' && <div>Загрузка данных пациента...</div>}
+        {type === 'tab' && <div>Загрузка вкладки...</div>}
       </div>
     </div>
   )
@@ -135,14 +140,12 @@ const SearchResultsView = ({
 
   return (
     <div className={styles.resultsContainer}>
-      {/* BLOCK TITLE */}
       <span className={styles.pageTitle}>
         {state?.searchQuery
           ? `Результаты поиска: №${id}`
           : `Карта пациента №${id}`}
       </span>
 
-      {/* NAVIGATION MENU */}
       <Menu
         items={[
           { name: 'Основное' },
@@ -153,14 +156,8 @@ const SearchResultsView = ({
         onTabChange={setActiveTab}
       />
 
-      {/* CONTENT */}
-      {renderContent() || (
-        <Suspense fallback={renderLoader()}>
-          {tabContents[activeTab]}
-        </Suspense>
-      )}
+      {renderContent()}
 
-      {/* BUTTONS */}
       <ActionButtons
         activeTab={activeTab}
         isEditingMeds={medsHook.isEditing}

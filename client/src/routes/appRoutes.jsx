@@ -1,28 +1,40 @@
 // Used in Content.jsx
 
 import { lazy } from "react";
-import ProtectedRoute from "../../layouts/content/ProtectedRoute";
+import ProtectedRoute from "../layouts/content/ProtectedRoute";
 
-const Main = lazy(() => import("../main/Main"));
+//#region === PAGES ===
+const Main = lazy(() => import("../pages/main/Main"));
 const SearchResults = lazy(() =>
-  import("../searchResults/SearchResults")
+  import("../pages/searchResults/SearchResults")
 );
-const List = lazy(() => import("../patientsList/List"));
-const RegisterPatient = lazy(() => import("../register/RegisterPatient"));
-const EditPatient = lazy(() => import("../edit/EditPatient"));
-const Login = lazy(() => import("../login/LoginPage"));
-const Administered = lazy(() => import("../nurse/Administered"));
-const Discharged = lazy(() => import("../nurse/Discharged"));
-const Hospitalized = lazy(() => import("../nurse/Hospitalized"));
-const Dashboard = lazy(() => import("../admin/Dashboard"));
-const NotFound = lazy(() => import("../NotFound"));
-const NurseDisplay = lazy(() => import("../main/pages/NurseDisplay"));
+const List = lazy(() => import("../pages/patientsList/List"));
+const RegisterPatient = lazy(() => import("../pages/register/RegisterPatient"));
+const EditPatient = lazy(() => import("../pages/edit/EditPatient"));
+const Login = lazy(() => import("../pages/login/LoginPage"));
+const Administered = lazy(() => import("../pages/nurse/Administered"));
+const Discharged = lazy(() => import("../pages/nurse/Discharged"));
+const Hospitalized = lazy(() => import("../pages/nurse/Hospitalized"));
+const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const NotFound = lazy(() => import("../pages/NotFound"));
+const NurseDisplay = lazy(() => import("../pages/main/components/NurseDisplay"));
+//#endregion
 
+/**
+ * All the routes of the app.
+ * 
+ * @example
+ * <Routes>
+ * {appRoutes.map(({ path, element }, i) => (
+ *   <Route key={i} path={path} element={element} />
+ * ))}
+ * </Routes>
+ */
 export const appRoutes = [
   // PUBLIC
   { path: "/login", element: <Login /> },
 
-  // DOCTOR ROUTES
+  //#region === DOCTOR ROUTES === 
   {
     path: "/",
     element: (
@@ -63,8 +75,8 @@ export const appRoutes = [
       </ProtectedRoute>
     ),
   },
-
-  // NURSE ROUTES
+  //#endregion
+  //#region === NURSE ROUTES ===
   {
     path: "/administered",
     element: (
@@ -89,8 +101,8 @@ export const appRoutes = [
       </ProtectedRoute>
     ),
   },
-
-  // ADMIN ROUTES
+  //#endregion
+  //#region === ADMIN ROUTES ===
   {
     path: "/dashboard",
     element: (
@@ -103,10 +115,11 @@ export const appRoutes = [
     path: "/nurse-menu",
     element: (
       <ProtectedRoute roles={["nurse"]}>
-        <NurseDisplay />
+        <NurseDisplay /> {/* Same page as for nurses to be able view either this component or the one for the doctors */}
       </ProtectedRoute>
     ),
   },
+  //#endregion
 
   // 404
   { path: "/*", element: <NotFound /> },

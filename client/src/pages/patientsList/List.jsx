@@ -6,7 +6,7 @@ import { ListOfPatients } from './components/ListOfPatients'
 import { SearchBar } from '@/components/SearchBar'
 import Button from '@/components/Button'
 
-import styles from './styles/list.module.scss'
+import styles from './list.module.scss'
 import '@/layouts/content/content.scss'
 import '@/styles/index.scss'
 
