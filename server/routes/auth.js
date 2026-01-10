@@ -107,8 +107,9 @@ router.post("/login", originMiddleware, async (req, res) => {
 
         res.cookie("user", user.username, {
           httpOnly: false,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          secure: true,
+          sameSite: "none",
+          partitioned: true,
           maxAge: 1000 * 60 * 60 * 24,
         });
 
@@ -263,6 +264,7 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2)
       : "null";
     if (!req.cookies.user) {
+      console.log('no user cookie')
       return res.redirect("/login");
     }
 

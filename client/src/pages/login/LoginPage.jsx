@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 import { useAuth } from '../../context/AuthContext';
 
 import Loader from "../../components/loaders/Loader";
 import LoginForm from "./components/LoginForm";
+
 import { fetchUserStatus } from "../../services/fetchUserStatus";
 import debug from "../../utils/debug";
-import { useNavigate } from "react-router";
 
 export default function LoginPage() {
   const navigate = useNavigate()

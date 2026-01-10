@@ -40,7 +40,10 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
   };
 
   const selectState = (
-    <Select>
+    <Select
+      value={formValues.state}
+      onChange={(value) => handleChange("state", value)}
+    >
       <Select.Option
         value='Стабильно'
       >
@@ -69,6 +72,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>Жалобы при поступлении</label>
         <Textarea
+          value={formValues.complaint}
+          onChange={e => handleChange("complaint", e.target.value)}
           autoSize={{ minRows: 2, maxRows: 6 }}
           style={{ width: '100%' }}
         />
@@ -77,6 +82,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>История настоящего заболевания</label>
         <Textarea
+          value={formValues.anam}
+          onChange={e => handleChange("anam", e.target.value)}
           autoSize={{ minRows: 2, maxRows: 6 }}
         />
       </div>
@@ -84,6 +91,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>Анамнез жизни</label>
         <Textarea
+          value={formValues.life}
+          onChange={e => handleChange("life", e.target.value)}
           autoSize={{ minRows: 2, maxRows: 6 }}
         />
       </div>
@@ -91,8 +100,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>Настоящее состояние больного</label>
         <Textarea
-          value={formValues.complaint}
-          onChange={e => handleChange("complaint", e.target.value)}
+          value={formValues.status}
+          onChange={e => handleChange("status", e.target.value)}
           autoSize={{ minRows: 2, maxRows: 10 }}
         />
       </div>
@@ -134,6 +143,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <Textarea
           placeholder="Диагноз"
+          value={formValues.diag}
+          onChange={e => handleChange("diag", e.target.value)}
           autoSize={{ minRows: 1, maxRows: 3 }}
         />
       </div>
@@ -141,6 +152,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>Сопутствующие заболевания</label>
         <Textarea
+          value={formValues.sop_zab}
+          onChange={e => handleChange("sop_zab", e.target.value)}
           autoSize={{ minRows: 2, maxRows: 4 }}
         />
       </div>
@@ -148,6 +161,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       <div className={styles.formItem}>
         <label>Рекомендации</label>
         <Textarea
+          value={formValues.rec}
+          onChange={e => handleChange("rec", e.target.value)}
           autoSize={{ minRows: 1, maxRows: 5 }}
         />
       </div>

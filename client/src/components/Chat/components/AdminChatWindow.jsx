@@ -123,11 +123,11 @@ export const AdminChatWindow = ({
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Message"
+                placeholder="Сообщение"
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               />
               <Button
-                text="Send"
+                text="Отправить"
                 onClick={handleSendMessage}
               />
             </div>

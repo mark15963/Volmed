@@ -21,17 +21,20 @@ const LoginForm = ({
     onLoadingChange(true);
     onErrorsChange({}); // sets no errors in the beginning
 
-    const res = await onLogin(credentials)
+    try{
+      const res = await onLogin(credentials)
 
-    // if login error
-    if (res.error) {
-      onErrorsChange({
-        general: res.message // Under title error UI
-      })
+      if (res?.error) {
+        onErrorsChange({
+          general: res.message // Under title error UI
+        })
+      } 
+    }catch (err) {
+      debug('Login error:', err);
+      onErrorsChange({ general: 'Произошла неизвестная ошибка' });
+    } finally {
       onLoadingChange(false)
-      return
     }
-    onLoadingChange(false)
   }
 
   return (
@@ -39,7 +42,7 @@ const LoginForm = ({
       <div className="mainBlock">
         <h2>Вход</h2>
         <ErrorDisplay errors={errors} />
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <label htmlFor="username">
             Имя пользователя:
           </label>
