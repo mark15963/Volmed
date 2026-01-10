@@ -1,39 +1,43 @@
 const { Pool } = require("pg");
 const debug = require("../utils/debug");
-const fs = require("fs");
 
-const db = new Pool({
+const isProduction = process.env.NODE_ENV === "production";
+
+const dbConfig = {
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: true,
-    ca:
-      process.env.NODE_ENV === "production"
-        ? fs.readFileSync("/etc/ssl/certs/ca-certificates.crt").toString()
-        : undefined,
-  },
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
   connectionTimeoutMillis: 1000 * 10,
   idleTimeoutMillis: 1000 * 30,
   max: 20,
   allowExitOnIdle: true,
-});
+};
+
+const db = new Pool(dbConfig)
 
 // DB connection test
 async function testDbConnection() {
   const retries = 5;
   const delay = 2000;
 
+  debug.log(`Connecting to database in ${process.env.NODE_ENV} mode...`);
+  debug.log(`Database: ${process.env.DB_NAME}`);
+  debug.log(`SSL: ${dbConfig.ssl ? 'enabled' : 'disabled'}`);
+
   for (let i = 1; i <= retries; i++) {
     let client;
     try {
       client = await db.connect();
-      const result = await client.query("SELECT version()");
-      debug.log("Database version:", result.rows[0].version);
-      client.release();
+const result = await client.query("SELECT version(), current_database(), current_user");
+      debug.log("✅ Database connected successfully!");
+      debug.log("   Version:", result.rows[0].version);
+      debug.log("   Database:", result.rows[0].current_database);
+      debug.log("   User:", result.rows[0].current_user);      client.release();
       return;
     } catch (err) {
       debug.error(`Attempt ${i} failed:`, err.message);
       if (client) client.release();
       if (i < retries) {
+        debug.log(`Retrying in ${delay * i / 1000} seconds...`);
         await new Promise((r) => setTimeout(r, delay * i));
       }
     }

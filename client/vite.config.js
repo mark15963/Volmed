@@ -12,25 +12,30 @@ export default defineConfig({
   base: "/",
   envDir: "./",
   server: {
-    host: true,
-    port: 5173,
-    strictPort: true,
-    allowedHosts: ["volmed-o4s0.onrender.com", "localhost", /\.onrender\.com$/],
-    cors: true,
+    host: '0.0.0.0',
+    port: 3000,
   },
   preview: {
     host: "0.0.0.0",
     port: 4173,
     strictPort: true,
-    allowedHosts: ["volmed-o4s0.onrender.com", "localhost", /\.onrender\.com$/],
   },
   build: {
     outDir: "dist",
+    sourcemap: false,
     assetsDir: "assets",
     emptyOutDir: true,
+    copyPublicDir: true,
     manifest: true,
     assetsInlineLimit: 4096, // kB
     chunkSizeWarningLimit: 1000, // kB
+    rollupOptions:{
+      output:{
+        manualChunks:{
+          vendor:['react', 'react-dom']
+        }
+      }
+    }
   },
   css: {
     modules: {
