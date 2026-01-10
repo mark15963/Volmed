@@ -1,0 +1,74 @@
+// ROWS COMPONENTS
+
+//#region ===== IMPORTS =====
+import { useEffect, useState } from 'react'
+import styles from '../../pages/patientsList/components/styles/patientList.module.scss'
+import api from '../../services/api'
+import moment from 'moment'
+import { usePatientList } from '../../hooks/Patients/usePatientsList'
+import debug from '../../utils/debug'
+import { useNavigate } from 'react-router'
+//#endregion
+
+// State elements UI
+const getStateClass = (state) => {
+  switch (state) {
+    case 'Стабильно': return styles.stable;
+    case 'Cредней степени тяжести': return styles.moderate;
+    case 'Критическое': return styles.critical;
+    case 'Выписан':
+    case 'Выписана': return styles.leave;
+    default: return '';
+  }
+}
+
+
+
+// A row component of a patient for Patients list component 
+/**
+ * PatientsListRow
+ * --------------
+ * Displays a table with all patients from the database.
+ *
+ * Responsibilities:
+ * - Fetch and render patient data using `usePatientList()`.
+ * - Show skeleton loader during loading state.
+ * - Navigate to a patient's detail page on click or keyboard action.
+ *
+ * @returns {JSX.Element} Rendered table of patients
+ */
+export const PatientsListRow = () => {
+  const { patients, loading, error } = usePatientList()
+  const navigate = useNavigate()
+
+  const handlePatientClick = (patient, e) => {
+    if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
+      if (e.key === ' ') e.preventDefault();
+      debug.log(`Clicked on patient ID ${patient.id}.`)
+      debug.log(`Sent data:`, patient)
+      navigate(`/search/${patient.id}`, {
+        state: { patient }
+      })
+    }
+  }
+
+  return (
+    patients.map(patient => (
+      <tr
+        key={patient.id}
+        className={styles.rows}
+        onClick={(e) => handlePatientClick(patient, e)}
+        onKeyDown={(e) => handlePatientClick(patient, e)}
+        tabIndex={0}
+        role="button"
+        aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
+      >
+        <td>{patient.id}</td>
+        <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
+        <td>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
+        <td>{moment(patient.created_at).format('DD.MM.YYYY')}</td>
+        <td className={getStateClass(patient.state)}>{patient.state}</td>
+      </tr>
+    ))
+  )
+}

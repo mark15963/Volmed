@@ -1,7 +1,7 @@
 {
   "name": "volmed",
   "private": true,
-  "version": "5.9.5",
+  "version": "6.0.5",
   "type": "module",
   "proxy": "http://localhost:5000",
   "scripts": {
