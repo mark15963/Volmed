@@ -1,7 +1,11 @@
 //#region ===== IMPORTS =====
 import { useEffect, useState } from "react";
-import moment from 'moment';
-import { useNavigate } from "react-router";
+
+// --- COMPONENTS ---
+import { PatientsListRow } from "../../../components/tables/Row";
+
+// --- HOOKS ---
+import { usePatientList } from "../../../hooks/Patients/usePatientsList";
 
 // --- TOOLS ---
 import api from "../../../services/api";
@@ -28,34 +32,9 @@ import styles from './styles/patientList.module.scss'
  */
 export const ListOfPatients = () => {
   const { patients, loading, error } = usePatientList()
-  const navigate = useNavigate()
-
-  // State elements UI
-  const getStateClass = (state) => {
-    switch (state) {
-      case 'Стабильно': return styles.stable;
-      case 'Cредней степени тяжести': return styles.moderate;
-      case 'Критическое': return styles.critical;
-      case 'Выписан':
-      case 'Выписана': return styles.leave;
-      default: return '';
-    }
-  }
-
-  const handlePatientClick = (patient, e) => {
-    if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
-      if (e.key === ' ') e.preventDefault();
-      debug.log(`Clicked on patient ID ${patient.id}.`)
-      debug.log(`Sent data:`, patient)
-      navigate(`/search/${patient.id}`, {
-        state: { patient }
-      })
-    }
-  }
 
   return (
     <table className={styles.table}>
-
       <thead className={styles.head}>
         <tr className={styles.rows}>
           <th>#</th>
@@ -65,7 +44,6 @@ export const ListOfPatients = () => {
           <th>Статус</th>
         </tr>
       </thead>
-
       <tbody className={styles.tbody}>
         {loading ? (                  // Loading
           <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
@@ -85,23 +63,7 @@ export const ListOfPatients = () => {
           </tr>
 
         ) : patients.length > 0 ? (   // Existing patients
-          patients.map(patient => (
-            <tr
-              key={patient.id}
-              className={styles.rows}
-              onClick={(e) => handlePatientClick(patient, e)}
-              onKeyDown={(e) => handlePatientClick(patient, e)}
-              tabIndex={0}
-              role="button"
-              aria-label={`Данные ${patient.lastName} ${patient.firstName} ${patient.patr}`}
-            >
-              <td>{patient.id}</td>
-              <td>{patient.lastName} {patient.firstName} {patient.patr}</td>
-              <td>{moment(patient.birthDate).format('DD.MM.YYYY')}</td>
-              <td>{moment(patient.created_at).format('DD.MM.YYYY')}</td>
-              <td className={getStateClass(patient.state)}>{patient.state}</td>
-            </tr>
-          ))
+          <PatientsListRow />         // Row component
         ) : patients.length === 0 ? ( // No patients
           <tr>
             <td className={styles.noData}>
@@ -120,33 +82,3 @@ export const ListOfPatients = () => {
   )
 }
 
-/**
- * usePatientList
- * --------------
- * Fetches a list of all patients from the API.
- *
- * Handles loading and error states automatically and returns the results
- * in a format ready to use in table components or dropdowns.
- *
- * @returns {{
- *   patients: Array<Object>,
- *   loading: boolean,
- *   error: Error|null
- * }} Patient list state and control flags
- */
-function usePatientList() {
-  const [patients, setPatients] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    api.getPatients()
-      .then(res => {
-        if (res.ok) setPatients(res.data)
-        else throw new Error(res.message)
-      })
-      .catch(setError)
-      .finally(() => setLoading(false))
-  }, [])
-  return { patients, loading, error }
-}

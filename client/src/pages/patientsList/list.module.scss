@@ -1,5 +1,5 @@
 .mainBlock {
-  min-width: 750px;
+  min-width: calc(100% - 10px);
   width: calc(100vw - 20%);
   max-width: 800px;
   min-height: 100px;
