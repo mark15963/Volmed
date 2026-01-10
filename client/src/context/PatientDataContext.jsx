@@ -3,9 +3,22 @@ import api from '../services/api'
 
 const PatientDataContext = createContext()
 
+const getValidatedPatientsFromStorage = () => {
+    try {
+        const stored = localStorage.getItem('cachedPatients')
+        if (!stored) return []
+
+        const parsed = JSON.parse(stored)
+        return Array.isArray(parsed) ? parsed : []
+    } catch (err) {
+        console.error('Error parsing cached patients:', err)
+        return []
+    }
+}
+
 export const PatientDataProvider = ({ children }) => {
     const [state, setState] = useState({
-        patients: JSON.parse(localStorage.getItem('cachedPatients')) || [],
+        patients: getValidatedPatientsFromStorage(),
         isLoading: true,
         error: null
     })
