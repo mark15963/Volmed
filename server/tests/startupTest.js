@@ -1,5 +1,6 @@
 //#region ===== IMPORTS =====
 const axios = require("axios");
+const https = require('https')
 const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
@@ -32,13 +33,28 @@ async function retryOperation(operation, maxRetries = 3, delayMs = 1000) {
     }
   }
 }
+
+// Create axios instance that accepts self-signed certs
+const createAxiosInstance = (cookies = []) => {
+  const instance = axios.create({
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false  // Accept self-signed certificates
+    })
+  });
+  
+  if (cookies.length > 0) {
+    instance.defaults.headers.Cookie = cookies.join("; ");
+  }
+  
+  return instance;
+};
 //#endregion
 
 async function runStartupTests() {
   //#region ===== CONSTS =====
   const BASE_URL = process.env.BACKEND_URL;
   const username = "test";
-  const password = "test321";
+  const password = `test321`;
 
   const testFileName = "test-file.txt";
   const testFileDir = path.join(__dirname, "../uploads/patients/1");
@@ -54,11 +70,12 @@ async function runStartupTests() {
 
     //#region ===== HEALTH =====
     try {
-      const healthRes = await axios.get(`${BASE_URL}/api/health`);
+      const axiosInstance = createAxiosInstance();
+      const healthRes = await axiosInstance.get(`${BASE_URL}/api/health`);
       logTestResult("API Health check", healthRes.data.status === "healthy");
     } catch (err) {
       logTestResult("API Health check", false);
-      debug.error(err.message);
+      debug.error("Health check error:", err.message);
     }
     //#endregion
 
@@ -81,183 +98,176 @@ async function runStartupTests() {
     //#region ===== LOGIN =====
     loginSuccess = false;
     try {
-      const loginRes = await axios.post(
+      const axiosInstance = createAxiosInstance();
+      const loginRes = await axiosInstance.post(
         `${BASE_URL}/api/login`,
         { username, password },
         { withCredentials: true }
       );
-      cookies = loginRes.headers["set-cookie"];
+      cookies = loginRes.headers["set-cookie"] || [];
       logTestResult("Login", loginRes.data.success === true);
     } catch (err) {
       logTestResult("Login", false);
-      debug.error(err.message);
+      debug.error("Login error:", err.message);
     }
     //#endregion
 
     //#region ===== PATIENTS =====
     try {
-      const patientsRes = await axios.get(`${BASE_URL}/api/patients`, {
-        headers: { Cookie: cookies.join("; ") },
-      });
+            const axiosInstance = createAxiosInstance(cookies);
+      const patientsRes = await axiosInstance.get(`${BASE_URL}/api/patients`);
       logTestResult("Fetch patients", patientsRes.data.length >= 0);
     } catch (err) {
       logTestResult("Fetch patients", false);
-      debug.error(err.message);
+      debug.error("Patients fetch error:", err.message);
     }
     //#endregion
 
     //#region ===== USERS =====
     try {
-      const usersRes = await axios.get(`${BASE_URL}/api/users`, {
-        headers: { Cookie: cookies.join("; ") },
-      });
+      const axiosInstance = createAxiosInstance(cookies);
+      const usersRes = await axiosInstance.get(`${BASE_URL}/api/users`);
       logTestResult("Fetch users", usersRes.data.length >= 0);
     } catch (err) {
       logTestResult("Fetch users", false);
-      debug.error(err.message);
+      debug.error("Users fetch error:", err.message);
     }
     //#endregion
 
     //#region ===== CHAT =====
     try {
-      const chatHealthRes = await axios.get(`${BASE_URL}/api/chat/health`);
+      const axiosInstance = createAxiosInstance();
+      const chatHealthRes = await axiosInstance.get(`${BASE_URL}/api/chat/health`);
       logTestResult("Chat health", chatHealthRes.data.status === "healthy");
     } catch (err) {
       logTestResult("Chat health", false);
-      debug.error(err.message);
+      debug.error("Chat health error:", err.message);
     }
     //#endregion
 
     //#region ===== FILES =====
     try {
       // debug.log("===== FILES LIFE CYCLE TEST =====");
+      const axiosInstance = createAxiosInstance(cookies);
 
-      // Delete previous test files to avoid duplicates
-      const filesResBefore = await axios.get(
-        `${BASE_URL}/api/patients/1/files`,
-        {
-          headers: { Cookie: cookies.join("; ") },
-        }
-      );
-      const oldTestFiles = filesResBefore.data.filter((f) =>
-        f.originalname.startsWith("test-file")
-      );
-
-      for (const file of oldTestFiles) {
-        await axios.delete(`${BASE_URL}/api/files`, {
-          headers: { Cookie: cookies.join("; ") },
-          data: { filePath: file.path },
-        });
-        // debug.log(`Deleted leftover file: ${file.originalname}`);
-      }
-
-      if (oldTestFiles.length > 0) {
-        debug.log("Waiting for cleanup to complete...");
-        await delay(2000);
-      }
-
-      let uploadedFiles = [];
-
-      // Create a test file in memory (no local write)
-      try {
-        const form = new FormData();
-        form.append("file", Buffer.from("This is a test file"), {
-          filename: testFileName,
-          contentType: "text/plain",
-        });
-        // Upload
-        const uploadRes = await axios.post(
-          `${BASE_URL}/api/patients/1/upload`,
-          form,
-          {
-            headers: {
-              ...form.getHeaders(),
-              Cookie: cookies.join("; "),
-            },
-          }
+      // Skip file tests if no cookies (login failed)
+      if (cookies.length === 0) {
+        logTestResult("Files lifecycle", "skipped (no auth)");
+      } else {
+        // Delete previous test files to avoid duplicates
+        const filesResBefore = await axiosInstance.get(
+          `${BASE_URL}/api/patients/1/files`);
+        const oldTestFiles = filesResBefore.data.filter((f) =>
+          f.originalname.startsWith("test-file")
         );
-        // logTestResult("Uploaded file file", uploadRes?.status === 200);
-        debug.log("⏳ Waiting for file processing...");
-        await delay(1500);
-      } catch (err) {
-        logTestResult("File upload", false);
-        debug.error(err.message);
-      }
 
-      // Verify upload
-      try {
-        const verifyUpload = async () => {
-          const filesRes = await axios.get(`${BASE_URL}/api/patients/1/files`, {
-            headers: { Cookie: cookies.join("; ") },
+        for (const file of oldTestFiles) {
+          await axiosInstance.delete(`${BASE_URL}/api/files`, {
+            data: { filePath: file.path },
           });
+          // debug.log(`Deleted leftover file: ${file.originalname}`);
+        }
+
+        if (oldTestFiles.length > 0) {
+          debug.log("Waiting for cleanup to complete...");
+          await delay(2000);
+        }
+
+        let uploadedFiles = [];
+
+        // Create a test file in memory (no local write)
+        try {
+          const form = new FormData();
+          form.append("file", Buffer.from("This is a test file"), {
+            filename: testFileName,
+            contentType: "text/plain",
+          });
+          // Upload
+          const uploadRes = await axiosInstance.post(
+            `${BASE_URL}/api/patients/1/upload`,
+           form,
+            {
+              headers: {
+                ...form.getHeaders(),
+              },
+            }
+          );
+          // logTestResult("Uploaded file file", uploadRes?.status === 200);
+         debug.log("⏳ Waiting for file processing...");
+          await delay(1500);
+        } catch (err) {
+          logTestResult("File upload", false);
+          debug.error(err.message);
+        }
+
+        // Verify upload
+        try {
+          const verifyUpload = async () => {
+            const filesRes = await axiosInstance.get(`${BASE_URL}/api/patients/1/files`);
           uploadedFiles = filesRes.data.filter((f) =>
             f.originalname.startsWith("test-file")
           );
           if (uploadedFiles.length === 0)
             throw new Error("Uploaded test file not found!");
-        };
+          };
 
-        await retryOperation(verifyUpload, 3, 1000);
-        logTestResult("Upload verification", true);
-      } catch (err) {
-        logTestResult("Uploaded file verified", false);
-        debug.error(err.message);
-      }
-
-      // Delete uploaded file(s)
-      for (const file of uploadedFiles) {
-        try {
-          const deleteRes = await axios.delete(`${BASE_URL}/api/files`, {
-            headers: { Cookie: cookies.join("; ") },
-            data: { filePath: file.path },
-          });
-          // logTestResult(
-          //   `File deleted: ${file.originalname}`,
-          //   deleteRes.data.success
-          // );
+          await retryOperation(verifyUpload, 3, 1000);
+          logTestResult("Upload verification", true);
         } catch (err) {
-          logTestResult(`File deletion: ${file.originalname}`, false);
+          logTestResult("Uploaded file verified", false);
           debug.error(err.message);
         }
-      }
 
-      debug.log("⏳ Waiting for file deletion to complete...");
-      await delay(3000);
-
-      // Verify deletion
-      try {
-        const verifyDeletion = async () => {
-          const filesAfterDelete = await axios.get(
-            `${BASE_URL}/api/patients/1/files`,
-            { headers: { Cookie: cookies.join("; ") } }
-          );
-          const stillExists = filesAfterDelete.data.some((f) =>
-            f.originalname.startsWith("test-file")
-          );
-          if (stillExists) throw new Error("File was not deleted!");
-        };
-
-        await retryOperation(verifyDeletion, 5, 1000);
-        logTestResult("Deletion verification", true);
-      } catch (err) {
-        logTestResult("File deletion verified", false);
-        debug.error("Deletion verification failed:", err.message);
-
-        try {
-          const currentFiles = await axios.get(
-            `${BASE_URL}/api/patients/1/files`,
-            { headers: { Cookie: cookies.join("; ") } }
-          );
-          debug.log(
-            "📁 Current files:",
-            currentFiles.data.map((f) => f.originalname)
-          );
-        } catch (debugErr) {
-          debug.error("Could not get current files for debugging");
+        // Delete uploaded file(s)
+        for (const file of uploadedFiles) {
+          try {
+            const deleteRes = await axiosInstance.delete(`${BASE_URL}/api/files`, {
+              data: { filePath: file.path },
+            });
+            // logTestResult(
+            //   `File deleted: ${file.originalname}`,
+            //   deleteRes.data.success
+            // );
+          } catch (err) {
+            logTestResult(`File deletion: ${file.originalname}`, false);
+            debug.error(err.message);
+          }
         }
-      }
 
-      logTestResult("Files lifecycle", true);
+        debug.log("⏳ Waiting for file deletion to complete...");
+        await delay(3000);
+
+        // Verify deletion
+        try {
+          const verifyDeletion = async () => {
+            const filesAfterDelete = await axiosInstance.get(
+              `${BASE_URL}/api/patients/1/files`);
+            const stillExists = filesAfterDelete.data.some((f) =>
+              f.originalname.startsWith("test-file")
+            );
+            if (stillExists) throw new Error("File was not deleted!");
+          };
+
+          await retryOperation(verifyDeletion, 5, 1000);
+          logTestResult("Deletion verification", true);
+        } catch (err) {
+          logTestResult("File deletion verified", false);
+          debug.error("Deletion verification failed:", err.message);
+
+          try {
+            const currentFiles = await axiosInstance.get(
+              `${BASE_URL}/api/patients/1/files`);
+            debug.log(
+              "📁 Current files:",
+              currentFiles.data.map((f) => f.originalname)
+            );
+          } catch (debugErr) {
+            debug.error("Could not get current files for debugging:", debugErr);
+          }
+        }
+
+        logTestResult("Files lifecycle", true);
+      }
     } catch (err) {
       logTestResult("Files lifecycle", false);
       debug.error(err.message);

@@ -64,6 +64,10 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self'; connect-src 'self'; frame-src 'none'"
+  );
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
