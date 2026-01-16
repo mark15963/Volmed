@@ -1,5 +1,6 @@
 //#region ===== IMPORTS =====
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 // --- COMPONENTS ---
 import { PatientsListRow } from "../../../components/tables/PatientsListRow";
@@ -15,7 +16,6 @@ import debug from "../../../utils/debug";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from '../../../components/tables/PatientsListRow.module.scss'
-import { useNavigate } from "react-router";
 //#endregion
 
 //#region ===== COMPONENT =====
