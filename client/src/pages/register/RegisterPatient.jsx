@@ -35,7 +35,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     firstName: '',
     patr: '',
     type: 'Плановая',
-    sex: 'Мужской',
+    sex: '',
     birthDate: null,
     sender: '',
     sendingTime: '',
@@ -53,7 +53,7 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
     diag: '',
     sop_zab: '',
     rec: '',
-    state: 'Стабильно',
+    state: 'Удовлетворительно',
   })
 
   const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
