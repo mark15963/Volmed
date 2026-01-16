@@ -4,27 +4,11 @@
 import { FC } from "react";
 import styles from "./PatientsListRow.module.scss";
 import moment from "moment";
-
-// State elements UI
-const getStateClass = (state: string) => {
-  switch (state) {
-    case "Удовлетворительное":
-      return styles.stable;
-    case "Средней степени тяжести":
-      return styles.moderate;
-    case "Тяжёлое":
-      return styles.severe;
-    case "Крайне тяжёлое":
-      return styles.critical;
-    case "Выписан":
-      return styles.leave;
-    default:
-      return "";
-  }
-};
+import { calculateAge, getStateClass, debug } from "../../utils";
+import { PatientRowProps } from '../../types/patient'
 
 const getSexIcon = (sex: string) => {
-  switch (sex?.toUpperCase()) {
+  switch (sex) {
     case "M":
     case "М":
     case "Мужской":
@@ -98,29 +82,12 @@ const getSexIcon = (sex: string) => {
   }
 };
 
-// A row component of a patient for Patients list component
-export interface PatientRowProps {
-  id: number | string;
-  lastName: string;
-  firstName: string;
-  patr?: string;
-  age: string;
-  sex: string;
-  createdAt: string;
-  room: string;
-  doctor: string;
-  mkb: string;
-  state: string;
-  allergy: string;
-  onClick?: () => void; // for Storybook interaction demo
-}
-
 export const PatientsListRow: FC<PatientRowProps> = ({
   id,
   lastName,
   firstName,
   patr = "",
-  age,
+  birthDate,
   sex,
   createdAt,
   room,
@@ -130,6 +97,8 @@ export const PatientsListRow: FC<PatientRowProps> = ({
   allergy = "Неизвестно",
   onClick,
 }) => {
+  const displayAge = calculateAge(birthDate)
+  const stateClassName = styles[getStateClass(state)] || '';
   return (
     <tr
       className={styles.rows}
@@ -142,13 +111,13 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       <td>
         {lastName} {firstName} {patr}
       </td>
-      <td>{age}</td>
+      <td>{displayAge}</td>
       <td className={styles.sexCell}>{getSexIcon(sex)}</td>
       <td>{moment(createdAt).format("DD.MM.YYYY")}</td>
       <td>{room}</td>
       <td>{doctor}</td>
       <td>{mkb}</td>
-      <td className={getStateClass(state)}>{state}</td>
+      <td className={stateClassName}>{state}</td>
       <td>{allergy}</td>
     </tr>
   );

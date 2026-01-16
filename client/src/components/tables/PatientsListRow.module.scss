@@ -1,33 +1,28 @@
-.table {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+table {
+  display: inline-block;
   color: aliceblue;
   background-color: #005fa3;
-  padding: 5px;
+  padding: 5px 2px 5px 6px;
   border-radius: 5px;
   margin: 35px 0 10px 0;
-  table-layout: fixed;
+  overflow: auto;
   &:hover {
     transition: all 0.3s;
   }
-
   thead {
-    width: 100%;
     .rows {
-      // width: 100%;
       padding: 5px 5px 10px 5px;
       display: grid;
       grid-template-rows: 1fr;
       grid-template-columns: minmax(50px, 0.5fr) // #
-        minmax(205px, 2.8fr) // ФИО
+        minmax(190px, 2.8fr) // ФИО
         minmax(70px, 0.7fr) // Возраст
         minmax(50px, 0.5fr) // Пол
         minmax(100px, 1.1fr) // Дата
         minmax(110px, 1.3fr) // Отделение/Палата
         minmax(120px, 1.6fr) // Врач
         minmax(160px, 2.4fr) // Диагноз
-        minmax(165px, 1.6fr) // Состояние
+        minmax(175px, 1.6fr) // Состояние
         minmax(150px, 1.8fr); // Риски/Аллергии
       background-color: #005fa3;
       align-items: center;
@@ -43,7 +38,7 @@
     flex-direction: column;
     gap: 3px;
     padding-bottom: 2px;
-
+    
     .rowsLoading {
       display: flex;
       width: 100%;
@@ -58,17 +53,18 @@
     }
 
     .rows {
+      width: fit-content;
       display: grid;
       grid-template-rows: 1fr;
       grid-template-columns: minmax(50px, 0.5fr) // #
-        minmax(205px, 2.8fr) // ФИО
+        minmax(190px, 2.8fr) // ФИО
         minmax(70px, 0.7fr) // Возраст
         minmax(50px, 0.5fr) // Пол
         minmax(100px, 1.1fr) // Дата
         minmax(110px, 1.3fr) // Отделение/Палата
         minmax(120px, 1.6fr) // Врач
         minmax(160px, 2.4fr) // Диагноз
-        minmax(165px, 1.6fr) // Состояние
+        minmax(175px, 1.6fr) // Состояние
         minmax(150px, 1.8fr); // Риски/Аллергии
       padding: 5px;
       align-items: center;
@@ -101,13 +97,25 @@
           word-break: normal;
           hyphens: auto;
         }
+        &:nth-child(7) {          
+          white-space: normal;
+          word-break: normal;
+          hyphens: auto;
+        }
+        &:nth-child(8) {
+          white-space: normal;
+          word-break: normal;
+          hyphens: auto;
+        }
         &:nth-child(9) {
+          height: 100%;
+          align-content: center;
           font-weight: 700;
           font-size: 0.85em;
           box-sizing: border-box;
           border-radius: 6px;
           white-space: normal;
-          word-break: normal;
+          word-break: break-word;
           &.stable {
             background-color: #66bb6a;
             color: #212121;

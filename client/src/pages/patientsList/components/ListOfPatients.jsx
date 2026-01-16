@@ -80,8 +80,8 @@ export const ListOfPatients = () => {
         lastName={p.lastName}
         firstName={p.firstName}
         patr={p.patr}
-        age={p.age} //
-        sex={p.sex} //
+        birthDate={p.birthDate}
+        sex={p.sex}
         createdAt={p.created_at}
         room={p.room}
         doctor={p.doctor}
@@ -98,7 +98,7 @@ export const ListOfPatients = () => {
   }
 
   return (
-    <table className={styles.table}>
+    <table>
       <thead className={styles.head}>
         <tr className={styles.rows}>
           <th>#</th>
