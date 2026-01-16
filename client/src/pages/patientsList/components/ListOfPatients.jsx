@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 // --- COMPONENTS ---
-import { PatientsListRow } from "../../../components/tables/Row";
+import { PatientsListRow } from "../../../components/tables/PatientsListRow";
 
 // --- HOOKS ---
 import { usePatientList } from "../../../hooks/Patients/usePatientsList";
@@ -14,7 +14,7 @@ import debug from "../../../utils/debug";
 // --- UI ---
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import styles from './styles/patientList.module.scss'
+import styles from '../../../components/tables/PatientsListRow.module.scss'
 //#endregion
 
 //#region ===== COMPONENT =====
@@ -33,51 +33,81 @@ import styles from './styles/patientList.module.scss'
 export const ListOfPatients = () => {
   const { patients, loading, error } = usePatientList()
 
+  useEffect(() => {
+    if (error) {
+      console.error("Patients list error:", error);
+    }
+  }, [error]);
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <tr key={i} className={styles.rowsLoading}>
+              <td>
+                <Skeleton borderRadius={5} />
+              </td>
+            </tr>
+          ))}
+        </SkeletonTheme>
+      )
+    }
+    if (error) {
+      return (
+        <tr>
+          <td colSpan={10} className={styles.noData}>
+            Ошибка загрузки пациентов...
+          </td>
+        </tr>
+      )
+    }
+    if (patients.length === 0) {
+      return (
+        <tr>
+          <td colSpan={10} className={styles.noData}>
+            Пациентов не найдено
+          </td>
+        </tr>
+      );
+    }
+    return patients.map((patient) => (
+      <PatientsListRow
+        key={patient.id}
+        id={patient.id}
+        lastName={patient.lastName}
+        firstName={patient.firstName}
+        patr={patient.patr}
+        age={patient.age}
+        sex={patient.sex}
+        createdAt={patient.createdAt}
+        room={patient.room}
+        doctor={patient.doctor}
+        mkb={patient.mkb}
+        state={patient.state}
+        allergy={patient.allergy}
+      // onClick={() => navigate(`/patients/${patient.id}`)}   // ← add later
+      />
+    ))
+  }
+
   return (
     <table className={styles.table}>
       <thead className={styles.head}>
         <tr className={styles.rows}>
           <th>#</th>
           <th>ФИО</th>
-          <th>Дата рождения</th>
+          <th>Возраст</th>
+          <th>Пол</th>
           <th>Поступление</th>
-          <th>Статус</th>
+          <th>Палата</th>
+          <th>Врач</th>
+          <th>МКБ</th>
+          <th>Состояние</th>
+          <th>Аллергии / Риски</th>
         </tr>
       </thead>
-      <tbody className={styles.tbody}>
-        {loading ? (                  // Loading
-          <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <tr key={i} className={styles.rowsLoading}>
-                <td>
-                  <Skeleton borderRadius={5} />
-                </td>
-              </tr>
-            ))}
-          </SkeletonTheme>
-        ) : error ? (
-          <tr>
-            <td className={styles.noData}>
-              Error loading patients
-            </td>
-          </tr>
-
-        ) : patients.length > 0 ? (   // Existing patients
-          <PatientsListRow />         // Row component
-        ) : patients.length === 0 ? ( // No patients
-          <tr>
-            <td className={styles.noData}>
-              No patients!
-            </td>
-          </tr>
-        ) : (
-          <tr>
-            <td className={styles.noData}>
-              No patients!
-            </td>
-          </tr>
-        )}
-      </tbody>
+      <tbody>{renderContent()}</tbody>
     </table>
   )
 }
