@@ -3,6 +3,7 @@
 // ===== IMPORTS =====
 import { FC } from "react";
 import styles from "./PatientsListRow.module.scss";
+import moment from "moment";
 
 // State elements UI
 const getStateClass = (state: string) => {
@@ -24,8 +25,9 @@ const getStateClass = (state: string) => {
 
 const getSexIcon = (sex: string) => {
   switch (sex?.toUpperCase()) {
-    case "М":
     case "M":
+    case "М":
+    case "Мужской":
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -57,8 +59,9 @@ const getSexIcon = (sex: string) => {
           />
         </svg>
       );
-    case "Ж":
     case "F":
+    case "Ж":
+    case "Женский":
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +144,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       </td>
       <td>{age}</td>
       <td className={styles.sexCell}>{getSexIcon(sex)}</td>
-      <td>{createdAt}</td>
+      <td>{moment(createdAt).format("DD.MM.YYYY")}</td>
       <td>{room}</td>
       <td>{doctor}</td>
       <td>{mkb}</td>
