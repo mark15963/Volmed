@@ -15,6 +15,7 @@ import debug from "../../../utils/debug";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from '../../../components/tables/PatientsListRow.module.scss'
+import { useNavigate } from "react-router";
 //#endregion
 
 //#region ===== COMPONENT =====
@@ -32,6 +33,7 @@ import styles from '../../../components/tables/PatientsListRow.module.scss'
  */
 export const ListOfPatients = () => {
   const { patients, loading, error } = usePatientList()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (error) {
@@ -87,9 +89,9 @@ export const ListOfPatients = () => {
         state={p.state}
         allergy={p.allergy}
         onClick={() => {
-          navigate(`/search/${p.id}`), {
-            state: {p}
-          }
+          navigate(`/search/${p.id}`, {
+            state: { patient: p }
+          })
         }}
       />
     ))
