@@ -55,7 +55,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         Cредней степени тяжести
       </Select.Option>
       <Select.Option
-        value='Тяжелое'
+        value='Тяжёлое'
       >
         Тяжелое
       </Select.Option>
