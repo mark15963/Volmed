@@ -45,9 +45,9 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       onChange={(value) => handleChange("state", value)}
     >
       <Select.Option
-        value='Стабильно'
+        value='Удовлетворительное'
       >
-        Стабильно
+        Удовлетворительное
       </Select.Option>
       <Select.Option
         value='Cредней степени тяжести'
@@ -55,9 +55,14 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         Cредней степени тяжести
       </Select.Option>
       <Select.Option
-        value='Критическое'
+        value='Тяжелое'
       >
-        Критическое
+        Тяжелое
+      </Select.Option>
+      <Select.Option
+        value='Крайне тяжелое'
+      >
+        Крайне тяжелое
       </Select.Option>
       <Select.Option
         value='Выписан'
@@ -168,7 +173,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       </div>
 
       <div className={styles.formItem}>
-        <label>Статус</label>
+        <label>Общее состояние</label>
         {selectState}
       </div>
     </div>
