@@ -78,15 +78,19 @@ export const ListOfPatients = () => {
         lastName={p.lastName}
         firstName={p.firstName}
         patr={p.patr}
-        age={p.age}
-        sex={p.sex}
-        createdAt={p.createdAt}
+        age={p.age} //
+        sex={p.sex} //
+        createdAt={p.created_at}
         room={p.room}
         doctor={p.doctor}
-        mkb={p.mkb}
+        mkb={p.diag}
         state={p.state}
         allergy={p.allergy}
-      // onClick={() => navigate(`/patients/${p.id}`)}   // ← add later
+        onClick={() => {
+          navigate(`/search/${p.id}`), {
+            state: {p}
+          }
+        }}
       />
     ))
   }
