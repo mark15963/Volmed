@@ -71,22 +71,22 @@ export const ListOfPatients = () => {
         </tr>
       );
     }
-    return patients.map((patient) => (
+    return patients.map((p) => (
       <PatientsListRow
-        key={patient.id}
-        id={patient.id}
-        lastName={patient.lastName}
-        firstName={patient.firstName}
-        patr={patient.patr}
-        age={patient.age}
-        sex={patient.sex}
-        createdAt={patient.createdAt}
-        room={patient.room}
-        doctor={patient.doctor}
-        mkb={patient.mkb}
-        state={patient.state}
-        allergy={patient.allergy}
-      // onClick={() => navigate(`/patients/${patient.id}`)}   // ← add later
+        key={p.id}
+        id={p.id}
+        lastName={p.lastName}
+        firstName={p.firstName}
+        patr={p.patr}
+        age={p.age}
+        sex={p.sex}
+        createdAt={p.createdAt}
+        room={p.room}
+        doctor={p.doctor}
+        mkb={p.mkb}
+        state={p.state}
+        allergy={p.allergy}
+      // onClick={() => navigate(`/patients/${p.id}`)}   // ← add later
       />
     ))
   }
