@@ -1,8 +1,11 @@
+//#region ===== IMPORTS =====
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '../../../../context'
 import { useUsers } from "../../../../context/UsersDataContext"
+
 import { usePerItemLoading } from '../../../../hooks/usePerItemLoading'
+import { useSafeMessage } from '../../../../hooks/useSafeMessage'
 
 import Button from '../../../../components/Button'
 import { SpinLoader } from '../../../../components/loaders/SpinLoader'
@@ -11,8 +14,7 @@ import { statusDisplayMap, displayStatusMap } from "../../../../utils/statusMap"
 import api from '../../../../services/api'
 
 import styles from './styles/UsersList.module.scss'
-import { useSafeMessage } from '../../../../hooks/useSafeMessage'
-
+//#endregion
 
 const statusOptions = [
   'Администратор',
@@ -122,7 +124,7 @@ const UsersList = () => {
 
   return (
     <>
-      <table>
+      <table className={styles.table}>
         <tbody>
           {users.map((user, i) => (
             <tr
@@ -177,7 +179,7 @@ const UsersList = () => {
         loading={addLoading}
         onClick={() => handleAddUser()}
         style={{
-          marginBottom: '10px'
+          marginBottom: '20px'
         }}
       />
     </>
