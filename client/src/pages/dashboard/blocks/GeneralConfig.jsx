@@ -137,7 +137,10 @@ const GeneralConfig = () => {
             </div>
           </div>
         </div> */}
-        <ColorPalette />
+        <div className={styles.colorBlocksContainer}>
+          <ColorPalette />
+        </div>
+        
       </div>
       <div className={styles.button}>
         <Button
