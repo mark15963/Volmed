@@ -15,7 +15,7 @@ const Login = lazy(() => import("../pages/login/LoginPage"));
 const Administered = lazy(() => import("../pages/nurse/Administered"));
 const Discharged = lazy(() => import("../pages/nurse/Discharged"));
 const Hospitalized = lazy(() => import("../pages/nurse/Hospitalized"));
-const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const NurseDisplay = lazy(() => import("../pages/main/components/NurseDisplay"));
 //#endregion

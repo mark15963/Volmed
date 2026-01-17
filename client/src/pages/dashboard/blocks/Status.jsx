@@ -1,7 +1,7 @@
 import { SpinLoader } from "@/components/loaders/SpinLoader"
 import { usePatients, useUsers } from '../../../context'
 
-import styles from '../../dashboard.module.scss'
+import styles from '../../dashboard/dashboard.module.scss'
 
 export const PatientsStatus = () => {
   const { patients, loading: patientsLoading } = usePatients()

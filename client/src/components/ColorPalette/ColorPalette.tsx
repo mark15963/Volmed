@@ -3,7 +3,7 @@ import Input from "../Input";
 import styles from "./ColorPalette.module.scss";
 import { useConfig } from "../../context";
 import { useSafeMessage } from "../../hooks/useSafeMessage";
-import { useGeneralConfig } from "../../pages/dashboard/Blocks/hooks/GeneralConfig.hooks";
+import { useGeneralConfig } from "../../pages/dashboard/blocks/hooks/GeneralConfig.hooks";
 
 interface ColorPaletteProps {
   handleChange: () => void;
