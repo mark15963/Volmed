@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import debug from "@/utils/debug";
-import api from "../../../../../services/api";
+import api from "../../../../services/api";
 
 /**
  * @typedef {Object} ConfigContext
@@ -68,7 +68,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
     titleInput,
     headerColorInput,
     contentColorInput,
-    containerColorInput
+    containerColorInput,
   ) => {
     try {
       setIsLoading(true);
@@ -110,7 +110,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         if (!colors?.ok || !colors?.data) {
           debug.error("[API ERROR] updateColor failed:", colors);
           throw new Error(
-            colors?.message || "Color update failed: No data returned"
+            colors?.message || "Color update failed: No data returned",
           );
         }
 
@@ -123,7 +123,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         else
           debug.error(
             "❌ Color mismatch between request and response:",
-            colors.data
+            colors.data,
           );
       } catch (colorErr) {
         console.error("❌ Color update failed:", colorErr);
@@ -192,7 +192,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
       if (!res.data.logoUrl) {
         debug.error(
           "[API ERROR] uploadLogo: no logoUrl field in response",
-          res.data
+          res.data,
         );
         throw new Error("Server did not return a logoUrl");
       }
