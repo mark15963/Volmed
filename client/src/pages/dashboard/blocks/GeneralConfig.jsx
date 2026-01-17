@@ -9,6 +9,7 @@ import Button from "@/components/Button"
 import Input from "@/components/Input"
 import debug from "@/utils/debug"
 import styles from "./styles/GeneralConfig.module.scss"
+import { ColorPalette } from "../../../components/ColorPalette/ColorPalette"
 //#endregion
 /**
  * GeneralConfig Component
@@ -96,7 +97,7 @@ const GeneralConfig = () => {
           />
         </div>
         <div className={styles.separator} />
-        <div className={styles.colorBlocksContainer}>
+        {/* <div className={styles.colorBlocksContainer}>
           <div className={styles.paletteTitle}>
             Цветавая палитра:
           </div>
@@ -135,7 +136,8 @@ const GeneralConfig = () => {
               <span>{inputs.container.toUpperCase()}</span>
             </div>
           </div>
-        </div>
+        </div> */}
+        <ColorPalette />
       </div>
       <div className={styles.button}>
         <Button

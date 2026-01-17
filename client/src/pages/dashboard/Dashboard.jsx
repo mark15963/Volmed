@@ -2,9 +2,9 @@
 import { useNavigate } from "react-router"
 
 // Blocks of page
-import GeneralConfig from "./components/Blocks/GeneralConfig"
-import { PatientsStatus, UsersStatus } from "./components/Blocks/Status"
-import UsersList from "./components/Blocks/UsersList"
+import GeneralConfig from "./blocks/GeneralConfig"
+import { PatientsStatus, UsersStatus } from "./blocks/Status"
+import UsersList from "./blocks/UsersList"
 
 // Components
 import Block from "./components/Block"

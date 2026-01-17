@@ -1,17 +1,17 @@
 //#region ===== IMPORTS =====
 import { useEffect, useState } from 'react'
 
-import { useAuth } from '../../../../context'
-import { useUsers } from "../../../../context/UsersDataContext"
+import { useAuth } from '../../../context'
+import { useUsers } from "../../../context/UsersDataContext"
 
-import { usePerItemLoading } from '../../../../hooks/usePerItemLoading'
-import { useSafeMessage } from '../../../../hooks/useSafeMessage'
+import { usePerItemLoading } from '../../../hooks/usePerItemLoading'
+import { useSafeMessage } from '../../../hooks/useSafeMessage'
 
-import Button from '../../../../components/Button'
-import { SpinLoader } from '../../../../components/loaders/SpinLoader'
+import Button from '../../../components/Button'
+import { SpinLoader } from '../../../components/loaders/SpinLoader'
 
-import { statusDisplayMap, displayStatusMap } from "../../../../utils/statusMap"
-import api from '../../../../services/api'
+import { statusDisplayMap, displayStatusMap } from "../../../utils/statusMap"
+import api from '../../../services/api'
 
 import styles from './styles/UsersList.module.scss'
 //#endregion
