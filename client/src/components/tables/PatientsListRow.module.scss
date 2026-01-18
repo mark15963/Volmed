@@ -271,6 +271,7 @@
             grid-column: 1;
             grid-row: 1;
             font-size: 1.1em !important;
+            overflow-wrap: break-word;
           }
           &:nth-child(4) {
             // Sex
