@@ -1,9 +1,11 @@
-//#region === IMPORTS ===
+//#region ===== IMPORTS =====
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
+
 import DoctorDisplay from './components/DoctorDisplay';
 import NurseDisplay from './components/NurseDisplay';
 import Loader from '../../components/loaders/Loader';
+
 import '../../layouts/content/content.scss'
 //#endregion
 //#region ROLE PERMISSIONS

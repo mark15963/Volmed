@@ -10,7 +10,7 @@ export default function NurseDisplay() {
     <div className={nurseStyles.container}>
       <div className={nurseStyles.mainBlock}>
         {title()}
-        {control()}
+        {buttons()}
       </div>
     </div>
   )
@@ -24,7 +24,7 @@ function title() {
   )
 }
 
-function control() {
+function buttons() {
   const navigate = useNavigate()
 
   return (

@@ -12,6 +12,7 @@
   align-items: center;
   width: fit-content;
   user-select: none;
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   box-shadow: 1px 1px 3px 1px #374960;
   &:hover {
