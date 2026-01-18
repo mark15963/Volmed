@@ -98,7 +98,7 @@ export const ListOfPatients = () => {
   }
 
   return (
-    <table>
+    <table className={styles.table}>
       <thead className={styles.head}>
         <tr className={styles.rows}>
           <th>#</th>
@@ -113,7 +113,7 @@ export const ListOfPatients = () => {
           <th>Аллергии / Риски</th>
         </tr>
       </thead>
-      <tbody>{renderContent()}</tbody>
+      <tbody className={styles.tbody}>{renderContent()}</tbody>
     </table>
   )
 }

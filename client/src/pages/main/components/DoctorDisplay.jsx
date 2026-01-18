@@ -10,12 +10,12 @@ export default function DoctorDisplay() {
     <div className='mainBlock'>
       <SearchBar />
       <div className={styles.divider} />
-      {control()}
+      {buttons()}
     </div>
   )
 }
 
-function control() {
+function buttons() {
   const navigate = useNavigate()
   return (
     <>

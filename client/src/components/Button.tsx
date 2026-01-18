@@ -58,8 +58,10 @@ const Button: FC<ButtonProps> = ({
     // Force blur to remove active state
     e.currentTarget.blur();
 
+    setTimeout(() => {
+      onClick?.();
+    }, 0);
     // Call the original onClick if provided
-    if (onClick) onClick();
   };
 
   const buttonClass = [
@@ -101,15 +103,15 @@ const Button: FC<ButtonProps> = ({
         (icon === "search"
           ? "search"
           : icon === "logout"
-          ? "logout"
-          : icon === "login"
-          ? "login"
-          : icon === "newPatient"
-          ? "newPatient"
-          : icon === "patients"
-          ? "patients"
-          : "(no text)")
-      }`
+            ? "logout"
+            : icon === "login"
+              ? "login"
+              : icon === "newPatient"
+                ? "newPatient"
+                : icon === "patients"
+                  ? "patients"
+                  : "(no text)")
+      }`,
     );
 
     // Handle navigation if navigateTo is provided

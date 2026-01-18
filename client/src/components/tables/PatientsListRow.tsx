@@ -5,7 +5,7 @@ import { FC } from "react";
 import styles from "./PatientsListRow.module.scss";
 import moment from "moment";
 import { calculateAge, getStateClass, debug } from "../../utils";
-import { PatientRowProps } from '../../types/patient'
+import { PatientRowProps } from "../../types/patient";
 
 const getSexIcon = (sex: string) => {
   switch (sex) {
@@ -97,8 +97,8 @@ export const PatientsListRow: FC<PatientRowProps> = ({
   allergy = "Неизвестно",
   onClick,
 }) => {
-  const displayAge = calculateAge(birthDate)
-  const stateClassName = styles[getStateClass(state)] || '';
+  const displayAge = calculateAge(birthDate);
+  const stateClassName = styles[getStateClass(state)] || "";
   return (
     <tr
       className={styles.rows}
@@ -112,7 +112,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
         {lastName} {firstName} {patr}
       </td>
       <td>{displayAge}</td>
-      <td className={styles.sexCell}>{getSexIcon(sex)}</td>
+      <td>{getSexIcon(sex)}</td>
       <td>{moment(createdAt).format("DD.MM.YYYY")}</td>
       <td>{room}</td>
       <td>{doctor}</td>
