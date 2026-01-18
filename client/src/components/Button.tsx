@@ -53,17 +53,6 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    // Force blur to remove active state
-    e.currentTarget.blur();
-
-    setTimeout(() => {
-      onClick?.();
-    }, 0);
-    // Call the original onClick if provided
-  };
-
   const buttonClass = [
     "button",
     size,
@@ -127,8 +116,15 @@ const Button: FC<ButtonProps> = ({
 
   return (
     <button
-      onTouchEnd={handleTouchEnd}
       onClick={handleClick}
+      onTouchStart={(e) => {
+        e.preventDefault();
+      }}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        e.currentTarget.blur();
+        onClick?.();
+      }}
       className={buttonClass}
       disabled={disabled || loading}
       type={type}
