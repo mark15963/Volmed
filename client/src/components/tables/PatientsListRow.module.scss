@@ -245,7 +245,7 @@
       .rows {
         padding: 10px;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.5fr 1fr;
         grid-template-rows: auto auto auto;
         gap: 5px;
         background-color: aliceblue;
@@ -270,7 +270,8 @@
             // ФИО
             grid-column: 1;
             grid-row: 1;
-            font-size: 1.1em !important;
+            font-size: 1em !important;
+            font-weight: 700;
             overflow-wrap: break-word;
           }
           &:nth-child(4) {
@@ -280,7 +281,7 @@
             padding-left: 5px;
             flex: 0.7;
             font-size: 0.8em;
-            place-self: center;
+            place-self: end;
           }
           &:nth-child(1) {
             // ID
@@ -301,7 +302,7 @@
             padding-left: 5px;
             flex: 0.7;
             font-size: 0.8em;
-            text-align: start;
+            text-align: end;
             &::before {
               content: "Палата: ";
             }
@@ -312,7 +313,7 @@
             grid-row: 3;
             flex: 0.8;
             font-size: 0.8em !important;
-            text-align: start;
+            text-align: end;
             &::before {
               content: "Возраст: ";
             }
