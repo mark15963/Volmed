@@ -5,14 +5,15 @@ export interface Patient {
   patr?: string;
   birthDate: string;
   sex: string;
-  createdAt: string;
+  created_at: string;
   room: string;
   doctor: string;
-  mkb: string;
+  diag: string;
   state: string;
   allergy?: string;
 }
 
-export interface PatientRowProps extends Patient {
+export interface PatientRowProps {
+  patient: Patient
   onClick?: () => void;
 }

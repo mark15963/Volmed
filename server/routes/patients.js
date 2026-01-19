@@ -17,44 +17,6 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-const uploadDir = path.join(__dirname, "..", "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const patientId = req.params.id;
-    const uploadPath = path.join(uploadDir, "patients", patientId);
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const originalname = file.originalname;
-    const ext = path.extname(originalname);
-    const basename = path.basename(originalname, ext);
-    const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
-    const fullPath = path.join(uploadDir, "patients", req.params.id, safeName);
-
-    if (fs.existsSync(fullPath)) {
-      let counter = 1;
-      let newName = `${basename} (${counter})${ext}`;
-
-      while (
-        fs.existsSync(path.join(uploadDir, "patients", req.params.id, newName))
-      ) {
-        counter++;
-        newName = `${basename} (${counter})${ext}`;
-      }
-      cb(null, newName);
-    } else {
-      cb(null, safeName);
-    }
-  },
-});
-const upload = multer({ storage });
-
 //#region ===== PATIENTS =====
 //Get all patients
 router.get("/patients", isAuth, async (req, res) => {
@@ -117,7 +79,7 @@ router.post("/patients", isAuth, async (req, res) => {
   const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
 
   const q = `INSERT INTO patients (${quotedKeys.join(
-    ","
+    ",",
   )}) VALUES (${placeholders}) RETURNING *`;
 
   try {
@@ -192,6 +154,45 @@ router.delete("/patients/:id", isAuth, async (req, res) => {
 //#endregion
 
 //#region ===== FILES =====
+//#region === STORAGE CONFIG ===
+const uploadDir = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const patientId = req.params.id;
+    const uploadPath = path.join(uploadDir, "patients", patientId);
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const originalname = file.originalname;
+    const ext = path.extname(originalname);
+    const basename = path.basename(originalname, ext);
+    const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
+    const fullPath = path.join(uploadDir, "patients", req.params.id, safeName);
+
+    if (fs.existsSync(fullPath)) {
+      let counter = 1;
+      let newName = `${basename} (${counter})${ext}`;
+
+      while (
+        fs.existsSync(path.join(uploadDir, "patients", req.params.id, newName))
+      ) {
+        counter++;
+        newName = `${basename} (${counter})${ext}`;
+      }
+      cb(null, newName);
+    } else {
+      cb(null, safeName);
+    }
+  },
+});
+const upload = multer({ storage });
+//#endregion
 // Upload files to a specific patient
 router.post(
   "/patients/:id/upload",
@@ -206,7 +207,7 @@ router.post(
       path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
       size: req.file.size,
     });
-  }
+  },
 );
 // Get files of a specific patient
 router.get("/patients/:id/files", isAuth, (req, res) => {
@@ -286,7 +287,7 @@ router.get("/patients/:id/medications", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       "SELECT * FROM medications WHERE patient_id = $1",
-      [req.params.id]
+      [req.params.id],
     );
 
     res.json(rows);
@@ -343,7 +344,7 @@ router.put("/medications/:medId", isAuth, async (req, res) => {
         dosage || current.rows[0].dosage,
         frequency || current.rows[0].frequency,
         medId,
-      ]
+      ],
     );
 
     const updatedMed = result.rows[0];
@@ -371,7 +372,7 @@ router.delete("/medications/:medId", isAuth, async (req, res) => {
   try {
     const result = await db.query(
       `DELETE FROM medications WHERE id = $1 RETURNING *`,
-      [medId]
+      [medId],
     );
 
     if (result.rowCount === 0) {
@@ -418,7 +419,7 @@ router.get("/patients/:id/pulse", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       "SELECT pulse_value, created_at FROM patient_pulse WHERE patient_id=$1 ORDER BY created_at ASC",
-      [req.params.id]
+      [req.params.id],
     );
     const formatted = rows.map((r) => ({
       value: r.pulse_value,
@@ -452,7 +453,7 @@ router.get("/patients/:id/o2", isAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       "SELECT o2_value, created_at FROM patient_o2 WHERE patient_id=$1 ORDER BY created_at ASC",
-      [req.params.id]
+      [req.params.id],
     );
     const formatted = rows.map((r) => ({
       value: r.o2_value,

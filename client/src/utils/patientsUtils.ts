@@ -1,6 +1,15 @@
 import moment from "moment";
 import debug from "./debug";
 
+//#region === TYPES ===
+export type PatientState =
+  | "Удовлетворительное"
+  | "Средней степени тяжести"
+  | "Тяжёлое"
+  | "Крайне тяжёлое"
+  | "Выписан";
+//#endregion
+
 export const getStateClass = (state: string) => {
   switch (state) {
     case "Удовлетворительное":
@@ -22,10 +31,8 @@ export const calculateAge = (birthDate: string): string => {
   if(!birthDate) return '';
   try{
     const [day,month,year] = birthDate.split('.');
-    
     const birth = moment(`${year}-${month}-${day}`, "YYYY-MM-DD")
     const today = moment()
-
     const age = today.diff(birth, 'years')
 
     if (age < 0) return ''

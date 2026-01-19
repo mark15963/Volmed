@@ -6,6 +6,7 @@ import debug from "../../../utils/debug";
 
 import styles from './styles/patientList.module.scss'
 import api from "../../../services/api";
+import { TooltipHover } from "../../../components/ui/TooltipHover";
 //#endregion
 
 export const PatientCount = () => {
@@ -38,7 +39,7 @@ export const PatientCount = () => {
         // --- Active (filtered) patients ---
         if (patientsRes.ok) {
           const active = patientsRes.data.filter(
-            p => p.state !== "Выписан" && p.state !== "Выписана"
+            p => p.state !== "Выписан"
           )
           setActiveCount(active.length)
           debug.log("✅ Active count loaded:", active.length);
@@ -71,13 +72,16 @@ export const PatientCount = () => {
 
   return (
     <div className={styles.countContainer}>
-      <span
-        style={{ marginRight: '5px' }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+      <TooltipHover
+        content={
+          <>
+            <strong>Всего пациентов: </strong>
+            {loading ? '' : count}
+          </>
+        }
       >
-        Активных пациентов:
-      </span>
+        <span>Пациенты в стационаре:</span>
+      </TooltipHover>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
           <Skeleton
@@ -89,13 +93,6 @@ export const PatientCount = () => {
       ) : (
         <span className={styles.counterText}>{activeCount}</span>
       )}
-
-      {!loading &&
-        showTooltip && (
-          <div className={styles.tooltipBox}>
-            <strong>Всего пациентов: </strong> {loading ? '' : count}
-          </div>
-        )}
     </div>
   )
 }
