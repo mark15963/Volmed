@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { Patient } from "../../types/patient";
 
+interface UsePatientListReturn {
+  patients: Patient[];
+  loading: boolean;
+  error: any;
+}
 /**
  * usePatientList
  * --------------
@@ -15,7 +21,7 @@ import api from "../../services/api";
  *   error: Error|null
  * }} Patient list state and control flags
  */
-export function usePatientList() {
+export const usePatientList = (): UsePatientListReturn => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

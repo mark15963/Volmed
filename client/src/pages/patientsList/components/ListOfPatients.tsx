@@ -1,24 +1,25 @@
 //#region ===== IMPORTS =====
-import { useEffect, useState } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 
 // --- COMPONENTS ---
 import { PatientsListRow } from "../../../components/tables/PatientsListRow";
 
+// --- TYPES---
+import { ListProps } from "../../../types/table";
+
 // --- HOOKS ---
 import { usePatientList } from "../../../hooks/Patients/usePatientsList";
 
 // --- TOOLS ---
-import api from "../../../services/api";
 import debug from "../../../utils/debug";
 
 // --- UI ---
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import styles from '../../../components/tables/PatientsListRow.module.scss'
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import styles from "../../../components/tables/PatientsListRow.module.scss";
 //#endregion
 
-//#region ===== COMPONENT =====
 /**
  * ListOfPatients
  * --------------
@@ -31,10 +32,20 @@ import styles from '../../../components/tables/PatientsListRow.module.scss'
  *
  * @returns {JSX.Element} Rendered table of patients
  */
-export const ListOfPatients = () => {
-  const { patients, loading, error } = usePatientList()
-  const activePatients = patients.filter(p => p.state !== "Выписан")
-  const navigate = useNavigate()
+export const ListOfPatients: FC<ListProps> = ({ option = "all" }) => {
+  const { patients, loading, error } = usePatientList();
+  const navigate = useNavigate();
+
+  const filteredPatients = useMemo(() => {
+    if (option === "all") return patients;
+    if (option === "active") {
+      return patients.filter((p) => p.state !== "Выписан");
+    }
+    if (option === "non-active") {
+      return patients.filter((p) => p.state === "Выписан");
+    }
+    return patients;
+  }, [patients, option]);
 
   useEffect(() => {
     if (error) {
@@ -54,7 +65,7 @@ export const ListOfPatients = () => {
             </tr>
           ))}
         </SkeletonTheme>
-      )
+      );
     }
     if (error) {
       return (
@@ -63,9 +74,9 @@ export const ListOfPatients = () => {
             Ошибка загрузки пациентов...
           </td>
         </tr>
-      )
+      );
     }
-    if (patients.length === 0) {
+    if (filteredPatients.length === 0) {
       return (
         <tr>
           <td colSpan={10} className={styles.noData}>
@@ -74,28 +85,32 @@ export const ListOfPatients = () => {
         </tr>
       );
     }
-    if (activePatients.length === 0) {
+    if (filteredPatients.length === 0) {
+      let message = "Пациентов не найдено по выбранному фильтру";
+
+      if (option === "active") message = "Нет пациентов в стационаре";
+      if (option === "non-active") message = "Нет выписанных пациентов";
+
       return (
         <tr>
           <td colSpan={10} className={styles.noData}>
-            Нет пациентов в стационаре
+            {message}
           </td>
         </tr>
       );
     }
-
-    return activePatients.map((p) => (
+    return filteredPatients.map((p) => (
       <PatientsListRow
         key={p.id}
         patient={p}
         onClick={() => {
           navigate(`/search/${p.id}`, {
-            state: { patient: p }
-          })
+            state: { patient: p },
+          });
         }}
       />
-    ))
-  }
+    ));
+  };
 
   return (
     <table className={styles.table}>
@@ -115,6 +130,5 @@ export const ListOfPatients = () => {
       </thead>
       <tbody className={styles.tbody}>{renderContent()}</tbody>
     </table>
-  )
-}
-
+  );
+};

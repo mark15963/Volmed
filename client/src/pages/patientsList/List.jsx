@@ -21,9 +21,9 @@ export const List = () => {
         <div className={styles.searchbar}>
           <SearchBar />
         </div>
-
-        <ListOfPatients />
-
+        <div className={styles.table}>
+          <ListOfPatients option='active' />
+        </div>
         <div className={styles.counter}>
           <PatientCount />
         </div>
