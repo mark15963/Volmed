@@ -1,10 +1,11 @@
 .table {
   display: inline-block;
+  width: 100%;
   color: aliceblue;
   background-color: var(--table);
   padding: 5px 2px 5px 6px;
   border-radius: 5px;
-  margin: 35px 0 10px 0;
+  // margin: 35px 0 10px 0;
   overflow: auto;
   &:hover {
     transition: all 0.3s;
