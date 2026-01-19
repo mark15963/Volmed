@@ -33,6 +33,7 @@ import styles from '../../../components/tables/PatientsListRow.module.scss'
  */
 export const ListOfPatients = () => {
   const { patients, loading, error } = usePatientList()
+  const activePatients = patients.filter(p => p.state !== "Выписан")
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -73,21 +74,20 @@ export const ListOfPatients = () => {
         </tr>
       );
     }
-    return patients.map((p) => (
+    if (activePatients.length === 0) {
+      return (
+        <tr>
+          <td colSpan={10} className={styles.noData}>
+            Нет пациентов в стационаре
+          </td>
+        </tr>
+      );
+    }
+
+    return activePatients.map((p) => (
       <PatientsListRow
         key={p.id}
-        id={p.id}
-        lastName={p.lastName}
-        firstName={p.firstName}
-        patr={p.patr}
-        birthDate={p.birthDate}
-        sex={p.sex}
-        createdAt={p.created_at}
-        room={p.room}
-        doctor={p.doctor}
-        mkb={p.diag}
-        state={p.state}
-        allergy={p.allergy}
+        patient={p}
         onClick={() => {
           navigate(`/search/${p.id}`, {
             state: { patient: p }

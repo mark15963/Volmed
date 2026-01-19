@@ -41,7 +41,10 @@
   cursor: pointer;
   opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   will-change: transform;
 
   word-break: keep-all;
@@ -171,7 +174,14 @@
     justify-content: center;
 
     .logo {
-      display: none;
+      display: block !important; // override inline display: none
+      height: calc(100% - 40px);
+      max-height: 90px !important; // max height for header
+      margin: 10px auto; // center it
+      image-rendering: -webkit-optimize-contrast; // crisp print
+    }
+    .logo[style*="display: none"] {
+      display: block !important;
     }
 
     .title {
