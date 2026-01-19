@@ -23,7 +23,10 @@
   }
 }
 @media screen and (orientation: portrait) {
-  .title {
-    font-size: 1.2em;
+  .mainBlock {
+    min-width: 400px;
+    .title {
+      font-size: 1.2em;
+    }
   }
 }
