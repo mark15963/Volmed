@@ -32,9 +32,19 @@ import styles from "../../../components/tables/PatientsListRow.module.scss";
  *
  * @returns {JSX.Element} Rendered table of patients
  */
-export const ListOfPatients: FC<ListProps> = ({ option = "all" }) => {
+export const ListOfPatients: FC<ListProps> = ({
+  option = "all",
+  theme = "default",
+}) => {
   const { patients, loading, error } = usePatientList();
   const navigate = useNavigate();
+
+  const tableModeClass =
+    {
+      default: styles.tableDefault,
+      light: styles.table,
+      dark: styles.tableDark,
+    }[theme] || styles.tableDefault;
 
   const filteredPatients = useMemo(() => {
     if (option === "all") return patients;
@@ -113,7 +123,7 @@ export const ListOfPatients: FC<ListProps> = ({ option = "all" }) => {
   };
 
   return (
-    <table className={styles.table}>
+    <table className={styles.table} data-theme={theme}>
       <thead className={styles.head}>
         <tr className={styles.rows}>
           <th>#</th>

@@ -22,7 +22,7 @@ export const List = () => {
           <SearchBar />
         </div>
         <div className={styles.table}>
-          <ListOfPatients option='active' />
+          <ListOfPatients option='active' theme='light' />
         </div>
         <div className={styles.counter}>
           <PatientCount />

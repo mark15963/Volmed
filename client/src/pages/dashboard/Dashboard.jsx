@@ -58,7 +58,7 @@ export const Dashboard = () => {
 
       <Row>
         <Block title='ПАЦИЕНТЫ'>
-          <ListOfPatients />
+          <ListOfPatients theme="light" />
         </Block>
       </Row>
 
