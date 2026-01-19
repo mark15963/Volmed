@@ -1,15 +1,34 @@
 .table {
   display: inline-block;
   width: 100%;
-  color: aliceblue;
-  background-color: var(--table);
   padding: 5px 2px 5px 6px;
   border-radius: 5px;
-  // margin: 35px 0 10px 0;
   overflow: auto;
-  &:hover {
-    transition: all 0.3s;
+  &[data-theme="default"] {
   }
+  &[data-theme="dark"] {
+    --table-bg: #1e293b;
+    --table-row: #334155;
+    --table-row-hover: #475569;
+    --table-header: #0f172a;
+    --text-color: #e2e8f0;
+    --state-stable: #064e3b;
+  }
+  &[data-theme="light"] {
+    --table-bg: #ffffff;
+    --table-row: #f9fafb;
+    --table-row-hover: #e1e1e1;
+    --table-header: #f1f5f9;
+    --text-color: #1f2937;
+    --state-stable: #94ffc8;
+    --state-moderate: #ffeda4;
+    --state-severe: #ffc8c8;
+    --state-critical: #fecaca;
+    --state-leave: #e0f2fe;
+  }
+  background-color: var(--table-bg);
+  color: var(--text-color);
+
   .head {
     .rows {
       padding: 5px 5px 10px 5px;
@@ -25,7 +44,7 @@
         minmax(160px, 2.4fr) // Диагноз
         minmax(175px, 1.6fr) // Состояние
         minmax(150px, 1.8fr); // Риски/Аллергии
-      background-color: var(--table);
+      background-color: var(--table-bg);
       align-items: center;
       text-align: center;
       th {
@@ -44,7 +63,7 @@
       display: flex;
       width: 100%;
       justify-content: space-between;
-      background-color: var(--table-rows);
+      background-color: var(--table-row);
       padding: 5px 10px;
       overflow: hidden;
       border-radius: 3;
@@ -70,15 +89,15 @@
       padding: 5px;
       align-items: center;
       border-radius: 3px;
-      background-color: var(--table-rows);
+      background-color: var(--table-row);
       cursor: default;
       &:hover {
         transition: all 0.3s;
-        background-color: var(--table-rows-hover);
+        background-color: var(--table-row-hover);
       }
       &:active {
         transition: all 0.3s;
-        background-color: var(--table-rows-active);
+        background-color: var(--table-row-active);
       }
 
       td {
@@ -147,10 +166,10 @@
       justify-content: center;
       padding: 20px;
       text-align: center;
-      color: aliceblue;
+      color: var(--text-color);
       font-size: 1em;
       border-radius: 6px;
-      background: var(--table-rows);
+      background: var(--table-row);
     }
   }
 }
