@@ -219,13 +219,13 @@ router.get("/theme", async (req, res) => {
     const row = await fetchRow('SELECT "theme" FROM general WHERE id = 1');
     if (!row) return res.status(404).json({ error: "Data not found" });
 
-    const title = row.theme;
+    const theme = row.theme;
     saveCachedConfig({ theme });
 
     res.json({ theme });
   } catch (err) {
-    console.error("Error fetching title:", err);
-    res.status(500).json({ error: "Failed to fetch title" });
+    console.error("Error fetching theme:", err);
+    res.status(500).json({ error: "Failed to fetch theme" });
   }
 });
 router.put("/theme", async (req, res) => {
