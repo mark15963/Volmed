@@ -18,6 +18,7 @@ import debug from "../../../utils/debug";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import styles from "../../../components/tables/PatientsListRow.module.scss";
+import { SkeletonLoader } from "../../../components/loaders/SkeletonLoader";
 //#endregion
 
 /**
@@ -39,13 +40,6 @@ export const ListOfPatients: FC<ListProps> = ({
   const { patients, loading, error } = usePatientList();
   const navigate = useNavigate();
 
-  const tableModeClass =
-    {
-      default: styles.tableDefault,
-      light: styles.table,
-      dark: styles.tableDark,
-    }[theme] || styles.tableDefault;
-
   const filteredPatients = useMemo(() => {
     if (option === "all") return patients;
     if (option === "active") {
@@ -65,17 +59,7 @@ export const ListOfPatients: FC<ListProps> = ({
 
   const renderContent = () => {
     if (loading) {
-      return (
-        <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <tr key={i} className={styles.rowsLoading}>
-              <td>
-                <Skeleton borderRadius={5} />
-              </td>
-            </tr>
-          ))}
-        </SkeletonTheme>
-      );
+      return <SkeletonLoader lines="5" />;
     }
     if (error) {
       return (
@@ -87,16 +71,7 @@ export const ListOfPatients: FC<ListProps> = ({
       );
     }
     if (filteredPatients.length === 0) {
-      return (
-        <tr>
-          <td colSpan={10} className={styles.noData}>
-            Пациентов не найдено
-          </td>
-        </tr>
-      );
-    }
-    if (filteredPatients.length === 0) {
-      let message = "Пациентов не найдено по выбранному фильтру";
+      let message = `Пациентов не найдено по выбранному фильтру: ${option}`;
 
       if (option === "active") message = "Нет пациентов в стационаре";
       if (option === "non-active") message = "Нет выписанных пациентов";

@@ -47,7 +47,7 @@ router.put("/title", async (req, res) => {
     const row = await updateRow(
       `UPDATE general SET "title" = $1 WHERE id = 1 RETURNING *`,
       [{ value: title }],
-      [{ index: 0, name: "Title" }] // Required
+      [{ index: 0, name: "Title" }], // Required
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
@@ -119,7 +119,7 @@ router.put("/color", async (req, res) => {
         { index: 0, name: "Header color" }, // Required
         { index: 1, name: "Content color" }, // Required
         { index: 2, name: "Container color" }, // Required
-      ]
+      ],
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
@@ -146,7 +146,7 @@ const publicDir = path.join(
   "client",
   "public",
   "assets",
-  "images"
+  "images",
 );
 const srcDir = path.join(
   __dirname,
@@ -155,7 +155,7 @@ const srcDir = path.join(
   "client",
   "src",
   "assets",
-  "images"
+  "images",
 );
 
 // Ensure directories exist
@@ -169,7 +169,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname).toLowerCase() || ".webp";
     // remove any old logo.* file
     fs.readdirSync(publicDir).forEach(
-      (f) => f.startsWith("logo.") && fs.unlinkSync(path.join(publicDir, f))
+      (f) => f.startsWith("logo.") && fs.unlinkSync(path.join(publicDir, f)),
     );
 
     cb(null, "logo" + ext);
@@ -207,6 +207,57 @@ router.get("/get-logo", (req, res) => {
   }
 });
 //#endregion
+//#endregion
+//#region ===== Theme routes =====
+router.get("/theme", async (req, res) => {
+  try {
+    const cached = getCachedConfig();
+    if (cached?.theme) {
+      return res.json({ theme: cached.theme });
+    }
+
+    const row = await fetchRow('SELECT "theme" FROM general WHERE id = 1');
+    if (!row) return res.status(404).json({ error: "Data not found" });
+
+    const title = row.theme;
+    saveCachedConfig({ theme });
+
+    res.json({ theme });
+  } catch (err) {
+    console.error("Error fetching title:", err);
+    res.status(500).json({ error: "Failed to fetch title" });
+  }
+});
+router.put("/theme", async (req, res) => {
+  debug.log("📝 Raw headers:", req.headers);
+  debug.log("📝 Raw body type:", typeof req.body, req.body);
+
+  if (!req.body || !req.body.theme) {
+    debug.error("❌ Missing theme in request body!");
+    return res.status(400).json({ error: "Missing theme in request body" });
+  }
+
+  const { theme } = req.body;
+
+  debug.log("📝 Received theme update:", { theme });
+  debug.log("📝 Request body:", req.body);
+
+  try {
+    const row = await updateRow(
+      `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING *`,
+      [{ value: theme }],
+      [{ index: 0, name: "Theme" }], // Required
+    );
+    if (!row) return res.status(404).json({ error: "Record not found" });
+
+    saveCachedConfig({ theme: row.theme });
+
+    res.json({ theme: row.theme });
+  } catch (err) {
+    console.error("Error updating theme:", err);
+    res.status(500).json({ error: "Failed to update theme" });
+  }
+});
 //#endregion
 
 module.exports = router;

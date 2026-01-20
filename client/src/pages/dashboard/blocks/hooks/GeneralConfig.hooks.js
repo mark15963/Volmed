@@ -57,17 +57,19 @@ export const useGeneralConfig = (config, safeMessage) => {
     header: config.color.header,
     content: config.color.content,
     container: config.color.container,
+    theme: config.theme || "default",
   });
 
   const { handleSave, handleLogoUpdate } = useGeneralConfigLogic(
     config,
     safeMessage,
-    setIsLoading
+    setIsLoading,
   );
 
   useEffect(() => {
     setInputs({
       title: config.title || "",
+      theme: config.theme,
       ...config.color,
     });
   }, [config]);
@@ -77,8 +79,8 @@ export const useGeneralConfig = (config, safeMessage) => {
     setInputs((prev) => ({ ...prev, [key]: value }));
   };
   const handleSaveWrapper = async () => {
-    const { title, header, content, container, ...rest } = inputs;
-    await handleSave(title, header, content, container, rest);
+    const { title, header, content, container, theme, ...rest } = inputs;
+    await handleSave(title, header, content, container, theme, rest);
   };
 
   useKeyboardSave(handleSaveWrapper, isLoading);

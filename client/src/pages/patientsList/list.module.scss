@@ -77,6 +77,13 @@
   }
 }
 
+@media screen and (max-width: 640px) {
+  .mainBlock {
+    width: 80% !important;
+    padding: 20px 10px 20px !important;
+  }
+}
+
 @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
   .mainBlock {
     width: 80% !important;
