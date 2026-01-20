@@ -2,7 +2,7 @@
 // import { useConfig } from "@/context"
 //
 // const config = useConfig()
-// const { title, setTitle, color, setColor, logo, setLogo } = config
+// const { title, setTitle, color, setColor, logo, setLogo, theme, setTheme } = config
 //
 // -----------------------------------------------
 //
@@ -17,6 +17,11 @@
 // logo:
 // - logoUrl
 //
+// theme:
+// - default (blue)
+// - light
+// - dark
+// 
 //#endregion
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
@@ -49,7 +54,7 @@ const ConfigContext = createContext(null);
  * import { useConfig } from "@/context"
  *
  * const ExampleComponent = () => {
- *   const { title, setTitle, color, setColor, logo, setLogo } = useConfig()
+ *   const { title, setTitle, color, setColor, logo, setLogo, theme, setTheme } = useConfig()
  *
  *   return (
  *     <div style={{ backgroundColor: color.content }}>
@@ -75,6 +80,8 @@ const ConfigContext = createContext(null);
  * @property {Function} setColor - Updates the color palette both locally and via API.
  * @property {?string} logo - URL of the site logo image.
  * @property {Function} setLogo - Updates the logo URL (client-side only).
+ * @property {?string} theme
+ * @property {Function} setTheme
  * @property {boolean} isLoading - Indicates if configuration data is still loading.
  * @property {Object} defaults - Default configuration constants.
  */
@@ -85,6 +92,7 @@ export const ConfigProvider = ({ children }) => {
     content: '#a5c6e2',
   })
   const [logo, setLogoState] = useState(null)
+  const [theme, setThemeState] = useState('default')
   const [isLoading, setIsLoading] = useState(true)
 
   const getNestedValue = useCallback((obj, path) => {
@@ -118,6 +126,8 @@ export const ConfigProvider = ({ children }) => {
       })
       const cachedLogo = getNestedValue(cache, CONFIG_KEYS.LOGO)
       setLogoState(cachedLogo || CONFIG_DEFAULTS.GENERAL.LOGO)
+      const cachedTheme = getNestedValue(cache, CONFIG_KEYS.THEME)
+      setThemeState(cachedTheme || CONFIG_DEFAULTS.GENERAL.THEME)
 
       debug.log("✅ Loaded config from cache");
       return true;
@@ -129,10 +139,11 @@ export const ConfigProvider = ({ children }) => {
 
   const fetchFromApi = useCallback(async () => {
     try {
-      const [titleRes, colorRes, logoRes] = await Promise.allSettled([
+      const [titleRes, colorRes, logoRes, themeRes] = await Promise.allSettled([
         api.getTitle(),
         api.getColor(),
-        api.getLogo()
+        api.getLogo(),
+        api.getTheme()
       ])
 
       // --- TITLE ---
@@ -162,6 +173,14 @@ export const ConfigProvider = ({ children }) => {
       } else {
         debug.warn("getLogo returned no logoUrl or failed:", logoRes);
         setLogoState(CONFIG_DEFAULTS.GENERAL.LOGO);
+      }
+
+      // --- THEME ---
+      if (themeRes.status === 'fulfilled' && themeRes.value?.data) {
+        setThemeState(themeRes.value.data.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+      } else {
+        debug.warn("getTheme returned no data or failed:", themeRes);
+        setThemeState(CONFIG_DEFAULTS.GENERAL.THEME);
       }
 
     } catch (error) {
@@ -211,6 +230,14 @@ export const ConfigProvider = ({ children }) => {
     setLogoState(fileUrl)
     debug.log("✅ Logo updated locally")
   }, [])
+  const setTheme = async (newTheme) => {
+    await updateConfig(
+      () => api.updateTheme({ theme: newTheme }),
+      (data) => setThemeState(data.theme ?? CONFIG_DEFAULTS.GENERAL.THEME),
+      () => setThemeState(CONFIG_DEFAULTS.GENERAL.THEME),
+      "PUT /general/theme"
+    )
+  }
 
   const updateConfig = async (apiCall, onSuccess, onerror, label) => {
     try {
@@ -237,6 +264,8 @@ export const ConfigProvider = ({ children }) => {
     setColor,
     logo,
     setLogo,
+    theme,
+    setTheme,
     isLoading,
     defaults: CONFIG_DEFAULTS
   }

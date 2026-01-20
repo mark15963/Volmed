@@ -111,6 +111,8 @@ const api = {
     api.post(`/general/upload-logo`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  getTheme: () => api.get(`/general/theme`),
+  updateTheme: (data) => api.put(`/general/theme`, data),
 
   /* ===============
      👩‍⚕️ PATIENTS API

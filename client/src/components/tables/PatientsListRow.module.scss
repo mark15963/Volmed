@@ -4,28 +4,6 @@
   padding: 5px 2px 5px 6px;
   border-radius: 5px;
   overflow: auto;
-  &[data-theme="default"] {
-  }
-  &[data-theme="dark"] {
-    --table-bg: #1e293b;
-    --table-row: #334155;
-    --table-row-hover: #475569;
-    --table-header: #0f172a;
-    --text-color: #e2e8f0;
-    --state-stable: #064e3b;
-  }
-  &[data-theme="light"] {
-    --table-bg: #ffffff;
-    --table-row: #f9fafb;
-    --table-row-hover: #e1e1e1;
-    --table-header: #f1f5f9;
-    --text-color: #1f2937;
-    --state-stable: #94ffc8;
-    --state-moderate: #ffeda4;
-    --state-severe: #ffc8c8;
-    --state-critical: #fecaca;
-    --state-leave: #e0f2fe;
-  }
   background-color: var(--table-bg);
   color: var(--text-color);
 
@@ -58,19 +36,6 @@
     flex-direction: column;
     gap: 3px;
     padding-bottom: 2px;
-
-    .rowsLoading {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      background-color: var(--table-row);
-      padding: 5px 10px;
-      overflow: hidden;
-      border-radius: 3;
-      td {
-        flex: 1;
-      }
-    }
 
     .rows {
       width: fit-content;
@@ -188,9 +153,8 @@
 
 .react-loading-skeleton {
   animation: pulse 1.5s ease-in-out infinite;
-  color: #488ab9;
+  color: var(--table-row-loading);
 }
-
 .skeleton {
   margin-bottom: 10px;
 }

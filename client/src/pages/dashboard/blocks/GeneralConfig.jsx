@@ -1,14 +1,15 @@
 //#region ===== IMPORTS ===== 
 import { useEffect } from "react"
 
-import { useSafeMessage } from "@/hooks/useSafeMessage"
+import { useSafeMessage } from "../../../hooks/useSafeMessage"
 import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
 
-import { useConfig } from "@/context"
-import Button from "@/components/Button"
-import Input from "@/components/Input"
-import debug from "@/utils/debug"
+import { useConfig } from "../../../context"
+import Button from "../../../components/Button"
+import Input from "../../../components/Input"
+import debug from "../../../utils/debug"
 import styles from "./styles/GeneralConfig.module.scss"
+import { Select } from "antd"
 //#endregion
 /**
  * GeneralConfig Component
@@ -60,6 +61,32 @@ const GeneralConfig = () => {
     }
   };
 
+  const selectState = (
+    <Select
+      value={inputs.theme}
+      onChange={e => {
+        handleChange("theme", e.target.value)
+      }}
+      className={styles.themePicker}
+    >
+      <Select.Option
+        value='default'
+      >
+        Стандартная
+      </Select.Option>
+      <Select.Option
+        value='light'
+      >
+        Светлая
+      </Select.Option>
+      <Select.Option
+        value='dark'
+      >
+        Темная
+      </Select.Option>
+    </Select>
+  )
+
   return (
     <>
       Название сайта:
@@ -95,8 +122,8 @@ const GeneralConfig = () => {
             loadingText="Сохраняется..."
           />
         </div>
-        <div className={styles.separator} />
-        <div className={styles.colorBlocksContainer}>
+
+        <div className={styles.blocksColorContainer}>
           <div className={styles.paletteTitle}>
             Цветавая палитра:
           </div>
@@ -136,6 +163,18 @@ const GeneralConfig = () => {
             </div>
           </div>
         </div>
+        <div className={styles.themeColorContainer}>
+          <div className={styles.themeTitle}>
+            Тема:
+          </div>
+          <div className={styles.colorBlocks}>
+            Выбор темы
+            <div className={styles.themePicker}>
+              {selectState}
+            </div>
+          </div>
+        </div>
+
       </div>
       <div className={styles.button}>
         <Button

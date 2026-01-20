@@ -15,6 +15,7 @@ export const CONFIG_DEFAULTS = {
       CONTAINER: "#0073c7",
     },
     LOGO: "/assets/images/logo.webp",
+    THEME: "default",
   },
 };
 
@@ -38,6 +39,7 @@ export const CONFIG_KEYS = {
     CONTAINER: "general.color.containerColor",
   },
   LOGO: "general.logoUrl",
+  THEME: "general.theme",
 };
 
 // Pages

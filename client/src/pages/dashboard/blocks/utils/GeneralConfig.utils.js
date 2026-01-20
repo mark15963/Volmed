@@ -48,7 +48,8 @@ import api from "../../../../services/api";
  * by UI components. It centralizes API logic and keeps UI layers declarative.
  */
 export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
-  const { title, setTitle, color, setColor, logo, setLogo } = config;
+  const { title, setTitle, color, setColor, logo, setLogo, theme, setTheme } =
+    config;
 
   /**
    * Saves the general configuration data to the backend.
@@ -59,6 +60,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
    * @param {string} headerColorInput - Header color in HEX format.
    * @param {string} contentColorInput - Content background color in HEX format.
    * @param {string} containerColorInput - Container background color in HEX format.
+   * @param {string} themeInput - Website's theme/
    * @throws {Error} Throws if any API call fails.
    *
    * @description
@@ -69,6 +71,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
     headerColorInput,
     contentColorInput,
     containerColorInput,
+    themeInput,
   ) => {
     try {
       setIsLoading(true);
@@ -79,6 +82,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         headerColor: headerColorInput,
         contentColor: contentColorInput,
         containerColor: containerColorInput,
+        theme: themeInput,
       });
 
       // Update title
@@ -130,6 +134,23 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         throw new Error(`Color update failed: ${colorErr.message}`);
       }
 
+      // Update theme
+      try {
+        debug.log("🔄 Updating theme...");
+
+        await api.updateTheme({
+          theme: themeInput,
+        });
+
+        const theme = await api.getTheme();
+        if (theme.data.theme === themeInput)
+          debug.log("✅ Theme updated successfully");
+        else debug.error("❌ Theme update failed");
+      } catch (themeErr) {
+        console.error("❌ Theme update failed:", themeErr);
+        throw new Error(`Theme update failed: ${themeErr.message}`);
+      }
+
       // Update local state
       setTitle(titleInput);
       setColor({
@@ -137,6 +158,7 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
         content: contentColorInput,
         container: containerColorInput,
       });
+      setTheme(themeInput);
 
       safeMessage("success", "Данные сохранены!", 2.5);
     } catch (err) {
