@@ -214,21 +214,21 @@ export const ConfigProvider = ({ children }) => {
     )
   }
 
-  const updateConfig = async (apiCall, onSuccess, onerror, label) => {
+  const updateConfig = async (apiCall, onSuccess, onError = () => { }, label) => {
     try {
       const res = await apiCall()
-      debug.log(`[API RESPONSE] ${label}:`, res.data)
+      debug.log(`[API RESPONSE] ${label}:`, res?.data)
 
       if (res?.data) {
         onSuccess(res.data)
         debug.log(`${label} updated successfully`)
       } else {
         debug.warn(`${label} update returned null data:`, res)
-        onError?.()
+        onError()
       }
     } catch (err) {
       debug.error(`[API ERROR] ${label}:`, err)
-      onError?.()
+      onError()
     }
   }
 
