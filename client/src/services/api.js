@@ -90,29 +90,31 @@ const api = {
   /* =======================
      🔧 GENERAL CONFIGURATION
      ======================= */
-  getTitle: () => api.get(`/general/title`),
-  updateTitle: (data) => api.put(`/general/title`, data),
-  getColor: () => api.get(`/general/color`),
-  updateColor: async (payload) => {
-    try {
-      const res = await api.put(`/general/color`, payload);
-      return { ok: true, data: res.data };
-    } catch (err) {
-      return {
-        ok: false,
-        data: null,
-        message: err.message || "Request failed. Try again.",
-        status: err.response?.status || 0,
-      };
-    }
-  },
+  // getTitle: () => api.get(`/general/title`),
+  // updateTitle: (data) => api.put(`/general/title`, data),
+  // getColor: () => api.get(`/general/color`),
+  // updateColor: async (payload) => {
+  //   try {
+  //     const res = await api.put(`/general/color`, payload);
+  //     return { ok: true, data: res.data };
+  //   } catch (err) {
+  //     return {
+  //       ok: false,
+  //       data: null,
+  //       message: err.message || "Request failed. Try again.",
+  //       status: err.response?.status || 0,
+  //     };
+  //   }
+  // },
   getLogo: () => api.get(`/general/get-logo`),
   uploadLogo: (formData) =>
     api.post(`/general/upload-logo`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  getTheme: () => api.get(`/general/theme`),
-  updateTheme: (data) => api.put(`/general/theme`, data),
+  // getTheme: () => api.get(`/general/theme`),
+  // updateTheme: (data) => api.put(`/general/theme`, data),
+  getGeneralConfig: () => api.get(`/general/config`),
+  updateGeneralConfig: (data) => api.put(`/general/config`, data),
 
   /* ===============
      👩‍⚕️ PATIENTS API
