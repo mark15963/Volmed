@@ -240,21 +240,18 @@ router.put("/theme", async (req, res) => {
 
   try {
     const row = await updateRow(
-      `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING "theme"`,
+      `UPDATE general SET theme = $1 WHERE id = 1 RETURNING theme`,
       [{ value: theme }],
+      [],
     );
 
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    const savedTheme = row.theme;
-
-    debug.log("✅ Saved theme from DB:", savedTheme);
-
-    saveCachedConfig({ "general.theme": savedTheme });
+    saveCachedConfig({ theme: row.theme });
     const afterSave = getCachedConfig();
     debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
-    res.json({ theme: savedTheme });
+    res.json({ theme: row.theme });
   } catch (err) {
     console.error("Error updating theme:", err);
     res.status(500).json({ error: "Failed to update theme" });

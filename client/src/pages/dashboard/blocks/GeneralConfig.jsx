@@ -63,10 +63,10 @@ const GeneralConfig = () => {
 
   const selectState = (
     <Select
-      value={inputs.theme}
+      value={inputs.theme ?? "default"}
       onChange={(value) => {
         handleChange("theme", value)
-        handleSave()
+        // handleSave()
       }}
       className={styles.themePicker}
     >
