@@ -232,7 +232,7 @@ router.put("/theme", async (req, res) => {
   debug.log("📝 Raw headers:", req.headers);
   debug.log("📝 Raw body type:", typeof req.body, req.body);
 
-  if (!req.body || !req.body.theme) {
+  if (!req.body || !req.body?.theme) {
     debug.error("❌ Missing theme in request body!");
     return res.status(400).json({ error: "Missing theme in request body" });
   }
@@ -240,20 +240,18 @@ router.put("/theme", async (req, res) => {
   const { theme } = req.body;
 
   debug.log("📝 Received theme update:", { theme });
-  debug.log("📝 Request body:", req.body);
 
   try {
     const row = await updateRow(
       `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING *`,
       [{ value: theme }],
-      // [{ index: 0, name: "Theme" }], // Required
     );
+
     if (!row) return res.status(404).json({ error: "Record not found" });
 
     const savedValue = row.theme;
 
-    debug.log("🔥 DATABASE RETURNED AFTER UPDATE:", savedValue);
-    debug.log("🔥 What we're about to send back:", { theme: savedValue });
+    debug.log("✅ Saved theme from DB:", savedTheme);
 
     saveCachedConfig({ theme: savedValue });
 
