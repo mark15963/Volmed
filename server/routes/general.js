@@ -211,16 +211,16 @@ router.get("/get-logo", (req, res) => {
 //#region ===== Theme routes =====
 router.get("/theme", async (req, res) => {
   try {
-    // const cached = getCachedConfig();
-    // if (cached?.theme) {
-    //   return res.json({ theme: cached.theme });
-    // }
+    const cached = getCachedConfig();
+    if (cached?.theme) {
+      return res.json({ theme: cached.theme });
+    }
 
     const row = await fetchRow("SELECT theme FROM general WHERE id = 1");
     if (!row) return res.status(404).json({ error: "Data not found" });
 
     const theme = row.theme;
-    // saveCachedConfig({ theme });
+    saveCachedConfig({ theme });
 
     res.json({ theme });
   } catch (err) {
@@ -254,6 +254,8 @@ router.put("/theme", async (req, res) => {
     debug.log("✅ Saved theme from DB:", savedValue);
 
     saveCachedConfig({ theme: savedValue });
+    const afterSave = getCachedConfig();
+    debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
     res.json({ theme: savedValue });
   } catch (err) {
