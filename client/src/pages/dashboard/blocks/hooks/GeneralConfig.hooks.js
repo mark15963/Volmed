@@ -69,7 +69,7 @@ export const useGeneralConfig = (config, safeMessage) => {
   useEffect(() => {
     setInputs({
       title: config.title || "",
-      theme: config.theme,
+      theme: config.theme || "default",
       ...config.color,
     });
   }, [config]);
