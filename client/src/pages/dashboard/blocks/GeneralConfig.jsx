@@ -1,13 +1,17 @@
 //#region ===== IMPORTS ===== 
 import { useEffect } from "react"
 
-import { useSafeMessage } from "../../../hooks/useSafeMessage"
-import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
-
-import { useConfig } from "../../../context"
+// Components
 import Button from "../../../components/Button"
 import Input from "../../../components/Input"
+
+// Tools
+import { useSafeMessage } from "../../../hooks/useSafeMessage"
+import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
+import { useConfig } from "../../../context"
 import debug from "../../../utils/debug"
+
+// UI
 import styles from "./styles/GeneralConfig.module.scss"
 import { Select } from "antd"
 //#endregion

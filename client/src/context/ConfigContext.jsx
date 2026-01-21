@@ -86,13 +86,10 @@ const ConfigContext = createContext(null);
  * @property {Object} defaults - Default configuration constants.
  */
 export const ConfigProvider = ({ children }) => {
-  const [title, setTitleState] = useState("");
-  const [color, setColorState] = useState({
-    header: '#3c97e6',
-    content: '#a5c6e2',
-  })
-  const [logo, setLogoState] = useState(null)
-  const [theme, setThemeState] = useState('default')
+  const [title, setTitleState] = useState(CONFIG_DEFAULTS.GENERAL.TITLE);
+  const [color, setColorState] = useState(CONFIG_DEFAULTS.GENERAL.COLOR)
+  const [logo, setLogoState] = useState(CONFIG_DEFAULTS.GENERAL.LOGO)
+  const [theme, setThemeState] = useState(CONFIG_DEFAULTS.GENERAL.THEME)
   const [isLoading, setIsLoading] = useState(true)
 
   const getNestedValue = useCallback((obj, path) => {
@@ -139,48 +136,26 @@ export const ConfigProvider = ({ children }) => {
 
   const fetchFromApi = useCallback(async () => {
     try {
-      const [titleRes, colorRes, logoRes, themeRes] = await Promise.allSettled([
-        api.getTitle(),
-        api.getColor(),
-        api.getLogo(),
-        api.getTheme()
-      ])
-
-      // --- TITLE ---
-      if (titleRes.status === 'fulfilled' && titleRes.value?.data) {
-        setTitleState(titleRes.value.data.title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
+      const configRes = await api.getGeneralConfig()
+      if (!configRes.ok || !configRes.data) {
+        debug.warn("getGeneralConfig failed or no data:", configRes)
       } else {
-        debug.warn("getTitle returned no data or failed:", titleRes);
-        setTitleState(CONFIG_DEFAULTS.GENERAL.TITLE);
-      }
-
-      // --- COLOR ---
-      if (colorRes.status === 'fulfilled' && colorRes.value?.data) {
-        const { headerColor, contentColor, containerColor } = colorRes.value.data
+        const data = configRes.data;
+        setTitleState(data.title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
         setColorState({
-          header: headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
-          content: contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
-          container: containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER
-        })
-      } else {
-        debug.warn("getColor returned no data or failed:", colorRes);
-        setColorState(CONFIG_DEFAULTS.GENERAL.COLOR);
+          header: data.color?.headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+          content: data.color?.contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+          container: data.color?.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
+        });
+        setThemeState(data.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
       }
 
-      // --- LOGO ---
-      if (logoRes.status === 'fulfilled' && logoRes.value?.data?.logoUrl) {
-        setLogoState(logoRes.value.data.logoUrl)
+      const logoRes = await api.getLogo()
+      if (logoRes?.ok && logoRes.data?.logoUrl) {
+        setLogoState(logoRes.data.logoUrl)
       } else {
-        debug.warn("getLogo returned no logoUrl or failed:", logoRes);
-        setLogoState(CONFIG_DEFAULTS.GENERAL.LOGO);
-      }
-
-      // --- THEME ---
-      if (themeRes.status === 'fulfilled' && themeRes.value?.data) {
-        setThemeState(themeRes.value.data.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
-      } else {
-        debug.warn("getTheme returned no data or failed:", themeRes);
-        setThemeState(CONFIG_DEFAULTS.GENERAL.THEME);
+        debug.warn("getLogo failed:", logoRes)
+        setLogoState(CONFIG_DEFAULTS.GENERAL.LOGO)
       }
 
     } catch (error) {
