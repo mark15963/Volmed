@@ -12,8 +12,12 @@ export default defineConfig({
   base: "/",
   envDir: "./",
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 3000,
+    watch: {
+      usePolling: true,
+      interval: 1000,
+    },
   },
   preview: {
     host: "0.0.0.0",
@@ -29,13 +33,13 @@ export default defineConfig({
     manifest: true,
     assetsInlineLimit: 4096, // kB
     chunkSizeWarningLimit: 1000, // kB
-    rollupOptions:{
-      output:{
-        manualChunks:{
-          vendor:['react', 'react-dom']
-        }
-      }
-    }
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
   },
   css: {
     modules: {
@@ -50,5 +54,8 @@ export default defineConfig({
         includePaths: [path.resolve(__dirname, "src")],
       },
     },
+  },
+  optimizeDeps: {
+    include: ["prop-types", "react", "react-dom"],
   },
 });

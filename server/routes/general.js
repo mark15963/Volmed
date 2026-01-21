@@ -1,5 +1,4 @@
 const { Router } = require("express");
-// const { db } = require("../config/db-connection");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -9,7 +8,6 @@ const debug = require("../utils/debug");
 
 const router = Router();
 
-//#region
 router.get("/config", async (req, res) => {
   try {
     const cached = getCachedConfig();
@@ -116,136 +114,6 @@ router.put("/config", async (req, res) => {
     res.status(500).json({ error: "Failed to update config" });
   }
 });
-//#endregion
-
-// //#region ===== Title routes =====
-// router.get("/title", async (req, res) => {
-//   try {
-//     const cached = getCachedConfig();
-//     if (cached?.title) {
-//       return res.json({ title: cached.title });
-//     }
-
-//     const row = await fetchRow('SELECT "title" FROM general WHERE id = 1');
-//     if (!row) return res.status(404).json({ error: "Data not found" });
-
-//     const title = row.title;
-//     saveCachedConfig({ title });
-
-//     res.json({ title });
-//   } catch (err) {
-//     console.error("Error fetching title:", err);
-//     res.status(500).json({ error: "Failed to fetch title" });
-//   }
-// });
-// router.put("/title", async (req, res) => {
-//   debug.log("📝 Raw headers:", req.headers);
-//   debug.log("📝 Raw body type:", typeof req.body, req.body);
-
-//   if (!req.body || !req.body.title) {
-//     debug.error("❌ Missing title in request body!");
-//     return res.status(400).json({ error: "Missing title in request body" });
-//   }
-
-//   const { title } = req.body;
-
-//   debug.log("📝 Received title update:", { title });
-//   debug.log("📝 Request body:", req.body);
-
-//   try {
-//     const row = await updateRow(
-//       `UPDATE general SET "title" = $1 WHERE id = 1 RETURNING *`,
-//       [{ value: title }],
-//       [{ index: 0, name: "Title" }], // Required
-//     );
-//     if (!row) return res.status(404).json({ error: "Record not found" });
-
-//     saveCachedConfig({ title: row.title });
-
-//     res.json({ title: row.title });
-//   } catch (err) {
-//     console.error("Error updating title:", err);
-//     res.status(500).json({ error: "Failed to update title" });
-//   }
-// });
-// //#endregion
-// //#region ===== Color routes =====
-// router.get("/color", async (req, res) => {
-//   try {
-//     const cached = getCachedConfig();
-//     if (cached?.color) {
-//       return res.json(cached.color);
-//     }
-//     const row = await fetchRow(`
-//       SELECT "headerColor", "contentColor", "containerColor"
-//       FROM general
-//       WHERE id = 1
-//     `);
-
-//     if (!row) return res.status(404).json({ error: "Data not found" });
-
-//     const color = {
-//       headerColor: row.headerColor,
-//       contentColor: row.contentColor,
-//       containerColor: row.containerColor,
-//     };
-//     saveCachedConfig({ color });
-
-//     res.json(color);
-//   } catch (err) {
-//     console.error("Error fetching color:", err);
-//     res.status(500).json({ error: "Failed to fetch color" });
-//   }
-// });
-// router.put("/color", async (req, res) => {
-//   const {
-//     headerColor = req.body.header,
-//     contentColor = req.body.content,
-//     containerColor = req.body.container,
-//   } = req.body;
-
-//   debug.log("🎨 Received color update:", {
-//     headerColor,
-//     contentColor,
-//     containerColor,
-//   });
-//   debug.log("🎨 Request body:", req.body);
-
-//   try {
-//     const row = await updateRow(
-//       `
-//       UPDATE general
-//       SET "headerColor" = $1, "contentColor" = $2, "containerColor" = $3
-//       WHERE id = 1
-//       RETURNING *
-//       `,
-//       [
-//         { value: headerColor },
-//         { value: contentColor },
-//         { value: containerColor },
-//       ],
-//       [
-//         { index: 0, name: "Header color" }, // Required
-//         { index: 1, name: "Content color" }, // Required
-//         { index: 2, name: "Container color" }, // Required
-//       ],
-//     );
-//     if (!row) return res.status(404).json({ error: "Record not found" });
-
-//     const color = {
-//       headerColor: row.headerColor,
-//       contentColor: row.contentColor,
-//       containerColor: row.containerColor,
-//     };
-//     saveCachedConfig({ color });
-
-//     res.json(color);
-//   } catch (err) {
-//     console.error("Error updating color:", err);
-//     res.status(500).json({ error: "Failed to update color" });
-//   }
-// });
-// //#endregion
 
 //#region ===== Logo configs =====
 // Define permanent upload location (client's public assets folder)
@@ -318,54 +186,5 @@ router.get("/get-logo", (req, res) => {
 });
 //#endregion
 //#endregion
-
-// //#region ===== Theme routes =====
-// router.get("/theme", async (req, res) => {
-//   try {
-//     const cached = getCachedConfig();
-//     if (cached?.theme) {
-//       return res.json({ theme: cached.theme });
-//     }
-
-//     const row = await fetchRow("SELECT theme FROM general WHERE id = 1");
-//     if (!row) return res.status(404).json({ error: "Data not found" });
-
-//     const theme = row.theme;
-//     saveCachedConfig({ theme });
-
-//     res.json({ theme });
-//   } catch (err) {
-//     console.error("Error fetching theme:", err);
-//     res.status(500).json({ error: "Failed to fetch theme" });
-//   }
-// });
-// router.put("/theme", async (req, res) => {
-//   if (!req.body || !req.body?.theme) {
-//     debug.error("❌ Missing theme in request body!");
-//     return res.status(400).json({ error: "Missing theme in request body" });
-//   }
-
-//   const { theme } = req.body;
-
-//   debug.log("📝 Received theme update:", { theme });
-
-//   try {
-//     const row = await updateRow(
-//       `UPDATE general SET theme = $1 WHERE id = 1 RETURNING theme`,
-//       [{ value: theme }],
-//       [],
-//     );
-
-//     if (!row) return res.status(404).json({ error: "Record not found" });
-
-//     saveCachedConfig({ theme: row.theme });
-
-//     res.json({ theme: row.theme });
-//   } catch (err) {
-//     console.error("Error updating theme:", err);
-//     res.status(500).json({ error: "Failed to update theme" });
-//   }
-// });
-// //#endregion
 
 module.exports = router;

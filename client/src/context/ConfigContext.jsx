@@ -173,21 +173,17 @@ export const ConfigProvider = ({ children }) => {
   const updateGeneral = async (updates) => {
     try {
       const res = await api.updateGeneralConfig(updates)
-      console.log("RAW RESPONSE from /general/config:", res);
-
       if (!res.ok || !res.data) {
         debug.warn("updateGeneralConfig failed:", res)
         return false
       }
 
       const data = res.data
-      console.log("Parsed data:", data);               // ← look here in browser console
-      console.log("Current color before update:", color);
 
       setTitleState((data.title ?? title) || CONFIG_DEFAULTS.GENERAL.TITLE)
       if (data.color) {
         setColorState(prev => {
-          const serverColor = data.color || {}; // prevent undefined access
+          const serverColor = data.color || {};
 
           return {
             header: (serverColor.headerColor ?? prev.header) ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,

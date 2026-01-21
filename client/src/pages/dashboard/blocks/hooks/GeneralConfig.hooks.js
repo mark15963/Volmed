@@ -68,6 +68,21 @@ export const useGeneralConfig = (config, safeMessage) => {
     });
   }, [config]);
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter" && !isLoading) {
+        const active = document.activeElement;
+        if (active.tagName === "INPUT" || active.tagName === "TEXTAREA") {
+          e.preventDefault();
+          handleSave();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [isLoading, inputs]);
+
   //#region ===== HANDLERS =====
   const handleSave = async () => {
     const { title, header, content, container, theme } = inputs;
@@ -154,21 +169,6 @@ export const useGeneralConfig = (config, safeMessage) => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (e.key === "Enter" && !isLoading) {
-        const active = document.activeElement;
-        if (active.tagName === "INPUT" || active.tagName === "TEXTAREA") {
-          e.preventDefault();
-          handleSave();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyPress);
-    return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [isLoading, inputs]);
 
   const handleChange = (key, value) => {
     setInputs((prev) => ({ ...prev, [key]: value }));
