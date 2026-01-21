@@ -250,7 +250,7 @@ router.put("/theme", async (req, res) => {
 
     debug.log("✅ Saved theme from DB:", savedTheme);
 
-    saveCachedConfig({ [CONFIG_KEYS.THEME]: savedTheme });
+    saveCachedConfig({ "general.theme": savedTheme });
     const afterSave = getCachedConfig();
     debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
