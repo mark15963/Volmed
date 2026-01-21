@@ -251,7 +251,7 @@ router.put("/theme", async (req, res) => {
 
     const savedValue = row.theme;
 
-    debug.log("✅ Saved theme from DB:", savedTheme);
+    debug.log("✅ Saved theme from DB:", savedValue);
 
     saveCachedConfig({ theme: savedValue });
 
