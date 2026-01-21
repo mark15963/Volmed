@@ -4,7 +4,6 @@ import axios from 'axios';
 
 import App from './App.jsx'
 
-import '@ant-design/v5-patch-for-react-19';
 import { ConfigProvider } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
 import './index.css'
