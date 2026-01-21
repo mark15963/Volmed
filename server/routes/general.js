@@ -229,9 +229,6 @@ router.get("/theme", async (req, res) => {
   }
 });
 router.put("/theme", async (req, res) => {
-  debug.log("📝 Raw headers:", req.headers);
-  debug.log("📝 Raw body type:", typeof req.body, req.body);
-
   if (!req.body || !req.body?.theme) {
     debug.error("❌ Missing theme in request body!");
     return res.status(400).json({ error: "Missing theme in request body" });
@@ -243,17 +240,17 @@ router.put("/theme", async (req, res) => {
 
   try {
     const row = await updateRow(
-      `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING *`,
+      `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING "theme"`,
       [{ value: theme }],
     );
 
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    const savedValue = row.theme;
+    const savedTheme = row.theme;
 
-    debug.log("✅ Saved theme from DB:", savedValue);
+    debug.log("✅ Saved theme from DB:", savedTheme);
 
-    saveCachedConfig({ theme: savedValue });
+    saveCachedConfig({ [CONFIG_KEYS.THEME]: savedTheme });
     const afterSave = getCachedConfig();
     debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
