@@ -64,26 +64,15 @@ const GeneralConfig = () => {
   const selectState = (
     <Select
       value={inputs.theme}
-      onChange={e => {
-        handleChange("theme", e.target.value)
+      onChange={(value) => {
+        handleChange("theme", value)
+        handleSave()
       }}
       className={styles.themePicker}
     >
-      <Select.Option
-        value='default'
-      >
-        Стандартная
-      </Select.Option>
-      <Select.Option
-        value='light'
-      >
-        Светлая
-      </Select.Option>
-      <Select.Option
-        value='dark'
-      >
-        Темная
-      </Select.Option>
+      <Select.Option value="default">Стандартная</Select.Option>
+      <Select.Option value="light">Светлая</Select.Option>
+      <Select.Option value="dark">Темная</Select.Option>
     </Select>
   )
 

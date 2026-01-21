@@ -211,16 +211,16 @@ router.get("/get-logo", (req, res) => {
 //#region ===== Theme routes =====
 router.get("/theme", async (req, res) => {
   try {
-    const cached = getCachedConfig();
-    if (cached?.theme) {
-      return res.json({ theme: cached.theme });
-    }
+    // const cached = getCachedConfig();
+    // if (cached?.theme) {
+    //   return res.json({ theme: cached.theme });
+    // }
 
-    const row = await fetchRow('SELECT "theme" FROM general WHERE id = 1');
+    const row = await fetchRow("SELECT theme FROM general WHERE id = 1");
     if (!row) return res.status(404).json({ error: "Data not found" });
 
     const theme = row.theme;
-    saveCachedConfig({ theme });
+    // saveCachedConfig({ theme });
 
     res.json({ theme });
   } catch (err) {
@@ -246,13 +246,18 @@ router.put("/theme", async (req, res) => {
     const row = await updateRow(
       `UPDATE general SET "theme" = $1 WHERE id = 1 RETURNING *`,
       [{ value: theme }],
-      [{ index: 0, name: "Theme" }], // Required
+      // [{ index: 0, name: "Theme" }], // Required
     );
     if (!row) return res.status(404).json({ error: "Record not found" });
 
-    saveCachedConfig({ theme: row.theme });
+    const savedValue = row.theme;
 
-    res.json({ theme: row.theme });
+    debug.log("🔥 DATABASE RETURNED AFTER UPDATE:", savedValue);
+    debug.log("🔥 What we're about to send back:", { theme: savedValue });
+
+    saveCachedConfig({ theme: savedValue });
+
+    res.json({ theme: savedValue });
   } catch (err) {
     console.error("Error updating theme:", err);
     res.status(500).json({ error: "Failed to update theme" });
