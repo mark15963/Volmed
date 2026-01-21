@@ -226,7 +226,7 @@ export const ConfigProvider = ({ children }) => {
         debug.warn(`${label} update returned null data:`, res)
         onError?.()
       }
-    } catch (error) {
+    } catch (err) {
       debug.error(`[API ERROR] ${label}:`, err)
       onError?.()
     }
