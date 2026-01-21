@@ -254,7 +254,7 @@ router.put("/theme", async (req, res) => {
     const afterSave = getCachedConfig();
     debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
-    res.json({ theme: savedValue });
+    res.json({ theme: savedTheme });
   } catch (err) {
     console.error("Error updating theme:", err);
     res.status(500).json({ error: "Failed to update theme" });
