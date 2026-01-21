@@ -21,7 +21,7 @@ import { ListOfPatients } from "../patientsList/components/ListOfPatients"
 
 export const Dashboard = () => {
   const navigate = useNavigate()
-  const { color } = useConfig()
+  const { color, theme } = useConfig()
 
   return (
     <div
@@ -58,7 +58,7 @@ export const Dashboard = () => {
 
       <Row>
         <Block title='ПАЦИЕНТЫ'>
-          <ListOfPatients theme="light" />
+          <ListOfPatients theme={theme} />
         </Block>
       </Row>
 

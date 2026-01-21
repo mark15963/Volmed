@@ -66,7 +66,6 @@ const GeneralConfig = () => {
       value={inputs.theme}
       onChange={(value) => {
         handleChange("theme", value)
-        // handleSave()
       }}
       className={styles.themePicker}
     >

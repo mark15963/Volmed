@@ -80,7 +80,6 @@ export const useGeneralConfig = (config, safeMessage) => {
   };
   const handleSaveWrapper = async () => {
     const { title, header, content, container, theme, ...rest } = inputs;
-    console.log(theme);
     await handleSave(title, header, content, container, theme, rest);
   };
 
