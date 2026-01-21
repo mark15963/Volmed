@@ -136,14 +136,13 @@ export const useGeneralConfigLogic = (config, safeMessage, setIsLoading) => {
 
       // Update theme
       try {
-        debug.log(`🔄 Updating theme... ${themeInput}`);
+        debug.log(`🔄 Updating theme...`);
 
         await api.updateTheme({
           theme: themeInput,
         });
 
         const theme = await api.getTheme();
-        console.log(theme.data);
         if (theme.data.theme === themeInput)
           debug.log("✅ Theme updated successfully");
         else debug.error("❌ Theme update failed");

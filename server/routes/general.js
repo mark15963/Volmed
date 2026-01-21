@@ -248,8 +248,6 @@ router.put("/theme", async (req, res) => {
     if (!row) return res.status(404).json({ error: "Record not found" });
 
     saveCachedConfig({ theme: row.theme });
-    const afterSave = getCachedConfig();
-    debug.log("CACHE AFTER SAVE THEME:", afterSave);
 
     res.json({ theme: row.theme });
   } catch (err) {
