@@ -15,7 +15,7 @@ import Button from "@/components/Button"
 import styles from './dashboard.module.scss'
 import '@/styles/index.scss'
 import { PAGES } from "@/constants"
-import { useConfig } from "@/context"
+import { useConfig } from "../../context"
 import { ListOfPatients } from "../patientsList/components/ListOfPatients"
 //#endregion
 
