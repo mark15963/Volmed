@@ -40,27 +40,59 @@ router.get("/config", async (req, res) => {
 });
 router.put("/config", async (req, res) => {
   const { title, headerColor, contentColor, containerColor, theme } = req.body;
+
+  if (
+    title === undefined &&
+    headerColor === undefined &&
+    contentColor === undefined &&
+    containerColor === undefined &&
+    theme === undefined
+  ) {
+    return res.status(400).json({ error: "No fields provided to update" });
+  }
+
   try {
-    const row = await updateRow(
-      `
-    UPDATE general
-    SET 
-      title = $1, 
-      "headerColor" = $2, 
-      "contentColor" = $3, 
-      "containerColor" = $4, 
-      theme = $5
-    WHERE id = 1
-    RETURNING *
-  `,
-      [
-        { value: title },
-        { value: headerColor },
-        { value: contentColor },
-        { value: containerColor },
-        { value: theme },
-      ],
-    );
+    const setParts = [];
+    let paramValues = [];
+
+    if (title !== undefined) {
+      setParts.push(`title = $${setParts.length + 1}`);
+      paramValues.push(title);
+    }
+
+    if (headerColor !== undefined) {
+      setParts.push(`"headerColor" = $${setParts.length + 1}`);
+      paramValues.push(headerColor);
+    }
+
+    if (contentColor !== undefined) {
+      setParts.push(`"contentColor" = $${setParts.length + 1}`);
+      paramValues.push(contentColor);
+    }
+
+    if (containerColor !== undefined) {
+      setParts.push(`"containerColor" = $${setParts.length + 1}`);
+      paramValues.push(containerColor);
+    }
+
+    if (theme !== undefined) {
+      setParts.push(`theme = $${setParts.length + 1}`);
+      paramValues.push(theme);
+    }
+
+    // Safety check (should not happen due to earlier validation)
+    if (setParts.length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
+    }
+
+    const query = `
+      UPDATE general
+      SET ${setParts.join(", ")}
+      WHERE id = 1
+      RETURNING title, "headerColor", "contentColor", "containerColor", theme
+    `;
+
+    const row = await updateRow(query, paramValues);
 
     if (!row) return res.status(404).json({ error: "Record not found" });
 
@@ -75,6 +107,8 @@ router.put("/config", async (req, res) => {
     };
 
     saveCachedConfig(fullConfig);
+
+    debug.log("Config partially updated:", fullConfig);
 
     res.json(fullConfig);
   } catch (err) {

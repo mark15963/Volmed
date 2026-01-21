@@ -1,15 +1,16 @@
-async function fetchRow(query, params = []) {
+async function fetchRow(query, values = []) {
   const { db } = require("../config/db-connection");
-  const { rows } = await db.query(query, params);
+  const { rows } = await db.query(query, values);
   return rows[0] || null;
 }
 
-async function updateRow(query, params = []) {
+async function updateRow(query, values = []) {
   const { db } = require("../config/db-connection");
-  const { rows } = await db.query(
-    query,
-    params.map((p) => p.value)
-  );
+  const { rows } = await db.query(query, values);
+  // const { rows } = await db.query(
+  //   query,
+  //   params.map((p) => p.value)
+  // );
   return rows[0] || null;
 }
 
