@@ -94,7 +94,7 @@ export const useGeneralConfig = (config, safeMessage) => {
 
     try {
       setIsLoading(true);
-      safeMessage("loading", "Данные сохраняются...", 1);
+      safeMessage("loading", "Данные сохраняются...");
 
       debug.log("🔄 Saving general config:", {
         title,
@@ -112,9 +112,8 @@ export const useGeneralConfig = (config, safeMessage) => {
         theme,
       });
 
-      if (!res.ok) {
-        throw new Error(res.message || "Ошибка сервера");
-      }
+      if (!res.ok) throw new Error(res.message || "Ошибка сервера");
+
       // Update local state. Data from GeneralConfig.jsx
       config.setTitle(title);
       config.setColor({

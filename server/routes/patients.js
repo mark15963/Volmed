@@ -74,7 +74,7 @@ router.post("/patients", isAuth, async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({
       error: "Bad Request",
-      message: "Request body is empty or invalid"
+      message: "Request body is empty or invalid",
     });
   }
 
@@ -85,10 +85,10 @@ router.post("/patients", isAuth, async (req, res) => {
   if (!keys.length) {
     return res.status(400).json({
       error: "Bad Request",
-      message: "No data provided to create patient"
+      message: "No data provided to create patient",
     });
   }
-  
+
   const quotedKeys = keys.map((key) => `"${key}"`);
   const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
 

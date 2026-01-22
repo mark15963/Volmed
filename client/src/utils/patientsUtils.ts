@@ -1,6 +1,14 @@
 import moment from "moment";
 import debug from "./debug";
 
+//#region === INTERFACES ===
+export interface PatientForSearch{
+  id?: string;
+  lastName: string;
+  firstName: string;
+  patr?: string;
+}
+//#endregion
 //#region === TYPES ===
 export type PatientState =
   | "Удовлетворительное"
@@ -64,3 +72,21 @@ export const getAgeSuffix = (age: number): string => {
       return "лет";
   }
 };
+
+export function ensureString<T>(value: T | null | undefined): string {
+  if(value == null) return '';
+  if(typeof value === 'string') return value;
+  if(typeof value === 'number') return String(value);
+  if(typeof value === 'boolean') return value ? 'true' : 'false';
+
+  debug.warn('ensureString received non-primitive value:', value)
+  return String(value ?? '')
+}
+
+export const formatPhone = (phone: string | undefined): string => 
+  phone
+    ? `+7${phone.replace(/\D/g, '').replace(/^7/, '')}`
+    : '';
+
+export const formatDateForServer = (dayjsObj: any): string | null => 
+        dayjsObj?.format('YYYY-MM-DD') ?? null;
