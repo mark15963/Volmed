@@ -15,6 +15,9 @@ import { Buttons } from './Components/Buttons'
 import { useAuth } from "../../context"
 import { useSafeMessage } from '../../hooks/useSafeMessage'
 
+// Constants
+import { PATIENT_FORM_INITIAL_VALUES } from '../../constants'
+
 // UI & Services
 import styles from './register.module.scss'
 import api from '../../services/api.js'
@@ -30,44 +33,55 @@ export const RegisterPatient = ({ initialValues = null, isEditMode = false, pati
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [formValues, setFormValues] = useState({
-    lastName: '',
-    firstName: '',
-    patr: '',
-    type: 'Плановая',
-    sex: '',
-    birthDate: null,
-    sender: '',
-    sendingTime: '',
-    insurance: '',
-    phone: '',
-    address: '',
-    email: '',
-    freq: 'Впервые',
-    firstDiag: '',
-    complaint: '',
-    anam: '',
-    life: '',
-    status: '',
-    mkb: '',
-    diag: '',
-    sop_zab: '',
-    rec: '',
-    state: 'Удовлетворительно',
+  const [formValues, setFormValues] = useState(() => {
+    if (!initialValues) {
+      return PATIENT_FORM_INITIAL_VALUES
+    }
+    return {
+      ...initialValues,
+      birthDate: initialValues.birthDate
+        ? dayjs(initialValues.birthDate)
+        : null
+    }
   })
+  // const [formValues, setFormValues] = useState({
+  //   lastName: '',
+  //   firstName: '',
+  //   patr: '',
+  //   type: 'Плановая',
+  //   sex: '',
+  //   birthDate: null,
+  //   sender: '',
+  //   sendingTime: '',
+  //   insurance: '',
+  //   phone: '',
+  //   address: '',
+  //   email: '',
+  //   freq: 'Впервые',
+  //   firstDiag: '',
+  //   complaint: '',
+  //   anam: '',
+  //   life: '',
+  //   status: '',
+  //   mkb: '',
+  //   diag: '',
+  //   sop_zab: '',
+  //   rec: '',
+  //   state: 'Удовлетворительно',
+  // })
 
   const doctor = `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
 
-  useEffect(() => {
-    if (initialValues) {
-      setFormValues({
-        ...initialValues,
-        birthDate: initialValues.birthDate
-          ? dayjs(initialValues.birthDate)
-          : null
-      });
-    }
-  }, [initialValues]);
+  // useEffect(() => {
+  //   if (initialValues) {
+  //     setFormValues({
+  //       ...initialValues,
+  //       birthDate: initialValues.birthDate
+  //         ? dayjs(initialValues.birthDate)
+  //         : null
+  //     });
+  //   }
+  // }, [initialValues]);
 
   const handleChange = (name, value) => {
     setFormValues((prev) => ({ ...prev, [name]: value }))

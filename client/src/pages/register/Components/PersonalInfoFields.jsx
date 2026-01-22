@@ -1,11 +1,17 @@
-import { DatePicker, Radio, Form, Select } from 'antd';
+//#region ===== IMPORTS =====
 import { IMaskInput } from 'react-imask';
 const { default: dayjs, datePickerLocale } = await import('../dayjs.config')
 
 import Input from '../../../components/Input';
+import { PhoneField } from './PhoneField';
+import {
+  ADMISSION_TYPE_OPTIONS,
+  SEX_OPTIONS
+} from '../../../constants';
 
 import styles from '../register.module.scss'
-import { PhoneField } from './PhoneField';
+import { DatePicker, Radio, Form, Select } from 'antd';
+//#endregion
 
 export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) => {
   return (
@@ -43,8 +49,8 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
             value={formValues.type}
             onChange={val => handleChange('type', val)}
             options={[
-              { value: 'Плановая', label: 'Плановая' },
-              { value: 'Экстренная', label: 'Экстренная' }
+              // { value: 'Плановая', label: 'Плановая' },
+              // { value: 'Экстренная', label: 'Экстренная' }
             ]}
           />
         </div>
@@ -141,8 +147,8 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
           value={formValues.freq}
           onChange={val => handleChange('freq', val)}
           options={[
-            { value: 'Впервые', label: 'Впервые' },
-            { value: 'Повторно', label: 'Повторно' }
+            // { value: 'Впервые', label: 'Впервые' },
+            // { value: 'Повторно', label: 'Повторно' }
           ]}
         />
       </div>
