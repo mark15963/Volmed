@@ -2,10 +2,10 @@ export * from "./patient-form.constants";
 export * from "./patient-status.constants";
 export * from "./select-options.constants";
 
-export const services = [
+export const SERVICE = [
   {
-    title: "Project name",
-    content: "Volmed", // Footer name
+    project: "Volmed",
+    year: "2025",
   },
 ];
 

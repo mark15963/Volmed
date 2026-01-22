@@ -1,16 +1,20 @@
 //#region ===== IMPORTS =====
 import { IMaskInput } from 'react-imask';
-const { default: dayjs, datePickerLocale } = await import('../dayjs.config')
 
+
+// TOOLS
 import Input from '../../../components/Input';
-import { PhoneField } from './PhoneField';
+const { default: dayjs, datePickerLocale } = await import('../../../utils/dayjs.config')
+import { PhoneField } from '../../../components/PhoneField';
 import {
   ADMISSION_TYPE_OPTIONS,
-  SEX_OPTIONS
+  SEX_OPTIONS,
+  FORM_OF_CARE_OPTIONS
 } from '../../../constants';
 
-import styles from '../register.module.scss'
+// UI
 import { DatePicker, Radio, Form, Select } from 'antd';
+import styles from '../register.module.scss'
 //#endregion
 
 export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) => {
@@ -48,10 +52,7 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
           <Select
             value={formValues.type}
             onChange={val => handleChange('type', val)}
-            options={[
-              // { value: 'Плановая', label: 'Плановая' },
-              // { value: 'Экстренная', label: 'Экстренная' }
-            ]}
+            options={FORM_OF_CARE_OPTIONS}
           />
         </div>
       </div>
@@ -64,8 +65,15 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
             value={formValues.sex}
             onChange={e => handleChange("sex", e.target.value)}
           >
-            <Radio style={{ color: 'aliceblue' }} value="Мужской">М</Radio>
-            <Radio style={{ color: 'aliceblue' }} value="Женский">Ж</Radio>
+            {SEX_OPTIONS.map(opt => (
+              <Radio
+                key={opt.value}
+                style={{ color: 'aliceblue', fontWeight: '500' }}
+                value={opt.value}
+              >
+                {opt.label}
+              </Radio>
+            ))}
           </Radio.Group>
         </div>
 
@@ -146,10 +154,7 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
         <Select
           value={formValues.freq}
           onChange={val => handleChange('freq', val)}
-          options={[
-            // { value: 'Впервые', label: 'Впервые' },
-            // { value: 'Повторно', label: 'Повторно' }
-          ]}
+          options={ADMISSION_TYPE_OPTIONS}
         />
       </div>
       <div className={styles.firstDiag}>

@@ -16,7 +16,7 @@ export const SEX_OPTIONS = [
 export const PATIENT_STATE_OPTIONS = [
   { value: "Удовлетворительно", label: "Удовлетворительно" },
   { value: "Средней степени тяжести", label: "Средней степени тяжести" },
-  // { value: "Тяжёлое", label: "Тяжёлое" },
+  { value: "Тяжёлое", label: "Тяжёлое" },
   { value: "Крайне тяжелое", label: "Крайне тяжелое" },
   { value: "Выписан", label: "Выписан" },
 ];

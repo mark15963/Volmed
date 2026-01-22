@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 import Textarea from '../../../components/Textarea';
-import { FORM_OF_CARE_OPTIONS } from '../../../constants';
+import { PATIENT_STATE_OPTIONS } from '../../../constants';
 
 import { Form, Input, Select, Tooltip } from 'antd';
 import styles from '../register.module.scss'
@@ -148,7 +148,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Select
           value={formValues.state}
           onChange={(value) => handleChange("state", value)}
-          options={FORM_OF_CARE_OPTIONS}
+          options={PATIENT_STATE_OPTIONS}
         />
       </div>
     </div>

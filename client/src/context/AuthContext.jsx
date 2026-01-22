@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import api from "../services/api";
 
 import debug from "../utils/debug";
-import { parseApiError, parseApiResponse } from "../utils/parseApiResponse";
+import { parseApiError, parseApiResponse } from "../utils";
 import { fetchUserStatus } from "../services/fetchUserStatus";
 //#endregion
 

@@ -1,7 +1,7 @@
 //#region ===== IMPORTS =====
 import axios from "axios";
 import debug from "../utils/debug";
-import { parseApiResponse, parseApiError } from "../utils/parseApiResponse";
+import { parseApiError, parseApiResponse } from "../utils";
 //#endregion
 
 const environment = import.meta.env.VITE_ENV;
@@ -14,6 +14,7 @@ axios.defaults.withCredentials = true;
  * Sets baseURL from environment variable,
  * adds default headers, and disables strict status validation
  * (we handle success/error manually in parseApiResponse()).
+ * No need to add "Content-Type":"application/json" header.
  */
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -90,31 +91,13 @@ const api = {
   /* =======================
      🔧 GENERAL CONFIGURATION
      ======================= */
-  // getTitle: () => api.get(`/general/title`),
-  // updateTitle: (data) => api.put(`/general/title`, data),
-  // getColor: () => api.get(`/general/color`),
-  // updateColor: async (payload) => {
-  //   try {
-  //     const res = await api.put(`/general/color`, payload);
-  //     return { ok: true, data: res.data };
-  //   } catch (err) {
-  //     return {
-  //       ok: false,
-  //       data: null,
-  //       message: err.message || "Request failed. Try again.",
-  //       status: err.response?.status || 0,
-  //     };
-  //   }
-  // },
+  getGeneralConfig: () => api.get(`/general/config`),
+  updateGeneralConfig: (data) => api.put(`/general/config`, data),
   getLogo: () => api.get(`/general/get-logo`),
   uploadLogo: (formData) =>
     api.post(`/general/upload-logo`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  // getTheme: () => api.get(`/general/theme`),
-  // updateTheme: (data) => api.put(`/general/theme`, data),
-  getGeneralConfig: () => api.get(`/general/config`),
-  updateGeneralConfig: (data) => api.put(`/general/config`, data),
 
   /* ===============
      👩‍⚕️ PATIENTS API
