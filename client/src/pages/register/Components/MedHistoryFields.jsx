@@ -1,8 +1,12 @@
-import { Form, Input, Select, Tooltip } from 'antd';
-
-import styles from '../register.module.scss'
+//#region ===== IMPORTS =====
 import { useState } from 'react';
+
 import Textarea from '../../../components/Textarea';
+import { FORM_OF_CARE_OPTIONS } from '../../../constants';
+
+import { Form, Input, Select, Tooltip } from 'antd';
+import styles from '../register.module.scss'
+//#endregion
 
 const isPastCutoffDate = new Date() > new Date('2025-05-31');
 
@@ -38,39 +42,6 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
       return [];
     }
   };
-
-  const selectState = (
-    <Select
-      value={formValues.state}
-      onChange={(value) => handleChange("state", value)}
-    >
-      <Select.Option
-        value='Удовлетворительное'
-      >
-        Удовлетворительное
-      </Select.Option>
-      <Select.Option
-        value='Средней степени тяжести'
-      >
-        Средней степени тяжести
-      </Select.Option>
-      <Select.Option
-        value='Тяжёлое'
-      >
-        Тяжёлое
-      </Select.Option>
-      <Select.Option
-        value='Крайне тяжелое'
-      >
-        Крайне тяжелое
-      </Select.Option>
-      <Select.Option
-        value='Выписан'
-      >
-        Выписан
-      </Select.Option>
-    </Select>
-  )
 
   return (
     <div className={styles.bottomForms}>
@@ -174,7 +145,11 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
 
       <div className={styles.formItem}>
         <label>Общее состояние</label>
-        {selectState}
+        <Select
+          value={formValues.state}
+          onChange={(value) => handleChange("state", value)}
+          options={FORM_OF_CARE_OPTIONS}
+        />
       </div>
     </div>
   )
