@@ -17,6 +17,15 @@ const isAuth = async (req, res, next) => {
   }
 };
 
+const isAdmin = async (req, res, next) => {
+  try {
+    if (req.session.isAdmin) next();
+  } catch (error) {
+    debug.log("Only admin allowed");
+    res.status(401).json(error.message);
+  }
+};
+
 //#region ===== PATIENTS =====
 //Get all patients
 router.get("/patients", isAuth, async (req, res) => {
@@ -147,7 +156,7 @@ router.put("/patients/:id", isAuth, async (req, res) => {
   }
 });
 // Delete a patient
-router.delete("/patients/:id", isAuth, async (req, res) => {
+router.delete("/patients/:id", isAuth, isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
