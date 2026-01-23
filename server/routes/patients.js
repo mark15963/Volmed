@@ -244,7 +244,7 @@ router.get("/patients/:id/files", isAuth, (req, res) => {
         filename: fn,
         originalname: fn,
         path: `/uploads/patients/${req.params.id}/${fn}`,
-        size: st.size,
+        size: `${st.size} bytes`,
       };
     });
     res.json(files);
