@@ -1,4 +1,4 @@
-import { SpinLoader } from "@/components/loaders/SpinLoader"
+import { SpinLoader } from "@/components/ui/loaders/SpinLoader"
 import { usePatients, useUsers } from '../../../context'
 
 import styles from '../../dashboard/dashboard.module.scss'
