@@ -224,7 +224,7 @@ router.post(
   upload.single("file"),
   (req, res) => {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-    res.json({
+    res.status(200).json({
       success: true,
       filename: req.file.filename,
       originalname: req.file.originalname,
