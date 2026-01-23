@@ -11,14 +11,9 @@ import { ListProps } from "../../../types/table";
 // --- HOOKS ---
 import { usePatientList } from "../../../hooks/Patients/usePatientsList";
 
-// --- TOOLS ---
-import debug from "../../../utils/debug";
-
 // --- UI ---
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { SkeletonLoader } from "../../../components/ui/loaders/SkeletonLoader";
 import styles from "../../../components/tables/PatientsListRow.module.scss";
-import { SkeletonLoader } from "../../../components/loaders/SkeletonLoader";
 //#endregion
 
 /**
@@ -58,14 +53,13 @@ export const ListOfPatients: FC<ListProps> = ({
   }, [error]);
 
   const renderContent = () => {
-    if (loading) {
-      return <SkeletonLoader lines="5" />;
-    }
+    if (loading) return <SkeletonLoader lines="5" />;
     if (error) {
       return (
         <tr>
           <td colSpan={10} className={styles.noData}>
             Ошибка загрузки пациентов...
+            {error}
           </td>
         </tr>
       );
@@ -84,13 +78,13 @@ export const ListOfPatients: FC<ListProps> = ({
         </tr>
       );
     }
-    return filteredPatients.map((p) => (
+    return filteredPatients.map((patient) => (
       <PatientsListRow
-        key={p.id}
-        patient={p}
+        key={patient.id}
+        patient={patient}
         onClick={() => {
-          navigate(`/search/${p.id}`, {
-            state: { patient: p },
+          navigate(`/search/${patient.id}`, {
+            state: { patient },
           });
         }}
       />

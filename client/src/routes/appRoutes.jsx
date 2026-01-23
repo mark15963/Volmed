@@ -1,7 +1,7 @@
 // Used in Content.jsx
 
 import { lazy } from "react";
-import ProtectedRoute from "../layouts/content/ProtectedRoute";
+import ProtectedRoute from "../layouts/content/components/ProtectedRoute";
 
 //#region === PAGES ===
 const Main = lazy(() => import("../pages/main/Main"));

@@ -2,22 +2,18 @@
 import { Routes, Route } from "react-router"
 import { lazy, Suspense } from 'react'
 
-import OfflineFallback from "../../services/notifications/offlineFallback";
-
-import { useConfig } from '../../context'
-import { usePageTitle } from "../../utils/usePageTitle";
-
-import debug from "../../utils/debug";
-import ProtectedRoute from './ProtectedRoute'
-
 import { appRoutes } from "../../routes/appRoutes";
+import { useConfig } from '../../context'
 
-//----- COMPONENTS -----
+// Components
 {/* Handicap loader */ }
-import Loader from "../../components/loaders/Loader";
+import Loader from "../../components/ui/loaders/Loader";
+import ProtectedRoute from './components/ProtectedRoute'
+import OfflineFallback from "../../components/ui/offlineFallback";
 
-// ----- STYLE -----
-import './content.scss'
+// UI
+import styles from './content.module.scss'
+import { debug, usePageTitle } from "../../utils";
 //#endregion
 
 const Content = () => {
@@ -27,7 +23,8 @@ const Content = () => {
   usePageTitle()
 
   return (
-    <main // Main style is imported
+    <main
+      className={styles.main}
       style={{
         backgroundColor: color.content, // From cache
       }}

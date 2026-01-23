@@ -10,7 +10,7 @@ import { useSafeMessage } from '../../../hooks/useSafeMessage';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-import { SpinLoader } from '../../../components/loaders/SpinLoader';
+import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
 import styles from './styles/tab3.module.scss'
 
 import api from '../../../services/api';

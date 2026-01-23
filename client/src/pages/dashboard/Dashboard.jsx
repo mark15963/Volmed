@@ -6,17 +6,19 @@ import GeneralConfig from "./blocks/GeneralConfig"
 import { PatientsStatus, UsersStatus } from "./blocks/Status"
 import UsersList from "./blocks/UsersList"
 
+//
+import { useConfig } from "../../context"
+import { PAGES } from "@/constants"
+
 // Components
 import Block from "./components/Block"
 import Row from "./components/Row"
 import Button from "@/components/Button"
+import { ListOfPatients } from "../patientsList/components/ListOfPatients"
 
 // UI
 import styles from './dashboard.module.scss'
 import '@/styles/index.scss'
-import { PAGES } from "@/constants"
-import { useConfig } from "../../context"
-import { ListOfPatients } from "../patientsList/components/ListOfPatients"
 //#endregion
 
 export const Dashboard = () => {

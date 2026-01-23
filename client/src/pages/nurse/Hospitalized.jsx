@@ -9,8 +9,8 @@ import api from "../../services/api";
 import debug from "../../utils/debug";
 import { useAuth } from "../../context"
 
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styles from "./hospitalizedStyles.module.scss"
+import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
 
 const Hospitalized = () => {
   const [patients, setPatients] = useState([])
@@ -72,15 +72,7 @@ const Hospitalized = () => {
 
           <tbody className={styles.tbody}>
             {loading ? (
-              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className={styles.rowsLoading}>
-                    <td>
-                      <Skeleton borderRadius={5} />
-                    </td>
-                  </tr>
-                ))}
-              </SkeletonTheme>
+              <SkeletonLoader lines={6} />
             ) : filteredAndSortedPatients.length > 0 ? (
               filteredAndSortedPatients.map(patient => (
                 <tr

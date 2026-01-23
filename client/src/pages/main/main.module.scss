@@ -1,11 +1,8 @@
-:global(.mainBlock) {
-  width: 445px;
-}
-:global(.mainBlock) {
-  .buttonsContainer {
-    margin-top: 10px;
-    display: flex;
-  }
+.buttonsContainer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 @media screen and (orientation: portrait) {

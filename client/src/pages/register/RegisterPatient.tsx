@@ -26,12 +26,12 @@ import {
 // UI & Services
 import styles from "./register.module.scss";
 import api from "../../services/api.js";
-import debug from "../../utils/debug.js";
 import {
   ensureString,
   formatDateForServer,
   formatPhone,
   PatientForSearch,
+  debug,
 } from "../../utils";
 //#endregion
 

@@ -6,7 +6,7 @@ const { Dragger } = Upload;
 
 import Input from '../../../components/Input';
 import Graph from './Components/Graph';
-import { SpinLoader } from '../../../components/loaders/SpinLoader';
+import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
 
 import { usePatientFiles } from '../../../hooks/Patients/usePatientFiles';
 import { useSafeMessage } from '../../../hooks/useSafeMessage';
