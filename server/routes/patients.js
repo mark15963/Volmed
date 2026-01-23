@@ -229,7 +229,7 @@ router.post(
       filename: req.file.filename,
       originalname: req.file.originalname,
       path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
-      size: req.file.size,
+      size: `${req.file.size} bytes`,
     });
   },
 );
