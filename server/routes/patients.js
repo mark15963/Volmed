@@ -20,6 +20,7 @@ const isAuth = async (req, res, next) => {
 const isAdmin = async (req, res, next) => {
   try {
     if (req.session.isAdmin) next();
+    else throw new Error();
   } catch (error) {
     debug.log("Only admin allowed");
     res.status(401).json(error.message);
