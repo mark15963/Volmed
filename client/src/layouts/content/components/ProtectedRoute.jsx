@@ -30,12 +30,12 @@
 import { useEffect } from "react";
 import { Navigate, useLocation } from "react-router";
 
-import { useAuth } from "../../context";
-import Loader from "../../components/loaders/Loader";
-import Button from "../../components/Button";
+import { useAuth } from "../../../context";
+import Loader from "../../../components/ui/loaders/Loader";
+import Button from "../../../components/Button";
 
-import { debug } from "../../utils/debug";
-import { AccessDenied } from "./AccessDenied";
+import { debug } from "../../../utils/debug";
+import { AccessDenied } from "../AccessDenied";
 //#endregion
 
 /**

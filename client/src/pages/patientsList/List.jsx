@@ -7,7 +7,7 @@ import { SearchBar } from '@/components/SearchBar'
 import Button from '@/components/Button'
 
 import styles from './list.module.scss'
-import '@/layouts/content/content.scss'
+import '@/layouts/content/content.module.scss'
 import '@/styles/index.scss'
 
 export const List = () => {

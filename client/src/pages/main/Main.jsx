@@ -1,27 +1,27 @@
 //#region ===== IMPORTS =====
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
 
 import DoctorDisplay from './components/DoctorDisplay';
 import NurseDisplay from './components/NurseDisplay';
-import Loader from '../../components/loaders/Loader';
+import Loader from '../../components/ui/loaders/Loader';
 
-import '../../layouts/content/content.scss'
-//#endregion
-//#region ROLE PERMISSIONS
-const ALLOWED_DOCTOR_USERS = [
-  "doctor",
-  "admin",
-  "tester",
-]
-const ALLOWED_NURSE_USERS = ["nurse"]
+import {
+  ALLOWED_DOCTOR_USERS,
+  ALLOWED_NURSE_USERS
+} from '../../constants/users';
+
+import { useAuth } from '../../context/AuthContext'
+import { useConfig } from '../../context';
+
+import styles from '../../layouts/content/content.module.scss'
 //#endregion
 
 export default function Main() {
   const { authState } = useAuth()
   const userRole = authState.user.status;
+  const { color } = useConfig()
 
-  //#region RENDERING LOGIC
+  //#region === RENDERING LOGIC ===
   if (!authState.isAuthenticated) return null
 
   // User role -> Doctor, tester, admin
@@ -32,7 +32,10 @@ export default function Main() {
 
   // Not auth
   return (
-    <div className='mainBlock'>
+    <div
+      className={styles.mainBlock}
+      style={{ backgroundColor: color.container }}
+    >
       <div style={{ color: 'aliceblue' }}>
         Пользователь не авторизован
       </div>

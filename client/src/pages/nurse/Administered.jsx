@@ -1,18 +1,20 @@
+//#region === IMPORTS ===
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import moment from 'moment';
 
+// Components
 import Button from "../../components/Button";
 
 import api from "../../services/api";
-import debug from "../../utils/debug";
-
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import styles from "./administeredStyles.module.scss"
-import { parseApiResponse } from "../../utils/parseApiResponse";
+import { debug, parseApiResponse } from "../../utils";
 import { useApi } from "../../hooks/useApi";
+
+// UI
+import styles from "./administeredStyles.module.scss"
+import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
+//#endregion
 
 const Administered = () => {
   const { data: patients, loading, error } = useApi(
@@ -42,15 +44,7 @@ const Administered = () => {
 
           <tbody className={styles.tbody}>
             {loading ? (
-              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className={styles.rowsLoading}>
-                    <td>
-                      <Skeleton borderRadius={5} />
-                    </td>
-                  </tr>
-                ))}
-              </SkeletonTheme>
+              <SkeletonLoader lines={6} />
             ) : error ? (
               <tr>
                 <td colSpan={4} className={styles.noData}>

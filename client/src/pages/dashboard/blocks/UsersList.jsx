@@ -8,7 +8,7 @@ import { usePerItemLoading } from '../../../hooks/usePerItemLoading'
 import { useSafeMessage } from '../../../hooks/useSafeMessage'
 
 import Button from '../../../components/Button'
-import { SpinLoader } from '../../../components/loaders/SpinLoader'
+import { SpinLoader } from '../../../components/ui/loaders/SpinLoader'
 
 import { statusDisplayMap, displayStatusMap } from "../../../utils/statusMap"
 import api from '../../../services/api'

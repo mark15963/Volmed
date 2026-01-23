@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-import styles from './styles.module.scss'
+import styles from './offlineFallback.module.scss'
 
 const OfflineFallback = () => {
   const [isOffline, setIsOffline] = useState(false)

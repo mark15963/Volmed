@@ -1,3 +1,4 @@
+//#region === IMPORTS ===
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
@@ -8,9 +9,9 @@ import Button from "../../components/Button";
 import api from "../../services/api";
 import debug from "../../utils/debug";
 
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import styles from "./dischargedStyles.module.scss"
+import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
+//#endregion
 
 const Discharged = () => {
   const [patients, setPatients] = useState([])
@@ -56,15 +57,7 @@ const Discharged = () => {
 
           <tbody className={styles.tbody}>
             {loading ? (
-              <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className={styles.rowsLoading}>
-                    <td>
-                      <Skeleton borderRadius={5} />
-                    </td>
-                  </tr>
-                ))}
-              </SkeletonTheme>
+              <SkeletonLoader lines={6} />
             ) : patients.length > 0 ? (
               patients.map(patient => (
                 <tr

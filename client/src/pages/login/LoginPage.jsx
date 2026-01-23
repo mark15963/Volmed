@@ -1,13 +1,14 @@
+//#region === IMPORTS ===
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuth } from '../../context/AuthContext';
-
-import Loader from "../../components/loaders/Loader";
-import LoginForm from "./components/LoginForm";
-
 import { fetchUserStatus } from "../../services/fetchUserStatus";
-import debug from "../../utils/debug";
+import { debug } from "../../utils";
+
+import Loader from "../../components/ui/loaders/Loader";
+import LoginForm from "./components/LoginForm";
+//#endregion
 
 export default function LoginPage() {
   const navigate = useNavigate()

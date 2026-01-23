@@ -3,7 +3,7 @@ import styles from '../header.module.scss'
 import debug from '../../../utils/debug';
 import { useNavigate } from 'react-router';
 import { useConfig } from '../../../context';
-import Loader from '@/components/loaders/Loader';
+import Loader from '../../../components/ui/loaders/Loader';
 
 const Title = () => {
   const navigate = useNavigate();
