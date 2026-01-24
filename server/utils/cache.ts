@@ -25,7 +25,7 @@ let memoryCache: CachedGeneralConfig | null = null
  * Load config from cache file (falls back to memory if fresh)
  * @returns {Promise<CachedGeneralConfig | null>}
  */
-export async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
+async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   if(memoryCache && Date.now() - memoryCache .timestamp < CACHE_TTL_MS){
     debug.success('Cache hit (in-memory)')
     return memoryCache
@@ -63,7 +63,7 @@ export async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   }
 }
 
-export async function setGeneralConfig(data:Omit<CachedGeneralConfig, 'timestamp'>) {
+async function setGeneralConfig(data:Omit<CachedGeneralConfig, 'timestamp'>) {
   const fullData: CachedGeneralConfig = {
     ...data,
     timestamp: Date.now()
@@ -95,6 +95,9 @@ export async function clearCache() {
     }
   }
 }
+
+module.exports = { getGeneralConfig, setGeneralConfig };
+
 // function getCachedConfig() {
 //   const cache = loadConfigFromCache();
 //   return cache && cache[CACHE_KEY] ? cache[CACHE_KEY] : null;
