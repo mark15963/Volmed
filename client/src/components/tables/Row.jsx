@@ -3,7 +3,7 @@
 //#region ===== IMPORTS =====
 import { useEffect, useState } from 'react'
 import styles from '../../pages/patientsList/components/styles/patientList.module.scss'
-import api from '../../services/api'
+import api from '../../services/api/index'
 import moment from 'moment'
 import { usePatientList } from '../../hooks/Patients/usePatientsList'
 import debug from '../../utils/debug'

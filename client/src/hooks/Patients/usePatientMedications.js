@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import api from "../../services/api";
+import api from "../../services/api/index";
 import debug from "../../utils/debug";
 
 export function usePatientMedications(patientId, safeMessage) {
@@ -16,7 +16,7 @@ export function usePatientMedications(patientId, safeMessage) {
           res.data.map((med) => ({
             ...med,
             createdAt: med.createdAt || new Date().toISOString(),
-          }))
+          })),
         );
       } else {
         safeMessage("error", "Ошибка при получении назначений");
@@ -107,14 +107,14 @@ export function usePatientMedications(patientId, safeMessage) {
             if (res.ok) {
               setMedications((prev) =>
                 prev.map((item) =>
-                  item === med ? { ...item, id: res.data.id } : item
-                )
+                  item === med ? { ...item, id: res.data.id } : item,
+                ),
               );
             } else {
               throw new Error(res.message);
             }
           }
-        })
+        }),
       );
 
       setIsEditing(false);

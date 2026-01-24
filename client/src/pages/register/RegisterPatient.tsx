@@ -25,7 +25,7 @@ import {
 
 // UI & Services
 import styles from "./register.module.scss";
-import api from "../../services/api.js";
+import api from "../../services/api/index";
 import {
   ensureString,
   formatDateForServer,

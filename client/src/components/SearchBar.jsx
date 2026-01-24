@@ -8,7 +8,7 @@ import Input from './Input';
 
 import { useSafeMessage } from '../hooks/useSafeMessage';
 
-import api from '../services/api';
+import api from '../services/api/index';
 import debug from '../utils/debug';
 
 import styles from './styles/SearchBar.module.scss'

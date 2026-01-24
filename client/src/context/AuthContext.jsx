@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 
-import api from "../services/api";
+import api from "../services/api/index";
 
 import debug from "../utils/debug";
 import { parseApiError, parseApiResponse } from "../utils";
@@ -70,14 +70,12 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const res = await api.postLogin(credentials);
-      // error from backend
-      const parsed = parseApiResponse(res)
 
-      if (!parsed.ok) {
+      if (!res.ok) {
         return {
           error: true,
-          message: parsed.message,
-          status: parsed.status
+          message: res.message,
+          status: res.status
         }
       }
 
@@ -90,14 +88,14 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      debug.log(`${authRes.user.lastName} ${authRes.user.firstName} ${authRes.user.patr} logged as ${authRes.user.status}`)
+      debug.success(`${authRes.user.lastName} ${authRes.user.firstName} ${authRes.user.patr} logged as ${authRes.user.status}`)
 
       navigate('/')
 
       // Return successful result to parent
       return {
         error: false,
-        data: parsed.data
+        data: authRes.data
       }
     } catch (error) {
       const parsed = parseApiError(error)

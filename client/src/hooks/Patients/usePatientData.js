@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import api from "../../services/api";
+import api from "../../services/api/index";
 import debug from "../../utils/debug";
 import { useApi } from "../useApi";
 
@@ -68,14 +68,16 @@ export function usePatientData(id, preloaded) {
 
   const shouldFetch = Boolean(id && (isFromSearch || !preloadedPatient));
 
-  debug.log(
-    "🧩 usePatientData:",
-    isFromList
-      ? "Using data from ListOfPatients (no API call)"
-      : shouldFetch
-      ? "Fetching data from API (SearchBar or direct link)"
-      : "Using preloaded data"
-  );
+  // debug.log(
+  //   `🧩 usePatientData:
+  //   ${
+  //     isFromList
+  //       ? "Using data from ListOfPatients (no API call)"
+  //       : shouldFetch
+  //         ? "Fetching data from API (SearchBar or direct link)"
+  //         : "Using preloaded data"
+  //   }`,
+  // );
 
   const {
     data: fetchedPatient,
@@ -89,7 +91,7 @@ export function usePatientData(id, preloaded) {
             ok: false,
             data: preloadedPatient,
           }),
-    [id]
+    [id],
   );
 
   const patientData = preloadedPatient || fetchedPatient || null;
@@ -101,12 +103,12 @@ export function usePatientData(id, preloaded) {
     const title = loading
       ? "Загрузка данных пациента..."
       : error
-      ? "Ошибка загрузки"
-      : !patientData
-      ? "Пациент не найден"
-      : `Карта пациента: ${patientData.lastName} ${patientData.firstName}${
-          patientData.patr ? ` ${patientData.patr}` : ""
-        }`;
+        ? "Ошибка загрузки"
+        : !patientData
+          ? "Пациент не найден"
+          : `Карта пациента: ${patientData.lastName} ${patientData.firstName}${
+              patientData.patr ? ` ${patientData.patr}` : ""
+            }`;
 
     document.title = title;
 
@@ -114,19 +116,6 @@ export function usePatientData(id, preloaded) {
       document.title = "ГБУ «Городская больница Волновахского района»";
     };
   }, [loading, error, patientData]);
-
-  // Debug output
-  useEffect(() => {
-    if (patientData) {
-      debug.table(
-        [patientData],
-        ["id", "lastName", "firstName", "diag"],
-        "Patient loaded:"
-      );
-    } else if (error) {
-      debug.error("Failed to load patient:", error);
-    }
-  }, [patientData, error]);
 
   return {
     data: patientData,

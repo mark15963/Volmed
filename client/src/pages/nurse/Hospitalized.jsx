@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
 import moment from 'moment';
 
 import Button from "../../components/Button";
 
-import api from "../../services/api";
+import api from "../../services/api/index";
 import debug from "../../utils/debug";
 import { useAuth } from "../../context"
 

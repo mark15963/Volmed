@@ -1,6 +1,6 @@
 //#region ===== IMPORTS =====
 import { useEffect, useState } from "react";
-import api from "../../../../services/api";
+import api from "../../../../services/api/index";
 import { debug } from "../../../../utils";
 //#endregion
 

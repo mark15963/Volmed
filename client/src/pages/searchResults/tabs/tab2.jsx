@@ -11,7 +11,7 @@ import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
 import { usePatientFiles } from '../../../hooks/Patients/usePatientFiles';
 import { useSafeMessage } from '../../../hooks/useSafeMessage';
 
-import api from '../../../services/api'
+import api from '../../../services/api/index'
 import debug from '../../../utils/debug';
 
 import styles from './styles/tab2.module.scss'
@@ -55,7 +55,7 @@ export const Tab2 = memo(({ id }) => {
       try {
         debug.log('Fetching pulse data for patient:', id);
         const res = await api.getPulseData(id)
-        debug.log('Pulse data response:', res.data);
+        debug.success('Pulse data response:', res.data);
         const values = res.data.map(item => ({
           val: Number(item.value),
           created_at: item.timestamp,
@@ -165,7 +165,7 @@ export const Tab2 = memo(({ id }) => {
       try {
         debug.log('Fetching O2 data for patient:', id);
         const res = await api.getO2Data(id)
-        debug.log('O2 data response:', res.data);
+        debug.success('O2 data response:', res.data);
         const values = res.data.map(item => ({
           val: Number(item.value),
           created_at: item.timestamp,

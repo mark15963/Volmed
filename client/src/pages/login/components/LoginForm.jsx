@@ -1,11 +1,16 @@
+//#region === IMPORTS ===
 import { useState } from 'react';
+
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import ErrorDisplay from './ErrorDisplay';
 
+import { useConfig } from '../../../context';
+import { debug } from '../../../utils/debug';
+
 import styles from '../styles/login.module.scss';
 import '@/styles/index.scss'
-import { debug } from '../../../utils/debug';
+//#endregion
 
 const LoginForm = ({
   credentials,
@@ -16,21 +21,23 @@ const LoginForm = ({
   onErrorsChange,
   onLoadingChange,
 }) => {
+  const { color } = useConfig()
   const handleSubmit = async (e) => {
     e.preventDefault()
     onLoadingChange(true);
     onErrorsChange({}); // sets no errors in the beginning
 
-    try{
+    try {
       const res = await onLogin(credentials)
 
       if (res?.error) {
         onErrorsChange({
-          general: res.message // Under title error UI
+          general: res.message // Under <h2> error UI
         })
-      } 
-    }catch (err) {
-      debug('Login error:', err);
+      }
+
+    } catch (err) {
+      debug('LoginForm error:', err);
       onErrorsChange({ general: 'Произошла неизвестная ошибка' });
     } finally {
       onLoadingChange(false)
@@ -38,8 +45,13 @@ const LoginForm = ({
   }
 
   return (
-    <div className={styles.container}>
-      <div className="mainBlock">
+    <div
+      className={styles.container}
+    >
+      <div
+        className={styles.mainBlock}
+        style={{ backgroundColor: color.container }}
+      >
         <h2>Вход</h2>
         <ErrorDisplay errors={errors} />
         <form onSubmit={handleSubmit} noValidate>

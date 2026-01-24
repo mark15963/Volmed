@@ -13,7 +13,7 @@ import Button from '../../../components/Button';
 import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
 import styles from './styles/tab3.module.scss'
 
-import api from '../../../services/api';
+import api from '../../../services/api/index';
 import debug from '../../../utils/debug';
 //#endregion
 
@@ -25,6 +25,7 @@ export const Tab3 = ({
   setMedications,
   patientId
 }) => {
+
   const [isLoading, setIsLoading] = useState(false)
   const [medicationsData, setMedicationsData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,10 +39,14 @@ export const Tab3 = ({
       setLoading(true)
       try {
         const res = await api.getMedications(patientId)
-        if (res.ok) setMedicationsData(res.data)
+        if (res.ok) {
+          setMedicationsData(res.data)
+          debug.success("Medications data response:", res.data)
+        }
         else setError(res.message)
       } catch (err) {
         setError(err.message)
+        console.error('Error fetching medications data:', err);
       } finally {
         setLoading(false)
       }

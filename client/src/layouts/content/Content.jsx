@@ -1,9 +1,10 @@
-//#region ===== IMPORTS =====
+//#region === IMPORTS ===
 import { Routes, Route } from "react-router"
 import { lazy, Suspense } from 'react'
 
 import { appRoutes } from "../../routes/appRoutes";
 import { useConfig } from '../../context'
+import { debug, usePageTitle } from "../../utils";
 
 // Components
 {/* Handicap loader */ }
@@ -13,7 +14,6 @@ import OfflineFallback from "../../components/ui/offlineFallback";
 
 // UI
 import styles from './content.module.scss'
-import { debug, usePageTitle } from "../../utils";
 //#endregion
 
 const Content = () => {

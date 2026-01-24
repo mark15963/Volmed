@@ -2,6 +2,9 @@
 // - AuthContext.jsx
 // - LoginPage.jsx
 
+
+import api from "../services/api/index";
+
 export interface UserStatus{
   ok: boolean;
   isAuthenticated: boolean;
@@ -10,17 +13,14 @@ export interface UserStatus{
   message?: string;
 }
 
-import api from "../services/api";
-import { debug } from "../utils/debug";
-
 /**
-           * @typedef {Object} UserStatus
-            * @property {boolean} ok
-             * @property {boolean} isAuthenticated
-              * @property {boolean} isAdmin
-               * @property {Object|null} user
-                * @property {string} [message]
-                 */
+* @typedef {Object} UserStatus
+* @property {boolean} ok
+* @property {boolean} isAuthenticated
+* @property {boolean} isAdmin
+* @property {Object|null} user
+* @property {string} [message]
+*/
 
 /**
  * FETCH USER STATUS
@@ -42,25 +42,24 @@ import { debug } from "../utils/debug";
  * @example
  * ```js
  * const checkAuthStatus = useCallback(async (redirectIfUnauth = true) => {
-                                      const res = await fetchUserStatus();
-                                        if (!res.ok || !res.isAuthenticated) {...}
-                                         * ```
-                                          *
-                                           * @example
-                                            * ```js
-                                             * useEffect(() => {
-                                              *   const checkAuth = async () => {
-                                               *     const res = await fetchUserStatus()
-                                                *     debug.log("Auth check:", res.message)
-                                                 *     ...
-                                                  * ```
-                                                   *
-                                                    * @returns {Promise<UserStatus>} Normalized user status object
-                                                     */
+ * const res = await fetchUserStatus();
+ * if (!res.ok || !res.isAuthenticated) {...}
+ * ```
+ *
+ * @example
+ * ```js
+ * useEffect(() => {
+ *   const checkAuth = async () => {
+ *     const res = await fetchUserStatus()
+ *     debug.log("Auth check:", res.message)
+ *     ...
+ * ```
+ *
+ * @returns {Promise<UserStatus>} Normalized user status object
+ */
 export async function fetchUserStatus(): Promise<UserStatus> {
   const res = await api.status();
   if (!res.ok) {
-    debug.error("Error checking user status:", res.message);
     return {
       ok: false,
       isAuthenticated: false,
@@ -70,12 +69,12 @@ export async function fetchUserStatus(): Promise<UserStatus> {
     };
   }
 
-  const user = res.data?.user || null;
+  const user = (res as any).data?.user || null;
   const isAdmin = ["admin"].includes(user?.status);
 
   return {
     ok: true,
-    isAuthenticated: res.data?.isAuthenticated ?? false,
+    isAuthenticated: (res as any).data?.isAuthenticated ?? false,
     isAdmin,
     user,
     message: res.message,

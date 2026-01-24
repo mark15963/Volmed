@@ -1,13 +1,12 @@
 //#region === IMPORTS ===
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
 import moment from 'moment';
 
 // Components
 import Button from "../../components/Button";
 
-import api from "../../services/api";
+import api from "../../services/api/index";
 import { debug, parseApiResponse } from "../../utils";
 import { useApi } from "../../hooks/useApi";
 
