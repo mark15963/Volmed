@@ -5,7 +5,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import debug from "../../../utils/debug";
 
 import styles from './styles/patientList.module.scss'
-import api from "../../../services/api";
+import api from "../../../services/api/index";
 import { TooltipHover } from "../../../components/ui/TooltipHover";
 //#endregion
 
@@ -19,10 +19,10 @@ export const PatientCount = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
-      debug.log("🔄 Loading patient data...");
+      debug.log("🔄 Loading data of patients...");
 
       try {
-        const [countRes, patientsRes] = await Promise.all([
+        const [countRes, activeRes] = await Promise.all([
           api.getPatientCount(),
           api.getPatients()
         ])
@@ -30,22 +30,22 @@ export const PatientCount = () => {
         // --- Total count ---
         if (countRes.ok) {
           setCount(countRes.data.count);
-          debug.log("✅ Total count loaded:", countRes.data.count);
+          debug.success(`Total count loaded: ${countRes.data.count}`);
         } else {
-          debug.error("❌ Error loading total count:", countRes.message);
+          debug.error(`Error loading total count: ${countRes.message}`);
           setCount("N/A");
         }
 
         // --- Active (filtered) patients ---
-        if (patientsRes.ok) {
-          const active = patientsRes.data.filter(
+        if (activeRes.ok) {
+          const active = activeRes.data.filter(
             p => p.state !== "Выписан"
           )
           setActiveCount(active.length)
-          debug.log("✅ Active count loaded:", active.length);
+          debug.success(`Active count loaded: ${active.length}`);
 
         } else {
-          debug.error("❌ Error loading patients:", patientsRes.message);
+          debug.error(`Error loading patients: ${activeRes.message}`);
           setActiveCount(0);
         }
       } catch (err) {
@@ -58,17 +58,8 @@ export const PatientCount = () => {
     loadData();
   }, []);
 
-  // Log when values change
-  useEffect(() => {
-    debug.log("🧮 Updated state => count:", count, "activeCount:", activeCount, "loading:", loading);
-  }, [count, activeCount, loading]);
-
   const handleMouseEnter = async () => setShowTooltip(true)
   const handleMouseLeave = () => setShowTooltip(false)
-
-  useEffect(() => {
-    debug.log("activeCount updated:", activeCount, "loading:", loading)
-  }, [activeCount, loading])
 
   return (
     <div className={styles.countContainer}>

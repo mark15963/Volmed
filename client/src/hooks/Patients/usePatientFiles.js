@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import api from "../../services/api";
+import api from "../../services/api/index";
 import debug from "../../utils/debug";
 
 /**
@@ -96,7 +96,7 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
           status: "done",
           url: `${import.meta.env.VITE_API_URL}${file.path}`,
           response: { path: file.path },
-        }))
+        })),
       );
     } catch (error) {
       console.error("File list refresh error", error);
@@ -162,12 +162,12 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
         });
         safeMessage(
           "error",
-          `Ошибка при удалении ${file.name}: ${error.message}`
+          `Ошибка при удалении ${file.name}: ${error.message}`,
         );
         return false;
       }
     },
-    [safeMessage]
+    [safeMessage],
   );
 
   // Upload status

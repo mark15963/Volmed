@@ -26,7 +26,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-import api from "../services/api";
+import api from "../services/api/index";
 import {
   CONFIG_DEFAULTS,
   CACHE_CONFIG,
@@ -103,6 +103,7 @@ export const ConfigProvider = ({ children }) => {
         debug.warn("⚠️ Server cache not found, falling back to local cache:", err.message);
         res = await fetch("/cache/config-cache.json");
         if (!res.ok) throw new Error(`Local cache returned ${res.status}`);
+
       }
 
       // --- Parse JSON ---
@@ -118,11 +119,12 @@ export const ConfigProvider = ({ children }) => {
       })
       setLogoState(cache.general?.logoUrl ?? CONFIG_DEFAULTS.GENERAL.LOGO)
       setThemeState(cache.general?.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+      debug.table(cache.general, "Cache data")
 
-      debug.log("✅ Loaded config from cache");
+      debug.success("Loaded config from cache");
       return true;
     } catch (err) {
-      debug.warn("⚠️ Failed to load from cache:", err);
+      debug.warn("Failed to load from cache:", err);
       return false;
     }
   }, [])

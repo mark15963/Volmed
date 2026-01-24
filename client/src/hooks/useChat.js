@@ -1,7 +1,7 @@
 //#region  ===== IMPORTS =====
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
-import api from "../services/api";
+import api from "../services/api/index";
 import debug from "../utils/debug";
 //#endregion
 
@@ -114,12 +114,12 @@ export const useChat = (initialRoomName, currentUserId) => {
       debug.log("Socket connected:", socket.id);
       if (currentRoomRef.current) {
         socket.emit("join_room", currentRoomRef.current, (ack) =>
-          debug.log("join_room ack:", ack)
+          debug.log("join_room ack:", ack),
         );
       }
     });
     socket.on("disconnect", (reason) =>
-      debug.log("Socket disconnected:", reason)
+      debug.log("Socket disconnected:", reason),
     );
 
     // Handle received message
@@ -133,7 +133,7 @@ export const useChat = (initialRoomName, currentUserId) => {
             .getActiveRooms()
             .then((res) => setActiveChats(res.data.rooms || []))
             .catch((err) =>
-              console.error("Error refreshing active chats:", err)
+              console.error("Error refreshing active chats:", err),
             );
         }
 
@@ -151,7 +151,7 @@ export const useChat = (initialRoomName, currentUserId) => {
                 (m) =>
                   m.originalTimestamp &&
                   last.originalTimestamp &&
-                  m.originalTimestamp === last.originalTimestamp
+                  m.originalTimestamp === last.originalTimestamp,
               );
               if (idx === -1) return [...prev, msg];
               const copy = [...prev];
@@ -298,8 +298,8 @@ export const useChat = (initialRoomName, currentUserId) => {
               m.text === text &&
               m.sender === sender &&
               m.originalTimestamp === optimistic.originalTimestamp
-            )
-        )
+            ),
+        ),
       );
     }
 
@@ -315,7 +315,7 @@ export const useChat = (initialRoomName, currentUserId) => {
       setMessage(""); // clear input
       await sendMessage(cached, senderName); // Send stores msg
     },
-    [message, sendMessage]
+    [message, sendMessage],
   );
   //#endregion
 
@@ -325,7 +325,7 @@ export const useChat = (initialRoomName, currentUserId) => {
       if (currentUserIdRef.current !== "admin") return;
 
       debug.log(
-        `joinRoom called with: ${room}, currentRoom: ${currentRoomRef.current}`
+        `joinRoom called with: ${room}, currentRoom: ${currentRoomRef.current}`,
       );
 
       setIsLoading(true);
@@ -372,7 +372,7 @@ export const useChat = (initialRoomName, currentUserId) => {
         socket.on("connect", handleConnect);
       }
     },
-    [loadMessages]
+    [loadMessages],
   );
 
   const deleteChat = useCallback(
@@ -400,7 +400,7 @@ export const useChat = (initialRoomName, currentUserId) => {
         alert("Ошибка при удалении");
       }
     },
-    [currentRoom]
+    [currentRoom],
   );
   //#endregion
 

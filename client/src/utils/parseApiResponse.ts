@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 /**
  * Normalize API responses into a consistent shape.
@@ -25,6 +25,19 @@ import { AxiosResponse } from "axios";
  * }
  */
 export interface ApiResponse<T = unknown>{
+  ok: boolean;
+  data?: T;
+  message?: string;
+  status?: number;
+  [key: string]: unknown;
+}
+
+/**
+ * Parse and normalize a successful or mocked API response.
+ *
+ * @param res - Raw axios response or any object with status/data
+ */
+export interface ApiError<T = unknown>{
   ok: boolean;
   data?: T;
   message?: string;
@@ -76,19 +89,33 @@ export function parseApiResponse<T = unknown>(
 
 /**
  * Normalize an axios-style error object into our consistent response shape.
+ * - Error was made from { code, config, event, message, name, request }
+ * - Now { data, message, ok, status}
  *
  * @param error - Error object (usually from axios catch block)
  * @returns Normalized error response
  */
-export function parseApiError(error: unknown): ApiResponse<never> {
-  const status = (error as any)?.response?.status ?? 0;
+export function parseApiError(error: unknown): ApiError<never> {
+  let status = 0
+  let message = "Request failed. Try again."
+
+  if (error instanceof AxiosError){
+    status = error.response?.status ?? 0;
   
-  const message =
-    (error as any)?.response?.data?.message ||
-    (error as any)?.response?.data?.error ||
-    (status === 401
-      ? "Invalid username or password"
-      : "Request failed. Try again.");
+    message =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error.message ||
+    message;
+    
+    if (status === 401){
+      message = "Invalid username or password";
+    }
+  } else if (error instanceof Error){
+    message = error.message
+  }
+
+
   return {
     ok: false,
     data: undefined,

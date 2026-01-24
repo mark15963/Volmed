@@ -1,7 +1,6 @@
 //#region ===== IMPORTS =====
 import axios from "axios";
-import debug from "../utils/debug";
-import { parseApiError, parseApiResponse } from "../utils";
+import { parseApiError, parseApiResponse, debug } from "../utils";
 //#endregion
 
 const environment = import.meta.env.VITE_ENV;
@@ -55,7 +54,10 @@ async function requestWrapper(method, url, data = null, config = {}) {
   } catch (error) {
     // Normalize network or parsing errors
     const parsedError = parseApiError(error);
-    debug.error(`[API ERROR] ${method.toUpperCase()} ${url}:`, parsedError);
+    debug.error(`[API ERROR] ${method.toUpperCase()} ${url}:
+      Message: ${parsedError.message}
+      Status: ${parsedError.status}
+    `);
     return parsedError;
   }
 }
@@ -71,6 +73,13 @@ async function requestWrapper(method, url, data = null, config = {}) {
  * Each property here is a preconfigured endpoint call.
  * These can be imported anywhere in the frontend codebase.
  *
+ * Parameters to use
+ * -----------------
+ * - ok
+ * - data
+ * - status
+ * - message
+ *
  * @example
  *    const result = await api.getPatients();
  *    if (result.ok) setPatients(result.data);
@@ -83,6 +92,7 @@ async function requestWrapper(method, url, data = null, config = {}) {
 const api = {
   // Generic CRUD helpers for the props bellow(used by all specific endpoints)
   // example: api.get(/patients)
+  // Use: getUser: () => api.get(...)
   get: (url, config) => requestWrapper("get", url, null, config),
   post: (url, data, config) => requestWrapper("post", url, data, config),
   put: (url, data, config) => requestWrapper("put", url, data, config),
@@ -94,10 +104,7 @@ const api = {
   getGeneralConfig: () => api.get(`/general/config`),
   updateGeneralConfig: (data) => api.put(`/general/config`, data),
   getLogo: () => api.get(`/general/get-logo`),
-  uploadLogo: (formData) =>
-    api.post(`/general/upload-logo`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+  uploadLogo: (formData) => api.post(`/general/upload-logo`, formData),
 
   /* ===============
      👩‍⚕️ PATIENTS API
@@ -125,29 +132,15 @@ const api = {
   uploadFile: (patientId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    return api.post(`/patients/${patientId}/upload`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return api.post(`/patients/${patientId}/upload`, formData);
   },
-  deleteFile: (filePath) =>
-    api.delete(`/files`, {
-      data: { filePath },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }),
+  deleteFile: (filePath) => api.delete(`/files`, { data: { filePath } }),
 
   /* ==================
      ❤️ VITAL SIGNS API
      ================== */
-  savePulse: (patientId, pulseValue) => {
-    if (!patientId) throw new Error("Patient ID is required");
-    return api.post(`/patients/${patientId}/pulse`, {
-      pulseValue,
-    });
-  },
+  savePulse: (patientId, pulseValue) =>
+    api.post(`/patients/${patientId}/pulse`, pulseValue),
   getPulseData: (patientId) => api.get(`/patients/${patientId}/pulse`),
   saveO2: (patientId, o2Value) =>
     api.post(`/patients/${patientId}/o2`, { o2Value }),

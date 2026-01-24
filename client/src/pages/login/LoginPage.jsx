@@ -25,7 +25,7 @@ export default function LoginPage() {
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetchUserStatus()
-      debug.log("Auth check:", res.message)
+      if (!res.isAuthenticated) debug.warn(`Auth check: ${res.message}`)
 
       // Redirect to home if user came from another page
       if (res.isAuthenticated) {

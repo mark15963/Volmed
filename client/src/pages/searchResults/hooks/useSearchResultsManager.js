@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import api from "../../../services/api";
+import api from "../../../services/api/index";
 import debug from "../../../utils/debug";
 
 export function useSearchResultsManager({
@@ -56,7 +56,7 @@ export function useSearchResultsManager({
           status: "done",
           url: `${apiUrl}${file.path}`,
           response: { path: file.path },
-        }))
+        })),
       );
     }
   }, [filesHook.isEditing, filesHook.files, filesHook.fileList]);
@@ -91,14 +91,15 @@ export function useSearchResultsManager({
         const res = await api.deletePatient(id);
 
         if (res.ok) {
+          debug.success(`Patient id ${id} deleted successfilly`);
           safeMessage("success", "Пациент удален успешно!", 2.5);
-          setTimeout(() => navigate("/patients"), 1000);
+          setTimeout(() => navigate("/patients"), 1500);
         } else {
           throw new Error(res.message);
         }
       }
     } catch (err) {
-      safeMessage("error", "Ошибка при удалении пациента");
+      safeMessage("error", `Ошибка при удалении пациента: ${err}`);
     }
   };
 

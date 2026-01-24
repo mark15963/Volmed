@@ -11,7 +11,7 @@ import Button from '../../../components/Button'
 import { SpinLoader } from '../../../components/ui/loaders/SpinLoader'
 
 import { statusDisplayMap, displayStatusMap } from "../../../utils/statusMap"
-import api from '../../../services/api'
+import api from '../../../services/api/index'
 
 import styles from './styles/UsersList.module.scss'
 //#endregion

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
-import api from '../services/api'
+import api from '../services/api/index'
 
 const PatientDataContext = createContext()
 
