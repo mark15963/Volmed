@@ -4,7 +4,7 @@ const debug = require("./debug");
 
 async function initCacheOnStartup() {
   try {
-    const cached = getGeneralConfig();
+    const cached = await getGeneralConfig();
     if (cached) {
       console.log("Cache already loaded");
       return;
