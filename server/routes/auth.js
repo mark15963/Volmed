@@ -258,15 +258,26 @@ router.get("/status", originMiddleware, async (req, res) => {
 });
 
 router.get("/dashboard", isAuth, async (req, res) => {
-  try {
-    res.type("html");
-    const sessionData = req.session
-      ? JSON.stringify(req.session, null, 2)
-      : "null";
-    if (!req.cookies.user) {
-      console.log("no user cookie");
-      return res.redirect("/login");
+  if (!req.session.isAuth) {
+    if (req.accepts("html")) {
+      return res.redirect(`${process.env.FRONTEND_URL}/login`);
     }
+    return res.status(401).json({
+      ok: false,
+      error: "Unauthorized",
+      redirectTo: `${process.env.FRONTEND_URL}/login`,
+    });
+  }
+
+  try {
+    // res.type("html");
+    // const sessionData = req.session
+    //   ? JSON.stringify(req.session, null, 2)
+    //   : "null";
+    // if (!req.cookies.user) {
+    //   console.log("no user cookie");
+    //   return res.redirect("/login");
+    // }
 
     const client = await db.connect();
     try {
@@ -276,25 +287,42 @@ router.get("/dashboard", isAuth, async (req, res) => {
       const { rows: patients } = await client.query(
         "SELECT * FROM patients ORDER BY id",
       );
-      res.render("dashboard", {
-        NODE_ENV: process.env.NODE_ENV,
-        FRONTEND_URL: process.env.FRONTEND_URL,
-        sessionAuth: req.session.isAuth,
-        sessionUser: req.session.user,
-        lastName: req.session.lastName,
-        firstName: req.session.firstName,
-        patr: req.session.patr,
-        displayStatus: req.session.displayStatus,
-        sessionData,
+      if (req.accepts("html")) {
+        res.type("html");
+        const sessionData = req.session
+          ? JSON.stringify(req.session, null, 2)
+          : "null";
+
+        return res.render("dashboard", {
+          NODE_ENV: process.env.NODE_ENV,
+          FRONTEND_URL: process.env.FRONTEND_URL,
+          sessionAuth: req.session.isAuth,
+          sessionUser: req.session.user,
+          lastName: req.session.lastName,
+          firstName: req.session.firstName,
+          patr: req.session.patr,
+          displayStatus: req.session.displayStatus,
+          sessionData,
+          users,
+          patients,
+        });
+      }
+      return res.json({
+        ok: true,
         users,
         patients,
+        session: {
+          user: req.session.user,
+          isAdmin: req.session.isAdmin,
+          displayStatus: req.session.displayStatus,
+        },
       });
     } finally {
       client.release();
     }
   } catch (err) {
     console.error("Dashboard error:", err);
-    res.redirect("/login");
+    return res.status(500).json({ ok: false, error: "Internal server error" });
   }
 });
 
