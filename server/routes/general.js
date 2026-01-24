@@ -2,7 +2,7 @@ const { Router } = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-const { getGeneralConfig, setGeneralConfig } = require("../utils/cache");
+const { getGeneralConfig, setGeneralConfig } = require("../utils/cache.ts");
 const { updateRow, fetchRow } = require("../utils/dbUtils");
 const debug = require("../utils/debug");
 
