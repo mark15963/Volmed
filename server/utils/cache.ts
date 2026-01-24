@@ -18,6 +18,22 @@ interface CachedGeneralConfig{
   timestamp: number
 }
 
+interface LegacyCachedConfig {
+  general: {
+    title: string;
+    color?: {
+      headerColor: string;
+      contentColor: string;
+      containerColor: string;
+    };
+    logoUrl?: string;
+    theme: string;
+  };
+  timestamp?: number; // may be missing
+}
+
+type AnyCachedConfig = CachedGeneralConfig | LegacyCachedConfig
+
 let memoryCache: CachedGeneralConfig | null = null
 // const CACHE_KEY = "general";
 
@@ -32,9 +48,27 @@ async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   }
   try{
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
-    /** @type {CachedGeneralConfig} */
-    const parsed = JSON.parse(content) as CachedGeneralConfig
+    /** @type {AnyCachedConfig} */
+    let parsed = JSON.parse(content)
 
+    if ('general' in parsed) {
+    const old = parsed.general
+    parsed = {
+      title: old.title || '',
+      color: old.color || {
+        headerColor:'#3c97e6',
+        contentColor:'#a5c6e2',
+        containerColor:'#0073c7',
+      },
+      theme: old.theme || 'default',
+      logoUrl: old.logoUrl,
+      timestamp: parsed.timestamp ?? Date.now(), // add missing timestamp
+    };
+    debug.log("Converted old nested cache format to new flat format");
+  }
+  /** @type {CachedGeneralConfig} */
+  const config = parsed
+  
     if(
       !parsed.title ||
       !parsed.color ||
