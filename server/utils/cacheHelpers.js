@@ -22,7 +22,7 @@ function saveCachedConfig(newData) {
       containerColor: newData.color?.containerColor,
     },
     theme: newData.theme,
-    // logoUrl: newData.logoUrl || cache[CACHE_KEY]?.logoUrl,  // if you want to preserve logo
+    logoUrl: newData.logoUrl || cache[CACHE_KEY]?.logoUrl, // if you want to preserve logo
   };
   saveConfigToCache(cache);
 }

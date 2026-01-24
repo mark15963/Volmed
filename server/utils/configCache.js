@@ -20,6 +20,7 @@ function loadConfigFromCache() {
   try {
     if (fs.existsSync(CACHE_PATH)) {
       const content = fs.readFileSync(CACHE_PATH, "utf8");
+      console.log("got loadConfigFromCache()");
       return JSON.parse(content);
     }
   } catch (err) {
