@@ -2,7 +2,7 @@ const { Router } = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-const { getCachedConfig, saveCachedConfig } = require("../utils/cacheHelpers");
+const { getGeneralConfig, setGeneralConfig } = require("../utils/cache");
 const { updateRow, fetchRow } = require("../utils/dbUtils");
 const debug = require("../utils/debug");
 
@@ -10,16 +10,27 @@ const router = Router();
 
 router.get("/config", async (req, res) => {
   try {
-    const cached = getCachedConfig();
-    if (cached) return res.json(cached);
+    // Get data from cache
+    let config = await getGeneralConfig();
+    if (config) {
+      debug.log("Config served from cache");
+      return res.json(config);
+    }
 
+    // fetch from DB
+    debug.log("Cache missing - Fetching from DB");
     const row = await fetchRow(`
-    SELECT title, "headerColor", "contentColor", "containerColor", theme
-    FROM general 
-    WHERE id = 1
-  `);
+      SELECT *
+      FROM general 
+      WHERE id = 1
+    `);
 
-    const fullConfig = {
+    if (!row) {
+      return res.status(404).json({ error: "Config not found in DB" });
+    }
+
+    // Build full config obj
+    config = {
       title: row.title,
       color: {
         headerColor: row.headerColor,
@@ -27,18 +38,24 @@ router.get("/config", async (req, res) => {
         containerColor: row.containerColor,
       },
       theme: row.theme,
+      logoUrl: row.logoUrl,
     };
 
-    saveCachedConfig(fullConfig);
-    res.json(fullConfig);
+    // Save to cache for next time
+    await setGeneralConfig(config);
+    debug.success("Config fetched from DB and cached");
+
+    res.json(config);
   } catch (err) {
     console.error("Error fetching config:", err);
     res.status(500).json({ error: "Failed to fetch config" });
   }
 });
+// Update DB -> update cache
 router.put("/config", async (req, res) => {
   const { title, headerColor, contentColor, containerColor, theme } = req.body;
 
+  // No fields provided
   if (
     title === undefined &&
     headerColor === undefined &&
@@ -87,14 +104,14 @@ router.put("/config", async (req, res) => {
       UPDATE general
       SET ${setParts.join(", ")}
       WHERE id = 1
-      RETURNING title, "headerColor", "contentColor", "containerColor", theme
+      RETURNING *
     `;
 
     const row = await updateRow(query, paramValues);
 
-    if (!row) return res.status(404).json({ error: "Record not found" });
+    if (!row) return res.status(404).json({ error: "Config record not found" });
 
-    const fullConfig = {
+    const updatedConfig = {
       title: row.title,
       color: {
         headerColor: row.headerColor,
@@ -102,13 +119,14 @@ router.put("/config", async (req, res) => {
         containerColor: row.containerColor,
       },
       theme: row.theme,
+      logoUrl: row.logoUrl,
     };
 
-    saveCachedConfig(fullConfig);
+    await setGeneralConfig(updatedConfig);
 
-    debug.log("Config partially updated:", fullConfig);
+    debug.success("Config updated in DB and cache:", updatedConfig);
 
-    res.json(fullConfig);
+    res.json(updatedConfig);
   } catch (err) {
     console.error("Error updating config:", err);
     res.status(500).json({ error: "Failed to update config" });
@@ -157,7 +175,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //#region ===== Logo routes =====
-router.post("/upload-logo", upload.single("logo"), (req, res) => {
+router.post("/upload-logo", upload.single("logo"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -167,6 +185,15 @@ router.post("/upload-logo", upload.single("logo"), (req, res) => {
 
   // Return the public URL that the frontend can use
   const logoUrl = `/assets/images/${req.file.filename}?t=${Date.now()}`;
+
+  const current = await getGeneralConfig();
+  if (current) {
+    await setGeneralConfig({
+      ...current,
+      logoUrl,
+    });
+  }
+
   res.json({ logoUrl });
 });
 // ---- Get Logo ----

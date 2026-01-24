@@ -1,18 +1,11 @@
 const { fetchRow } = require("../utils/dbUtils");
-const { getCachedConfig, saveCachedConfig } = require("./cacheHelpers");
-
+const { getGeneralConfig, setGeneralConfig } = require("./cache");
 const debug = require("./debug");
 
 async function initCacheOnStartup() {
   try {
-    const cached = getCachedConfig();
-    if (
-      cached &&
-      cached.title &&
-      cached.color &&
-      cached.theme &&
-      cached.logoUrl
-    ) {
+    const cached = getGeneralConfig();
+    if (cached) {
       console.log("Cache already loaded");
       return;
     }
@@ -40,7 +33,7 @@ async function initCacheOnStartup() {
       theme: row.theme,
     };
 
-    saveCachedConfig(data);
+    await setGeneralConfig(data);
     console.log("General configuration cache built successfully");
   } catch (err) {
     console.error("Failed to initialize cache:", err);
