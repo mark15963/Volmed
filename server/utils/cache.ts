@@ -84,7 +84,7 @@ async function setGeneralConfig(data:Omit<CachedGeneralConfig, 'timestamp'>) {
   }
 }
 
-export async function clearCache() {
+async function clearCache() {
   memoryCache = null
   try{
     await fs.unlink(CACHE_FILE)
@@ -96,7 +96,7 @@ export async function clearCache() {
   }
 }
 
-module.exports = { getGeneralConfig, setGeneralConfig };
+module.exports = { getGeneralConfig, setGeneralConfig, clearCache };
 
 // function getCachedConfig() {
 //   const cache = loadConfigFromCache();
