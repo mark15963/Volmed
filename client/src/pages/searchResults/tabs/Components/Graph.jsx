@@ -11,8 +11,9 @@
 //---------------------------------------------------------
 // WRONG
 //
-// <Graph />  // Error!
-// <Graph data={null} />  // Error!
+// <Graph />              // Empty Graph
+// <Graph data={}         // Error
+// <Graph data={null} />  // Error
 //
 //---------------------------------------------------------
 // DATA ENTER EXAMPLE:

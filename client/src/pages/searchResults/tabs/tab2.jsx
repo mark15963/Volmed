@@ -37,8 +37,8 @@ export const Tab2 = memo(({ id }) => {
   const [loadingPulse, setLoadingPulse] = useState(true);
   const [loadingO2, setLoadingO2] = useState(true);
   const [pulseValue, setPulseValue] = useState('');
-  const [pulseValues, setPulseValues] = useState([]);
   const [o2Value, setO2Value] = useState('');
+  const [pulseValues, setPulseValues] = useState([]);
   const [o2Values, setO2Values] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   //#endregion

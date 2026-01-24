@@ -7,7 +7,7 @@
 <p>Авторизован: <%- sessionAuth %></p>
 <p>Аккаунт: <%- sessionUser %></p>
 <p>ФИО: <%= lastName %> <%= firstName %> <%= patr %></p>
-<p>Должность: <%= status %></p>
+<p>Должность: <%= displayStatus %></p>
 
 <div>
   <details>
@@ -25,14 +25,14 @@
       ID <%- user.id %>:
       <%= user.lastName %>
       <%= user.firstName %>
-      <%= user.patr %> - <%= user.status %>
+      <%= user.patr %> - <%= user.displayStatus %>
     </p>
     <% } else {%>
     <p>
       ID <%- user.id %>:
       <%= user.lastName %>
       <%= user.firstName %>
-      <%= user.patr %> - <%= user.status %>
+      <%= user.patr %> - <%= user.displayStatus %>
     </p>
     <% }}) %>
   </details>
