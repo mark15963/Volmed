@@ -1,7 +1,7 @@
 // const { loadConfigFromCache, saveConfigToCache } = require("./configCache");
-import fs from 'fs/promises'
-import path from 'path';
-import debug from './debug'
+const fs = require('fs/promises')
+const path = require('path');
+const debug = require('./debug')
 
 const CACHE_FILE = path.join(process.cwd(), 'cache', 'config-cache.json')
 const CACHE_TTL_MS = 1000 * 60 * 60 * 24
@@ -21,6 +21,10 @@ interface CachedGeneralConfig{
 let memoryCache: CachedGeneralConfig | null = null
 // const CACHE_KEY = "general";
 
+/**
+ * Load config from cache file (falls back to memory if fresh)
+ * @returns {Promise<CachedGeneralConfig | null>}
+ */
 export async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   if(memoryCache && Date.now() - memoryCache .timestamp < CACHE_TTL_MS){
     debug.success('Cache hit (in-memory)')
@@ -28,6 +32,7 @@ export async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   }
   try{
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
+    /** @type {CachedGeneralConfig} */
     const parsed = JSON.parse(content) as CachedGeneralConfig
 
     if(
