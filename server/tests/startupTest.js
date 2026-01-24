@@ -1,11 +1,11 @@
 //#region ===== IMPORTS =====
 const axios = require("axios");
-const https = require('https')
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
 const debug = require("../utils/debug");
-const { getCachedConfig } = require("../utils/cacheHelpers");
+const { getGeneralConfig } = require("../utils/cache");
 //#endregion
 
 //#region ===== HELPER =====
@@ -38,14 +38,14 @@ async function retryOperation(operation, maxRetries = 3, delayMs = 1000) {
 const createAxiosInstance = (cookies = []) => {
   const instance = axios.create({
     httpsAgent: new https.Agent({
-      rejectUnauthorized: false  // Accept self-signed certificates
-    })
+      rejectUnauthorized: false, // Accept self-signed certificates
+    }),
   });
-  
+
   if (cookies.length > 0) {
     instance.defaults.headers.Cookie = cookies.join("; ");
   }
-  
+
   return instance;
 };
 //#endregion
@@ -102,7 +102,7 @@ async function runStartupTests() {
       const loginRes = await axiosInstance.post(
         `${BASE_URL}/api/login`,
         { username, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       cookies = loginRes.headers["set-cookie"] || [];
       logTestResult("Login", loginRes.data.success === true);
@@ -114,7 +114,7 @@ async function runStartupTests() {
 
     //#region ===== PATIENTS =====
     try {
-            const axiosInstance = createAxiosInstance(cookies);
+      const axiosInstance = createAxiosInstance(cookies);
       const patientsRes = await axiosInstance.get(`${BASE_URL}/api/patients`);
       logTestResult("Fetch patients", patientsRes.data.length >= 0);
     } catch (err) {
@@ -137,7 +137,9 @@ async function runStartupTests() {
     //#region ===== CHAT =====
     try {
       const axiosInstance = createAxiosInstance();
-      const chatHealthRes = await axiosInstance.get(`${BASE_URL}/api/chat/health`);
+      const chatHealthRes = await axiosInstance.get(
+        `${BASE_URL}/api/chat/health`,
+      );
       logTestResult("Chat health", chatHealthRes.data.status === "healthy");
     } catch (err) {
       logTestResult("Chat health", false);
@@ -156,9 +158,10 @@ async function runStartupTests() {
       } else {
         // Delete previous test files to avoid duplicates
         const filesResBefore = await axiosInstance.get(
-          `${BASE_URL}/api/patients/1/files`);
+          `${BASE_URL}/api/patients/1/files`,
+        );
         const oldTestFiles = filesResBefore.data.filter((f) =>
-          f.originalname.startsWith("test-file")
+          f.originalname.startsWith("test-file"),
         );
 
         for (const file of oldTestFiles) {
@@ -185,15 +188,15 @@ async function runStartupTests() {
           // Upload
           const uploadRes = await axiosInstance.post(
             `${BASE_URL}/api/patients/1/upload`,
-           form,
+            form,
             {
               headers: {
                 ...form.getHeaders(),
               },
-            }
+            },
           );
           // logTestResult("Uploaded file file", uploadRes?.status === 200);
-         debug.log("⏳ Waiting for file processing...");
+          debug.log("⏳ Waiting for file processing...");
           await delay(1500);
         } catch (err) {
           logTestResult("File upload", false);
@@ -203,12 +206,14 @@ async function runStartupTests() {
         // Verify upload
         try {
           const verifyUpload = async () => {
-            const filesRes = await axiosInstance.get(`${BASE_URL}/api/patients/1/files`);
-          uploadedFiles = filesRes.data.filter((f) =>
-            f.originalname.startsWith("test-file")
-          );
-          if (uploadedFiles.length === 0)
-            throw new Error("Uploaded test file not found!");
+            const filesRes = await axiosInstance.get(
+              `${BASE_URL}/api/patients/1/files`,
+            );
+            uploadedFiles = filesRes.data.filter((f) =>
+              f.originalname.startsWith("test-file"),
+            );
+            if (uploadedFiles.length === 0)
+              throw new Error("Uploaded test file not found!");
           };
 
           await retryOperation(verifyUpload, 3, 1000);
@@ -221,9 +226,12 @@ async function runStartupTests() {
         // Delete uploaded file(s)
         for (const file of uploadedFiles) {
           try {
-            const deleteRes = await axiosInstance.delete(`${BASE_URL}/api/files`, {
-              data: { filePath: file.path },
-            });
+            const deleteRes = await axiosInstance.delete(
+              `${BASE_URL}/api/files`,
+              {
+                data: { filePath: file.path },
+              },
+            );
             // logTestResult(
             //   `File deleted: ${file.originalname}`,
             //   deleteRes.data.success
@@ -241,9 +249,10 @@ async function runStartupTests() {
         try {
           const verifyDeletion = async () => {
             const filesAfterDelete = await axiosInstance.get(
-              `${BASE_URL}/api/patients/1/files`);
+              `${BASE_URL}/api/patients/1/files`,
+            );
             const stillExists = filesAfterDelete.data.some((f) =>
-              f.originalname.startsWith("test-file")
+              f.originalname.startsWith("test-file"),
             );
             if (stillExists) throw new Error("File was not deleted!");
           };
@@ -256,10 +265,11 @@ async function runStartupTests() {
 
           try {
             const currentFiles = await axiosInstance.get(
-              `${BASE_URL}/api/patients/1/files`);
+              `${BASE_URL}/api/patients/1/files`,
+            );
             debug.log(
               "📁 Current files:",
-              currentFiles.data.map((f) => f.originalname)
+              currentFiles.data.map((f) => f.originalname),
             );
           } catch (debugErr) {
             debug.error("Could not get current files for debugging:", debugErr);
@@ -277,7 +287,7 @@ async function runStartupTests() {
 
     //#region ===== CACHE =====
     try {
-      const cached = getCachedConfig();
+      const cached = getGeneralConfig();
       if (cached) logTestResult("Cache fetched", true);
     } catch (err) {
       logTestResult("Cache not fetched", false);
