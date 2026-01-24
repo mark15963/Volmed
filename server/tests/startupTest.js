@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
 const debug = require("../utils/debug");
-const { getGeneralConfig } = require("../utils/cache");
+const { getGeneralConfig } = require("../utils/cache.ts");
 //#endregion
 
 //#region ===== HELPER =====
