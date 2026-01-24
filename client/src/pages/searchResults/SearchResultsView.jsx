@@ -109,6 +109,14 @@ const SearchResultsView = ({
   const { handleEdit, handlePrint, handleDeletePatient } = handlers
   //#endregion
   //#region ===== RENDER LOGIC & CONTENT =====
+  const tabContents = useMemo(
+    () => [
+      <Tab1 data={data} />,
+      <Tab2 {...filesHook} isLoading={filesHook.isLoading} id={id} />,
+      <Tab3 {...medsHook} patientId={id} />,
+    ],
+    [data, filesHook, medsHook, id]
+  )
   const renderContent = () => {
     if (loading && !data) return renderLoader('main')
     if (error) return <ErrorState error={error} />
@@ -127,14 +135,6 @@ const SearchResultsView = ({
         {type === 'tab' && <div>Загрузка вкладки...</div>}
       </div>
     </div>
-  )
-  const tabContents = useMemo(
-    () => [
-      <Tab1 data={data} />,
-      <Tab2 {...filesHook} isLoading={filesHook.isLoading} id={id} />,
-      <Tab3 {...medsHook} patientId={id} />,
-    ],
-    [data, filesHook, medsHook, id]
   )
   //#endregion
 

@@ -264,17 +264,17 @@ router.get("/dashboard", isAuth, async (req, res) => {
       ? JSON.stringify(req.session, null, 2)
       : "null";
     if (!req.cookies.user) {
-      console.log('no user cookie')
+      console.log("no user cookie");
       return res.redirect("/login");
     }
 
     const client = await db.connect();
     try {
       const { rows: users } = await client.query(
-        "SELECT * FROM users ORDER BY id"
+        "SELECT * FROM users ORDER BY id",
       );
       const { rows: patients } = await client.query(
-        "SELECT * FROM patients ORDER BY id"
+        "SELECT * FROM patients ORDER BY id",
       );
       res.render("dashboard", {
         NODE_ENV: process.env.NODE_ENV,
@@ -284,7 +284,6 @@ router.get("/dashboard", isAuth, async (req, res) => {
         lastName: req.session.lastName,
         firstName: req.session.firstName,
         patr: req.session.patr,
-        status: req.session.status,
         displayStatus: req.session.displayStatus,
         sessionData,
         users,

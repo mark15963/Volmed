@@ -1,4 +1,4 @@
-//#region ===== IMPORTS =====
+//#region === IMPORTS ===
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '../../../context'
@@ -14,6 +14,7 @@ import { statusDisplayMap, displayStatusMap } from "../../../utils/statusMap"
 import api from '../../../services/api/index'
 
 import styles from './styles/UsersList.module.scss'
+import { UserData } from '../pages/UserData'
 //#endregion
 
 const statusOptions = [
@@ -24,6 +25,7 @@ const statusOptions = [
 ]
 
 const UsersList = () => {
+  //#region === CONSTS ===
   const { authState } = useAuth()
   const safeMessage = useSafeMessage()
   const { users, loading, fetchUsers } = useUsers()
@@ -39,8 +41,11 @@ const UsersList = () => {
   } = usePerItemLoading()
 
   const [addLoading, setAddLoading] = useState(false)
+  const [showUserData, setShowUserData] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
+  //#endregion
 
-  //#region ===== HANDLERS =====
+  //#region === HANDLERS ===
   const handleStatusChange = async (id, newStatusDisplay) => {
     try {
       setStatusLoading(id, true)
@@ -110,10 +115,22 @@ const UsersList = () => {
       setDeleteLoading(id, false)
     }
   }
+  const handleOpenUserData = (userId) => {
+    const user = users.find(u => u.id === userId)
+    if (user) {
+      setSelectedUser(user);
+      setShowUserData(true);
+    } else {
+      console.warn(`User with id ${userId} not found in current list`);
+    }
+  };
+  const handleCloseUserData = () => {
+    setShowUserData(false);
+    setSelectedUser(null);
+  };
   //#endregion
 
   if (loading) return <SpinLoader color="black" size="30px" />
-
   if (users.length === 0) {
     return (
       <select className={styles.select} disabled>
@@ -124,6 +141,12 @@ const UsersList = () => {
 
   return (
     <>
+      {showUserData && selectedUser && (
+        <UserData
+          user={selectedUser}
+          onClose={handleCloseUserData}
+        />
+      )}
       <table className={styles.table}>
         <tbody>
           {users.map((user, i) => (
@@ -131,7 +154,12 @@ const UsersList = () => {
               key={user.id}
               className={styles.userRow}
             >
-              <td className={styles.nameCell}>
+              <td
+                className={styles.nameCell}
+                onClick={() => {
+                  handleOpenUserData(user.id)
+                }}
+              >
                 <span className={styles.name}>
                   [{user.id}] {user.lastName} {user.firstName} {user.patr}
                 </span>
