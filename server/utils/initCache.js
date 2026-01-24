@@ -6,20 +6,26 @@ const debug = require("./debug");
 async function initCacheOnStartup() {
   try {
     const cached = getCachedConfig();
-    if (cached && cached.title && cached.color && cached.logoUrl) {
-      debug.log("Cache already loaded");
+    if (
+      cached &&
+      cached.title &&
+      cached.color &&
+      cached.theme &&
+      cached.logoUrl
+    ) {
+      console.log("Cache already loaded");
       return;
     }
 
-    debug.log("Building cache from database...");
+    console.log("Building cache from database...");
 
     const row = await fetchRow(`
-      SELECT "title", "headerColor", "contentColor", "containerColor", "logoUrl"
+      SELECT "title", "headerColor", "contentColor", "containerColor", "theme","logoUrl"
       FROM general
       WHERE id = 1
       `);
     if (!row) {
-      debug.warn("No general config found in DB");
+      console.warn("No general config found in DB");
       return;
     }
 
@@ -31,10 +37,11 @@ async function initCacheOnStartup() {
         containerColor: row.containerColor,
       },
       logo: row.logoUrl,
+      theme: row.theme,
     };
 
     saveCachedConfig(data);
-    debug.log("General configuration cache built successfully");
+    console.log("General configuration cache built successfully");
   } catch (err) {
     console.error("Failed to initialize cache:", err);
   }
