@@ -1,4 +1,3 @@
-// const { loadConfigFromCache, saveConfigToCache } = require("./configCache");
 const fs = require('fs/promises')
 const path = require('path');
 const debug = require('./debug')
@@ -62,7 +61,7 @@ debug.log('Converting legacy flat cache to new nested format');    parsed = {
       theme: (parsed as LegacyCachedConfig).theme || 'default',
       logoUrl: (parsed as LegacyCachedConfig).logoUrl,
     },
-      timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(), // add missing timestamp
+      timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(),
     };
     debug.log("Converted old nested cache format to new flat format");
     await setGeneralConfig(parsed.general);
@@ -138,30 +137,3 @@ async function clearCache() {
 }
 
 module.exports = { getGeneralConfig, setGeneralConfig, clearCache };
-
-// function getCachedConfig() {
-//   const cache = loadConfigFromCache();
-//   return cache && cache[CACHE_KEY] ? cache[CACHE_KEY] : null;
-// }
-// 
-// /**
-//  * Saves a complete configuration object to cache.
-//  *
-//  * @param {Object} fullConfig - Complete config: { title, color: {...}, theme, ... }
-//  */
-// function saveCachedConfig(newData) {
-//   const cache = loadConfigFromCache() || {};
-//   cache[CACHE_KEY] = {
-//     title: newData.title,
-//     color: {
-//       headerColor: newData.color?.headerColor,
-//       contentColor: newData.color?.contentColor,
-//       containerColor: newData.color?.containerColor,
-//     },
-//     theme: newData.theme,
-//     logoUrl: newData.logoUrl || cache[CACHE_KEY]?.logoUrl, // if you want to preserve logo
-//   };
-//   saveConfigToCache(cache);
-// }
-// 
-// module.exports = { getCachedConfig, saveCachedConfig };
