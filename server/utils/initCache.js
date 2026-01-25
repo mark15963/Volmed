@@ -13,7 +13,7 @@ async function initCacheOnStartup() {
     console.log("Building cache from database...");
 
     const row = await fetchRow(`
-      SELECT "title", "headerColor", "contentColor", "containerColor", "theme","logoUrl"
+      SELECT *
       FROM general
       WHERE id = 1
       `);
@@ -32,6 +32,7 @@ async function initCacheOnStartup() {
       logoUrl: row.logoUrl,
       theme: row.theme,
     };
+    debug.log(data)
 
     await setCacheConfig(data);
     console.log("General configuration cache built successfully");
