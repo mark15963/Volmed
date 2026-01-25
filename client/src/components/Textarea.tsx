@@ -35,8 +35,8 @@ const Textarea: FC<TextareaProps> = ({
         padding: "6px 10px",
         lineHeight: 1.5,
         resize: "none",
-        minHeight: `${minRows * 1.5}em`,
-        maxHeight: `${maxRows * 1.5}em`,
+        minHeight: `${minRows * 1.5}rem`,
+        maxHeight: `${maxRows * 1.5}rem`,
         ...style,
       }}
       disabled={disabled}

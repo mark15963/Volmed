@@ -50,7 +50,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.complaint}
           onChange={e => handleChange("complaint", e.target.value)}
-          autoSize={{ minRows: 2, maxRows: 6 }}
+          autoSize={{ minRows: 5 }}
           style={{ width: '100%' }}
         />
       </div>
@@ -60,7 +60,8 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.anam}
           onChange={e => handleChange("anam", e.target.value)}
-          autoSize={{ minRows: 2, maxRows: 6 }}
+
+          autoSize={{ minRows: 5 }}
         />
       </div>
 
@@ -69,7 +70,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.life}
           onChange={e => handleChange("life", e.target.value)}
-          autoSize={{ minRows: 2, maxRows: 6 }}
+          autoSize={{ minRows: 5 }}
         />
       </div>
 
@@ -78,7 +79,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.status}
           onChange={e => handleChange("status", e.target.value)}
-          autoSize={{ minRows: 2, maxRows: 10 }}
+          autoSize={{ minRows: 8 }}
         />
       </div>
 
@@ -121,7 +122,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
           placeholder="Диагноз"
           value={formValues.diag}
           onChange={e => handleChange("diag", e.target.value)}
-          autoSize={{ minRows: 1, maxRows: 3 }}
+          autoSize={{ minRows: 3 }}
         />
       </div>
 
@@ -130,7 +131,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.sop_zab}
           onChange={e => handleChange("sop_zab", e.target.value)}
-          autoSize={{ minRows: 2, maxRows: 4 }}
+          autoSize={{ minRows: 3 }}
         />
       </div>
 
@@ -139,7 +140,7 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.rec}
           onChange={e => handleChange("rec", e.target.value)}
-          autoSize={{ minRows: 1, maxRows: 5 }}
+          autoSize={{ minRows: 5 }}
         />
       </div>
 

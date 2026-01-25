@@ -51,19 +51,14 @@ import { debug } from "../../../../utils";
 export const useGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState(() => ({
-    title: "",
-    header: "#3c97e6",
-    content: "#a5c6e2",
-    container: "#0073c7",
-    theme: "default",
+    title: config?.title || "",
+    header: config?.color?.header || "#3c97e6",
+    content: config?.color?.content || "#a5c6e2",
+    container: config?.color?.container || "#0073c7",
+    theme: config?.theme || "default",
   }));
 
-  debug.warn(JSON.stringify(config));
-  debug.warn(`First inputs ${inputs.theme}`);
-
   useEffect(() => {
-    debug.log("Syncing inputs from loaded config:", config.theme);
-
     setInputs({
       title: config.title || "",
       header: config.color.header || "#3c97e6",
@@ -78,9 +73,6 @@ export const useGeneralConfig = (config, safeMessage) => {
     config.color?.container,
     config.theme,
   ]);
-
-  debug.warn(`Current config.theme:${config.theme}`);
-  debug.warn(`Current inputs.theme: ${inputs.theme}`);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -125,7 +117,6 @@ export const useGeneralConfig = (config, safeMessage) => {
         containerColor: container,
         theme,
       });
-      debug.warn(`What was sent ${JSON.stringify(res)}`);
 
       if (!res.ok) throw new Error(res.message || "Ошибка сервера");
 
@@ -137,15 +128,6 @@ export const useGeneralConfig = (config, safeMessage) => {
         container,
       });
       config.setTheme(theme);
-
-      debug.warn(`
-        UPDATED UI DATA
-        ${config.title}
-        ${config.color.header}
-        ${config.color.content}
-        ${config.color.container}
-        ${config.theme}
-        `);
 
       safeMessage("success", "Данные сохранены!", 2.5);
     } catch (err) {
