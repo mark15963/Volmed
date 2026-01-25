@@ -43,6 +43,8 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
   if(memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS){
     debug.success('Cache hit (in-memory)')
     return memoryCache
+  } else if (memoryCache && Date.now() - memoryCache.timestamp > CACHE_TTL_MS){
+    debug.log("Cache expired")
   }
   try{
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
@@ -50,24 +52,25 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
     let parsed = JSON.parse(content)
 
     if (!('general' in parsed)) {
-debug.log('Converting legacy flat cache to new nested format');    parsed = {
-  general:{
-      title: (parsed as LegacyCachedConfig).title || '',
-      color: (parsed as LegacyCachedConfig).color || {
-        headerColor:'#3c97e6',
-        contentColor:'#a5c6e2',
-        containerColor:'#0073c7',
-      },
-      theme: (parsed as LegacyCachedConfig).theme || 'default',
-      logoUrl: (parsed as LegacyCachedConfig).logoUrl,
-    },
-      timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(),
-    };
-    debug.log("Converted old nested cache format to new flat format");
-    await setCacheConfig(parsed.general);
-  }
-  /** @type {CachedGeneralConfig} */
-  const config = parsed
+      debug.log('Converting legacy flat cache to new nested format');    
+      parsed = {
+        general:{
+          title: (parsed as LegacyCachedConfig).title || '',
+          color: (parsed as LegacyCachedConfig).color || {
+            headerColor:'#3c97e6',
+            contentColor:'#a5c6e2',
+            containerColor:'#0073c7',
+          },
+          theme: (parsed as LegacyCachedConfig).theme || 'default',
+          logoUrl: (parsed as LegacyCachedConfig).logoUrl,
+        },
+        timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(),
+      };
+      debug.log("Converted old nested cache format to new flat format");
+      await setCacheConfig(parsed.general);
+    }
+    /** @type {CachedGeneralConfig} */
+    const config = parsed
   
     if(
       !config.general.title ||
@@ -106,16 +109,35 @@ async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) 
     general: {...data},
     timestamp: Date.now()
   }
+  debug.log(fullData)
 
   memoryCache = fullData
 
   try{
     await fs.mkdir(path.dirname(CACHE_FILE), {recursive: true})
-
+    
     const tmpPath = CACHE_FILE + '.tmp'
+
+    debug.log(`Old file ${CACHE_FILE}`)
+    debug.log(`New file ${tmpPath}`)
     await fs.writeFile(tmpPath, JSON.stringify(fullData,null,2), 'utf-8')
-    await fs.copyFile(tmpPath, CACHE_FILE)
-    // await fs.unlink(tmpPath).catch(() => {});
+    // Check old file content
+    let f = await fs.readFile(tmpPath)
+    if(f)
+      debug.log(`
+        OLD FILE:
+        ${f}
+      `)
+      
+    await fs.rename(tmpPath, CACHE_FILE)
+
+    // Check new file content
+    f = await fs.readFile(CACHE_FILE)
+    if(f)
+      debug.log(`
+        NEW FILE:
+        ${f}
+      `)
 
     debug.success("Cache saved to disk")
   } catch (err: any){
