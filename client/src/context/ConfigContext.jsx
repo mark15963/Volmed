@@ -179,6 +179,7 @@ export const ConfigProvider = ({ children }) => {
       }
 
       const data = res.data
+      console.log(data)
 
       setTitleState((data.title ?? title) || CONFIG_DEFAULTS.GENERAL.TITLE)
       if (data.color) {
@@ -195,6 +196,7 @@ export const ConfigProvider = ({ children }) => {
       if (data.theme) {
         setThemeState(prev => {
           const serverTheme = data.theme || {}
+
           return {
             table: (serverTheme.tableTheme ?? prev.table) || CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
             app: (serverTheme.appTheme ?? prev.app) || CONFIG_DEFAULTS.GENERAL.THEME.APP
