@@ -61,21 +61,21 @@ export const useGeneralConfig = (config, safeMessage) => {
   debug.warn(JSON.stringify(config));
   debug.warn(`First inputs ${inputs.theme}`);
 
-  useEffect(() => {
-    setInputs((prev) => ({
-      title: config.title || prev.title,
-      header: config.color.header || prev.header,
-      content: config.color.content || prev.content,
-      container: config.color.container || prev.container,
-      theme: config.theme || prev.theme,
-    }));
-  }, [
-    config.title,
-    config.color.header,
-    config.color.content,
-    config.color.container,
-    config.theme,
-  ]);
+  // useEffect(() => {
+  //   setInputs((prev) => ({
+  //     title: config.title || prev.title,
+  //     header: config.color.header || prev.header,
+  //     content: config.color.content || prev.content,
+  //     container: config.color.container || prev.container,
+  //     theme: config.theme || prev.theme,
+  //   }));
+  // }, [
+  //   config.title,
+  //   config.color.header,
+  //   config.color.content,
+  //   config.color.container,
+  //   config.theme,
+  // ]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
