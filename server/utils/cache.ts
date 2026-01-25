@@ -56,6 +56,7 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
     /** @type {AnyCachedConfig} */
     let parsed = JSON.parse(content)
+    console.log(parsed)
 
     if (!('general' in parsed)) {
       debug.log('Converting legacy flat cache to new nested format');    
@@ -77,6 +78,7 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
       };
       debug.log("Converted old nested cache format to new flat format");
       await setCacheConfig(parsed.general);
+      console.log(parsed.general)
     }
     /** @type {CachedGeneralConfig} */
     const config = parsed
