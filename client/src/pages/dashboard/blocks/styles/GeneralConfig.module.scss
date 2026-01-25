@@ -93,8 +93,22 @@
     .themeTitle {
       text-align: center;
     }
-    .themePicker {
-      width: 100%;
+    .themeBlocks {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 300;
+      font-size: 0.7em;
+      &:first-child {
+        margin-top: 10px;
+      }
+      &:not(:first-child) {
+        margin-top: 5px;
+      }
+      .themePicker {
+        width: 100%;
+      }
     }
   }
 }

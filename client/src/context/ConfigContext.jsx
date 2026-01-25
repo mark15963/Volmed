@@ -87,9 +87,9 @@ const ConfigContext = createContext(null);
  */
 export const ConfigProvider = ({ children }) => {
   const [title, setTitleState] = useState(CONFIG_DEFAULTS.GENERAL.TITLE);
-  const [color, setColorState] = useState(CONFIG_DEFAULTS.GENERAL.COLOR)
-  const [logo, setLogoState] = useState(CONFIG_DEFAULTS.GENERAL.LOGO)
-  const [theme, setThemeState] = useState(CONFIG_DEFAULTS.GENERAL.THEME)
+  const [color, setColorState] = useState(CONFIG_DEFAULTS.GENERAL.COLOR);
+  const [logo, setLogoState] = useState(CONFIG_DEFAULTS.GENERAL.LOGO);
+  const [theme, setThemeState] = useState(CONFIG_DEFAULTS.GENERAL.THEME);
   const [isLoading, setIsLoading] = useState(true)
 
   const loadFromCache = useCallback(async () => {
@@ -110,7 +110,10 @@ export const ConfigProvider = ({ children }) => {
         container: cache.general?.color?.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
       })
       setLogoState(cache.general?.logoUrl ?? CONFIG_DEFAULTS.GENERAL.LOGO)
-      setThemeState(cache.general?.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+      setThemeState({
+        table: cache.general?.theme ?? CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
+        app: cache.general?.theme?.app ?? CONFIG_DEFAULTS.GENERAL.THEME.APP
+      })
 
       debug.table(cache.general, "Cache data")
 
@@ -136,8 +139,10 @@ export const ConfigProvider = ({ children }) => {
           content: data.general.color?.contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
           container: data.general.color?.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
         });
-        setThemeState(data.general.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
-
+        setThemeState({
+          table: data.general.theme?.table ?? CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
+          app: data.general.theme?.app ?? CONFIG_DEFAULTS.GENERAL.THEME.APP
+        })
       }
 
       if (logoRes.status === "fulfilled" && logoRes.value?.ok && logoRes.value.data?.logoUrl) {
@@ -187,8 +192,16 @@ export const ConfigProvider = ({ children }) => {
           };
         });
       }
-      setThemeState((data.theme ?? theme) || CONFIG_DEFAULTS.GENERAL.THEME)
-      debug.log("Config updated (with safeguards):", { title, color, theme });
+      if (data.theme) {
+        setThemeState(prev => {
+          const serverTheme = data.theme || {}
+          return {
+            table: (serverTheme.tableTheme ?? prev.table) || CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
+            app: (serverTheme.appTheme ?? prev.app) || CONFIG_DEFAULTS.GENERAL.THEME.APP
+          }
+        })
+      }
+      debug.log("Config updated:", { title, color, theme });
       return true;
     } catch (err) {
       debug.error("Failed to update config:", err)
@@ -203,8 +216,11 @@ export const ConfigProvider = ({ children }) => {
       contentColor: colorObj.content,
       containerColor: colorObj.container,
     });
-  const setTheme = async (theme) => updateGeneral({ theme });
-
+  const setTheme = async (themeObj) =>
+    updateGeneral({
+      tableTheme: themeObj.table,
+      appTheme: themeObj.app
+    });
   const setLogo = useCallback((url) => {
     setLogoState(url);
     debug.log("Logo updated locally:", url);
