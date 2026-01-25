@@ -102,8 +102,6 @@ export const ConfigProvider = ({ children }) => {
 
       const cache = res.data;
 
-      debug.log("Config loaded from API:", JSON.stringify(cache, null, 2));
-
       // --- Apply cached data ---
       setTitleState(cache.general?.title ?? CONFIG_DEFAULTS.GENERAL.TITLE,)
       setColorState({
@@ -113,9 +111,9 @@ export const ConfigProvider = ({ children }) => {
       })
       setLogoState(cache.general?.logoUrl ?? CONFIG_DEFAULTS.GENERAL.LOGO)
       setThemeState(cache.general?.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+
       debug.table(cache.general, "Cache data")
 
-      debug.success("Loaded config from API (cached)");
       return true;
     } catch (err) {
       debug.warn("Failed to load config from API:", err);
@@ -132,13 +130,14 @@ export const ConfigProvider = ({ children }) => {
 
       if (configRes.status === "fulfilled" && configRes.value?.ok && configRes.value.data) {
         const data = configRes.value.data;
-        setTitleState(data.title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
+        setTitleState(data.general.title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
         setColorState({
-          header: data.color?.headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
-          content: data.color?.contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
-          container: data.color?.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
+          header: data.general.color?.headerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
+          content: data.general.color?.contentColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
+          container: data.general.color?.containerColor ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
         });
-        setThemeState(data.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+        setThemeState(data.general.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
+
       }
 
       if (logoRes.status === "fulfilled" && logoRes.value?.ok && logoRes.value.data?.logoUrl) {

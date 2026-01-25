@@ -65,8 +65,6 @@ const GeneralConfig = () => {
     }
   };
 
-  debug.warn(`GeneralConfig - ${inputs.theme}`)
-
   const selectState = (
     <Select
       value={inputs.theme}
