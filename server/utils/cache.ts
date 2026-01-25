@@ -56,7 +56,6 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
     /** @type {AnyCachedConfig} */
     let parsed = JSON.parse(content)
-    console.log(parsed)
 
     if (!('general' in parsed)) {
       debug.log('Converting legacy flat cache to new nested format');    
@@ -120,7 +119,6 @@ async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) 
     general: {...data},
     timestamp: Date.now()
   }
-  debug.log(`Full data: ${fullData}`)
 
   memoryCache = fullData
 
@@ -130,24 +128,7 @@ async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) 
     const tmpPath = CACHE_FILE + '.tmp'
 
     await fs.writeFile(tmpPath, JSON.stringify(fullData,null,2), 'utf-8')
-    // Check old file content
-    let f = await fs.readFile(tmpPath)
-    if(f)
-      debug.log(`
-        OLD FILE:
-        ${f}
-      `)
-      
     await fs.rename(tmpPath, CACHE_FILE)
-
-    // Check new file content
-    f = await fs.readFile(CACHE_FILE)
-    if(f)
-      debug.log(`
-        NEW FILE:
-        ${f}
-      `)
-
     debug.success("Cache saved to disk")
   } catch (err: any){
     debug.error("Failed to save cache to disk:", err)
