@@ -107,12 +107,12 @@ router.put("/config", async (req, res) => {
     }
 
     if (tableTheme !== undefined) {
-      setParts.push(`tableTheme = $${setParts.length + 1}`);
+      setParts.push(`"tableTheme" = $${setParts.length + 1}`);
       paramValues.push(tableTheme);
     }
 
     if (appTheme !== undefined) {
-      setParts.push(`appTheme = $${setParts.length + 1}`);
+      setParts.push(`"appTheme" = $${setParts.length + 1}`);
       paramValues.push(appTheme);
     }
 

@@ -122,6 +122,7 @@ export const useGeneralConfig = (config, safeMessage) => {
         tableTheme: table,
         appTheme: app,
       });
+      console.log(JSON.stringify(res.data, null, 2));
 
       if (!res.ok) throw new Error(res.message || "Ошибка сервера");
 
