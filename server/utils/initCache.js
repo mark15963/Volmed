@@ -22,11 +22,6 @@ async function initCacheOnStartup() {
       return;
     }
 
-    console.log(`
-      Raw ROW:
-      ${JSON.stringify(row, null, 2)}
-    `);
-
     const data = {
       title: row.title,
       color: {
@@ -40,7 +35,6 @@ async function initCacheOnStartup() {
         appTheme: row.appTheme,
       },
     };
-    debug.log(data);
 
     await setCacheConfig(data);
     console.log("General configuration cache built successfully");
