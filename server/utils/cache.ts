@@ -120,7 +120,7 @@ async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) 
     general: {...data},
     timestamp: Date.now()
   }
-  debug.log(fullData)
+  debug.log(`Full data: ${fullData}`)
 
   memoryCache = fullData
 
@@ -129,8 +129,6 @@ async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) 
     
     const tmpPath = CACHE_FILE + '.tmp'
 
-    debug.log(`Old file ${CACHE_FILE}`)
-    debug.log(`New file ${tmpPath}`)
     await fs.writeFile(tmpPath, JSON.stringify(fullData,null,2), 'utf-8')
     // Check old file content
     let f = await fs.readFile(tmpPath)
