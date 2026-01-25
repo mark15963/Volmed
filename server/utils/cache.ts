@@ -7,19 +7,20 @@ const CACHE_FILE = path.join(process.cwd(), 'cache', 'config-cache.json')
 const CACHE_TTL_MS = 1000 * 60 * 60 * 24
 
 interface CachedGeneralConfig{
-  title: string,
-  color:{
-    headerColor: string
-    contentColor: string
-    containerColor: string
+  general:{
+    title: string,
+    color:{
+      headerColor: string
+      contentColor: string
+      containerColor: string
+    }
+    logoUrl?: string
+    theme: string
   }
-  logoUrl?: string
-  theme: string
-  timestamp: number
+    timestamp: number
 }
 
 interface LegacyCachedConfig {
-  general: {
     title: string;
     color?: {
       headerColor: string;
@@ -28,21 +29,19 @@ interface LegacyCachedConfig {
     };
     logoUrl?: string;
     theme: string;
-  };
-  timestamp?: number; // may be missing
+    timestamp?: number;
 }
 
 type AnyCachedConfig = CachedGeneralConfig | LegacyCachedConfig
 
 let memoryCache: CachedGeneralConfig | null = null
-// const CACHE_KEY = "general";
 
 /**
  * Load config from cache file (falls back to memory if fresh)
  * @returns {Promise<CachedGeneralConfig | null>}
  */
 async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
-  if(memoryCache && Date.now() - memoryCache .timestamp < CACHE_TTL_MS){
+  if(memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS){
     debug.success('Cache hit (in-memory)')
     return memoryCache
   }
@@ -51,40 +50,42 @@ async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
     /** @type {AnyCachedConfig} */
     let parsed = JSON.parse(content)
 
-    if ('general' in parsed) {
-    const old = parsed.general
-    parsed = {
-      title: old.title || '',
-      color: old.color || {
+    if (!('general' in parsed)) {
+debug.log('Converting legacy flat cache to new nested format');    parsed = {
+  general:{
+      title: (parsed as LegacyCachedConfig).title || '',
+      color: (parsed as LegacyCachedConfig).color || {
         headerColor:'#3c97e6',
         contentColor:'#a5c6e2',
         containerColor:'#0073c7',
       },
-      theme: old.theme || 'default',
-      logoUrl: old.logoUrl,
-      timestamp: parsed.timestamp ?? Date.now(), // add missing timestamp
+      theme: (parsed as LegacyCachedConfig).theme || 'default',
+      logoUrl: (parsed as LegacyCachedConfig).logoUrl,
+    },
+      timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(), // add missing timestamp
     };
     debug.log("Converted old nested cache format to new flat format");
+    await setGeneralConfig(parsed.general);
   }
   /** @type {CachedGeneralConfig} */
   const config = parsed
   
     if(
-      !parsed.title ||
-      !parsed.color ||
-      !parsed.theme ||
-      typeof parsed.timestamp !== 'number'
+      !config.general.title ||
+      !config.general.color ||
+      !config.general.theme ||
+      typeof config.timestamp !== 'number'
     ){
       debug.warn("Invalid cache form - discarding")
       return null
     }
 
-    if (Date.now() - parsed.timestamp >= CACHE_TTL_MS){
+    if (Date.now() - config.timestamp >= CACHE_TTL_MS){
       debug.warn("Cache expired")
       return null
     }
 
-    memoryCache = parsed
+    memoryCache = config
     debug.success("Loaded fresh cache from file")
     return memoryCache
   } catch (err: any){
@@ -97,9 +98,13 @@ async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
   }
 }
 
-async function setGeneralConfig(data:Omit<CachedGeneralConfig, 'timestamp'>) {
+/**
+ * Save config — always in new nested format
+ * @param data - Flat config object (without timestamp)
+ */
+async function setGeneralConfig(data:Omit<CachedGeneralConfig['general'], never>) {
   const fullData: CachedGeneralConfig = {
-    ...data,
+    general: {...data},
     timestamp: Date.now()
   }
 
