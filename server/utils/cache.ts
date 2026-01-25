@@ -115,11 +115,13 @@ async function setGeneralConfig(data:Omit<CachedGeneralConfig['general'], never>
 
     const tmpPath = CACHE_FILE + '.tmp'
     await fs.writeFile(tmpPath, JSON.stringify(fullData,null,2), 'utf-8')
-    await fs.rename(tmpPath, CACHE_FILE)
+    await fs.copyFile(tmpPath, CACHE_FILE)
+    await fs.unlink(tmpPath).catch(() => {});
 
     debug.success("Cache saved to disk")
-  } catch (err){
+  } catch (err: any){
     debug.error("Failed to save cache to disk:", err)
+    await fs.unlink(`${CACHE_FILE}.tmp`).catch(() => {});
   }
 }
 
