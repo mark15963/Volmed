@@ -50,23 +50,32 @@ import { debug } from "../../../../utils";
  */
 export const useGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState(() => ({
     title: config.title || "",
     header: config.color.header || "#3c97e6",
     content: config.color.content || "#a5c6e2",
     container: config.color.container || "#0073c7",
     theme: config.theme || "default",
-  });
+  }));
+
+  debug.warn(JSON.stringify(config));
+  debug.warn(`First inputs ${inputs.theme}`);
 
   useEffect(() => {
-    setInputs({
-      title: config.title || "",
-      header: config.color.header || "#3c97e6",
-      content: config.color.content || "#a5c6e2",
-      container: config.color.container || "#0073c7",
-      theme: config.theme || "default",
-    });
-  }, [config]);
+    setInputs((prev) => ({
+      title: config.title || prev.title,
+      header: config.color.header || prev.header,
+      content: config.color.content || prev.content,
+      container: config.color.container || prev.container,
+      theme: config.theme || prev.theme,
+    }));
+  }, [
+    config.title,
+    config.color.header,
+    config.color.content,
+    config.color.container,
+    config.theme,
+  ]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -111,6 +120,7 @@ export const useGeneralConfig = (config, safeMessage) => {
         containerColor: container,
         theme,
       });
+      debug.warn(`What was sent ${JSON.stringify(res)}`);
 
       if (!res.ok) throw new Error(res.message || "Ошибка сервера");
 
@@ -122,6 +132,15 @@ export const useGeneralConfig = (config, safeMessage) => {
         container,
       });
       config.setTheme(theme);
+
+      debug.warn(`
+        UPDATED UI DATA
+        ${config.title}
+        ${config.color.header}
+        ${config.color.content}
+        ${config.color.container}
+        ${config.theme}
+        `);
 
       safeMessage("success", "Данные сохранены!", 2.5);
     } catch (err) {
