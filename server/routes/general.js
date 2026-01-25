@@ -127,7 +127,6 @@ router.put("/config", async (req, res) => {
     };
 
     await setGeneralConfig(updatedConfig);
-    await clearCache();
 
     debug.success("Config updated in DB and cache:", updatedConfig);
 
