@@ -61,6 +61,7 @@ async function runStartupTests() {
   const testFilePath = path.join(testFileDir, testFileName);
 
   let cookies = [];
+  let failed = 0;
   //#endregion
 
   try {
@@ -76,6 +77,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("API Health check", false);
       debug.error("Health check error:", err.message);
+      failed++;
     }
     //#endregion
 
@@ -92,6 +94,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("ENV files", false);
       debug.error(err.message);
+      failed++;
     }
     //#endregion
 
@@ -109,6 +112,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("Login", false);
       debug.error("Login error:", err.message);
+      failed++;
     }
     //#endregion
 
@@ -120,6 +124,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("Fetch patients", false);
       debug.error("Patients fetch error:", err.message);
+      failed++;
     }
     //#endregion
 
@@ -131,6 +136,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("Fetch users", false);
       debug.error("Users fetch error:", err.message);
+      failed++;
     }
     //#endregion
 
@@ -144,6 +150,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("Chat health", false);
       debug.error("Chat health error:", err.message);
+      failed++;
     }
     //#endregion
 
@@ -197,10 +204,11 @@ async function runStartupTests() {
           );
           // logTestResult("Uploaded file file", uploadRes?.status === 200);
           debug.log("⏳ Waiting for file processing...");
-          await delay(1500);
+          await delay(1000);
         } catch (err) {
           logTestResult("File upload", false);
           debug.error(err.message);
+          failed++;
         }
 
         // Verify upload
@@ -212,8 +220,10 @@ async function runStartupTests() {
             uploadedFiles = filesRes.data.filter((f) =>
               f.originalname.startsWith("test-file"),
             );
-            if (uploadedFiles.length === 0)
+            if (uploadedFiles.length === 0) {
               throw new Error("Uploaded test file not found!");
+              failed++;
+            }
           };
 
           await retryOperation(verifyUpload, 3, 1000);
@@ -221,6 +231,7 @@ async function runStartupTests() {
         } catch (err) {
           logTestResult("Uploaded file verified", false);
           debug.error(err.message);
+          failed++;
         }
 
         // Delete uploaded file(s)
@@ -239,6 +250,7 @@ async function runStartupTests() {
           } catch (err) {
             logTestResult(`File deletion: ${file.originalname}`, false);
             debug.error(err.message);
+            failed++;
           }
         }
 
@@ -262,7 +274,7 @@ async function runStartupTests() {
         } catch (err) {
           logTestResult("File deletion verified", false);
           debug.error("Deletion verification failed:", err.message);
-
+          failed++;
           try {
             const currentFiles = await axiosInstance.get(
               `${BASE_URL}/api/patients/1/files`,
@@ -281,6 +293,7 @@ async function runStartupTests() {
     } catch (err) {
       logTestResult("Files lifecycle", false);
       debug.error(err.message);
+      failed++;
     }
     // debug.log("===================================");
     //#endregion
@@ -291,6 +304,7 @@ async function runStartupTests() {
       if (cached) logTestResult("Cache fetched", true);
     } catch (err) {
       logTestResult("Cache not fetched", false);
+      failed++;
     }
     //#endregion
 
