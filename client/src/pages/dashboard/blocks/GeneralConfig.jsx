@@ -65,11 +65,24 @@ const GeneralConfig = () => {
     }
   };
 
-  const selectState = (
+  const selectTableTheme = (
     <Select
-      value={inputs.theme}
+      value={inputs.table}
       onChange={(value) => {
-        handleChange("theme", value)
+        handleChange("table", value)
+      }}
+      className={styles.themePicker}
+    >
+      <Select.Option value="default">Стандартная</Select.Option>
+      <Select.Option value="light">Светлая</Select.Option>
+      <Select.Option value="dark">Темная</Select.Option>
+    </Select>
+  )
+  const selectAppTheme = (
+    <Select
+      value={inputs.app}
+      onChange={(value) => {
+        handleChange("app", value)
       }}
       className={styles.themePicker}
     >
@@ -155,16 +168,24 @@ const GeneralConfig = () => {
             </div>
           </div>
         </div>
+
         <div className={styles.themeColorContainer}>
           <div className={styles.themeTitle}>
             Тема:
           </div>
-          <div className={styles.colorBlocks}>
-            Выбор темы
+          <div className={styles.themeBlocks}>
+            <p>Тема сайта:</p>
             <div className={styles.themePicker}>
-              {selectState}
+              {selectAppTheme}
             </div>
           </div>
+          <div className={styles.themeBlocks}>
+            <p>Таблицы:</p>
+            <div className={styles.themePicker}>
+              {selectTableTheme}
+            </div>
+          </div>
+
         </div>
 
       </div>

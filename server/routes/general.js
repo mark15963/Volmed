@@ -16,10 +16,7 @@ router.get("/config", async (req, res) => {
   try {
     // Get data from cache
     let config = await getCacheConfig();
-    if (config) {
-      debug.log("Config served from cache");
-      return res.json(config);
-    }
+    if (config) return res.json(config);
 
     // fetch from DB
     debug.log("Cache missing - Fetching from DB");
@@ -29,9 +26,7 @@ router.get("/config", async (req, res) => {
       WHERE id = 1
     `);
 
-    if (!row) {
-      return res.status(404).json({ error: "Config not found in DB" });
-    }
+    if (!row) return res.status(404).json({ error: "Config not found in DB" });
 
     // Build full config obj
     config = {
@@ -41,7 +36,10 @@ router.get("/config", async (req, res) => {
         contentColor: row.contentColor,
         containerColor: row.containerColor,
       },
-      theme: row.theme,
+      theme: {
+        tableTheme: row.tableTheme,
+        appTheme: row.appTheme,
+      },
       logoUrl: row.logoUrl,
     };
 
@@ -57,8 +55,15 @@ router.get("/config", async (req, res) => {
 });
 // Update DB -> update cache
 router.put("/config", async (req, res) => {
-  const { title, headerColor, contentColor, containerColor, logoUrl, theme } =
-    req.body;
+  const {
+    title,
+    headerColor,
+    contentColor,
+    containerColor,
+    logoUrl,
+    tableTheme,
+    appTheme,
+  } = req.body;
 
   // No fields provided
   if (
@@ -66,7 +71,8 @@ router.put("/config", async (req, res) => {
     headerColor === undefined &&
     contentColor === undefined &&
     containerColor === undefined &&
-    theme === undefined
+    tableTheme === undefined &&
+    appTheme === undefined
   ) {
     return res.status(400).json({ error: "No fields provided to update" });
   }
@@ -100,9 +106,14 @@ router.put("/config", async (req, res) => {
       paramValues.push(logoUrl);
     }
 
-    if (theme !== undefined) {
-      setParts.push(`theme = $${setParts.length + 1}`);
-      paramValues.push(theme);
+    if (tableTheme !== undefined) {
+      setParts.push(`tableTheme = $${setParts.length + 1}`);
+      paramValues.push(tableTheme);
+    }
+
+    if (appTheme !== undefined) {
+      setParts.push(`appTheme = $${setParts.length + 1}`);
+      paramValues.push(appTheme);
     }
 
     // Safety check (should not happen due to earlier validation)
@@ -129,7 +140,10 @@ router.put("/config", async (req, res) => {
         containerColor: row.containerColor,
       },
       logoUrl: row.logoUrl,
-      theme: row.theme,
+      theme: {
+        tableTheme: row.tableTheme,
+        appTheme: row.appTheme,
+      },
     };
 
     await setCacheConfig(updatedConfig);

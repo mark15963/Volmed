@@ -55,7 +55,8 @@ export const useGeneralConfig = (config, safeMessage) => {
     header: config?.color?.header || "#3c97e6",
     content: config?.color?.content || "#a5c6e2",
     container: config?.color?.container || "#0073c7",
-    theme: config?.theme || "default",
+    table: config?.theme?.table || "default",
+    app: config?.theme?.app || "default",
   }));
 
   useEffect(() => {
@@ -64,14 +65,16 @@ export const useGeneralConfig = (config, safeMessage) => {
       header: config.color.header || "#3c97e6",
       content: config.color.content || "#a5c6e2",
       container: config.color.container || "#0073c7",
-      theme: config.theme || "default",
+      table: config.theme.table || "default",
+      app: config.theme.app || "default",
     });
   }, [
     config.title,
     config.color?.header,
     config.color?.content,
     config.color?.container,
-    config.theme,
+    config.theme?.table,
+    config.theme?.app,
   ]);
 
   useEffect(() => {
@@ -91,7 +94,7 @@ export const useGeneralConfig = (config, safeMessage) => {
 
   //#region ===== HANDLERS =====
   const handleSave = async () => {
-    const { title, header, content, container, theme } = inputs;
+    const { title, header, content, container, table, app } = inputs;
 
     if (!title.trim()) {
       safeMessage("error", "Название сайта не может быть пустым");
@@ -107,7 +110,8 @@ export const useGeneralConfig = (config, safeMessage) => {
         header,
         content,
         container,
-        theme,
+        table,
+        app,
       });
 
       const res = await api.updateGeneralConfig({
@@ -115,7 +119,8 @@ export const useGeneralConfig = (config, safeMessage) => {
         headerColor: header,
         contentColor: content,
         containerColor: container,
-        theme,
+        tableTheme: table,
+        appTheme: app,
       });
 
       if (!res.ok) throw new Error(res.message || "Ошибка сервера");
@@ -127,7 +132,10 @@ export const useGeneralConfig = (config, safeMessage) => {
         content,
         container,
       });
-      config.setTheme(theme);
+      config.setTheme({
+        theme,
+        app,
+      });
 
       safeMessage("success", "Данные сохранены!", 2.5);
     } catch (err) {

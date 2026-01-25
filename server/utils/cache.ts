@@ -9,14 +9,17 @@ interface CachedGeneralConfig{
   general:{
     title: string,
     color:{
-      headerColor: string
-      contentColor: string
-      containerColor: string
-    }
-    logoUrl?: string
-    theme: string
-  }
+      headerColor: string,
+      contentColor: string,
+      containerColor: string,
+    },
+    logoUrl?: string,
+    theme: {
+      tableTheme: string,
+      appTheme: string,
+    },
     timestamp: number
+  }
 }
 
 interface LegacyCachedConfig {
@@ -27,7 +30,10 @@ interface LegacyCachedConfig {
       containerColor: string;
     };
     logoUrl?: string;
-    theme: string;
+    theme?: {
+      tableTheme: string
+      appTheme: string
+    }
     timestamp?: number;
 }
 
@@ -61,7 +67,10 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
             contentColor:'#a5c6e2',
             containerColor:'#0073c7',
           },
-          theme: (parsed as LegacyCachedConfig).theme || 'default',
+          theme: (parsed as LegacyCachedConfig).theme || {
+            tableTheme: 'default',
+            appTheme: 'default',
+          },
           logoUrl: (parsed as LegacyCachedConfig).logoUrl,
         },
         timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(),
