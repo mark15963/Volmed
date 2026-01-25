@@ -307,9 +307,11 @@ async function runStartupTests() {
       failed++;
     }
     //#endregion
-
-    debug.log("==================================");
-    debug.log("All startup tests PASSED.");
+    if (!failed) {
+      debug.log("==================================");
+      debug.log("All startup tests PASSED.");
+    }
+    throw new Error(`Failed tasks ${failed}`);
   } catch (err) {
     debug.error("startup test failed:");
     if (err.response) {
