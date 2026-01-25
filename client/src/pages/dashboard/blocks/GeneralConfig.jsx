@@ -33,7 +33,7 @@ const GeneralConfig = () => {
   const config = useConfig()
   const safeMessage = useSafeMessage();
 
-  /** @type {{ isLoading: boolean, inputs: GeneralConfigInputs, handleChange: Function, handleSave: Function, handleLogoUpdate: Function }} */
+  /** @type {{ isLoading: boolean, inputs: any, handleChange: Function, handleSave: Function, handleLogoUpdate: Function }} */
   const { isLoading, inputs, handleChange, handleSave, handleLogoUpdate } = useGeneralConfig(config, safeMessage)
 
   useEffect(() => {
@@ -64,6 +64,8 @@ const GeneralConfig = () => {
 
     }
   };
+
+  debug.warn(`GeneralConfig - ${inputs.theme}`)
 
   const selectState = (
     <Select
