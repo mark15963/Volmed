@@ -51,31 +51,36 @@ import { debug } from "../../../../utils";
 export const useGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState(() => ({
-    title: config.title || "",
-    header: config.color.header || "#3c97e6",
-    content: config.color.content || "#a5c6e2",
-    container: config.color.container || "#0073c7",
-    theme: config.theme || "default",
+    title: "",
+    header: "#3c97e6",
+    content: "#a5c6e2",
+    container: "#0073c7",
+    theme: "default",
   }));
 
   debug.warn(JSON.stringify(config));
   debug.warn(`First inputs ${inputs.theme}`);
 
-  // useEffect(() => {
-  //   setInputs((prev) => ({
-  //     title: config.title || prev.title,
-  //     header: config.color.header || prev.header,
-  //     content: config.color.content || prev.content,
-  //     container: config.color.container || prev.container,
-  //     theme: config.theme || prev.theme,
-  //   }));
-  // }, [
-  //   config.title,
-  //   config.color.header,
-  //   config.color.content,
-  //   config.color.container,
-  //   config.theme,
-  // ]);
+  useEffect(() => {
+    debug.log("Syncing inputs from loaded config:", config.theme);
+
+    setInputs({
+      title: config.title || "",
+      header: config.color.header || "#3c97e6",
+      content: config.color.content || "#a5c6e2",
+      container: config.color.container || "#0073c7",
+      theme: config.theme || "default",
+    });
+  }, [
+    config.title,
+    config.color?.header,
+    config.color?.content,
+    config.color?.container,
+    config.theme,
+  ]);
+
+  debug.warn(`Current config.theme:${config.theme}`);
+  debug.warn(`Current inputs.theme: ${inputs.theme}`);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
