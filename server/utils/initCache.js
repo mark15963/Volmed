@@ -22,6 +22,11 @@ async function initCacheOnStartup() {
       return;
     }
 
+    console.log(`
+      Raw ROW:
+      ${JSON.stringify(row, null, 2)}
+    `);
+
     const data = {
       title: row.title,
       color: {
