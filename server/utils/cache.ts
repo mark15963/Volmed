@@ -18,8 +18,8 @@ interface CachedGeneralConfig{
       tableTheme: string,
       appTheme: string,
     },
-    timestamp: number
   }
+  timestamp: number
 }
 
 interface LegacyCachedConfig {

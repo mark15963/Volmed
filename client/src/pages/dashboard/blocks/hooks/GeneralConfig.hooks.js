@@ -133,7 +133,7 @@ export const useGeneralConfig = (config, safeMessage) => {
         container,
       });
       config.setTheme({
-        theme,
+        table,
         app,
       });
 
