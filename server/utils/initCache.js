@@ -29,7 +29,7 @@ async function initCacheOnStartup() {
         contentColor: row.contentColor,
         containerColor: row.containerColor,
       },
-      logo: row.logoUrl,
+      logoUrl: row.logoUrl,
       theme: row.theme,
     };
 
