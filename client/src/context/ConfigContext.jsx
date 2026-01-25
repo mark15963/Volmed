@@ -94,21 +94,15 @@ export const ConfigProvider = ({ children }) => {
 
   const loadFromCache = useCallback(async () => {
     try {
-      let res
-      try {
-        let serverUrl = `${CACHE_CONFIG.CACHE_URL}${CACHE_CONFIG.CACHE_BUSTER}`
-        res = await fetch(serverUrl, CACHE_CONFIG.CACHE_OPTIONS)
-        if (!res.ok) throw new Error(`Server cache returned ${res.status}`);
-      } catch (err) {
-        debug.warn("⚠️ Server cache not found, falling back to local cache:", err.message);
-        res = await fetch("/cache/config-cache.json");
-        if (!res.ok) throw new Error(`Local cache returned ${res.status}`);
+      const res = await api.getGeneralConfig()
 
+      if (!res.ok || !res.data) {
+        throw new Error(res.message || "API returned no data");
       }
 
-      // --- Parse JSON ---
-      const cache = await res.json()
-      debug.log("Cache loaded:", JSON.stringify(cache, null, 2))
+      const cache = res.data;
+
+      debug.log("Config loaded from API:", JSON.stringify(cache, null, 2));
 
       // --- Apply cached data ---
       setTitleState(cache.general?.title ?? CONFIG_DEFAULTS.GENERAL.TITLE,)
@@ -121,11 +115,11 @@ export const ConfigProvider = ({ children }) => {
       setThemeState(cache.general?.theme ?? CONFIG_DEFAULTS.GENERAL.THEME)
       debug.table(cache.general, "Cache data")
 
-      debug.success("Loaded config from cache");
+      debug.success("Loaded config from API (cached)");
       return true;
     } catch (err) {
-      debug.warn("Failed to load from cache:", err);
-      return false;
+      debug.warn("Failed to load config from API:", err);
+      return false
     }
   }, [])
 
