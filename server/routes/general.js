@@ -57,7 +57,8 @@ router.get("/config", async (req, res) => {
 });
 // Update DB -> update cache
 router.put("/config", async (req, res) => {
-  const { title, headerColor, contentColor, containerColor, theme } = req.body;
+  const { title, headerColor, contentColor, containerColor, logoUrl, theme } =
+    req.body;
 
   // No fields provided
   if (
@@ -92,6 +93,11 @@ router.put("/config", async (req, res) => {
     if (containerColor !== undefined) {
       setParts.push(`"containerColor" = $${setParts.length + 1}`);
       paramValues.push(containerColor);
+    }
+
+    if (logoUrl !== undefined) {
+      setParts.push(`"logoUrl" = $${setParts.length + 1}`);
+      paramValues.push(logoUrl);
     }
 
     if (theme !== undefined) {

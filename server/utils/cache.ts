@@ -39,12 +39,13 @@ let memoryCache: CachedGeneralConfig | null = null
  * Load config from cache file (falls back to memory if fresh)
  * @returns {Promise<CachedGeneralConfig | null>}
  */
-async function getGeneralConfig(): Promise<CachedGeneralConfig | null> {
+async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
   if(memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS){
     debug.success('Cache hit (in-memory)')
     return memoryCache
   }
   try{
+    console.log(CACHE_FILE)
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
     /** @type {AnyCachedConfig} */
     let parsed = JSON.parse(content)
@@ -64,7 +65,7 @@ debug.log('Converting legacy flat cache to new nested format');    parsed = {
       timestamp: (parsed as LegacyCachedConfig).timestamp ?? Date.now(),
     };
     debug.log("Converted old nested cache format to new flat format");
-    await setGeneralConfig(parsed.general);
+    await setCacheConfig(parsed.general);
   }
   /** @type {CachedGeneralConfig} */
   const config = parsed
@@ -101,7 +102,7 @@ debug.log('Converting legacy flat cache to new nested format');    parsed = {
  * Save config — always in new nested format
  * @param data - Flat config object (without timestamp)
  */
-async function setGeneralConfig(data:Omit<CachedGeneralConfig['general'], never>) {
+async function setCacheConfig(data:Omit<CachedGeneralConfig['general'], never>) {
   const fullData: CachedGeneralConfig = {
     general: {...data},
     timestamp: Date.now()
@@ -136,4 +137,4 @@ async function clearCache() {
   }
 }
 
-module.exports = { getGeneralConfig, setGeneralConfig, clearCache };
+module.exports = { getCacheConfig, setCacheConfig, clearCache };

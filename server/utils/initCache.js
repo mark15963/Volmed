@@ -1,10 +1,10 @@
 const { fetchRow } = require("../utils/dbUtils");
-const { getGeneralConfig, setGeneralConfig } = require("./cache.ts");
+const { getCacheConfig, setCacheConfig } = require("./cache.ts");
 const debug = require("./debug");
 
 async function initCacheOnStartup() {
   try {
-    const cached = await getGeneralConfig();
+    const cached = await getCacheConfig();
     if (cached) {
       console.log("Cache already loaded");
       return;
@@ -33,7 +33,7 @@ async function initCacheOnStartup() {
       theme: row.theme,
     };
 
-    await setGeneralConfig(data);
+    await setCacheConfig(data);
     console.log("General configuration cache built successfully");
   } catch (err) {
     console.error("Failed to initialize cache:", err);
