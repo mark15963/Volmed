@@ -30,9 +30,12 @@ async function initCacheOnStartup() {
         containerColor: row.containerColor,
       },
       logoUrl: row.logoUrl,
-      theme: row.theme,
+      theme: {
+        tableTheme: row.tableTheme,
+        appTheme: row.appTheme,
+      },
     };
-    debug.log(data)
+    debug.log(data);
 
     await setCacheConfig(data);
     console.log("General configuration cache built successfully");
