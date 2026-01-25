@@ -3,8 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 const {
-  getGeneralConfig,
-  setGeneralConfig,
+  getCacheConfig,
+  setCacheConfig,
   clearCache,
 } = require("../utils/cache.ts");
 const { updateRow, fetchRow } = require("../utils/dbUtils");
@@ -15,7 +15,7 @@ const router = Router();
 router.get("/config", async (req, res) => {
   try {
     // Get data from cache
-    let config = await getGeneralConfig();
+    let config = await getCacheConfig();
     if (config) {
       debug.log("Config served from cache");
       return res.json(config);
@@ -46,7 +46,7 @@ router.get("/config", async (req, res) => {
     };
 
     // Save to cache for next time
-    await setGeneralConfig(config);
+    await setCacheConfig(config);
     debug.success("Config fetched from DB and cached");
 
     res.json(config);
@@ -132,7 +132,7 @@ router.put("/config", async (req, res) => {
       theme: row.theme,
     };
 
-    await setGeneralConfig(updatedConfig);
+    await setCacheConfig(updatedConfig);
 
     debug.success("Config updated in DB and cache:", updatedConfig);
 
@@ -196,9 +196,9 @@ router.post("/upload-logo", upload.single("logo"), async (req, res) => {
   // Return the public URL that the frontend can use
   const logoUrl = `/assets/images/${req.file.filename}?t=${Date.now()}`;
 
-  const current = await getGeneralConfig();
+  const current = await getCacheConfig();
   if (current) {
-    await setGeneralConfig({
+    await setCacheConfig({
       ...current,
       logoUrl,
     });
