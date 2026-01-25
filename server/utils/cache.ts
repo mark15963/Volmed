@@ -45,7 +45,6 @@ async function getCacheConfig(): Promise<CachedGeneralConfig | null> {
     return memoryCache
   }
   try{
-    console.log(CACHE_FILE)
     const content = await fs.readFile(CACHE_FILE, 'utf-8')
     /** @type {AnyCachedConfig} */
     let parsed = JSON.parse(content)
