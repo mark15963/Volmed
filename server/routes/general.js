@@ -122,8 +122,8 @@ router.put("/config", async (req, res) => {
         contentColor: row.contentColor,
         containerColor: row.containerColor,
       },
-      theme: row.theme,
       logoUrl: row.logoUrl,
+      theme: row.theme,
     };
 
     await setGeneralConfig(updatedConfig);
