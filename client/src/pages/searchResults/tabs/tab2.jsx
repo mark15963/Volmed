@@ -352,7 +352,9 @@ export const Tab2 = memo(({ id }) => {
               </p>
             ) : !isEditing ? (
               <>
-                <ul>
+                <ul
+                  className={styles.fileContainer}
+                >
                   {files.map((file, index) => (
                     <li
                       key={index}
@@ -363,20 +365,21 @@ export const Tab2 = memo(({ id }) => {
                       <span className={styles.fileSize}>
                         {' '}{(file.size / 1024).toFixed(2)} KB
                       </span>
+                      {selectedFile ? (
+                        <iframe
+                          src={selectedFile}
+                          height={400}
+                          width="100%"
+                          title='Документ'
+                          className={styles.frame}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </li>
                   ))}
                 </ul>
-                {selectedFile ? (
-                  <iframe
-                    src={selectedFile}
-                    height={400}
-                    width="100%"
-                    title='Документ'
-                    className={styles.frame}
-                  />
-                ) : (
-                  <></>
-                )}
+
 
               </>
             ) : (
