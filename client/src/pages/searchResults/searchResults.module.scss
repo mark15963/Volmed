@@ -6,7 +6,6 @@
   display: flex;
   flex-direction: column;
   font-size: 17px;
-  color: aliceblue;
   background-color: var(--main-block);
   box-sizing: border-box;
   border-radius: 15px;
@@ -14,6 +13,7 @@
 }
 
 .pageTitle {
+  color: var(--app-text-color);
   font-size: 22px;
   font-weight: 800;
   margin-bottom: 20px;
@@ -25,8 +25,7 @@
   display: flex;
   flex-direction: column;
   font-size: 17px;
-  color: aliceblue;
-  background-color: #0086e6;
+  background-color: var(--page-background);
   height: 100%;
   width: 100%;
   margin-bottom: 20px;
@@ -38,7 +37,8 @@
 }
 
 .bg {
-  background-color: #0075c9;
+  background-color: var(--page-background-inside);
+  color: var(--app-text-color);
   padding: 20px;
   border-radius: 8px;
 }
@@ -56,6 +56,10 @@
   flex-direction: column;
   width: 100%;
   overflow-wrap: break-word;
+}
+
+.divider {
+  border-color: var(--divider);
 }
 
 .bottomForms {

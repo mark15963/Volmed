@@ -15,5 +15,4 @@ export interface Patient {
 
 export interface PatientRowProps {
   patient: Patient
-  onClick?: () => void;
 }

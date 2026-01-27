@@ -21,6 +21,7 @@
   font-size: 15px;
   transition: all 0.3s ease;
   outline: none;
+  background-color: var(--searchbar-background);
 
   &:hover:not([type="search"]) {
     box-shadow: 0px 0px 2px 2px #1890ff;
@@ -28,7 +29,7 @@
 
   &::placeholder {
     align-items: center;
-    color: #cdcdcd;
+    color: var(searchbar-text-color);
     font-size: 14px;
   }
 
@@ -60,7 +61,7 @@
   left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: #fff;
+  background: var(--search-button-background);
   border: none;
   border-radius: 50%;
   width: 28px;
@@ -68,7 +69,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e8e8e8;
+  color: var(--search-button-icon-color);
   cursor: pointer;
   transition: background 0.1s;
   &:hover {

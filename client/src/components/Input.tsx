@@ -2,6 +2,7 @@ import { InputHTMLAttributes, CSSProperties, FC, useRef } from "react";
 import { Search } from "lucide-react"; // not permanent
 import "./styles/Input.scss";
 import Button from "./Button";
+import { useConfig } from "../context";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?:
@@ -41,6 +42,7 @@ const Input: FC<InputProps> = ({
   onSubmitClick,
   ...props
 }) => {
+  const { theme } = useConfig();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const inputClass = ["input", loading ? "input--loading" : "", className]
@@ -48,7 +50,7 @@ const Input: FC<InputProps> = ({
     .join(" ");
 
   // if input type is COLOR - default color is black
-  const inputValue = type === "color" ? value || "#000000" : value ?? "";
+  const inputValue = type === "color" ? value || "#000000" : (value ?? "");
 
   // style of input type COLOR
   const mergedStyle: CSSProperties =
@@ -98,9 +100,9 @@ const Input: FC<InputProps> = ({
 
   return (
     <div
-      className={`input-wrapper ${
-        type === "search" ? "input-wrapper--search" : ""
-      }`}
+      className={`
+        input-wrapper ${type === "search" ? "input-wrapper--search" : ""}
+      `}
     >
       {loading && loadingPosition === "left" ? (
         <div className="input-loader input-loader--left">
@@ -132,6 +134,7 @@ const Input: FC<InputProps> = ({
         style={mergedStyle}
         value={inputValue}
         disabled={disabled || loading}
+        data-theme-app={theme.app}
         {...props}
       />
 

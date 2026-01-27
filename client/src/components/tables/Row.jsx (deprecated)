@@ -22,8 +22,6 @@ const getStateClass = (state) => {
   }
 }
 
-
-
 // A row component of a patient for Patients list component 
 /**
  * PatientsListRow

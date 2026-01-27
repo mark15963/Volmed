@@ -17,7 +17,7 @@ import styles from './content.module.scss'
 //#endregion
 
 const Content = () => {
-  const { color } = useConfig()
+  const { color, theme } = useConfig()
 
   // Page title chages depending on the page
   usePageTitle()
@@ -25,9 +25,10 @@ const Content = () => {
   return (
     <main
       className={styles.main}
-      style={{
-        backgroundColor: color?.content, // From cache
-      }}
+      // style={{
+      //   backgroundColor: color?.content,
+      // }}
+      data-theme-app={theme.app}
     >
       <OfflineFallback /> {/* Оffline/online indicator */}
 

@@ -8,7 +8,7 @@
 
   .menuCard {
     position: relative;
-    background-color: var(--main-block);
+    background-color: var(--tab-background);
     border-radius: 10px 10px 0 0;
     border-bottom: none;
     padding: 4px 15px;
@@ -16,21 +16,21 @@
     box-sizing: border-box;
     min-width: 0;
     z-index: 1;
-    color: aliceblue;
+    color: var(--app-text-color);
     cursor: pointer;
     box-shadow: 5px 0px 6px -4px black;
 
     &:hover {
-      background-color: #0067b1;
+      background-color: var(--tab-background-hover);
       transform: translateY(1px);
     }
     //When clicked
     &:active {
-      background-color: #005796 !important;
+      background-color: var(--tab-background-clicked) !important;
     }
 
     &.active {
-      background-color: #0086e6;
+      background-color: var(--tab-background-active);
       border-color: black;
       margin-bottom: -2px;
       transform: none;

@@ -7,11 +7,16 @@ import UserContainer from "./components/UserContainer";
 import { useConfig } from "../../context";
 
 export const Header = memo(() => {
-  const { color } = useConfig()
+  const { color, theme } = useConfig()
+
 
   return (
-    <header>
-      <div style={{ backgroundColor: color.header }}
+    <header
+      className={styles.header}
+      data-theme-app={theme.app}
+    >
+      <div
+        // style={{ backgroundColor: color.header }}
         className={styles.content}
       >
 

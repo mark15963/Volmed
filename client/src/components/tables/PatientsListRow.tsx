@@ -8,8 +8,10 @@ import { calculateAge, getStateClass, debug } from "../../utils";
 import { PatientRowProps } from "../../types/patient";
 import { SexIcon } from "../icons";
 import { extractMkbCode } from "../../services/extractMkbCode";
+import { useNavigate } from "react-router";
 
-export const PatientsListRow: FC<PatientRowProps> = ({ patient, onClick }) => {
+export const PatientsListRow: FC<PatientRowProps> = ({ patient }) => {
+  const navigate = useNavigate();
   const {
     id,
     lastName,
@@ -31,7 +33,11 @@ export const PatientsListRow: FC<PatientRowProps> = ({ patient, onClick }) => {
   return (
     <tr
       className={styles.rows}
-      onClick={onClick}
+      onClick={() => {
+        navigate(`/search/${patient.id}`, {
+          state: { patient },
+        });
+      }}
       tabIndex={0}
       role="button"
       aria-label={`Данные ${lastName} ${firstName} ${patr}`}
