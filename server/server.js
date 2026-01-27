@@ -8,7 +8,7 @@ dotenv.config({
     __dirname,
     process.env.NODE_ENV === "production"
       ? ".env.production"
-      : ".env.development"
+      : ".env.development",
   ),
 });
 
@@ -18,7 +18,6 @@ const cookieParser = require("cookie-parser");
 const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
-const { initCacheOnStartup } = require("./utils/initCache");
 const http = require("http");
 
 const routes = require("./routes/index");
@@ -54,7 +53,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
   "/assets",
-  express.static(path.join(__dirname, "..", "client", "public", "assets"))
+  express.static(path.join(__dirname, "..", "client", "public", "assets")),
 );
 app.use("/cache", express.static(path.join(__dirname, "cache")));
 
@@ -65,8 +64,8 @@ app.get("/", (req, res) => {
 
 app.use((req, res, next) => {
   res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self'; connect-src 'self'; frame-src 'none'"
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self'; connect-src 'self'; frame-src 'none'",
   );
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
@@ -108,7 +107,6 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await testDbConnection();
-    await initCacheOnStartup();
 
     server.listen(PORT, () => {
       debug.log(`Server running on port ${PORT}`);
