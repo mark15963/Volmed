@@ -18,6 +18,7 @@ const cookieParser = require("cookie-parser");
 const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
+const { initCacheOnStartup } = require("./utils/initCache");
 const http = require("http");
 
 const routes = require("./routes/index");
@@ -107,6 +108,7 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await testDbConnection();
+    await initCacheOnStartup();
 
     server.listen(PORT, () => {
       debug.log(`Server running on port ${PORT}`);
