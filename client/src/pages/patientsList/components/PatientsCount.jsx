@@ -30,7 +30,6 @@ export const PatientCount = () => {
         // --- Total count ---
         if (countRes.ok) {
           setCount(countRes.data.count);
-          debug.success(`Total count loaded: ${countRes.data.count}`);
         } else {
           debug.error(`Error loading total count: ${countRes.message}`);
           setCount("N/A");
@@ -42,8 +41,6 @@ export const PatientCount = () => {
             p => p.state !== "Выписан"
           )
           setActiveCount(active.length)
-          debug.success(`Active count loaded: ${active.length}`);
-
         } else {
           debug.error(`Error loading patients: ${activeRes.message}`);
           setActiveCount(0);

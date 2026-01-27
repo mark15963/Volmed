@@ -12,6 +12,7 @@ import api from '../services/api/index';
 import debug from '../utils/debug';
 
 import styles from './styles/SearchBar.module.scss'
+import { useConfig } from '../context';
 //#endregion
 
 export const SearchBar = () => {
@@ -20,6 +21,7 @@ export const SearchBar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate()
   const safeMessage = useSafeMessage()
+  const { theme } = useConfig()
   //#endregion
   //#region ===== HANDLERS =====
   const handleChange = (e) => {

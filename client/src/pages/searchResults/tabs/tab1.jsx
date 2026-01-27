@@ -99,7 +99,7 @@ const Tab1 = ({ data }) => {
           <></>
         )}
 
-        <Divider style={{ borderColor: 'rgba(255, 255, 255, 0.5)' }} />
+        <Divider className={styles.divider} />
 
         <div className={styles.bottomForms}>
           <Block

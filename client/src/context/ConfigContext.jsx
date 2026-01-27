@@ -174,7 +174,6 @@ export const ConfigProvider = ({ children }) => {
           content: gen.color?.contentColor ?? prev.content ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
           container: gen.color?.containerColor ?? prev.container ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTAINER,
         }))
-        console.log(gen.theme?.table)
         setThemeState((prev) => ({
           table: gen.theme?.tableTheme ?? prev.table ?? CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
           app: gen.theme?.appTheme ?? prev.app ?? CONFIG_DEFAULTS.GENERAL.THEME.APP

@@ -28,9 +28,10 @@ export const Dashboard = () => {
   return (
     <div
       className={styles.mainBlock}
-      style={{
-        backgroundColor: color.container,
-      }}
+      // style={{
+      //   backgroundColor: color.container,
+      // }}
+      data-theme-app={theme.app}
     >
       <div className={styles.title}>
         ПАНЕЛЬ УПРАВЛЕНИЯ

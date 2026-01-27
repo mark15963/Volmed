@@ -1,3 +1,6 @@
+.header {
+  background-color: var(--header-background);
+}
 .content {
   padding: 0 10px 0 20px;
   margin: 0;
@@ -32,7 +35,7 @@
   flex: 1 0.6 600px;
   display: flex;
   flex-direction: column;
-  color: aliceblue;
+  color: var(--header-text-color);
   font-size: 1.2em;
   font-weight: 600 !important;
   font-display: swap;
@@ -76,7 +79,7 @@
     .userNameText {
       margin: 0 10px;
       text-align: center;
-      color: aliceblue;
+      color: var(--header-text-color);
       font-weight: 500;
       cursor: default;
     }

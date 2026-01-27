@@ -229,7 +229,7 @@ router.post(
       filename: req.file.filename,
       originalname: req.file.originalname,
       path: `/uploads/patients/${req.params.id}/${req.file.filename}`,
-      size: `${req.file.size} bytes`,
+      size: req.file.size,
     });
   },
 );
@@ -244,7 +244,7 @@ router.get("/patients/:id/files", isAuth, (req, res) => {
         filename: fn,
         originalname: fn,
         path: `/uploads/patients/${req.params.id}/${fn}`,
-        size: `${st.size} bytes`,
+        size: st.size,
       };
     });
     res.json(files);

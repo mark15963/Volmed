@@ -5,9 +5,6 @@ import { useNavigate } from "react-router";
 // --- COMPONENTS ---
 import { PatientsListRow } from "../../../components/tables/PatientsListRow";
 
-// --- TYPES---
-import { ListProps } from "../../../types/table";
-
 // --- HOOKS ---
 import { usePatientList } from "../../../hooks/Patients/usePatientsList";
 
@@ -15,6 +12,11 @@ import { usePatientList } from "../../../hooks/Patients/usePatientsList";
 import { SkeletonLoader } from "../../../components/ui/loaders/SkeletonLoader";
 import styles from "../../../components/tables/PatientsListRow.module.scss";
 //#endregion
+
+interface ListProps {
+  option?: "all" | "active" | "non-active";
+  theme?: "default" | "light" | "dark";
+}
 
 /**
  * ListOfPatients
@@ -33,7 +35,6 @@ export const ListOfPatients: FC<ListProps> = ({
   theme = "default",
 }) => {
   const { patients, loading, error } = usePatientList();
-  const navigate = useNavigate();
 
   const filteredPatients = useMemo(() => {
     if (option === "all") return patients;
@@ -79,15 +80,7 @@ export const ListOfPatients: FC<ListProps> = ({
       );
     }
     return filteredPatients.map((patient) => (
-      <PatientsListRow
-        key={patient.id}
-        patient={patient}
-        onClick={() => {
-          navigate(`/search/${patient.id}`, {
-            state: { patient },
-          });
-        }}
-      />
+      <PatientsListRow key={patient.id} patient={patient} />
     ));
   };
 
