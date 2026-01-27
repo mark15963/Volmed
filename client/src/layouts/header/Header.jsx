@@ -9,11 +9,6 @@ import { useConfig } from "../../context";
 export const Header = memo(() => {
   const { color } = useConfig()
 
-  // Add error boundary
-  if (!color) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <header>
       <div style={{ backgroundColor: color.header }}

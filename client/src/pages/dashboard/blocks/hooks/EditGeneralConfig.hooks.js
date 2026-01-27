@@ -2,80 +2,34 @@
 import { useEffect, useState } from "react";
 import api from "../../../../services/api/index";
 import { debug } from "../../../../utils";
+import { CONFIG_DEFAULTS } from "../../../../constants";
 //#endregion
 
-/**
- * GeneralConfig Component
- * -----------------------
- * Displays and manages the application's general configuration settings,
- * including the site title, logo upload, and color palette customization.
- *
- * This component interacts with the global configuration context and uses
- * the `useGeneralConfig` hook to handle local input state, updates, and saving.
- * It also integrates `useSafeMessage` for user feedback and `debug` for development logging.
- *
- * @component
- * @example
- * ```jsx
- * import GeneralConfig from "@/pages/admin/general/GeneralConfig";
- *
- * function AdminDashboard() {
- *   return <GeneralConfig />;
- * }
- * ```
- *
- * @returns {JSX.Element} The rendered configuration form.
- *
- * @description
- * **Features:**
- * - Edit the website title and save changes.
- * - Upload and preview a logo image before saving.
- * - Adjust and preview header, background, and container colors.
- * - Disable inputs and show loading states during save operations.
- *
- * **Hooks used:**
- * - `useConfig()` – accesses global configuration values (title, logo, colors).
- * - `useSafeMessage()` – displays safe user notifications on success or error.
- * - `useGeneralConfig(config, safeMessage)` – manages input state and handles save/update logic.
- *
- * **Internal Functions:**
- * - `handleLogoUpdateWrapper(e: React.ChangeEvent<HTMLInputElement>): Promise<void>`
- *   Handles image file input, uploads the logo preview (without saving), and resets the input field.
- *
- * **Dependencies:**
- * - `Input` – reusable input component supporting text, color, and file types.
- * - `Button` – reusable button component with loading state support.
- * - `debug` – utility for structured console logging in development.
- * - `styles` – SCSS module defining layout and visual design.
- */
-export const useGeneralConfig = (config, safeMessage) => {
+export const useEditGeneralConfig = (config, safeMessage) => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState(() => ({
-    title: config?.title || "",
-    header: config?.color?.header || "#3c97e6",
-    content: config?.color?.content || "#a5c6e2",
-    container: config?.color?.container || "#0073c7",
-    table: config?.theme?.table || "default",
-    app: config?.theme?.app || "default",
+    title: config?.title,
+    header: config?.color?.header,
+    content: config?.color?.content,
+    container: config?.color?.container,
+    table: config?.theme?.table,
+    app: config?.theme?.app,
   }));
 
   useEffect(() => {
-    setInputs({
-      title: config.title || "",
-      header: config.color.header || "#3c97e6",
-      content: config.color.content || "#a5c6e2",
-      container: config.color.container || "#0073c7",
-      table: config.theme.table || "default",
-      app: config.theme.app || "default",
+    setInputs((prev) => {
+      const updated = {
+        title: config?.title ?? prev.title,
+        header: config?.color?.header ?? prev.header,
+        content: config?.color?.content ?? prev.content,
+        container: config?.color?.container ?? prev.container,
+        table: config?.theme?.table ?? prev.table,
+        app: config?.theme?.app ?? prev.app,
+      };
+      if (JSON.stringify(updated) !== JSON.stringify(prev)) return updated;
+      return prev;
     });
-  }, [
-    config.title,
-    config.color?.header,
-    config.color?.content,
-    config.color?.container,
-    config.theme?.table,
-    config.theme?.app,
-  ]);
+  }, [config]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -138,6 +92,7 @@ export const useGeneralConfig = (config, safeMessage) => {
         app,
       });
 
+      setInputs((prev) => ({ ...prev }));
       safeMessage("success", "Данные сохранены!", 2.5);
     } catch (err) {
       console.error("Save failed:", err);

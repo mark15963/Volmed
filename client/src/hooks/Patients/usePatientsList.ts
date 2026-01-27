@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api/index";
 import { Patient } from "../../types/patient";
+import { loadFromLocalStorage, saveToLocalStorage } from "../../services/localStorage/localCache";
+import { debug } from "../../utils";
 
 interface UsePatientListReturn {
   patients: Patient[];
@@ -28,26 +30,44 @@ export const usePatientList = (): UsePatientListReturn => {
 
   useEffect(() => {
     let mounted = true
-    api
-      .getPatients()
-      .then((res) => {
-        if(!mounted) return
-        if (res.ok && Array.isArray(res.data)) {
-          setPatients(res.data);
+    const init = async () => {
+      let cached = loadFromLocalStorage('cachedPatients')
+    
+      if(mounted && cached && Array.isArray(cached)) {
+        debug.success('Patients loaded from cache')
+        setPatients(cached) 
+        setLoading(false)
+      }
+
+      try{
+        if (!cached || !Array.isArray(cached)){
+          const res = await api.getPatients()
+      
+          if (!mounted) return
+        
+          if (res.ok && Array.isArray(res.data)) {  
+            debug.success('Patients data loaded from API')
+            const freshPatients = res.data as Patient[]
+
+            setPatients(freshPatients);
+            saveToLocalStorage('cachedPatients', freshPatients)
+            setError(null)
+          } 
+          else setError(res.message ?? "Не удалось загрузить пациентов");
         }
-        else setError(res.message ?? "Не удалось загрузить список пациентов");
-      })
-      .catch((err) => {
-        if(mounted) 
-          setError(err.message ?? "Ошибка сети")
-      })
-      .finally(() => {
+      } catch (err: any) {
+        if (mounted) setError(err.message ?? "Ошибка загрузки данных")
+      } finally {
         if (mounted) setLoading(false)
-      })
+      }
+    }
+
+    init()
 
     return () => {
       mounted = false
-    }
+    };
   }, []);
+
   return { patients, loading, error };
 }

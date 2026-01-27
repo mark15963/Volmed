@@ -1,6 +1,6 @@
-const { fetchRow } = require("../utils/dbUtils");
+const { fetchRow } = require("./dbUtils.js");
 const { getCacheConfig, setCacheConfig } = require("./cache.ts");
-const debug = require("./debug");
+const debug = require("./debug.js");
 
 async function initCacheOnStartup() {
   try {

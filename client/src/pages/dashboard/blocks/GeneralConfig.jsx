@@ -7,7 +7,7 @@ import Input from "../../../components/Input"
 
 // Tools
 import { useSafeMessage } from "../../../hooks/useSafeMessage"
-import { useGeneralConfig } from "./hooks/GeneralConfig.hooks"
+import { useEditGeneralConfig } from "./hooks/EditGeneralConfig.hooks"
 import { useConfig } from "../../../context"
 import debug from "../../../utils/debug"
 
@@ -34,26 +34,12 @@ const GeneralConfig = () => {
   const safeMessage = useSafeMessage();
 
   /** @type {{ isLoading: boolean, inputs: any, handleChange: Function, handleSave: Function, handleLogoUpdate: Function }} */
-  const { isLoading, inputs, handleChange, handleSave, handleLogoUpdate } = useGeneralConfig(config, safeMessage)
+  const { isLoading, inputs, handleChange, handleSave, handleLogoUpdate } = useEditGeneralConfig(config, safeMessage)
 
   useEffect(() => {
     debug.log('Config context:', config)
   }, [])
 
-  /**
-   * Handles logo file selection and preview before saving.
-   *
-   * @async
-   * @function handleLogoUpdateWrapper
-   * @param {React.ChangeEvent<HTMLInputElement>} e - File input change event.
-   * @returns {Promise<void>} Resolves when the logo preview is updated.
-   *
-   * @description
-   * This function:
-   * - Extracts the uploaded file from the input event.
-   * - Passes it to `handleLogoUpdate()`.
-   * - Saves in local, server and cache.
-   */
   const handleLogoUpdateWrapper = async (e) => {
     const file = e.target.files[0];
     if (!file) return
