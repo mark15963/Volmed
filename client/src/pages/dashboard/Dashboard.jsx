@@ -60,7 +60,7 @@ export const Dashboard = () => {
 
       <Row>
         <Block title='ПАЦИЕНТЫ'>
-          <ListOfPatients theme={theme} />
+          <ListOfPatients theme={theme.table} />
         </Block>
       </Row>
 

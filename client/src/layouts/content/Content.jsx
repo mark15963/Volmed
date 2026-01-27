@@ -26,7 +26,7 @@ const Content = () => {
     <main
       className={styles.main}
       style={{
-        backgroundColor: color.content, // From cache
+        backgroundColor: color?.content, // From cache
       }}
     >
       <OfflineFallback /> {/* Оffline/online indicator */}

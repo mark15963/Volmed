@@ -43,6 +43,7 @@ export const debug = {
     if (!isDebug) return;
     console.groupCollapsed(...formatTitle("success", title));
     if (details.length) console.log(...details);
+    console.trace();
     console.groupEnd();
   },
   warn: (title = "", ...details) => {
