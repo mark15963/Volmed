@@ -19,33 +19,53 @@
     color: var(--app-text-color);
     cursor: pointer;
     box-shadow: 5px 0px 6px -4px black;
-
     &:hover {
       background-color: var(--tab-background-hover);
       transform: translateY(1px);
+      box-shadow:
+        0px -1px 1px 0px #000000 inset,
+        0px 4px 6px 0px black;
     }
-    //When clicked
-    &:active {
+    // Clicked and not the current
+    &:active:not(.active) {
       background-color: var(--tab-background-clicked) !important;
     }
 
+    // Current
     &.active {
       background-color: var(--tab-background-active);
       border-color: black;
       margin-bottom: -2px;
       transform: none;
       z-index: 4 !important;
-
-      &:not(:first-child) {
-        box-shadow: 0px 4px 6px 0px black;
+    }
+    // 1st tab when not active
+    &:first-child {
+      box-shadow: 0px 4px 6px 0px black;
+      z-index: 3;
+      &:not(.active) {
+        box-shadow:
+          0px -1px 1px 0px #000000 inset,
+          0px 4px 6px 0px black;
       }
     }
-    &:first-child:not(.active) {
-      z-index: 3;
-    }
+    //The 2nd tab not activated
     &:nth-child(2) {
-      // transform: translate(10px, 15px);
+      box-shadow: 0px 4px 6px 0px black;
       z-index: 2;
+      &:nth-child(2):not(.active) {
+        box-shadow:
+          0px -1px 1px 0px #000000 inset,
+          0px 4px 6px 0px black;
+      }
+    }
+    &:last-child {
+      box-shadow: 0px 4px 6px 0px black;
+      &:last-child:not(.active) {
+        box-shadow:
+          0px -1px 1px 0px #000000 inset,
+          0px 4px 6px 0px black;
+      }
     }
   }
 }

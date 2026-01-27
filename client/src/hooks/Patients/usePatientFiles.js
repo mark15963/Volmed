@@ -63,11 +63,6 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
     try {
       const response = await api.getPatientFiles(patientId);
       const sizeKb = (response.data[0]?.size ?? 0) / 1024;
-      console.log(sizeKb.toFixed(2));
-      console.log(JSON.stringify(response.data, null, 2));
-      // console.log(
-      //   JSON.stringify((response.data.size / 1024).toFixed(2), null, 2),
-      // );
       setFiles(response.data);
       setRetryCount(0);
     } catch (error) {

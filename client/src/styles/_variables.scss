@@ -73,18 +73,23 @@
   --app-text-color: #f0f8ff;
 
   --searchbar-background: #edf2f7;
-
   --searchbar-text-color: #cdcdcd;
   --search-button-background: #ffffff;
   --search-button-icon-color: #e8e8e8;
 
-  --tab-background: #0086e6;
+  --tab-background: #0080dc;
   --tab-background-hover: #0067b1;
   --tab-background-clicked: #005796;
   --tab-background-active: #0086e6;
 
+  --page-background: #0086e6;
   --page-background-inside: #0075c9;
   --divider: #ffffff80;
+
+  --file-row-background: #076ab1;
+  --file-row-background-hover: #0062a8;
+  --file-row-border: 1px solid black;
+  --file-row-size-color: #dbdbdb;
 }
 [data-theme-app="light"] {
   --main-block: #ffffff;
@@ -106,6 +111,11 @@
   --page-background: #d2d2d2;
   --page-background-inside: #f1f1f1;
   --divider: #d1d1d180;
+
+  --file-row-background: #cccccc;
+  --file-row-background-hover: #848484;
+  --file-row-border: 1px solid #c9c9c9;
+  --file-row-size-color: #4a4a4a;
 }
 [data-theme-app="dark"] {
   --header-background: #1f2937;

@@ -114,47 +114,6 @@ const GeneralConfig = () => {
           />
         </div>
 
-        <div className={styles.blocksColorContainer}>
-          <div className={styles.paletteTitle}>
-            Цветавая палитра:
-          </div>
-          <div className={styles.colorBlocks}>
-            Цвет шапки
-            <div className={styles.colorPicker}>
-              <Input
-                type="color"
-                value={inputs.header}
-                onChange={e => handleChange("header", e.target.value)}
-              />
-              <span>{inputs.header.toUpperCase()}</span>
-            </div>
-          </div>
-
-          <div className={styles.colorBlocks}>
-            Цвет заднего фона
-            <div className={styles.colorPicker}>
-              <Input
-                type="color"
-                value={inputs.content}
-                onChange={e => handleChange("content", e.target.value)}
-              />
-              <span>{inputs.content.toUpperCase()}</span>
-            </div>
-          </div>
-
-          <div className={styles.colorBlocks}>
-            Цвет контейнера
-            <div className={styles.colorPicker}>
-              <Input
-                type="color"
-                value={inputs.container}
-                onChange={e => handleChange("container", e.target.value)}
-              />
-              <span>{inputs.container.toUpperCase()}</span>
-            </div>
-          </div>
-        </div>
-
         <div className={styles.themeColorContainer}>
           <div className={styles.themeTitle}>
             Тема:
@@ -171,10 +130,9 @@ const GeneralConfig = () => {
               {selectTableTheme}
             </div>
           </div>
-
         </div>
-
       </div>
+
       <div className={styles.button}>
         <Button
           text="Сохранить"
