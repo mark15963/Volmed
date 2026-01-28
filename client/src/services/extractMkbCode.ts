@@ -1,3 +1,5 @@
+import { debug } from "../utils";
+
 export const extractMkbCode = (text: string | null | undefined): string => {
   if (!text) return '';
 
@@ -9,7 +11,7 @@ export const extractMkbCode = (text: string | null | undefined): string => {
   const match = cleaned.match(/^([A-Z][0-9]{2})(?:\.([0-9A-Z]{1,2}))?/i);
   
   if (!match) {
-    console.warn('Could not extract MKB code from:', text);
+    debug.warn('Could not extract MKB code from:', text);
     return '-';
   }
 
