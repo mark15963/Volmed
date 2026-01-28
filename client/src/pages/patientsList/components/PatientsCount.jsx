@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
+import { TooltipHover } from "../../../components/ui/TooltipHover";
+
 import debug from "../../../utils/debug";
 
-import styles from './styles/patientList.module.scss'
 import api from "../../../services/api/index";
-import { TooltipHover } from "../../../components/ui/TooltipHover";
+import styles from './styles/patientList.module.scss'
 //#endregion
 
 export const PatientCount = () => {

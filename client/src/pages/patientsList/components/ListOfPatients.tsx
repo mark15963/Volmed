@@ -1,6 +1,5 @@
 //#region ===== IMPORTS =====
 import { FC, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router";
 
 // --- COMPONENTS ---
 import { PatientsListRow } from "../../../components/tables/PatientsListRow";
