@@ -37,6 +37,7 @@ export const usePatientList = (): UsePatientListReturn => {
         debug.success('Patients loaded from cache')
         setPatients(cached) 
         setLoading(false)
+        return
       }
 
       try{
@@ -56,7 +57,10 @@ export const usePatientList = (): UsePatientListReturn => {
           else setError(res.message ?? "Не удалось загрузить пациентов");
         }
       } catch (err: any) {
-        if (mounted) setError(err.message ?? "Ошибка загрузки данных")
+        if (mounted) {
+          setError(err.message ?? "Ошибка загрузки данных")
+          setPatients([])
+        }
       } finally {
         if (mounted) setLoading(false)
       }
