@@ -28,9 +28,6 @@ export const Dashboard = () => {
   return (
     <div
       className={styles.mainBlock}
-      // style={{
-      //   backgroundColor: color.container,
-      // }}
       data-theme-app={theme.app}
     >
       <div className={styles.title}>
@@ -61,7 +58,10 @@ export const Dashboard = () => {
 
       <Row>
         <Block title='ПАЦИЕНТЫ'>
-          <ListOfPatients theme={theme.table} />
+          <ListOfPatients
+            option='all'
+            theme={theme.table}
+          />
         </Block>
       </Row>
 

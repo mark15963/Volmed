@@ -25,3 +25,15 @@ export const PAGES = {
   NOTFOUND: "/*",
   NURSE: "/nurse-menu",
 };
+
+// Interface of .env from /src/env.d.ts
+export const appConfig = {
+  appName: import.meta.env.VITE_APP_NAME ?? "",
+  api: {
+    baseUrl: `https://${import.meta.env.VITE_API_URL}/api`,
+    socketUrl: `https://${import.meta.env.VITE_API_URL}`,
+  },
+
+  isDev: import.meta.env.VITE_ENV === "development",
+  isDebug: import.meta.env.VITE_DEBUG === "true",
+};
