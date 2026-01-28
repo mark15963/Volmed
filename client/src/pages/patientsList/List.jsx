@@ -4,7 +4,7 @@ import { PatientCount } from './components/PatientsCount'
 import { ListOfPatients } from './components/ListOfPatients'
 
 import { SearchBar } from '@/components/SearchBar'
-import Button from '@/components/Button'
+import Button from '../../components/Button'
 
 import styles from './list.module.scss'
 import '@/layouts/content/content.module.scss'
