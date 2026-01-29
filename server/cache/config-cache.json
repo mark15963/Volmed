@@ -1,0 +1,16 @@
+{
+  "general": {
+    "title": "ГБУ ДНР «Волновахская районная больница»",
+    "color": {
+      "headerColor": "#3c97e6",
+      "contentColor": "#a5c6e2",
+      "containerColor": "#0073c7"
+    },
+    "logoUrl": "",
+    "theme": {
+      "tableTheme": "light",
+      "appTheme": "default"
+    }
+  },
+  "timestamp": 1769726984683
+}
