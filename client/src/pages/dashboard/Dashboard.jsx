@@ -14,7 +14,7 @@ import { PAGES } from "@/constants"
 import Block from "./components/Block"
 import Row from "./components/Row"
 import Button from "@/components/Button"
-import { ListOfPatients } from "../patientsList/components/ListOfPatients"
+import { ListOfPatients } from "../../components/tables/ListOfPatients"
 
 // UI
 import styles from './dashboard.module.scss'
@@ -61,6 +61,7 @@ export const Dashboard = () => {
           <ListOfPatients
             option='all'
             theme={theme.table}
+            onRowClick="popup"
           />
         </Block>
       </Row>

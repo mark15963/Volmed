@@ -13,6 +13,21 @@ export interface Patient {
   allergy?: string;
 }
 
+/**
+ * Props for the {@link PatientsListRow} component.
+ */
 export interface PatientRowProps {
-  patient: Patient
+  /** The patient data object to render */
+  patient: Patient;
+  /**
+   * Click behavior mode passed from parent table.
+   * - `"navigate"` → full page navigation
+   * - `"popup"` → triggers parent's popup handler via `displayState`
+   */
+  onRowClick: "navigate" | "popup";
+  /**
+   * Callback to open the popup mode (only used when `onRowClick === "popup"`).
+   * Usually passed from `ListOfPatients` as `() => handleOpenPatientData(patient.id)`
+   */
+  displayState?: () => void | undefined;
 }
