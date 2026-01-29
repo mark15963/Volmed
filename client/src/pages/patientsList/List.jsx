@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 
 import { PatientCount } from './components/PatientsCount'
-import { ListOfPatients } from './components/ListOfPatients'
+import { ListOfPatients } from '../../components/tables/ListOfPatients'
 
 import { SearchBar } from '@/components/SearchBar'
 import Button from '../../components/Button'

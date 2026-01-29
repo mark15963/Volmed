@@ -5,10 +5,14 @@ import { loadFromLocalStorage, saveToLocalStorage } from "../../services/localSt
 import { debug } from "../../utils";
 
 interface UsePatientListReturn {
+  /** Array of all loaded patients */
   patients: Patient[];
+  /** Whether the patient list is currently being fetched */
   loading: boolean;
-  error: any;
+  /** Error message (string) or null if no error occurred */
+  error: string | null;
 }
+
 /**
  * usePatientList
  * --------------
@@ -22,6 +26,35 @@ interface UsePatientListReturn {
  *   loading: boolean,
  *   error: Error|null
  * }} Patient list state and control flags
+ */
+
+/**
+ * Custom hook that fetches and caches the list of all patients.
+ *
+ * Features:
+ * - Attempts to load patients from localStorage cache first (fast initial render)
+ * - Falls back to API call if no valid cache exists
+ * - Saves fresh API data to localStorage for next sessions
+ * - Handles loading and error states
+ * - Cleans up on unmount to prevent state updates on unmounted components
+ *
+ * @remarks
+ * - Cache key: `'cachedPatients'`
+ * - Uses `api.getPatients()` from your API service
+ * - Debug logs are emitted via `debug.success()` / `debug.error()`
+ * - Does **not** implement automatic polling or real-time updates
+ *
+ * @example
+ * ```tsx
+ * const { patients, loading, error } = usePatientList();
+ *
+ * if (loading) return <Spinner />;
+ * if (error) return <div>Ошибка: {error}</div>;
+ *
+ * return <PatientTable patients={patients} />;
+ * ```
+ *
+ * @returns Object containing patients array, loading flag, and error state
  */
 export const usePatientList = (): UsePatientListReturn => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -71,7 +104,7 @@ export const usePatientList = (): UsePatientListReturn => {
     return () => {
       mounted = false
     };
-  }, []);
+  }, []); // empty deps → runs once on mount
 
   return { patients, loading, error };
 }
