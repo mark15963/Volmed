@@ -220,7 +220,6 @@ const Popup: FC<{ patient: Patient; onClose: () => void }> = ({
         height: "100vh",
         backgroundColor: "#00000090",
         zIndex: 10,
-        // padding: "50px 50px 50px 50px",
       }}
     >
       <div
