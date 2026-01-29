@@ -4,7 +4,7 @@ const isDebug = import.meta.env.VITE_DEBUG === "true";
  */
 const formatTitle = (type, title) => {
   const labels = {
-    log: "[DEBUG]",
+    log: "[LOG]",
     success: "[SUCCESS]",
     warn: "[WARNING]",
     error: "[ERROR]",
@@ -18,11 +18,11 @@ const formatTitle = (type, title) => {
     table: "color: #00d0ff; font-weight: bold",
   };
   const icons = {
-    log: "📋",
+    log: "",
     success: "✅",
     warn: "⚠️",
     error: "❌",
-    table: "📊",
+    table: "",
   };
 
   const label = labels[type] || "[DEBUG]";

@@ -10,9 +10,6 @@ import apiInstance from "./axiosInstance";
  *  - consistent error handling
  *  - development logs
  */
-
-const environment = import.meta.env.VITE_ENV as string | undefined;
-
 export async function requestWrapper(
   method: "get" | "post" | "put" | "delete", 
   url: string, 
@@ -31,12 +28,28 @@ export async function requestWrapper(
     // Perform the HTTP request
     const response = await apiInstance[method](url, payload, config);
     // Parse unified format: { ok, data, status, message }
-    const parsed = parseApiResponse(response);
+    return parseApiResponse(response);
+    
 
-    return parsed;
-  } catch (error) {
+  } catch (error: any) {
     // Normalize network or parsing errors
     const parsedError = parseApiError(error);
+
+    // Dispatch connection status events for OfflineFallback
+    if (error.code === "ECONNABORTED" || parsedError.status === 408) {
+      // Axios timeout
+      window.dispatchEvent(new CustomEvent("connection-status", { detail: "timeout" }));
+    } else if (!error.response) {
+      // Network error (no response at all)
+      window.dispatchEvent(new CustomEvent("connection-status", { detail: "offline" }));
+      debug.error(`No response. Error code: ${error.code}`)
+    } else {
+      // Backend responded with error status
+      window.dispatchEvent(new CustomEvent("connection-status", { detail: "server-error" }));
+      debug.error(`${error.message}`)
+    }
+
+    debug.error(`Error code: ${error.code}`);
     return parsedError;
   }
 }

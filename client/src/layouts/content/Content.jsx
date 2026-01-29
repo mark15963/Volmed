@@ -10,14 +10,14 @@ import { debug, usePageTitle } from "../../utils";
 {/* Handicap loader */ }
 import Loader from "../../components/ui/loaders/Loader";
 import ProtectedRoute from './components/ProtectedRoute'
-import OfflineFallback from "../../components/ui/offlineFallback";
+import networkNotification from "../../components/ui/networkNotification";
 
 // UI
 import styles from './content.module.scss'
 //#endregion
 
 const Content = () => {
-  const { color, theme } = useConfig()
+  const { theme } = useConfig()
 
   // Page title chages depending on the page
   usePageTitle()
@@ -25,12 +25,9 @@ const Content = () => {
   return (
     <main
       className={styles.main}
-      // style={{
-      //   backgroundColor: color?.content,
-      // }}
       data-theme-app={theme.app}
     >
-      <OfflineFallback /> {/* Оffline/online indicator */}
+      <networkNotification /> {/* Оffline/online indicator */}
 
       <Suspense fallback={<Loader />}>
         <Routes>

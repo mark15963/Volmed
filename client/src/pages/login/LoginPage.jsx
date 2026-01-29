@@ -8,6 +8,7 @@ import { debug } from "../../utils";
 
 import Loader from "../../components/ui/loaders/Loader";
 import LoginForm from "./components/LoginForm";
+import { SpinLoader } from "../../components/ui/loaders/SpinLoader";
 //#endregion
 
 export default function LoginPage() {
@@ -25,7 +26,12 @@ export default function LoginPage() {
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetchUserStatus()
-      if (!res.isAuthenticated) debug.warn(`Auth check: ${res.message}`)
+      if (!res.isAuthenticated) {
+        debug.warn(`Auth check: ${res.message}`)
+        setErrors({
+          general: res.message
+        })
+      }
 
       // Redirect to home if user came from another page
       if (res.isAuthenticated) {
@@ -46,7 +52,8 @@ export default function LoginPage() {
     }))
   }
 
-  if (isCheckingAuth || isLoading) return <Loader />
+  if (isLoading) debug.log("Loading login page")
+  if (isCheckingAuth || isLoading) return <SpinLoader />
 
   return (
     <LoginForm

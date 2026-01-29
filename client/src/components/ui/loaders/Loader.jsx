@@ -8,13 +8,20 @@ import { LoadingOutlined } from '@ant-design/icons'
 import '@/styles/index.scss'
 import styles from './Loader.module.scss'
 
+/**
+ * Animated handicap guy loader
+ * ----------------------------
+ */
 export const Loader = () => {
     const [showSlowMessage, setShowSlowMessage] = useState(false)
+
+    debug.log("Loading for 5s")
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSlowMessage(true)
-        }, 10000)
+            debug.log("Slow loading until load")
+        }, 5000)
         return () => clearTimeout(timer)
     }, [])
 

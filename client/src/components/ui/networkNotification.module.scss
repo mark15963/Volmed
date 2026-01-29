@@ -12,16 +12,22 @@
   opacity: 0;
   z-index: 1000;
 
+  &[data-status="online"] {
+    background: #d1ecf1;
+    border: 1px solid #adecf9;
+    color: #0c5460;
+  }
+
   &[data-status="offline"] {
     background: #fff3cd;
-    border: 1px solid #ffeaa7;
+    border: 1px solid #faeab8;
     color: #856404;
   }
 
-  &[data-status="online"] {
-    background: #d1ecf1;
-    border: 1px solid #bee5ed;
-    color: #0c5460;
+  &[data-status="server-error"] {
+    background: #f1d1d1;
+    border: 1px solid #f8bfbf;
+    color: #980000;
   }
 }
 

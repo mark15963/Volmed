@@ -54,57 +54,60 @@ interface UsePatientListReturn {
  * return <PatientTable patients={patients} />;
  * ```
  *
- * @returns Object containing patients array, loading flag, and error state
+ * @returns {{
+ *   patients: Array<Object>,
+ *   loading: boolean,
+ *   error: Error|null
+ * }} Patient list state and control flags
  */
 export const usePatientList = (): UsePatientListReturn => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useEffect(()=>{
     let mounted = true
-    const init = async () => {
-      let cached = loadFromLocalStorage('cachedPatients')
-    
-      if(mounted && cached && Array.isArray(cached)) {
-        debug.success('Patients loaded from cache')
-        setPatients(cached) 
-        setLoading(false)
-        return
-      }
 
-      try{
-        if (!cached || !Array.isArray(cached)){
-          const res = await api.getPatients()
-      
-          if (!mounted) return
-        
-          if (res.ok && Array.isArray(res.data)) {  
-            debug.success('Patients data loaded from API')
-            const freshPatients = res.data as Patient[]
+    const fetchPatients = async () => {
+      try {
+        const res = await api.getPatients()
+        if(!mounted) return
 
-            setPatients(freshPatients);
-            saveToLocalStorage('cachedPatients', freshPatients)
-            setError(null)
-          } 
-          else setError(res.message ?? "Не удалось загрузить пациентов");
+        if(res.ok && Array.isArray(res.data)){
+          const freshPatients = res.data as Patient[];
+          setPatients(freshPatients)
+          saveToLocalStorage("cachedPatients", freshPatients)
+          setError(null)
+          debug.success("Patients data loaded from API")
+        } else {
+          setError(res.message ?? "Не удалось загрузить пациентов")
         }
       } catch (err: any) {
-        if (mounted) {
+        if(mounted){
           setError(err.message ?? "Ошибка загрузки данных")
           setPatients([])
+          debug.error("Patients API fetch failed", err)
         }
       } finally {
         if (mounted) setLoading(false)
       }
     }
 
-    init()
+    // First running existing cache test
+    const cached = loadFromLocalStorage("cachedPatients")
+    if(cached && Array.isArray(cached)){
+      setPatients(cached) // render table immediately with cached patients
+      debug.success("Patients loaded from cache")
+      fetchPatients()  // fetch fresh data in background
+    } else {
+      // No cache. Fetch from API
+      fetchPatients()
+    }
 
     return () => {
       mounted = false
-    };
-  }, []); // empty deps → runs once on mount
+    }
+  },[])
 
   return { patients, loading, error };
 }

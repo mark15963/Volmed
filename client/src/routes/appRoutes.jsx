@@ -2,6 +2,7 @@
 
 import { lazy } from "react";
 import ProtectedRoute from "../layouts/content/components/ProtectedRoute";
+import { PatientDataProvider, UsersDataProvider } from "../context";
 
 //#region === PAGES ===
 const Main = lazy(() => import("../pages/main/Main"));
@@ -47,7 +48,9 @@ export const appRoutes = [
     path: "/patients",
     element: (
       <ProtectedRoute>
-        <List />
+        <PatientDataProvider>
+          <List />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -55,7 +58,9 @@ export const appRoutes = [
     path: "/search/:id",
     element: (
       <ProtectedRoute>
-        <SearchResults />
+        <PatientDataProvider>
+          <SearchResults />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -63,7 +68,9 @@ export const appRoutes = [
     path: "/register",
     element: (
       <ProtectedRoute>
-        <RegisterPatient />
+        <PatientDataProvider>
+          <RegisterPatient />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -71,7 +78,9 @@ export const appRoutes = [
     path: "/edit/:id",
     element: (
       <ProtectedRoute>
-        <EditPatient />
+        <PatientDataProvider>
+          <EditPatient />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -81,7 +90,9 @@ export const appRoutes = [
     path: "/administered",
     element: (
       <ProtectedRoute roles={["nurse"]}>
-        <Administered />
+        <PatientDataProvider>
+          <Administered />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -89,7 +100,9 @@ export const appRoutes = [
     path: "/discharged",
     element: (
       <ProtectedRoute roles={["nurse"]}>
-        <Discharged />
+        <PatientDataProvider>
+          <Discharged />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -97,7 +110,9 @@ export const appRoutes = [
     path: "/hospitalized",
     element: (
       <ProtectedRoute roles={["nurse"]}>
-        <Hospitalized />
+        <PatientDataProvider>
+          <Hospitalized />
+        </PatientDataProvider>
       </ProtectedRoute>
     ),
   },
@@ -107,7 +122,11 @@ export const appRoutes = [
     path: "/dashboard",
     element: (
       <ProtectedRoute roles={[]}>
-        <Dashboard />
+        <UsersDataProvider>
+          <PatientDataProvider>
+            <Dashboard />
+          </PatientDataProvider>
+        </UsersDataProvider>
       </ProtectedRoute>
     ),
   },

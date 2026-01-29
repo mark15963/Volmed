@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from "axios";
+import axios from "axios";
 
 const isDev = import.meta.env.VITE_ENV === "development"
 
@@ -20,22 +20,25 @@ export const apiInstance = axios.create({
   validateStatus: () => true,
 });
 
-// if (isDev) {
-//   apiInstance.interceptors.request.use((config) => {
-//     console.log(`[Axios Request] ${config.method?.toUpperCase()} ${config.url}`);
-//     return config;
-//   });
+if (isDev) {
+  // Showing API requests
+  let Config: any
+  apiInstance.interceptors.request.use((config) => {
+    Config = config
+    console.log(`[Axios Request] ${config.method?.toUpperCase()} ${config.url}`);
+    return config;
+  });
 
-//   apiInstance.interceptors.response.use(
-//     (response) => {
-//       console.log(`[Axios Response] ${response.status} ${response.config.url}`);
-//       return response;
-//     },
-//     (error) => {
-//       console.error("[Axios Error]", error);
-//       return Promise.reject(error);
-//     }
-//   );
-// }
+  apiInstance.interceptors.response.use(
+    (res) => {
+      console.log(`[Axios Response] ${res.status} ${res.config.url}`);
+      return res;
+    },
+    (err) => {
+      console.error(`[Axios Error] ${err.message} ${Config?.url}`, err);
+      return Promise.reject(err);
+    }
+  );
+}
 
 export default apiInstance;

@@ -2,7 +2,6 @@
 // - AuthContext.jsx
 // - LoginPage.jsx
 
-
 import api from "../services/api/index";
 
 export interface UserStatus{
@@ -12,15 +11,6 @@ export interface UserStatus{
   user: object | null;
   message?: string;
 }
-
-/**
-* @typedef {Object} UserStatus
-* @property {boolean} ok
-* @property {boolean} isAuthenticated
-* @property {boolean} isAdmin
-* @property {Object|null} user
-* @property {string} [message]
-*/
 
 /**
  * FETCH USER STATUS
@@ -58,26 +48,45 @@ export interface UserStatus{
  * @returns {Promise<UserStatus>} Normalized user status object
  */
 export async function fetchUserStatus(): Promise<UserStatus> {
-  const res = await api.status();
-  if (!res.ok) {
+  
+  try{
+    const res = await api.status();
+    if (!res.ok) {
+      // Inform OfflineFallback that the server is unreachable
+      window.dispatchEvent(
+        new CustomEvent("connection-status", { detail: "server-error"})
+      )
+    
+      return {
+        ok: false,
+      isAuthenticated: false,
+        isAdmin: false,
+        user: null,
+        message: res.message,
+      };
+    }
+
+    const user = (res as any).data?.user || null;
+    const isAdmin = ["admin"].includes(user?.status);
+
+    return {
+      ok: true,
+      isAuthenticated: (res as any).data?.isAuthenticated ?? false,
+      isAdmin,
+      user,
+      message: res.message,
+    };
+  } catch(err: any){
+    // Network error (VPN/offline)
+    window.dispatchEvent(new CustomEvent('connection-status', {detail: 'offline'}))
+  
     return {
       ok: false,
       isAuthenticated: false,
       isAdmin: false,
       user: null,
-      message: res.message,
+      message: err.message,
     };
   }
-
-  const user = (res as any).data?.user || null;
-  const isAdmin = ["admin"].includes(user?.status);
-
-  return {
-    ok: true,
-    isAuthenticated: (res as any).data?.isAuthenticated ?? false,
-    isAdmin,
-    user,
-    message: res.message,
-  };
 }
                                                                                                                                  

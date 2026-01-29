@@ -12,8 +12,11 @@ export const endpoints ={
   /* ===============
      👩‍⚕️ PATIENTS API
      =============== */
+   /** Get all patients */
   getPatients: () => requestWrapper("get", "/patients"),
+  /** Get a patient by ID */
   getPatient: (id: string) => requestWrapper("get", `/patients/${id}`),
+  /** Get the number of all patients */
   getPatientCount: () => requestWrapper("get", `/patient-count`),
   createPatient: (data: any) => requestWrapper("post", `/patients`, data),
   updatePatient: (id: string, data: any) => requestWrapper("put", `/patients/${id}`, data),

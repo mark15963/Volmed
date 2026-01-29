@@ -32,13 +32,15 @@ const LoginForm = ({
 
       if (res?.error) {
         onErrorsChange({
-          general: res.message // Under <h2> error UI
+          general: `${res.code}: ${res.message}` // Under <h2> error UI
         })
       }
 
     } catch (err) {
       debug('LoginForm error:', err);
-      onErrorsChange({ general: 'Произошла неизвестная ошибка' });
+      onErrorsChange({
+        general: 'Произошла неизвестная ошибка'
+      });
     } finally {
       onLoadingChange(false)
     }

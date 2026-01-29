@@ -55,9 +55,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAndRedirect = async () => {
-      const result = await checkAuthStatus(false)
-      if (!result.ok && window.location.pathname !== '/login') {
-        navigate('/login');
+      const res = await checkAuthStatus(false)
+      if (!res.ok && window.location.pathname !== '/login') {
+        setTimeout(() => {
+          navigate('/login');
+        }, 500)
       }
     }
     checkAndRedirect();

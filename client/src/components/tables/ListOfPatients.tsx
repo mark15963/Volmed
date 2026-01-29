@@ -239,4 +239,3 @@ const Popup: FC<{ patient: Patient; onClose: () => void }> = ({
     </div>
   );
 };
-// test
