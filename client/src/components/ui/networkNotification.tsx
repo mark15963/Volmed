@@ -1,5 +1,4 @@
 // Used in Content.jsx
-
 import React, { useState, useEffect, useRef } from "react";
 
 import styles from "./NetworkNotification.module.scss";
