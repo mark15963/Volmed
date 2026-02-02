@@ -98,7 +98,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       </td>
       <td>{displayAge}</td>
       <td>
-        <SexIcon sex={sex} />
+        <SexIcon sex={sex} size={24} />
       </td>
       <td>{moment(created_at).format("DD.MM.YYYY")}</td>
       <td>{room || "-"}</td>

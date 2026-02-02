@@ -15,7 +15,7 @@ import styles from './Loader.module.scss'
 export const Loader = () => {
     const [showSlowMessage, setShowSlowMessage] = useState(false)
 
-    debug.log("Loading for 5s")
+    debug.log("Loading for up to 5s")
 
     useEffect(() => {
         const timer = setTimeout(() => {

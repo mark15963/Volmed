@@ -10,7 +10,7 @@ import { debug, usePageTitle } from "../../utils";
 {/* Handicap loader */ }
 import Loader from "../../components/ui/loaders/Loader";
 import ProtectedRoute from './components/ProtectedRoute'
-import networkNotification from "../../components/ui/networkNotification";
+import NetworkNotification from "../../components/ui/NetworkNotification";
 
 // UI
 import styles from './content.module.scss'
@@ -27,7 +27,7 @@ const Content = () => {
       className={styles.main}
       data-theme-app={theme.app}
     >
-      <networkNotification /> {/* Оffline/online indicator */}
+      <NetworkNotification /> {/* Оffline/online indicator */}
 
       <Suspense fallback={<Loader />}>
         <Routes>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-import styles from "./networkNotification.module.scss";
+import styles from "./NetworkNotification.module.scss";
 
 type ConnectionStatus =
   | "online"
@@ -28,7 +28,7 @@ interface OfflineFallbackProps {
  * ```
  *
  */
-const OfflineFallback: React.FC<OfflineFallbackProps> = ({
+const NetworkNotification: React.FC<OfflineFallbackProps> = ({
   status: forceStatus,
 }) => {
   const [status, setStatus] = useState<ConnectionStatus>(
@@ -125,4 +125,4 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
   );
 };
 
-export default OfflineFallback;
+export default NetworkNotification;
