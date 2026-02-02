@@ -25,7 +25,7 @@ export const Icon: FC<IconProps> = ({
       color={color} // → currentColor flows down
       {...rest}
     >
-      <use href={`/icons/sprite.svg#${name}`} />
+      <use href={`assets/icons/sprite.svg#${name}`} />
     </svg>
   );
 };
