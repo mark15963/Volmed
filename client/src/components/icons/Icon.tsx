@@ -12,7 +12,7 @@ export const Icon: FC<IconProps> = ({
   name,
   size = 24,
   color,
-  className = "",
+  className,
   ...rest
 }) => {
   return (
