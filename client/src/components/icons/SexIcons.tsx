@@ -22,6 +22,5 @@ export const SexIcon: FC<SexIconProps> = ({ sex, className, size = 24 }) => {
 
   const color = name === "sex-male" ? "#0f4882" : "#f11f73"; //Override
 
-  // return <Icon name={name} size={size} color={color} className={className} />
-  return <Icon name={name} size={size} className={className} />;
+  return <Icon name={name} size={size} color={color} className={className} />;
 };

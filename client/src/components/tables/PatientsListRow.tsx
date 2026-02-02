@@ -1,12 +1,14 @@
 //#region === IMPORTS ===
 import { FC } from "react";
-import styles from "./PatientsListRow.module.scss";
+import { useNavigate } from "react-router";
 import moment from "moment";
+
 import { calculateAge, getStateClass, debug } from "../../utils";
 import { PatientRowProps } from "../../types/patient";
-import { SexIcon } from "../icons";
 import { extractMkbCode } from "../../services/extractMkbCode";
-import { useNavigate } from "react-router";
+
+import styles from "./PatientsListRow.module.scss";
+import { SexIcon } from "../icons";
 //#endregion
 
 /**
@@ -98,7 +100,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       </td>
       <td>{displayAge}</td>
       <td>
-        <SexIcon sex={sex} size={24} />
+        <SexIcon sex={sex} size={24} className={styles.sexIcon} />
       </td>
       <td>{moment(created_at).format("DD.MM.YYYY")}</td>
       <td>{room || "-"}</td>
