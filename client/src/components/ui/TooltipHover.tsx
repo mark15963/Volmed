@@ -5,6 +5,29 @@ import { FC, useState } from "react";
 import styles from "./TooltipHover.module.scss";
 import { TooltipHoverProps } from "../../interfaces";
 
+/**
+ * TooltipHover component
+ * ----------------------
+ *
+ * Wrap an element you want to have a tooltip and in the `content` prop you add the component you want to be seen as a tooltip
+ *
+ * @example
+ * ```jsx
+ * <TooltipHover
+ *   content={
+ *     <>
+ *       <strong>
+ *         Всего пациентов:
+ *       </strong>
+ *
+ *       {loading ? '' : count}
+ *     </>
+ *   }
+ * >
+ *   <span>Пациенты в стационаре:</span>
+ * </TooltipHover>
+ * ```
+ */
 export const TooltipHover: FC<TooltipHoverProps> = ({
   children,
   content,
