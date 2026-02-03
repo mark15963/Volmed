@@ -1,12 +1,9 @@
-import { FC, ReactNode, useState } from "react";
-import styles from "./TooltipHover.module.scss";
+// Used in PatientsCount.jsx
+// A more stylized version of <abbr title="Oh my god">OMG</abbr>
 
-interface TooltipHoverProps {
-  children: ReactNode;
-  content: ReactNode;
-  className?: string;
-  delay?: number;
-}
+import { FC, useState } from "react";
+import styles from "./TooltipHover.module.scss";
+import { TooltipHoverProps } from "../../interfaces";
 
 export const TooltipHover: FC<TooltipHoverProps> = ({
   children,

@@ -1,12 +1,7 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 import React from "react";
-
-interface SpinLoaderProps {
-  color?: string;
-  size?: number;
-  className?: string;
-}
+import { SpinLoaderProps } from "../../../interfaces";
 
 export const SpinLoader: React.FC<SpinLoaderProps> = ({
   color = "aliceblue",

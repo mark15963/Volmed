@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api/index";
-import { Patient } from "../../types/patient";
-import { loadFromLocalStorage, saveToLocalStorage } from "../../services/localStorage/localCache";
-import { debug } from "../../utils";
 
-interface UsePatientListReturn {
-  /** Array of all loaded patients */
-  patients: Patient[];
-  /** Whether the patient list is currently being fetched */
-  loading: boolean;
-  /** Error message (string) or null if no error occurred */
-  error: string | null;
-}
+import { Patient } from "@custom-types/patient";
+import { UsePatientListReturn } from "@interfaces/patientInterface";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../../services/localStorage/localCache";
+import { debug } from "../../utils";
 
 /**
  * usePatientList
@@ -65,49 +61,49 @@ export const usePatientList = (): UsePatientListReturn => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(()=>{
-    let mounted = true
+  useEffect(() => {
+    let mounted = true;
 
     const fetchPatients = async () => {
       try {
-        const res = await api.getPatients()
-        if(!mounted) return
+        const res = await api.getPatients();
+        if (!mounted) return;
 
-        if(res.ok && Array.isArray(res.data)){
+        if (res.ok && Array.isArray(res.data)) {
           const freshPatients = res.data as Patient[];
-          setPatients(freshPatients)
-          saveToLocalStorage("cachedPatients", freshPatients)
-          setError(null)
-          debug.success("Patients data loaded from API")
+          setPatients(freshPatients);
+          saveToLocalStorage("cachedPatients", freshPatients);
+          setError(null);
+          debug.success("Patients data loaded from API");
         } else {
-          setError(res.message ?? "Не удалось загрузить пациентов")
+          setError(res.message ?? "Не удалось загрузить пациентов");
         }
       } catch (err: any) {
-        if(mounted){
-          setError(err.message ?? "Ошибка загрузки данных")
-          setPatients([])
-          debug.error("Patients API fetch failed", err)
+        if (mounted) {
+          setError(err.message ?? "Ошибка загрузки данных");
+          setPatients([]);
+          debug.error("Patients API fetch failed", err);
         }
       } finally {
-        if (mounted) setLoading(false)
+        if (mounted) setLoading(false);
       }
-    }
+    };
 
     // First running existing cache test
-    const cached = loadFromLocalStorage("cachedPatients")
-    if(cached && Array.isArray(cached)){
-      setPatients(cached) // render table immediately with cached patients
-      debug.success("Patients loaded from cache")
-      fetchPatients()  // fetch fresh data in background
+    const cached = loadFromLocalStorage("cachedPatients");
+    if (cached && Array.isArray(cached)) {
+      setPatients(cached); // render table immediately with cached patients
+      debug.success("Patients loaded from cache");
+      fetchPatients(); // fetch fresh data in background
     } else {
       // No cache. Fetch from API
-      fetchPatients()
+      fetchPatients();
     }
 
     return () => {
-      mounted = false
-    }
-  },[])
+      mounted = false;
+    };
+  }, []);
 
   return { patients, loading, error };
-}
+};

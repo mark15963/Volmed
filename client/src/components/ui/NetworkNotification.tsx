@@ -2,17 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import styles from "./NetworkNotification.module.scss";
-
-type ConnectionStatus =
-  | "online"
-  | "offline"
-  | "server-error"
-  | "timeout"
-  | "reconnecting";
-
-interface OfflineFallbackProps {
-  status?: ConnectionStatus;
-}
+import { ConnectionStatus } from "../../custom-types";
+import { OfflineFallbackProps } from "../../interfaces";
 
 /**
  * Usage

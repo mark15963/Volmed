@@ -4,11 +4,11 @@ import { useNavigate } from "react-router";
 import moment from "moment";
 
 import { calculateAge, getStateClass, debug } from "../../utils";
-import { PatientRowProps } from "../../types/patient";
+import { PatientRowProps } from "../../custom-types";
 import { extractMkbCode } from "../../services/extractMkbCode";
 
-import styles from "./PatientsListRow.module.scss";
 import { SexIcon } from "../icons";
+import styles from "./PatientsListRow.module.scss";
 //#endregion
 
 /**

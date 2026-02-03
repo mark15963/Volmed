@@ -3,11 +3,9 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 
-const { default: dayjs, datePickerLocale } =
-  await import("../../utils/dayjs.config");
+const { default: dayjs } = await import("../../utils/dayjs.config");
 
 // Components
-import { usePageTitle } from "../../utils/usePageTitle";
 import { PersonalInfoFields } from "./Components/PersonalInfoFields";
 import { MedHistoryFields } from "./Components/MedHistoryFields";
 import { Buttons } from "./Components/Buttons";
@@ -31,7 +29,6 @@ import {
   formatDateForServer,
   formatPhone,
   PatientForSearch,
-  debug,
 } from "../../utils";
 //#endregion
 

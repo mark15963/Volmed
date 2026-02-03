@@ -1,9 +1,7 @@
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import styles from "./SkeletonLoader.module.scss";
+import { SkeletonLoaderProps } from "../../../interfaces";
 
-interface SkeletonLoaderProps {
-  lines?: number | string;
-}
 export const SkeletonLoader = ({ lines = 5 }: SkeletonLoaderProps) => {
   const lineCount = Number(lines) || 5;
   return (

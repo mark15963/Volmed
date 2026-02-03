@@ -5,8 +5,8 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { TooltipHover } from "../../../components/ui/TooltipHover";
 
 import debug from "../../../utils/debug";
-
 import api from "../../../services/api/index";
+
 import styles from './styles/patientList.module.scss'
 //#endregion
 
@@ -64,12 +64,12 @@ export const PatientCount = () => {
       <TooltipHover
         content={
           <>
-            <strong>Всего пациентов: </strong>
-            {loading ? '' : count}
+            <strong>Всего пациентов: </strong>      {/* The shown text when hovered */}
+            {loading ? '' : count}                  {/* Total count */}
           </>
         }
       >
-        <span>Пациенты в стационаре:</span>
+        <span>Пациенты в стационаре:</span>         {/* show the text text to activeCount */}
       </TooltipHover>
       {loading ? (
         <SkeletonTheme baseColor="#51a1da" highlightColor="#488ab9">

@@ -1,11 +1,6 @@
 import { FC } from "react";
 import { Icon } from "./Icon";
-
-interface SexIconProps {
-  sex: string;
-  className?: string;
-  size?: number;
-}
+import { SexIconProps } from "@interfaces/index";
 
 export const SexIcon: FC<SexIconProps> = ({ sex, className, size = 24 }) => {
   let name: "sex-male" | "sex-female" | null = null;

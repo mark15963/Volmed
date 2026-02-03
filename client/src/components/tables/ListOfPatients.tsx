@@ -3,41 +3,17 @@ import React, { FC, useEffect, useMemo, useState } from "react";
 
 // --- COMPONENTS ---
 import { PatientsListRow } from "./PatientsListRow";
+import Tab1 from "../../pages/searchResults/tabs/tab1";
 
 // --- HOOKS ---
 import { usePatientList } from "../../hooks/Patients/usePatientsList";
 
 // --- UI ---
+import { ListOfPatientsProps } from "../../interfaces";
+import { Patient } from "../../custom-types/patient";
 import { SkeletonLoader } from "../ui/loaders/SkeletonLoader";
 import styles from "./PatientsListRow.module.scss";
-import { Patient } from "../../types/patient";
-import Tab1 from "../../pages/searchResults/tabs/tab1";
 //#endregion
-
-/**
- * Props for the {@link ListOfPatients} component.
- */
-interface ListOfPatientsProps {
-  /**
-   * Filter mode for displaying patients.
-   * @default "all"
-   */
-  option?: "all" | "active" | "non-active";
-
-  /**
-   * Visual theme of the patient table.
-   * @default "default"
-   */
-  theme?: "default" | "light" | "dark";
-
-  /**
-   * Behavior when clicking on a patient row.
-   * - `"navigate"` — navigates to the patient's detailed page
-   * - `"popup"` — opens a modal popup with patient details (Tab1 content)
-   * @default "navigate"
-   */
-  onRowClick?: "navigate" | "popup";
-}
 
 /**
  * Displays a responsive table of patients with filtering, loading states, and error handling.
