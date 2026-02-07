@@ -1,13 +1,13 @@
 //#region ===== IMPORTS ===== 
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../../context/AuthContext'
 
-import UserChatWindow from './components/UserChatWindow'
-import useChat from '../../hooks/useChat'
+import UserChatWindow from './UserChatWindow'
+import useChat from '../../../hooks/Chat/useChat'
 
-import debug from '../../utils/debug'
+import debug from '../../../utils/debug'
 
-import styles from './styles/Chat.module.scss'
+import styles from '../styles/Chat.module.scss'
 //#endregion
 
 const UserChat = () => {

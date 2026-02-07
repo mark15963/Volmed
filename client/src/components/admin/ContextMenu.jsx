@@ -3,8 +3,8 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 import { createPortal } from "react-dom"
 
-import UserChat from "../Chat/UserChat"
-import AdminChat from "../Chat/AdminChat"
+import UserChat from "../Chat/components/UserChat"
+import AdminChat from "../Chat/components/AdminChat"
 import SideMenu from "./SideMenu"
 
 import debug from "../../utils/debug"

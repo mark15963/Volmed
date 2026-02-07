@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./server
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      -"5000:5000"
+    command: npm run dev
+
+  frontend:
+    build: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      -"5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000 # or http://host.docker.internal:5000
+    command: npm run dev
+
+
+# run with: 
+# docker compose -f docker-compose.dev.yml up --build

@@ -1,27 +1,45 @@
 services:
-  server:
+  backend:
     build: ./server
-    container_name: server
-    ports:
-      - "5000:5000"
+    container_name: backend
+    restart: unless-stopped
     env_file:
       - ./server/.env
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
-      - ./server/uploads:/usr/src/app/uploads
+    expose:
+      - "5000"
 
-  client:
+  frontend:
     build: ./client
-    container_name: client
+    container_name: frontend
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
     ports:
-      - "5173:5173" #Dev
-      - "80:80"     #Prod
+      -"80:80"
+      -"443:443" # certs
     volumes:
-      - ./client:/app
-      - /app/node_modules
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/ssl/certs/nginx-selfsigned.crt:/etc/nginx/ssl/nginx-selfsigned.crt:ro # SSL
+      - /etc/ssl/private/nginx-selfsigned.key:/etc/nginx/ssl/nginx-selfsigned.key
     depends_on:
-      - server
-    
+      - frontend
+      - backend
+
+#   db:
+#     image: postgres:16
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_PASSWORD: your_secret
+#       POSTGRES_DB: pren_db
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#     expose:
+#       - 5432
+
+# volumes:
+#   pgdata:

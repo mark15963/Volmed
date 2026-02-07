@@ -1,3 +1,4 @@
+//#region === IMPORTS ===
 import { useEffect, useRef } from "react";
 
 import Input from "../../Input";
@@ -6,8 +7,13 @@ import Button from "../../Button";
 import { formatChatTime } from "../../../utils/time";
 import styles from '../styles/Chat.module.scss'
 import debug from "../../../utils/debug";
+//#endregion
 
-export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
+/**
+ * Regular user chat window 
+ * ------------------------
+ */
+export const UserChatWindow = ({ messages: Array, onSendMessage, message: string, setMessage, currentUserId: number, displayName }) => {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {

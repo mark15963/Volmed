@@ -1,6 +1,4 @@
 // Used in PatientsCount.jsx
-// A more stylized version of <abbr title="Oh my god">OMG</abbr>
-
 import { FC, useState } from "react";
 import styles from "./TooltipHover.module.scss";
 import { TooltipHoverProps } from "../../interfaces";
@@ -8,6 +6,10 @@ import { TooltipHoverProps } from "../../interfaces";
 /**
  * TooltipHover component
  * ----------------------
+ * A more stylized version of:
+ * ```html
+ * <abbr title="Oh my god">OMG</abbr>
+ * ```
  *
  * Wrap an element you want to have a tooltip and in the `content` prop you add the component you want to be seen as a tooltip
  *

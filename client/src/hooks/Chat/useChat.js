@@ -1,10 +1,19 @@
+// Used in UserChat.jsx, AdminChat.jsx
+
 //#region  ===== IMPORTS =====
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
-import api from "../services/api/index";
-import debug from "../utils/debug";
+
+import api from "../../services/api/index";
+import debug from "../../utils/debug";
 //#endregion
 
+/**
+ *
+ * @param {string | null} initialRoomName Room's name from the beginning (in admin is null - first has to choose a room)
+ * @param {string} currentUserId
+ * @returns
+ */
 export const useChat = (initialRoomName, currentUserId) => {
   //#region === STATES & REFS ===
   const [isLoading, setIsLoading] = useState(false);
@@ -30,14 +39,15 @@ export const useChat = (initialRoomName, currentUserId) => {
   //#endregion
 
   //#region === HELPERS ===
-  //normalize incoming payload for UI
   const normalizeIncoming = (data) => ({
-    text: data.message ?? data.text ?? "",
-    sender: data.sender,
-    senderName: data.senderName ?? data.sender_name ?? "Unknown",
+    text: /** @type {string} */ (data.message ?? data.text ?? ""),
+    sender: /** @type {string} */ (data.sender),
+    senderName: /** @type {string|undefined} */ (
+      data.senderName ?? data.sender_name ?? "Unknown"
+    ),
     timestamp: data.timestamp ?? new Date().toISOString(),
-    room: data.room,
-    type: data.type ?? "user",
+    room: /** @type {string} */ (data.room),
+    type: /** @type {"user" | "admin" | "system"} */ (data.type ?? "user"),
   });
   //#endregion
 
@@ -68,7 +78,7 @@ export const useChat = (initialRoomName, currentUserId) => {
     return cleanup;
   }, [currentUserId]);
 
-  // Load chat history
+  /** Load chat history */
   const loadMessages = useCallback(async (room = currentRoomRef.current) => {
     if (!room) {
       debug.log("loadMessages: No room provided");
@@ -237,6 +247,7 @@ export const useChat = (initialRoomName, currentUserId) => {
   //#endregion
 
   //#region === MESSAGE SENDING ===
+  /** Sending optimized message to DB and showing in UI */
   const sendMessage = useCallback(async (text, senderName) => {
     if (!text?.trim()) return;
 
@@ -307,7 +318,7 @@ export const useChat = (initialRoomName, currentUserId) => {
     setTimeout(() => (lastMessageRef.current = null), 5000);
   }, []);
 
-  // Handle send message (UI)
+  /** Handle send message (UI) */
   const handleSendMessage = useCallback(
     async (senderName = "Админ") => {
       if (!message?.trim()) return; // Empty?
@@ -375,6 +386,7 @@ export const useChat = (initialRoomName, currentUserId) => {
     [loadMessages],
   );
 
+  /** Admin only function */
   const deleteChat = useCallback(
     async (room) => {
       if (currentUserIdRef.current !== "admin") return;
