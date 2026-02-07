@@ -11,11 +11,15 @@ services:
     environment:
       - NODE_ENV=production
       - UPLOAD_DIR=/app/uploads/assets/images
+      - DATABASE_URL=postgres://admin:159635741@db:5432/volmed_db
     expose:
       - "5000"
     volumes:
       - ./server/uploads:/app/uploads
       - assets:/app/uploads/assets/images
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     build: ./client
@@ -40,17 +44,25 @@ services:
       - frontend
       - backend
 
-#   db:
-#     image: postgres:16
-#     restart: unless-stopped
-#     environment:
-#       POSTGRES_PASSWORD: your_secret
-#       POSTGRES_DB: pren_db
-#     volumes:
-#       - pgdata:/var/lib/postgresql/data
-#     expose:
-#       - 5432
+  db:
+    image: postgres:16-alpine
+    container_name: DB
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 159635741
+      POSTGRES_DB: volmed_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d volmed_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
+  pgdata:
   assets:
     driver: local
