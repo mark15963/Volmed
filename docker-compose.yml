@@ -18,6 +18,7 @@ services:
     restart: unless-stopped
 
   nginx:
+    user: "0:0"
     image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
