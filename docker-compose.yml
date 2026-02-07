@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=production
       - UPLOAD_DIR=/app/uploads/assets/images
-      - DATABASE_URL=postgres://admin:159635741@db:5432/volmed_db
+      - DATABASE_URL=postgresql://admin:159635741@db:5432/volmed_db
     expose:
       - "5000"
     volumes:
