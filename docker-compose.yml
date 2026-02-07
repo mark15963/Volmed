@@ -2,6 +2,7 @@
 
 services:
   backend:
+    user: "0:0"
     build: ./server
     container_name: backend
     restart: unless-stopped
