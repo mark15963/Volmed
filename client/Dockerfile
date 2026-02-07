@@ -16,8 +16,8 @@ RUN npm run build
 # -------------------
 FROM nginx:alpine-slim
 
-RUN addgroup -g 1001 -S nginx && \
-  adduser -u 1001 -S nginx -G nginx
+RUN addgroup -g 1001 nginx && \
+  adduser -u 1001 -G nginx -D -H nginx
 
 # Pre-create cache dirs and chown them to nginx user
 RUN mkdir -p /var/cache/nginx/client_temp \
