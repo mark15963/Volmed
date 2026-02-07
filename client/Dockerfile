@@ -20,7 +20,6 @@ RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
 
 COPY --from=build --chown=appuser:appgroup /app/dist /usr/share/nginx/html
-COPY --chown=appuser:appgroup nginx.conf /etc/nginx/conf.d/default.conf
 
 USER appuser
 
