@@ -25,7 +25,7 @@ services:
       - "80:80"
       - "443:443" # certs
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
+      - ./client/nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
       - /etc/ssl/certs/nginx-selfsigned.crt:/etc/nginx/ssl/nginx-selfsigned.crt:ro # SSL
       - /etc/ssl/private/nginx-selfsigned.key:/etc/nginx/ssl/nginx-selfsigned.key:ro
     depends_on:
