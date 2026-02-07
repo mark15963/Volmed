@@ -12,6 +12,8 @@ const dbConfig = {
   allowExitOnIdle: true,
 };
 
+console.log(process.env.DATABASE_URL);
+
 const db = new Pool(dbConfig);
 
 // DB connection test
