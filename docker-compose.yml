@@ -27,8 +27,7 @@ services:
       - "443:443" # certs
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
-      - .ssl/nginx-selfsigned.crt:/etc/nginx/ssl/nginx-selfsigned.crt:ro # SSL
-      - ./ssl/nginx-selfsigned.key:/etc/nginx/ssl/nginx-selfsigned.key:ro
+      - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - frontend
       - backend
