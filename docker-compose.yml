@@ -9,8 +9,11 @@ services:
       - ./server/.env
     environment:
       - NODE_ENV=production
+      - UPLOAD_DIR=/app/uploads/assets/images
     expose:
       - "5000"
+    volumes:
+      - ./server/uploads:/app/uploads
 
   frontend:
     build: ./client
