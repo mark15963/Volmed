@@ -16,6 +16,7 @@ services:
     build: ./client
     container_name: frontend
     restart: unless-stopped
+    user: "0:0"
 
   nginx:
     user: "0:0"
