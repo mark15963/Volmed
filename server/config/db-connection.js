@@ -5,8 +5,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const dbConfig = {
   connectionString: process.env.DATABASE_URL,
-  // ssl: isProduction ? { rejectUnauthorized: false } : false,
-  ssl: false,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
   connectionTimeoutMillis: 1000 * 10,
   idleTimeoutMillis: 1000 * 30,
   max: 20,
