@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
     "prod": "cross-env NODE_ENV=production node server.js",
     "start:win": "start start.bat",
