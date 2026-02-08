@@ -17,6 +17,7 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=159635741
       - DB_NAME=volmed_db
+      - DB_SSL=false
     expose:
       - "5000"
     volumes:
@@ -30,8 +31,6 @@ services:
     container_name: frontend
     restart: "no"
     user: "0:0"
-    # volumes:
-    #   - frontend_assets:/usr/share/nginx/html
 
   nginx:
     user: "0:0"
@@ -51,27 +50,25 @@ services:
       # - frontend
       - backend
 
-  db:
-    image: postgres:15-alpine
-    container_name: db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 159635741
-      POSTGRES_DB: volmed_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    expose:
-      - 5432
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d volmed_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: db
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: admin
+  #     POSTGRES_PASSWORD: 159635741
+  #     POSTGRES_DB: volmed_db
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   expose:
+  #     - 5432
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U admin -d volmed_db"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
 volumes:
-  pgdata:
+#   pgdata:
   assets:
-    driver: local
-  frontend_assets:
     driver: local
