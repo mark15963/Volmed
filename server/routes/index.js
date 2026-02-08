@@ -15,7 +15,7 @@ router.use(usersRouter);
 router.use("/chat", chatRoutes);
 router.use("/general", generalRoutes);
 
-router.get("/", (req, res) => {
+router.get(["/", ""], (req, res) => {
   try {
     console.log("Attempting to render main.ejs");
     res.type("html");
