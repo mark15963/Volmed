@@ -13,6 +13,7 @@ const dbConfig = {
 };
 
 console.log(process.env.DATABASE_URL);
+console.log(`Upload dir: ${process.env.UPLOAD_DIR}`);
 
 const db = new Pool(dbConfig);
 
