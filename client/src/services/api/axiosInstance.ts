@@ -16,28 +16,8 @@ axios.defaults.withCredentials = true;
 export const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-    "X-Request-Source": "react-frontend",
-    "X-App-Version": import.meta.env.VITE_APP_VERSION || "1.0.0",
-  },
+  headers: { "Content-Type": "application/json" },
   validateStatus: () => true,
-});
-
-apiInstance.interceptors.request.use((config) => {
-  // Add unique ID to every request
-  config.headers["X-Request-ID"] =
-    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
-  // Add the page path that triggered the request
-  if (typeof window !== "undefined") {
-    config.headers["X-Request-Path"] = window.location.pathname;
-    config.headers["X-Full-URL"] = window.location.href;
-    config.headers["X-Request-Query"] = window.location.search;
-    config.headers["X-Request-Hash"] = window.location.hash;
-  }
-
-  return config;
 });
 
 if (isDev) {
@@ -48,8 +28,6 @@ if (isDev) {
     console.log(
       `[Axios Request] ${config.method?.toUpperCase()} ${config.url}`,
     );
-    console.log("[Axios Headers]", config.headers);
-    console.log("[Full Config]", config);
     return config;
   });
 

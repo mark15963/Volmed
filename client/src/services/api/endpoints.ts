@@ -67,7 +67,7 @@ export const endpoints = {
      ============== */
   postLogin: (data: any) => requestWrapper("post", `/login`, data),
   logout: () => requestWrapper("post", `/logout`),
-  status: (config = {}) => requestWrapper("get", `/status`, null, config),
+  status: () => requestWrapper("get", `/status`),
 
   /* ==========
      💬 CHAT API

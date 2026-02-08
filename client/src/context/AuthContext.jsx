@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
       const res = await checkAuthStatus(false)
       if (!res.ok && window.location.pathname !== '/login') {
         setTimeout(() => {
-          navigate('/login');
+          navigate('/login'); // if not authenticated -> /login in 0.5s
         }, 500)
       }
     }

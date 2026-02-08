@@ -41,20 +41,8 @@ import api from "../services/api/index";
  * @returns {Promise<UserStatus>} Normalized user status object
  */
 export async function fetchUserStatus(): Promise<UserStatus> {
-  const requestId = `react-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
   try {
-    console.log(`[fetchUserStatus] Making request with ID: ${requestId}`);
-
-    const res = await api.get("/status", {
-      headers: {
-        "X-Request-ID": requestId,
-        "X-Debug-Source": "auth-context",
-      },
-    });
-
-    console.log(`[fetchUserStatus] Response for ${requestId}:`, res.status);
-
+    const res = await api.status();
     if (!res.ok) {
       // Inform OfflineFallback that the server is unreachable
       window.dispatchEvent(
