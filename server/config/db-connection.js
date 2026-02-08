@@ -5,15 +5,18 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const dbConfig = {
   connectionString: process.env.DATABASE_URL,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  // ssl: isProduction ? { rejectUnauthorized: false } : false,
+  ssl: false,
   connectionTimeoutMillis: 1000 * 10,
   idleTimeoutMillis: 1000 * 30,
   max: 20,
   allowExitOnIdle: true,
 };
 
-console.log(process.env.DATABASE_URL);
+console.log(`PostgreSQL URL: ${process.env.DATABASE_URL}`);
 console.log(`Upload dir: ${process.env.UPLOAD_DIR}`);
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`SSL enabled: ${dbConfig.ssl}`);
 
 const db = new Pool(dbConfig);
 
@@ -29,19 +32,27 @@ async function testDbConnection() {
   for (let i = 1; i <= retries; i++) {
     let client;
     try {
+      console.log(`Attempt ${i}/${retries} to connect to database...`);
       client = await db.connect();
       const result = await client.query(
         "SELECT version(), current_database(), current_user",
       );
-      debug.log("✅ Database connected successfully!");
+      debug.success("✅ Database connected successfully!");
       debug.log("   Version:", result.rows[0].version);
       debug.log("   Database:", result.rows[0].current_database);
       debug.log("   User:", result.rows[0].current_user);
       client.release();
       return;
     } catch (err) {
-      debug.error(`Attempt ${i} failed:`, err.message);
-      if (client) client.release();
+      console.error(`Attempt ${i} failed:`, err.message);
+      debug.error(`Full error:`, err);
+      if (client) {
+        try {
+          client.release();
+        } catch (releaseErr) {
+          debug.error("Error releasing client:", releaseErr.message);
+        }
+      }
       if (i < retries) {
         debug.log(`Retrying in ${(delay * i) / 1000} seconds...`);
         await new Promise((r) => setTimeout(r, delay * i));

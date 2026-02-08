@@ -10,13 +10,18 @@ services:
       - ./server/.env
     environment:
       - NODE_ENV=production
-      - UPLOAD_DIR=/app/uploads/assets/images
+      - UPLOAD_DIR=/uploads/assets/images
       - DATABASE_URL=postgresql://admin:159635741@db:5432/volmed_db
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=159635741
+      - DB_NAME=volmed_db
     expose:
       - "5000"
     volumes:
-      - ./server/uploads:/app/uploads
-      - assets:/app/uploads/assets/images
+      # - ./server/uploads:/uploads
+      - assets:/uploads/assets/images
     depends_on:
       db:
         condition: service_healthy
