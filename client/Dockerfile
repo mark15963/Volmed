@@ -14,10 +14,12 @@ RUN npm run build
 # -------------------
 #  PRODUCTION STAGE
 # -------------------
-FROM nginx:alpine-slim
+FROM nginx:alpine-slim as final
 
 RUN addgroup -g 101 nginx 2>/dev/null || true && \
   adduser -u 101 -G nginx -D -H nginx 2>/dev/null || true
+
+RUN mkdir -p /usr/share/nginx/html
 
 RUN mkdir -p /var/cache/nginx/client_temp \
   /var/cache/nginx/proxy_temp \
