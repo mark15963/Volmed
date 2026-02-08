@@ -2,8 +2,7 @@ const { Router } = require("express");
 const fs = require("fs");
 const path = require("path");
 
-const uploadDir =
-  process.env.UPLOAD_DIR || path.join(__dirname, "../uploads/assets/images");
+const uploadDir = process.env.UPLOAD_DIR || "/uploads/assets/images";
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -167,15 +166,15 @@ router.put("/config", async (req, res) => {
 
 //#region ===== Logo configs =====
 // Define permanent upload location (client's public assets folder)
-const publicDir = path.join(
-  __dirname,
-  "..",
-  "..",
-  "client",
-  "public",
-  "assets",
-  "images",
-);
+// const publicDir = path.join(
+//   __dirname,
+//   "..",
+//   "..",
+//   "client",
+//   "public",
+//   "assets",
+//   "images",
+// );
 // const srcDir = path.join(
 //   __dirname,
 //   "..",
@@ -187,19 +186,30 @@ const publicDir = path.join(
 // );
 
 // Ensure directories exist
-fs.mkdirSync(publicDir, { recursive: true });
+// fs.mkdirSync(publicDir, { recursive: true });
 // fs.mkdirSync(srcDir, { recursive: true });
 
 // Configure multer to save directly there
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
+  destination: (req, file, cb) => {
+    if (!fs.existsDir(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase() || ".webp";
     // remove any old logo.* file
-    fs.readdirSync(uploadDir).forEach(
-      (f) => f.startsWith("logo.") && fs.unlinkSync(path.join(uploadDir, f)),
-    );
-
+    try {
+      if (!fs.existsDir(uploadDir)) {
+        fs.readdirSync(uploadDir).forEach(
+          (f) =>
+            f.startsWith("logo.") && fs.unlinkSync(path.join(uploadDir, f)),
+        );
+      }
+    } catch (err) {
+      console.error("Error cleaning old logos:", err);
+    }
     cb(null, "logo" + ext);
   },
 });
@@ -232,6 +242,8 @@ router.post("/upload-logo", upload.single("logo"), async (req, res) => {
 router.get("/get-logo", (req, res) => {
   try {
     // Look for an existing logo file in the assets folder
+    if (!fs.existsDir(uploadDir)) return res.json({ logoUrl: null });
+
     const files = fs.readdirSync(uploadDir);
     const logo = files.find((f) => f.startsWith("logo."));
 

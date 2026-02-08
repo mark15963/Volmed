@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     user: "0:0"
     volumes:
-      - assets:/user/share/nginx/html/assets/images
+      - assets:/usr/share/nginx/html/assets/images
 
   nginx:
     user: "0:0"
@@ -40,6 +40,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
+      - assets:/usr/share/nginx/html/assets/images:ro
     depends_on:
       - frontend
       - backend
