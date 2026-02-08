@@ -192,7 +192,7 @@ router.put("/config", async (req, res) => {
 // Configure multer to save directly there
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (!fs.existsDir(uploadDir)) {
+    if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
@@ -201,7 +201,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname).toLowerCase() || ".webp";
     // remove any old logo.* file
     try {
-      if (!fs.existsDir(uploadDir)) {
+      if (!fs.existsSync(uploadDir)) {
         fs.readdirSync(uploadDir).forEach(
           (f) =>
             f.startsWith("logo.") && fs.unlinkSync(path.join(uploadDir, f)),
@@ -241,18 +241,29 @@ router.post("/upload-logo", upload.single("logo"), async (req, res) => {
 // ---- Get Logo ----
 router.get("/get-logo", (req, res) => {
   try {
+    console.log("Upload directory path:", uploadDir);
+    console.log("Directory exists:", fs.existsSync(uploadDir));
+
     // Look for an existing logo file in the assets folder
-    if (!fs.existsDir(uploadDir)) return res.json({ logoUrl: null });
+    if (!fs.existsSync(uploadDir)) {
+      console.log("Creating upload directory...");
+      fs.mkdirSync(uploadDir, { recursive: true });
+      return res.json({ logoUrl: null, message: "Directory created" });
+    }
 
     const files = fs.readdirSync(uploadDir);
+    console.log("Files in upload directory:", files);
+
     const logo = files.find((f) => f.startsWith("logo."));
+    console.log("Found logo file:", logo);
 
     res.json({
       logoUrl: logo ? `/assets/images/${logo}?t=${Date.now()}` : null,
     });
   } catch (err) {
     console.error("Failed to get logo:", err);
-    res.status(500).json({ error: "Failed to get logo" });
+    console.error("Error stack:", err.stack);
+    res.status(500).json({ error: "Failed to get logo", details: err.message });
   }
 });
 //#endregion
