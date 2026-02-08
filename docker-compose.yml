@@ -46,6 +46,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
       - assets:/usr/share/nginx/html/assets/images:ro
+      - /dev/null:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - frontend
       - backend
