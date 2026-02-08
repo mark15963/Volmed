@@ -5,7 +5,8 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const dbConfig = {
   connectionString: process.env.DATABASE_URL,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  // ssl: isProduction ? { rejectUnauthorized: false } : false,
+  ssl: false,
   connectionTimeoutMillis: 1000 * 10,
   idleTimeoutMillis: 1000 * 30,
   max: 20,
@@ -21,7 +22,7 @@ const db = new Pool(dbConfig);
 
 // DB connection test
 async function testDbConnection() {
-  const retries = 5;
+  const retries = 10;
   const delay = 2000;
 
   debug.log(`Connecting to database in ${process.env.NODE_ENV} mode...`);
