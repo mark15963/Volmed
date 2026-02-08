@@ -2,15 +2,8 @@
 // - AuthContext.jsx
 // - LoginPage.jsx
 
+import { UserStatus } from "../interfaces/UserInterface";
 import api from "../services/api/index";
-
-export interface UserStatus{
-  ok: boolean;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  user: object | null;
-  message?: string;
-}
 
 /**
  * FETCH USER STATUS
@@ -28,7 +21,7 @@ export interface UserStatus{
  *     console.log("Logged in as:", res.user.username);
  *   }
  * ```
- * 
+ *
  * @example
  * ```js
  * const checkAuthStatus = useCallback(async (redirectIfUnauth = true) => {
@@ -48,18 +41,29 @@ export interface UserStatus{
  * @returns {Promise<UserStatus>} Normalized user status object
  */
 export async function fetchUserStatus(): Promise<UserStatus> {
-  
-  try{
-    const res = await api.status();
+  const requestId = `react-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+  try {
+    console.log(`[fetchUserStatus] Making request with ID: ${requestId}`);
+
+    const res = await api.get("/status", {
+      headers: {
+        "X-Request-ID": requestId,
+        "X-Debug-Source": "auth-context",
+      },
+    });
+
+    console.log(`[fetchUserStatus] Response for ${requestId}:`, res.status);
+
     if (!res.ok) {
       // Inform OfflineFallback that the server is unreachable
       window.dispatchEvent(
-        new CustomEvent("connection-status", { detail: "server-error"})
-      )
-    
+        new CustomEvent("connection-status", { detail: "server-error" }),
+      );
+
       return {
         ok: false,
-      isAuthenticated: false,
+        isAuthenticated: false,
         isAdmin: false,
         user: null,
         message: res.message,
@@ -76,10 +80,12 @@ export async function fetchUserStatus(): Promise<UserStatus> {
       user,
       message: res.message,
     };
-  } catch(err: any){
+  } catch (err: any) {
     // Network error (VPN/offline)
-    window.dispatchEvent(new CustomEvent('connection-status', {detail: 'offline'}))
-  
+    window.dispatchEvent(
+      new CustomEvent("connection-status", { detail: "offline" }),
+    );
+
     return {
       ok: false,
       isAuthenticated: false,
@@ -89,4 +95,3 @@ export async function fetchUserStatus(): Promise<UserStatus> {
     };
   }
 }
-                                                                                                                                 
