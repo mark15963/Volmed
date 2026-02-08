@@ -11,8 +11,8 @@ services:
     environment:
       - NODE_ENV=production
       - UPLOAD_DIR=/uploads/assets/images
-      - DATABASE_URL=postgresql://admin:159635741@host.docker.internal:5432/volmed_db
-      - DB_HOST=host.docker.internal
+      - DATABASE_URL=postgresql://admin:159635741@192.168.0.107:5432/volmed_db
+      - DB_HOST=192.168.0.107
       - DB_PORT=5432
       - DB_USER=admin
       - DB_PASSWORD=159635741
