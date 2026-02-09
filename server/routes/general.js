@@ -61,7 +61,7 @@ async function cleanupOldLogos() {
  * @param {string} originalName - Original filename
  * @returns {string} Normalized file extension
  */
-function getNormalizedExtention(originalName) {
+function getNormalizedExtension(originalName) {
   const extention = path.extname(originalName).toLowerCase();
   return extention || DEFAULT_LOGO_EXT;
 }
@@ -99,11 +99,11 @@ const storage = multer.diskStorage({
   },
   filename: async (req, file, callback) => {
     try {
-      const ext = getNormalizedExtention(file.originalname);
+      const ext = getNormalizedExtension(file.originalname);
       await cleanupOldLogos();
       callback(null, `${LOGO_FILENAME_PREFIX}${ext}`);
     } catch (err) {
-      const ext = getNormalizedExtention(file.originalname);
+      const ext = getNormalizedExtension(file.originalname);
       const timestamp = Date.now();
       callback(null, `${LOGO_FILENAME_PREFIX}-${timestamp}${ext}`);
     }
@@ -154,7 +154,7 @@ router.get("/config", async (req, res) => {
 
     debug.log("Cache missing - Fetching configs from DB");
 
-    const row = await fetchRow("SELECT *FROM general WHERE id = $1", [
+    const row = await fetchRow("SELECT * FROM general WHERE id = $1", [
       DB_CONFIG_ID,
     ]);
 
@@ -340,7 +340,7 @@ router.get("/get-logo", async (req, res) => {
 
     await ensureUploadDirectory();
 
-    const files = fs.readdirSync(UPLOAD_DIR);
+    const files = fs.readdir(UPLOAD_DIR);
     debug.log(`Found ${files.length} files in dir`);
 
     const logoFile = files.find((f) => f.startsWith(LOGO_FILENAME_PREFIX));
