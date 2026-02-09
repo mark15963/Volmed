@@ -55,6 +55,9 @@ const createAxiosInstance = (cookies = []) => {
 };
 //#endregion
 
+/**
+ * Run like this to skip tests `RUN_TESTS=false npm run dev`
+ */
 async function runStartupTests() {
   //#region ===== CONSTS =====
   const BASE_URL = process.env.BACKEND_URL;
