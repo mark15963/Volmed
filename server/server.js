@@ -120,7 +120,10 @@ async function startServer() {
       server.headersTimeout = 1000 * 65;
 
       // Start tests
-      if (process.env.NODE_ENV === "development") {
+      if (
+        process.env.NODE_ENV === "development" &&
+        process.env.RUN_TESTS === "true"
+      ) {
         require(path.join(__dirname, "tests", "startupTest.js"));
       }
     });

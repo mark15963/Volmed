@@ -36,11 +36,16 @@ async function retryOperation(operation, maxRetries = 3, delayMs = 1000) {
 
 // Create axios instance that accepts self-signed certs
 const createAxiosInstance = (cookies = []) => {
-  const instance = axios.create({
-    httpsAgent: new https.Agent({
-      rejectUnauthorized: false, // Accept self-signed certificates
-    }),
-  });
+  const isProduction = process.env.NODE_ENV === "production";
+  const config = {};
+
+  if (isProduction) {
+    config.httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+  }
+
+  const instance = axios.create(config);
 
   if (cookies.length > 0) {
     instance.defaults.headers.Cookie = cookies.join("; ");
@@ -53,6 +58,7 @@ const createAxiosInstance = (cookies = []) => {
 async function runStartupTests() {
   //#region ===== CONSTS =====
   const BASE_URL = process.env.BACKEND_URL;
+
   const username = "test";
   const password = `test321`;
 
@@ -65,9 +71,11 @@ async function runStartupTests() {
   //#endregion
 
   try {
-    debug.log("===================================");
-    debug.log("|    Running startup tests...     |");
-    debug.log("===================================");
+    debug.log("======================================");
+    debug.log("     Running startup tests...");
+    debug.log(`     Mode: ${process.env.NODE_ENV}`);
+    debug.log(`     URL: ${BASE_URL}`);
+    debug.log("======================================");
 
     //#region ===== HEALTH =====
     try {
@@ -98,6 +106,12 @@ async function runStartupTests() {
     }
     //#endregion
 
+    // Skip remaining tests if health check failed
+    if (failed > 0) {
+      debug.error("Health check failed, skipping remaining tests...");
+      throw new Error(`Failed tasks ${failed}`);
+    }
+
     //#region ===== LOGIN =====
     loginSuccess = false;
     try {
@@ -120,6 +134,7 @@ async function runStartupTests() {
     try {
       const axiosInstance = createAxiosInstance(cookies);
       const patientsRes = await axiosInstance.get(`${BASE_URL}/api/patients`);
+      debug.log("Testing patients");
       logTestResult("Fetch patients", patientsRes.data.length >= 0);
     } catch (err) {
       logTestResult("Fetch patients", false);
@@ -307,9 +322,9 @@ async function runStartupTests() {
       failed++;
     }
     //#endregion
-    
-    if(failed)throw new Error(`Failed tasks ${failed}`);
-    
+
+    if (failed) throw new Error(`Failed tasks ${failed}`);
+
     debug.log("==================================");
     debug.log("All startup tests PASSED.");
   } catch (err) {
@@ -324,4 +339,10 @@ async function runStartupTests() {
   }
 }
 
-runStartupTests();
+if (process.env.NODE_ENV === "development") {
+  setTimeout(() => {
+    runStartupTests();
+  }, 2000);
+} else {
+  debug.log("Startup tests skipped in production mode");
+}
