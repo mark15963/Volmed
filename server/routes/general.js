@@ -1,214 +1,66 @@
-//#region === REQUIREMENTS ===
 const { Router } = require("express");
-const fs = require("fs").promises;
-const fsSync = require("fs");
+const fs = require("fs");
 const path = require("path");
+
+const uploadDir = process.env.UPLOAD_DIR || "/uploads/assets/images";
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const multer = require("multer");
-const { getCacheConfig, setCacheConfig } = require("../utils/cache.ts");
+const {
+  getCacheConfig,
+  setCacheConfig,
+  clearCache,
+} = require("../utils/cache.ts");
 const { updateRow, fetchRow } = require("../utils/dbUtils");
 const debug = require("../utils/debug");
-//#endregion
 
-//#region === SETUP & CONFIGS ===
-const UPLOAD_DIR = process.env.UPLOAD_DIR || "/uploads/assets/images";
-const LOGO_FILENAME_PREFIX = "logo";
-const DEFAULT_LOGO_EXT = ".webp";
-const LOGO_URL_BASE = "/assets/images";
-const DB_CONFIG_ID = 1;
-//#endregion
-
-//#region === UTILS FUNCTIONS ===
-/**
- * Ensures the upload directory exists, creating it if necessary
- * @throws {Error} If directory creation fails
- */
-async function ensureUploadDirectory() {
-  try {
-    await fs.access(UPLOAD_DIR);
-  } catch {
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-    debug.log(`Created upload directory: ${UPLOAD_DIR}`);
-  }
-}
-
-/**
- * Cleans up old logo files from the upload directory
- * @returns {Promise<void>}
- */
-async function cleanupOldLogos() {
-  try {
-    const files = await fs.readdir(UPLOAD_DIR);
-    const deletionPromises = files
-      .filter((file) => file.startsWith(LOGO_FILENAME_PREFIX))
-      .map(async (file) => {
-        try {
-          await fs.unlink(path.join(UPLOAD_DIR, file));
-          debug.log(`Removed old logo: ${file}`);
-        } catch (error) {
-          debug.error(`Failed to remove logo ${file}:`, error);
-        }
-      });
-    await Promise.all(deletionPromises);
-  } catch (error) {
-    if (error.code !== "ENOENT") {
-      debug.error("Error cleaning old logos:", error);
-    }
-  }
-}
-
-/**
- * Gets the appropriate file extension from an uploaded file
- * @param {string} originalName - Original filename
- * @returns {string} Normalized file extension
- */
-function getNormalizedExtension(originalName) {
-  const extention = path.extname(originalName).toLowerCase();
-  return extention || DEFAULT_LOGO_EXT;
-}
-
-/**
- * Builds configuration object from database row
- * @param {Object} row - Database row
- * @returns {Object} Formatted configuration
- */
-function buildConfigFromRow(row) {
-  return {
-    title: row.title,
-    color: {
-      headerColor: row.headerColor,
-      contentColor: row.contentColor,
-      containerColor: row.containerColor,
-    },
-    theme: {
-      tableTheme: row.tableTheme,
-      appTheme: row.appTheme,
-    },
-    logoUrl: row.logoUrl,
-  };
-}
-//#endregion
-
-//#region === MULTER CONFIG ===
-/**
- * Multer storage configuration for handling logo uploads
- * @type {multer.StorageEngine}
- */
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, UPLOAD_DIR);
-  },
-  filename: async (req, file, callback) => {
-    try {
-      const ext = getNormalizedExtension(file.originalname);
-      await cleanupOldLogos();
-      callback(null, `${LOGO_FILENAME_PREFIX}${ext}`);
-    } catch (err) {
-      const ext = getNormalizedExtension(file.originalname);
-      const timestamp = Date.now();
-      callback(null, `${LOGO_FILENAME_PREFIX}-${timestamp}${ext}`);
-    }
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5Mb limit
-  },
-  fileFilter: (req, file, callback) => {
-    const allowedExt = [".jpg", ".jpeg", ".png", ".webp", ".svg"];
-    const ext = path.extname(file.originalname).toLowerCase();
-
-    if (allowedExt.includes(ext)) {
-      callback(null, true);
-    } else {
-      callback(
-        new Error(`Invalid file type. Allowed: ${allowedExt.join(", ")}`),
-      );
-    }
-  },
-});
-//#endregion
-
-//#region === ROUTER SETUP ===
 const router = Router();
 
-// Initialize upload directory on setup
-ensureUploadDirectory().catch((error) => {
-  debug.error("Failed to initialize upload directory:", error);
-});
-//#endregion
-
-//#region === ROUTE HANDLERS ===
-/**
- * GET /config
- * Retrieves application configuration from cache or database
- */
 router.get("/config", async (req, res) => {
   try {
-    // Try to get from cache first
-    const cachedConfig = await getCacheConfig();
-    if (cachedConfig) {
-      return res.json(cachedConfig);
-    }
+    // Get data from cache
+    let config = await getCacheConfig();
+    if (config) return res.json(config);
 
-    debug.log("Cache missing - Fetching configs from DB");
+    // fetch from DB
+    debug.log("Cache missing - Fetching from DB");
+    const row = await fetchRow(`
+      SELECT *
+      FROM general 
+      WHERE id = 1
+    `);
 
-    const row = await fetchRow("SELECT * FROM general WHERE id = $1", [
-      DB_CONFIG_ID,
-    ]);
+    if (!row) return res.status(404).json({ error: "Config not found in DB" });
 
-    if (!row) {
-      return res.status(404).json({
-        error: "Config not found in DB",
-      });
-    }
-    const config = buildConfigFromRow(row);
+    // Build full config obj
+    config = {
+      title: row.title,
+      color: {
+        headerColor: row.headerColor,
+        contentColor: row.contentColor,
+        containerColor: row.containerColor,
+      },
+      theme: {
+        tableTheme: row.tableTheme,
+        appTheme: row.appTheme,
+      },
+      logoUrl: row.logoUrl,
+    };
+
+    // Save to cache for next time
     await setCacheConfig(config);
-
     debug.success("Config fetched from DB and cached");
+
     res.json(config);
-  } catch (error) {
-    console.error("Error fetching config:", error);
-    res.status(500).json({
-      error: "Failed to fetch config",
-      message:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+  } catch (err) {
+    console.error("Error fetching config:", err);
+    res.status(500).json({ error: "Failed to fetch config" });
   }
 });
-/**
- * PUT /config
- * Updates application configuration
- * - Update DB -> update cache
- * 
- * @example
- * // Suppose user wants to update title and headerColor
- * const updates = [];  // Will store: ['"title" = $1', '"headerColor" = $2']
- * const values = [];   // Will store: ['New Title', '#FF0000']
- *
- * // For title field (paramIndex = 1):
- * updates.push(`"title" = $${paramIndex}`);  // '"title" = $1'
- * values.push(title);                        // 'New Title'
- * paramIndex++;                              // paramIndex = 2
- * 
- * // For headerColor field:
- * updates.push(`"headerColor" = $${paramIndex}`); // '"headerColor" = $2'
- * values.push(headerColor);                       // '#FF0000'
- * paramIndex++;                                   // paramIndex = 3
-
- * // Add the ID parameter:
- * values.push(DB_CONFIG_ID);  // values = ['New Title', '#FF0000', 1]
-
- * // Final query becomes:
- * const query = `
- *   UPDATE general 
- *   SET "title" = $1, "headerColor" = $2 
- *   WHERE id = $3 
- *   RETURNING *
- * `;
- * // values = ['New Title', '#FF0000', 1]
- */
+// Update DB -> update cache
 router.put("/config", async (req, res) => {
   const {
     title,
@@ -220,148 +72,201 @@ router.put("/config", async (req, res) => {
     appTheme,
   } = req.body;
 
-  // Validate at least one field is provided
-  const hasUpdates = [
-    title,
-    headerColor,
-    contentColor,
-    containerColor,
-    tableTheme,
-    appTheme,
-  ].some((field) => field !== undefined);
-
-  if (!hasUpdates) {
-    return res.status(400).json({
-      error: "No fields provided to update",
-    });
+  // No fields provided
+  if (
+    title === undefined &&
+    headerColor === undefined &&
+    contentColor === undefined &&
+    containerColor === undefined &&
+    tableTheme === undefined &&
+    appTheme === undefined
+  ) {
+    return res.status(400).json({ error: "No fields provided to update" });
   }
 
   try {
-    const updates = [];
-    const values = [];
-    let paramIndex = 1;
+    const setParts = [];
+    let paramValues = [];
 
-    const fieldMap = {
-      title,
-      headerColor,
-      contentColor,
-      containerColor,
-      logoUrl,
-      tableTheme,
-      appTheme,
+    if (title !== undefined) {
+      setParts.push(`title = $${setParts.length + 1}`);
+      paramValues.push(title);
+    }
+
+    if (headerColor !== undefined) {
+      setParts.push(`"headerColor" = $${setParts.length + 1}`);
+      paramValues.push(headerColor);
+    }
+
+    if (contentColor !== undefined) {
+      setParts.push(`"contentColor" = $${setParts.length + 1}`);
+      paramValues.push(contentColor);
+    }
+
+    if (containerColor !== undefined) {
+      setParts.push(`"containerColor" = $${setParts.length + 1}`);
+      paramValues.push(containerColor);
+    }
+
+    if (logoUrl !== undefined) {
+      setParts.push(`"logoUrl" = $${setParts.length + 1}`);
+      paramValues.push(logoUrl);
+    }
+
+    if (tableTheme !== undefined) {
+      setParts.push(`"tableTheme" = $${setParts.length + 1}`);
+      paramValues.push(tableTheme);
+    }
+
+    if (appTheme !== undefined) {
+      setParts.push(`"appTheme" = $${setParts.length + 1}`);
+      paramValues.push(appTheme);
+    }
+
+    // Safety check (should not happen due to earlier validation)
+    if (setParts.length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
+    }
+
+    const query = `
+      UPDATE general
+      SET ${setParts.join(", ")}
+      WHERE id = 1
+      RETURNING *
+    `;
+
+    const row = await updateRow(query, paramValues);
+
+    if (!row) return res.status(404).json({ error: "Config record not found" });
+
+    const updatedConfig = {
+      title: row.title,
+      color: {
+        headerColor: row.headerColor,
+        contentColor: row.contentColor,
+        containerColor: row.containerColor,
+      },
+      logoUrl: row.logoUrl,
+      theme: {
+        tableTheme: row.tableTheme,
+        appTheme: row.appTheme,
+      },
     };
 
-    Object.entries(fieldMap).forEach(([key, value]) => {
-      if (value !== undefined) {
-        updates.push(`"${key}" = $${paramIndex}`);
-        values.push(value);
-        paramIndex++;
-      }
-    });
-
-    values.push(DB_CONFIG_ID);
-
-    const updatedRow = await updateRow(
-      `UPDATE general
-       SET ${updates.join(", ")}
-       WHERE id = $${paramIndex}
-       RETURNING *`,
-      values,
-    );
-
-    if (!updatedRow) {
-      return res.status(404).json({
-        error: "Config record not found",
-      });
-    }
-
-    const updatedConfig = buildConfigFromRow(updatedRow);
     await setCacheConfig(updatedConfig);
 
-    debug.success("Config updated:", updatedConfig);
+    debug.success("Config updated in DB and cache:", updatedConfig);
+
     res.json(updatedConfig);
-  } catch (error) {
-    debug.error("Failed to update config:", error);
-    res.status(500).json({
-      error: "Failed to update config",
-      message:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+  } catch (err) {
+    console.error("Error updating config:", err);
+    res.status(500).json({ error: "Failed to update config" });
   }
 });
 
-/**
- * POST /upload-logo
- * Uploads and processes a new logo file
- */
+//#region ===== Logo configs =====
+// Define permanent upload location (client's public assets folder)
+// const publicDir = path.join(
+//   __dirname,
+//   "..",
+//   "..",
+//   "client",
+//   "public",
+//   "assets",
+//   "images",
+// );
+// const srcDir = path.join(
+//   __dirname,
+//   "..",
+//   "..",
+//   "client",
+//   "src",
+//   "assets",
+//   "images",
+// );
+
+// Ensure directories exist
+// fs.mkdirSync(publicDir, { recursive: true });
+// fs.mkdirSync(srcDir, { recursive: true });
+
+// Configure multer to save directly there
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase() || ".webp";
+    // remove any old logo.* file
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        fs.readdirSync(uploadDir).forEach(
+          (f) =>
+            f.startsWith("logo.") && fs.unlinkSync(path.join(uploadDir, f)),
+        );
+      }
+    } catch (err) {
+      console.error("Error cleaning old logos:", err);
+    }
+    cb(null, "logo" + ext);
+  },
+});
+
+const upload = multer({ storage });
+
+//#region ===== Logo routes =====
 router.post("/upload-logo", upload.single("logo"), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({
-      error: "No file uploaded",
-      details: "Please select a logo file to upload",
-    });
+    return res.status(400).json({ error: "No file uploaded" });
   }
 
-  try {
-    const timestamp = Date.now();
-    const logoUrl = `${LOGO_URL_BASE}/${req.file.filename}?t=${timestamp}`;
+  // const srcPath = path.join(srcDir, req.file.filename);
+  // fs.copyFileSync(path.join(publicDir, req.file.filename), srcPath);
 
-    const currentConfig = await getCacheConfig();
-    if (currentConfig) {
-      const updatedConfig = {
-        ...currentConfig,
-        logoUrl,
-      };
-      await setCacheConfig(updatedConfig);
-    }
+  // Return the public URL that the frontend can use
+  const logoUrl = `/assets/images/${req.file.filename}?t=${Date.now()}`;
 
-    debug.success(`Logo uploaded: ${req.file.filename}`);
-    res.json({
+  const current = await getCacheConfig();
+  if (current) {
+    await setCacheConfig({
+      ...current,
       logoUrl,
-      filename: req.file.filename,
-      size: req.file.size,
-    });
-  } catch (error) {
-    debug.error("Failed to process logo upload:", error);
-    res.status(500).json({
-      error: "Failed to process logo upload",
-      message:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
+
+  res.json({ logoUrl });
 });
-/**
- * GET /get-logo
- * Retrieves the current logo URL
- */
-router.get("/get-logo", async (req, res) => {
+// ---- Get Logo ----
+router.get("/get-logo", (req, res) => {
   try {
-    debug.log(`Checking for logo in: ${UPLOAD_DIR}`);
+    console.log("Upload directory path:", uploadDir);
+    console.log("Directory exists:", fs.existsSync(uploadDir));
 
-    await ensureUploadDirectory();
-
-    const files = fs.readdir(UPLOAD_DIR);
-    debug.log(`Found ${files.length} files in dir`);
-
-    const logoFile = files.find((f) => f.startsWith(LOGO_FILENAME_PREFIX));
-
-    if (logoFile) {
-      const logoUrl = `${LOGO_URL_BASE}/${logoFile}?t=${Date.now()}`;
-      debug.success(`Found logo: ${logoFile}`);
-      return res.json({ logoUrl });
+    // Look for an existing logo file in the assets folder
+    if (!fs.existsSync(uploadDir)) {
+      console.log("Creating upload directory...");
+      fs.mkdirSync(uploadDir, { recursive: true });
+      return res.json({ logoUrl: null, message: "Directory created" });
     }
 
-    debug.log("No logo file found");
-    res.json({ logoUrl: null });
-  } catch (error) {
-    debug.error("Failed to retrieve logo:", error);
-    res.status(500).json({
-      error: "Failed to retrieve logo",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
+    const files = fs.readdirSync(uploadDir);
+    console.log("Files in upload directory:", files);
+
+    const logo = files.find((f) => f.startsWith("logo."));
+    console.log("Found logo file:", logo);
+
+    res.json({
+      logoUrl: logo ? `/assets/images/${logo}?t=${Date.now()}` : null,
     });
+  } catch (err) {
+    console.error("Failed to get logo:", err);
+    console.error("Error stack:", err.stack);
+    res.status(500).json({ error: "Failed to get logo", details: err.message });
   }
 });
+//#endregion
 //#endregion
 
 module.exports = router;
