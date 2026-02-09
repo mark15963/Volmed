@@ -146,17 +146,17 @@ ensureUploadDirectory().catch((error) => {
  */
 router.get("/config", async (req, res) => {
   try {
-    // Get data from cache
+    // Try to get from cache first
     const cachedConfig = await getCacheConfig();
-    if (cachedConfig) return res.json(cachedConfig);
+    if (cachedConfig) {
+      return res.json(cachedConfig);
+    }
 
-    // fetch from DB
     debug.log("Cache missing - Fetching configs from DB");
-    const row = await fetchRow(`
-      SELECT *
-      FROM general 
-      WHERE id = ${DB_CONFIG_ID}
-    `);
+
+    const row = await fetchRow("SELECT *FROM general WHERE id = $1", [
+      DB_CONFIG_ID,
+    ]);
 
     if (!row) {
       return res.status(404).json({
@@ -181,6 +181,33 @@ router.get("/config", async (req, res) => {
  * PUT /config
  * Updates application configuration
  * - Update DB -> update cache
+ * 
+ * @example
+ * // Suppose user wants to update title and headerColor
+ * const updates = [];  // Will store: ['"title" = $1', '"headerColor" = $2']
+ * const values = [];   // Will store: ['New Title', '#FF0000']
+ *
+ * // For title field (paramIndex = 1):
+ * updates.push(`"title" = $${paramIndex}`);  // '"title" = $1'
+ * values.push(title);                        // 'New Title'
+ * paramIndex++;                              // paramIndex = 2
+ * 
+ * // For headerColor field:
+ * updates.push(`"headerColor" = $${paramIndex}`); // '"headerColor" = $2'
+ * values.push(headerColor);                       // '#FF0000'
+ * paramIndex++;                                   // paramIndex = 3
+
+ * // Add the ID parameter:
+ * values.push(DB_CONFIG_ID);  // values = ['New Title', '#FF0000', 1]
+
+ * // Final query becomes:
+ * const query = `
+ *   UPDATE general 
+ *   SET "title" = $1, "headerColor" = $2 
+ *   WHERE id = $3 
+ *   RETURNING *
+ * `;
+ * // values = ['New Title', '#FF0000', 1]
  */
 router.put("/config", async (req, res) => {
   const {
@@ -211,35 +238,36 @@ router.put("/config", async (req, res) => {
 
   try {
     const updates = [];
-    let params = [];
+    const values = [];
+    let paramIndex = 1;
 
-    const fields = [
-      { name: "title", value: title },
-      { name: "headerColor", value: headerColor },
-      { name: "contentColor", value: contentColor },
-      { name: "containerColor", value: containerColor },
-      { name: "logoUrl", value: logoUrl },
-      { name: "tableTheme", value: tableTheme },
-      { name: "appTheme", value: appTheme },
-    ];
+    const fieldMap = {
+      title,
+      headerColor,
+      contentColor,
+      containerColor,
+      logoUrl,
+      tableTheme,
+      appTheme,
+    };
 
-    fields.forEach((field) => {
-      if (field.value !== undefined) {
-        updates.push(`"${field.name}" = $${updates.length + 1}`);
-        params.push(field.value);
+    Object.entries(fieldMap).forEach(([key, value]) => {
+      if (value !== undefined) {
+        updates.push(`"${key}" = $${paramIndex}`);
+        values.push(value);
+        paramIndex++;
       }
     });
 
-    const query = `
-      UPDATE general
-      SET ${setParts.join(", ")}
-      WHERE id = $${params.length + 1}
-      RETURNING *
-    `;
+    values.push(DB_CONFIG_ID);
 
-    params.push(DB_CONFIG_ID);
-
-    const updatedRow = await updateRow(query, params);
+    const updatedRow = await updateRow(
+      `UPDATE general
+       SET ${updates.join(", ")}
+       WHERE id = $${paramIndex}
+       RETURNING *`,
+      values,
+    );
 
     if (!updatedRow) {
       return res.status(404).json({
@@ -253,7 +281,7 @@ router.put("/config", async (req, res) => {
     debug.success("Config updated:", updatedConfig);
     res.json(updatedConfig);
   } catch (error) {
-    console.error("Error updating config:", error);
+    debug.error("Failed to update config:", error);
     res.status(500).json({
       error: "Failed to update config",
       message:
