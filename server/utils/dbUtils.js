@@ -2,7 +2,7 @@ const db = require("../config/db-connection");
 
 /**
  * Fetching a table from database
- * @param {string} table - Name of the table
+ * @param {string} tableName - Name of the table
  * @param {string} values
  * @returns table
  *
@@ -11,11 +11,11 @@ const db = require("../config/db-connection");
  * const row = await fetchTable('general');
  * ```
  */
-async function fetchTable(table, values = []) {
+async function fetchTable(tableName, values = []) {
   const table = await db.query(
     `
     SELECT * 
-    FROM ${table} 
+    FROM ${tableName} 
     WHERE id = 1;
     `,
     values,
