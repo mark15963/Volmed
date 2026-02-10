@@ -1,26 +1,64 @@
 const db = require("../config/db-connection");
 
 /**
- * Fetching a table from database
- * @param {string} tableName - Name of the table
- * @param {string} values
- * @returns table
+ * Fetch multiple rows from a table with optional ORDER BY clause
  *
- * @example
- * ```js
- * const row = await fetchTable('general');
- * ```
+ * @param {string} tableName          - Name of the table
+ * @param {string|object} [options]   - Either a raw ORDER BY string, or { orderBy: "...", limit: number, offset: number }
+ * @param {any[]} [values = []]       - Values for parameterized query (usually empty unless using WHERE)
+ * @returns {Promise<any[]>}          - Array of rows (empty array if none found)
  */
-async function fetchTable(tableName, values = []) {
-  const table = await db.query(
-    `
-    SELECT * 
-    FROM ${tableName} 
-    WHERE id = 1;
-    `,
-    values,
-  );
-  return table;
+async function fetchTable(tableName, options = {}, values = []) {
+  // Basic input validation
+  if (!tableName || typeof tableName !== "string" || tableName.trim() === "") {
+    throw new Error("Invalid table name");
+  }
+
+  // Very basic sanitization of table name (prevent injection)
+  const safeTable = tableName.replace(/[^a-zA-Z0-9_]/g, "");
+
+  let sql = `SELECT * FROM ${safeTable}`;
+  let queryValues = [...values];
+
+  let orderByClause = "";
+
+  if (typeof options === "string") {
+    orderByClause = options.trim();
+    if (!orderByClause.toUpperCase().startsWith("ORDER BY")) {
+      orderByClause = `ORDER BY ${orderByClause}`;
+    }
+  } else if (
+    options &&
+    typeof options === "object" &&
+    !Array.isArray(options)
+  ) {
+    // Modern style: fetchTable('users', { orderBy: 'created_at DESC', limit: 20 })
+    if (options.orderBy) {
+      let clause = options.orderBy.trim();
+      if (!clause.toUpperCase().startsWith("ORDER BY")) {
+        clause = `ORDER BY ${clause}`;
+      }
+      orderByClause = clause;
+    }
+
+    // You can easily extend later with limit / offset / where etc.
+    // if (options.limit)  sql += ` LIMIT ${Number(options.limit)}`;
+    // if (options.offset) sql += ` OFFSET ${Number(options.offset)}`;
+  }
+
+  if (orderByClause) {
+    sql += ` ${orderByClause}`;
+  }
+
+  sql += ";";
+
+  try {
+    const [rows] = await db.query(sql, queryValues);
+    return rows;
+  } catch (err) {
+    console.error(`fetchTable error [${safeTable}]:`, err.message);
+    throw err;
+  }
 }
 
 // /**
