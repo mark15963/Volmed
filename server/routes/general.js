@@ -14,7 +14,7 @@ const {
   setCacheConfig,
   clearCache,
 } = require("../utils/cache.ts");
-const { updateRow, fetchRow } = require("../utils/dbUtils");
+const { updateRow, fetchRow, fetchTable } = require("../utils/dbUtils");
 const debug = require("../utils/debug");
 
 const router = Router();
@@ -27,27 +27,26 @@ router.get("/config", async (req, res) => {
 
     // fetch from DB
     debug.log("Cache missing - Fetching from DB");
-    const row = await fetchRow(`
-      SELECT *
-      FROM general 
-      WHERE id = 1
-    `);
+    const table = await fetchTable("general");
 
-    if (!row) return res.status(404).json({ error: "Config not found in DB" });
+    if (!table)
+      return res.status(404).json({
+        error: "Config not found in DB",
+      });
 
     // Build full config obj
     config = {
-      title: row.title,
+      title: table.title,
       color: {
-        headerColor: row.headerColor,
-        contentColor: row.contentColor,
-        containerColor: row.containerColor,
+        headerColor: table.headerColor,
+        contentColor: table.contentColor,
+        containerColor: table.containerColor,
       },
       theme: {
-        tableTheme: row.tableTheme,
-        appTheme: row.appTheme,
+        tableTheme: table.tableTheme,
+        appTheme: table.appTheme,
       },
-      logoUrl: row.logoUrl,
+      logoUrl: table.logoUrl,
     };
 
     // Save to cache for next time

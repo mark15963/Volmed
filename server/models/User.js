@@ -1,4 +1,5 @@
 const { db } = require("../config/db-connection");
+const { fetchRow } = require("../utils/dbUtils");
 
 const User = {
   async create(username, password, lastName, firstName, patr, status) {
@@ -19,11 +20,7 @@ const User = {
 
   async findByUsername(username) {
     try {
-      const { rows } = await db.query(
-        "SELECT * FROM users WHERE username = $1",
-        [username],
-      );
-      return rows[0] || null;
+      return await fetchRow("users", { username });
     } catch (err) {
       console.error("Database error at findByUsername:", err);
       return null;

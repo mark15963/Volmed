@@ -189,9 +189,8 @@ router.post("/register", async (req, res) => {
   }
 
   const hashedPass = await bcrypt.hash(password, saltRounds);
-  const user = await User.create(username, hashedPass);
+  await User.create(username, hashedPass);
 
-  // req.session.userId = user.id;
   res.redirect("/api/login");
 });
 
@@ -270,15 +269,6 @@ router.get("/dashboard", isAuth, async (req, res) => {
   }
 
   try {
-    // res.type("html");
-    // const sessionData = req.session
-    //   ? JSON.stringify(req.session, null, 2)
-    //   : "null";
-    // if (!req.cookies.user) {
-    //   console.log("no user cookie");
-    //   return res.redirect("/login");
-    // }
-
     const client = await db.connect();
     try {
       const { rows: users } = await client.query(
