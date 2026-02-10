@@ -7,6 +7,8 @@ const db = require("../config/db-connection");
  * @param {string|object} [options]   - Either a raw ORDER BY string, or { orderBy: "...", limit: number, offset: number }
  * @param {any[]} [values = []]       - Values for parameterized query (usually empty unless using WHERE)
  * @returns {Promise<any[]>}          - Array of rows (empty array if none found)
+ * @example
+ * fetchTable('users', { orderBy: 'created_at DESC', limit: 20 })
  */
 async function fetchTable(tableName, options = {}, values = []) {
   // Basic input validation
@@ -125,7 +127,7 @@ async function fetchRow(table, attributes, values = []) {
         `Number of attributes (${attributes.length}) and values (${values.length}) do not match`,
       );
     }
-    whereClause = attributes.map((attr) => `${attr} = ?`).join(" AND ");
+    whereClause = attributes.map((attr) => `${attr} = $${i + 1}`).join(" AND ");
   } else if (
     attributes &&
     typeof attributes === "object" &&
@@ -134,9 +136,11 @@ async function fetchRow(table, attributes, values = []) {
     const conditions = [];
     queryValues = [];
 
+    let paramIndex = 1;
     for (const [col, val] of Object.entries(attributes)) {
-      conditions.push(`${col} = ?`);
+      conditions.push(`${col} = ${paramIndex}`);
       queryValues.push(val);
+      paramIndex++;
     }
     whereClause = conditions.join(" AND ");
   }
@@ -159,10 +163,12 @@ async function fetchRow(table, attributes, values = []) {
   `;
 
   try {
-    const [rows] = await db.query(sql, queryValues);
-    return rows[0] || null;
+    const res = await db.query(sql, queryValues);
+    return res.rows[0] || null;
   } catch (err) {
     console.error("fetchRow error:", err);
+    console.error("SQL was:", sql);
+    console.error("Values:", queryValues);
     throw err;
   }
 }
