@@ -56,7 +56,7 @@ while true; do
             ;;
         6)
             echo "Updating scripts..."
-            /var/www/volmed/scripts/update-scripts.sh
+            exec /var/www/volmed/scripts/update-scripts.sh
             ;;
         7)
             echo "Updating code..."
