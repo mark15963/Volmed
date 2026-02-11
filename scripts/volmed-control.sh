@@ -78,7 +78,7 @@ while true; do
             ;;
         8)
             echo "Opening browser..."
-            xdg-open https://192.168.0.107
+            xdg-open https://192.168.0.107 2>/dev/null
             echo ""
             read -p "Press Enter to return to menu..."
             ;;
