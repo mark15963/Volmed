@@ -3,7 +3,7 @@
 # Script to start the VolMed application using Docker
 # set -e
 clear
-
+echo ""
 echo "=== Starting VolMed Docker Deployment ==="
 echo ""
 echo "============================================="
