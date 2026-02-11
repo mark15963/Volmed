@@ -33,12 +33,4 @@ fi
 
 echo ""
 echo "3. Resource Usage:"
-sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" 2>/dev/null || echo "   Cannot retrieve stats"
-
-echo ""
-echo "4. Recent Logs (last 5 lines each):"
-echo "   Backend logs:"
-sudo docker compose logs --tail=5 backend 2>/dev/null | sed 's/^/     /'
-echo ""
-echo "   Nginx logs:"
-sudo docker compose logs --tail=5 nginx 2>/dev/null | sed 's/^/     /'
+sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" 2>/dev/null | sed 's/^/     /' || echo "   Cannot retrieve stats"

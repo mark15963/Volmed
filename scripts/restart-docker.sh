@@ -10,9 +10,5 @@ cd /var/www/volmed
 # Run stop script
 ./stop-docker.sh
 
-echo ""
-echo "Waiting 5 seconds before restarting..."
-sleep 5
-
 # Run start script
-./start-docker.sh
+exec ./start-docker.sh

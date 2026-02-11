@@ -26,11 +26,4 @@ sudo docker image prune -f 2>/dev/null || true
 echo ""
 echo "=== All Services Stopped ==="
 echo ""
-read -p "Return to Control Center? [Y/n]: " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    echo "Exiting..."
-else
-    # Return to control center
-    exec ~/volmed-scripts/volmed-control.sh
-fi
+sleep 3

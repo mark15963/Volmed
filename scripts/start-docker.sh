@@ -49,17 +49,16 @@ else
 fi
 
 echo ""
-echo "=== Deployment Complete ==="
-echo "Frontend: https://192.168.0.107"
-echo "Backend API: https://192.168.0.107/api"
-echo "API Health: https://192.168.0.107/api/health"
+echo "============== Deployment Complete ==============="
+echo "|                                                |"
+echo "|  Frontend: https://192.168.0.107               |"
+echo "|  Backend API: https://192.168.0.107/api        |"
+echo "|  API Health: https://192.168.0.107/api/health  |"
+echo "|                                                |"
+echo "=================================================="
+echo ""
+sleep 1
+echo "Returning to control panel in 5 seconds..."
+sleep 5
 
-echo ""
-read -p "Return to Control Center? [Y/n]: " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    echo "Exiting..."
-else
-    # Return to control center
-    exec ~/volmed-scripts/volmed-control.sh
-fi
+exec ~/volmed-scripts/volmed-control.sh
