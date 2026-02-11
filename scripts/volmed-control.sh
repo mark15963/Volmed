@@ -34,22 +34,27 @@ while true; do
 
     case $choice in
         1)
+            clear
             echo "Starting VolMed..."
             ./start-docker.sh
             ;;
         2)
+            clear
             echo "Stopping VolMed..."
             ./stop-docker.sh
             ;;
         3)
+            clear
             echo "Restarting VolMed..."
             ./restart-docker.sh
             ;;
         4)
+            clear
             echo "Checking status..."
             ./status-docker.sh
             ;;
         5)
+            clear
             echo "Showing logs (Ctrl+C to exit)..."
             cd /var/www/volmed
             docker compose logs -f
@@ -57,10 +62,12 @@ while true; do
             read -p "Press Enter to return to menu..."
             ;;
         6)
+            clear
             echo "Updating scripts..."
             ./update-scripts.sh
             ;;
         7)
+            clear
             echo "Updating code..."
             ./deploy.sh
             ;;
