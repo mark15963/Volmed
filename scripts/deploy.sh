@@ -22,3 +22,5 @@ cd ..
 
 echo "4. Restarting services..."
 ./restart-docker.sh
+
+exit 0

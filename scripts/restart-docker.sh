@@ -11,4 +11,6 @@ cd /var/www/volmed
 ./stop-docker.sh
 
 # Run start script
-exec ./start-docker.sh
+./start-docker.sh
+
+exit 0

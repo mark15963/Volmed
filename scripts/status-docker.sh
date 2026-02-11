@@ -34,3 +34,9 @@ fi
 echo ""
 echo "3. Resource Usage:"
 sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" 2>/dev/null | sed 's/^/     /' || echo "   Cannot retrieve stats"
+
+echo ""
+echo "Press Enter to return to control panel..."
+read
+
+exit 0

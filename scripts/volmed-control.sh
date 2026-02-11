@@ -33,19 +33,19 @@ while true; do
     case $choice in
         1)
             echo "Starting VolMed..."
-            exec ~/volmed-scripts/start-docker.sh
+            ~/volmed-scripts/start-docker.sh
             ;;
         2)
             echo "Stopping VolMed..."
-            exec ~/volmed-scripts/stop-docker.sh
+            ~/volmed-scripts/stop-docker.sh
             ;;
         3)
             echo "Restarting VolMed..."
-            exec ~/volmed-scripts/restart-docker.sh
+            ~/volmed-scripts/restart-docker.sh
             ;;
         4)
             echo "Checking status..."
-            exec ~/volmed-scripts/status-docker.sh
+            ~/volmed-scripts/status-docker.sh
             ;;
         5)
             echo "Showing logs (Ctrl+C to exit)..."
@@ -60,7 +60,7 @@ while true; do
             ;;
         7)
             echo "Updating code..."
-            exec /var/www/volmed/scripts/deploy.sh
+            /var/www/volmed/scripts/deploy.sh
             ;;
         8)
             echo "Opening browser..."

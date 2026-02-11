@@ -57,8 +57,7 @@ echo "|  API Health: https://192.168.0.107/api/health  |"
 echo "|                                                |"
 echo "=================================================="
 echo ""
-sleep 1
-echo "Returning to control panel in 5 seconds..."
-sleep 5
+echo "Press enter to return to menu..."
+read
 
-exec ~/volmed-scripts/volmed-control.sh
+exit 0

@@ -27,3 +27,4 @@ echo ""
 echo "=== All Services Stopped ==="
 echo ""
 sleep 3
+exit 0
