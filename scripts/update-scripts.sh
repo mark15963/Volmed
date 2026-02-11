@@ -3,7 +3,7 @@
 echo "Copying scripts..."
 sleep 1
 
-cp var/www/volmed/scripts/*.sh ~/volmed-scripts/
+cp /var/www/volmed/scripts/*.sh ~/volmed-scripts/
 echo "All scripts are copied"
 sleep 2
 
