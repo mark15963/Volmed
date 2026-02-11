@@ -5,10 +5,11 @@
 clear
 
 echo "=== Starting VolMed Docker Deployment ==="
-
+echo ""
+echo "============================================="
 echo "1. Stopping any existing Docker containers..."
 ./stop-docker.sh
-echo ""
+echo "============================================="
 echo ""
 echo "2. Starting PostgreSQL (host service)..."
 sudo systemctl start postgresql
