@@ -9,11 +9,11 @@ echo ""
 cd /var/www/volmed
 
 echo "1. Docker Services Status:"
-sudo docker compose ps
+docker compose ps
 
 echo ""
 echo "2. Service Health Checks:"
-echo "   PostgreSQL (host): $(sudo systemctl is-active postgresql 2>/dev/null || echo 'Not running')"
+echo "   PostgreSQL (host): $(systemctl is-active postgresql 2>/dev/null || echo 'Not running')"
 
 # Test backend
 echo -n "   Backend API: "

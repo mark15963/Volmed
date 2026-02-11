@@ -1,6 +1,8 @@
 #!/bin/bash
 # VolMed Control Center
 
+cd "$(dirname "$0")" || exit 1
+
 error_message=""
 
 while true; do
@@ -33,19 +35,19 @@ while true; do
     case $choice in
         1)
             echo "Starting VolMed..."
-            ~/volmed-scripts/start-docker.sh
+            ./start-docker.sh
             ;;
         2)
             echo "Stopping VolMed..."
-            ~/volmed-scripts/stop-docker.sh
+            ./stop-docker.sh
             ;;
         3)
             echo "Restarting VolMed..."
-            ~/volmed-scripts/restart-docker.sh
+            ./restart-docker.sh
             ;;
         4)
             echo "Checking status..."
-            ~/volmed-scripts/status-docker.sh
+            ./status-docker.sh
             ;;
         5)
             echo "Showing logs (Ctrl+C to exit)..."
@@ -65,7 +67,7 @@ while true; do
             ;;
         7)
             echo "Updating code..."
-            /var/www/volmed/scripts/deploy.sh
+            ./deploy.sh
             ;;
         8)
             echo "Opening browser..."
@@ -84,13 +86,3 @@ while true; do
 done
 
 
-
-# Updating scripts...
-# /var/www/volmed/scripts/volmed-control.sh: line 60: ./update-scripts.sh: No such file or directory
-
-# Select option [1-8, 0]: 6
-# Updating scripts...
-# Current directory: /home/mark1593
-# Script location: /var/www/volmed/scripts
-# Updating scripts...
-# /var/www/volmed/scripts/volmed-control.sh: line 63: ./update-scripts.sh: No such file or directory

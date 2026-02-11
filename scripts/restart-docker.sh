@@ -4,8 +4,7 @@
 set -e
 
 echo "=== Restarting VolMed Docker Deployment ==="
-
-cd /var/www/volmed
+sleep 2 
 
 # Run stop script
 ./stop-docker.sh

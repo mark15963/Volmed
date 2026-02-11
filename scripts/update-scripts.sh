@@ -2,7 +2,7 @@
 
 echo "=== Updating VolMed Scripts ==="
 echo ""
-sleep 5
+sleep 2
 
 
 # Fix ownership - this is the KEY step you're missing!
