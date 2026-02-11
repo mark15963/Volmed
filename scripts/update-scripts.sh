@@ -2,7 +2,7 @@
 
 cd /var/www/volmed
 
-cp /scripts/*.sh ~/volmed-scripts/
+sudo cp /scripts/*.sh ~/volmed-scripts/
 echo "All scripts are copied"
 sleep 2
 
