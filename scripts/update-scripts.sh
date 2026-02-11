@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cp /var/www/volmed/scripts/*.sh ~/volmed-scripts/
+cd /var/www/volmed
+
+cp /scripts/*.sh ~/volmed-scripts/
 echo "All scripts are copied"
 sleep 2
 
