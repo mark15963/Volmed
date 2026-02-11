@@ -87,3 +87,10 @@ done
 
 # Updating scripts...
 # /var/www/volmed/scripts/volmed-control.sh: line 60: ./update-scripts.sh: No such file or directory
+
+# Select option [1-8, 0]: 6
+# Updating scripts...
+# Current directory: /home/mark1593
+# Script location: /var/www/volmed/scripts
+# Updating scripts...
+# /var/www/volmed/scripts/volmed-control.sh: line 63: ./update-scripts.sh: No such file or directory
