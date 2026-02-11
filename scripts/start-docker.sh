@@ -11,9 +11,9 @@ echo "1. Stopping any existing Docker containers..."
 docker compose down 2>/dev/null || true
 
 echo "2. Starting PostgreSQL (host service)..."
-systemctl start postgresql
-systemctl enable postgresql  # Enable to start on boot if not already
-echo "   PostgreSQL status: $(systemctl is-active postgresql)"
+sudo systemctl start postgresql
+sudo systemctl enable postgresql  # Enable to start on boot if not already
+echo "   PostgreSQL status: $(sudo systemctl is-active postgresql)"
 
 echo "3. Building frontend..."
 cd client
