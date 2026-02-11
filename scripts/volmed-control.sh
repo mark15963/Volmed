@@ -5,6 +5,11 @@ cd "$(dirname "$0")" || exit 1
 
 error_message=""
 
+if [ -z "$FLAG" ]; then
+    ./update-sctipts.sh
+    export FLAG=1
+fi
+
 while true; do
     clear
     echo "╔══════════════════════════════════════╗"
