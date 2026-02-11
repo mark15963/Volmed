@@ -5,9 +5,6 @@ set -e
 
 echo "=== Stopping VolMed Docker Deployment ==="
 
-# Change to project directory
-cd /var/www/volmed
-
 echo "1. Stopping Docker services..."
 docker compose down
 

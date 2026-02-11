@@ -58,12 +58,7 @@ while true; do
             ;;
         6)
             echo "Updating scripts..."
-            echo "Current directory: $(pwd)"
-            echo "Script location: $(dirname "$0")"
-            echo "Updating scripts..."
-            sleep 2
             ./update-scripts.sh
-            sleep 20
             ;;
         7)
             echo "Updating code..."
