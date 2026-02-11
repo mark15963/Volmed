@@ -5,8 +5,6 @@
 
 echo "=== Starting VolMed Docker Deployment ==="
 
-cd /var/www/volmed
-
 echo "1. Stopping any existing Docker containers..."
 ./stop-docker.sh
 echo ""
@@ -18,6 +16,7 @@ echo "   PostgreSQL status: $(sudo systemctl is-active postgresql)"
 echo ""
 echo ""
 echo "3. Building frontend..."
+cd /var/www/volmed
 cd client
 sudo npm run build
 cd ..
