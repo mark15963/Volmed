@@ -17,6 +17,6 @@ sudo docker container prune -f 2>/dev/null || true
 sudo docker image prune -f 2>/dev/null || true
 
 echo ""
-echo "=== All Services Stopped ===================="
+echo "=========== All Services Stopped ============"
 sleep 2
 exit 0
