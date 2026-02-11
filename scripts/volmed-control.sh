@@ -50,7 +50,7 @@ while true; do
         5)
             echo "Showing logs (Ctrl+C to exit)..."
             cd /var/www/volmed
-            sudo docker compose logs -f
+            docker compose logs -f
             echo ""
             read -p "Press Enter to return to menu..."
             ;;
