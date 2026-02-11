@@ -1,39 +1,23 @@
 #!/bin/bash
 
 # Script to check the status of VolMed Docker application
-set -e
-
-echo "=== VolMed Docker Application Status ==="
+clear
+echo "=== VolMed Status ==="
 echo ""
-echo "1. Docker Services Status:"
-sudo docker compose ps
 
+echo "Docker Services Status:"
+sudo docker compose ps --format "table {{.Name}}\t{{.State}}\t{{.Status}}"
 echo ""
-echo "2. Service Health Checks:"
-echo "   PostgreSQL (host): $(sudo systemctl is-active postgresql 2>/dev/null || echo 'Not running')"
 
-# Test backend
-echo -n "   Backend API: "
-if curl -k -s --max-time 3 https://192.168.0.107/api/health > /dev/null; then
-    echo "✓ Healthy"
-else
-    echo "✗ Not responding"
-fi
+echo "Service health:"
+echo -n "  PostgreSQL:     "; sudo systemctl is-active postgresql 2>/dev/null || echo "inactive"
+echo -n "  Backend API:    "; curl -k -s --max-time 4 https://192.168.0.107/api/health >/dev/null && echo "✓ up" || echo "✗ down"
+echo -n "  Frontend:       "; curl -k -s --max-time 4 https://192.168.0.107/         >/dev/null && echo "✓ up" || echo "✗ down"
+echo ""
 
-# Test frontend
-echo -n "   Frontend: "
-if curl -k -s --max-time 3 https://192.168.0.107/ > /dev/null; then
-    echo "✓ Serving"
-else
-    echo "✗ Not serving"
-fi
+echo "Resource Usage:"
+sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}" 2>/dev/null || echo "  (no running containers)"
 
 echo ""
-echo "3. Resource Usage:"
-sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" 2>/dev/null | sed 's/^/     /' || echo "   Cannot retrieve stats"
-
-echo ""
-echo "Press Enter to return to control panel..."
-read
-
+read -p "Press Enter to return..."
 exit 0
