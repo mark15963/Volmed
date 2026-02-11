@@ -8,7 +8,7 @@ echo "=== Starting VolMed Docker Deployment ==="
 cd /var/www/volmed
 
 echo "1. Stopping any existing Docker containers..."
-sudo docker compose down 2>/dev/null || true
+./stop-docker.sh
 echo ""
 echo ""
 echo "2. Starting PostgreSQL (host service)..."
