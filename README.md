@@ -1,4 +1,4 @@
-| ![version](https://img.shields.io/visual-studio-marketplace/v/foxundermoon.shell-format?style=flat-square)  
+| ![version](https://img.shields.io/github/v/release/mark15963/volmed?style=flat-square)  
 | ![downloads](https://img.shields.io/visual-studio-marketplace/d/foxundermoon.shell-format?style=flat-square)
 
 | ![install](https://img.shields.io/visual-studio-marketplace/i/foxundermoon.shell-format?style=flat-square)
