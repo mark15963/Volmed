@@ -33,4 +33,4 @@ echo "Press Enter to return to control panel..."
 read
 
 # REMOVE the exec! Just exit normally
-exit 0
+# exit 0
