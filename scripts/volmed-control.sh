@@ -56,7 +56,9 @@ while true; do
             ;;
         6)
             echo "Updating scripts..."
-            exec /var/www/volmed/scripts/update-scripts.sh
+            sleep 2
+            ./update-scripts.sh
+            sleep 20
             ;;
         7)
             echo "Updating code..."
@@ -77,3 +79,8 @@ while true; do
             ;;
     esac
 done
+
+
+
+# Updating scripts...
+# /var/www/volmed/scripts/volmed-control.sh: line 60: ./update-scripts.sh: No such file or directory
