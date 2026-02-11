@@ -28,9 +28,13 @@ echo "4. Building Docker images..."
 sudo docker compose build --no-cache
 echo "✅ Step 4 complete"
 
+sleep 5
+
 echo "5. Starting Docker services..."
 sudo docker compose up -d --remove-orphans
 echo "✅ Step 5 complete"
+
+sleep 5
 
 echo "6. Waiting for services to be healthy..."
 sleep 10
