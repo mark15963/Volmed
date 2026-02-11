@@ -9,8 +9,8 @@
     "logoUrl": "",
     "theme": {
       "tableTheme": "light",
-      "appTheme": "light"
+      "appTheme": "default"
     }
   },
-  "timestamp": 1770670888328
+  "timestamp": 1770819467033
 }

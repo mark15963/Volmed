@@ -14,7 +14,7 @@ RUN npm run build
 # -------------------
 #  PRODUCTION STAGE
 # -------------------
-FROM nginx:alpine-slim as final
+FROM nginx:alpine-slim AS final
 
 RUN addgroup -g 101 nginx 2>/dev/null || true && \
   adduser -u 101 -G nginx -D -H nginx 2>/dev/null || true

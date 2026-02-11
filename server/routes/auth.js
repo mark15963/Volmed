@@ -6,7 +6,6 @@ const User = require("../models/User");
 const { db } = require("../config/db-connection");
 const originMiddleware = require("../middleware/originMiddleware");
 const debug = require("../utils/debug");
-const { fetchTable } = require("../utils/dbUtils");
 
 const router = Router();
 
@@ -272,8 +271,12 @@ router.get("/dashboard", isAuth, async (req, res) => {
   try {
     const client = await db.connect();
     try {
-      const users = await fetchTable("users", { orderBy: "id" });
-      const patients = await fetchTable("patients", { orderBy: "id" });
+      const { rows: users } = await client.query(
+        "SELECT * FROM users ORDER BY id",
+      );
+      const { rows: patients } = await client.query(
+        "SELECT * FROM patients ORDER BY id",
+      );
       if (req.accepts("html")) {
         res.type("html");
         const sessionData = req.session
