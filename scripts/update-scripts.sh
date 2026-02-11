@@ -1,13 +1,36 @@
 #!/bin/bash
 
-cd /var/www/volmed
+echo "=== Updating VolMed Scripts ==="
+echo ""
 
-sudo cp /scripts/*.sh ~/volmed-scripts/
-echo "All scripts are copied"
-sleep 2
+# Create directory if it doesn't exist
+mkdir -p ~/volmed-scripts
 
-chmod +x ~/volmed-scripts/*.sh
-echo "All scripts are executable"
-sleep 2
+# Copy scripts from the correct source path with sudo
+echo "Copying scripts from /var/www/volmed/scripts/..."
+sudo cp /var/www/volmed/scripts/*.sh ~/volmed-scripts/ 2>/dev/null
+
+# Check if copy succeeded
+if [ $? -eq 0 ]; then
+    echo "✅ Scripts copied successfully"
+else
+    echo "❌ No scripts found in /var/www/volmed/scripts/"
+    echo "   Make sure the source directory exists"
+fi
+
+# Fix ownership - this is the KEY step you're missing!
+echo "Setting correct ownership..."
+sudo chown mark1593:docker ~/volmed-scripts/*.sh 2>/dev/null
+
+# Make executable
+echo "Making scripts executable..."
+sudo chmod +x ~/volmed-scripts/*.sh 2>/dev/null
+
+echo ""
+echo "✅ Update complete!"
+echo ""
+echo "Press Enter to return to control panel..."
 read
-exec ~/volmed-scripts/volmed-control.sh
+
+# REMOVE the exec! Just exit normally
+exit 0
