@@ -32,11 +32,9 @@ router.get("/config", async (req, res) => {
       FROM general 
       WHERE id = 1
     `);
-    if (!row) debug.warn("NO");
-    else debug.warn("OK");
 
     const testRow = await fetchTable("general");
-    debug.warn(testRow);
+    console.warn(testRow);
 
     if (!row) {
       return res.status(404).json({
