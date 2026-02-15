@@ -17,7 +17,6 @@ const { db } = require("../config/db-connection");
  */
 async function fetchRow(query, values = []) {
   const { rows } = await db.query(query, values);
-  console.warn("TESTEST");
   return rows[0] || null;
 }
 
