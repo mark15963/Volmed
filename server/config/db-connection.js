@@ -13,11 +13,6 @@ const dbConfig = {
   allowExitOnIdle: true,
 };
 
-console.log(`PostgreSQL URL: ${process.env.DATABASE_URL}`);
-console.log(`Upload dir: ${process.env.UPLOAD_DIR}`);
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-console.log(`SSL enabled: ${JSON.stringify(dbConfig.ssl, null, 2)}`);
-
 const db = new Pool(dbConfig);
 
 // DB connection test

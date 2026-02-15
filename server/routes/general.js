@@ -14,7 +14,7 @@ const {
   setCacheConfig,
   clearCache,
 } = require("../utils/cache.ts");
-const { updateRow, fetchRow } = require("../utils/dbUtils");
+const { updateRow, fetchRow, fetchTable } = require("../utils/dbUtils");
 const debug = require("../utils/debug");
 
 const router = Router();
@@ -32,6 +32,11 @@ router.get("/config", async (req, res) => {
       FROM general 
       WHERE id = 1
     `);
+    if (!row) debug.warn("NO");
+    else debug.warn("OK");
+
+    const testRow = await fetchTable("general");
+    debug.warn(testRow);
 
     if (!row) {
       return res.status(404).json({

@@ -1,4 +1,20 @@
 const { db } = require("../config/db-connection");
+const { escapeIdentifier } = require("pg");
+
+async function fetchTable(table) {
+  // const { rows } = await db.query(`
+  //   SELECT *
+  //   FROM $1;
+  //   `,
+  //   [table]
+  // )
+  const { rows } = await db.query(`
+    SELECT * 
+    FROM ${escapeIdentifier(table)}
+    WHERE id = 1;
+  `);
+  return rows[0] || null;
+}
 
 /**
  * Fetching a row from database
@@ -17,6 +33,7 @@ const { db } = require("../config/db-connection");
  */
 async function fetchRow(query, values = []) {
   const { rows } = await db.query(query, values);
+  console.warn("TESTEST");
   return rows[0] || null;
 }
 
@@ -25,4 +42,4 @@ async function updateRow(query, values = []) {
   return rows[0] || null;
 }
 
-module.exports = { fetchRow, updateRow };
+module.exports = { fetchTable, fetchRow, updateRow };
