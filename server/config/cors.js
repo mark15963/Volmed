@@ -1,12 +1,13 @@
 const allowedOrigins = [
-  "http://localhost",
-  "https://localhost",
+  `http://${process.env.HOST_IP} || "localhost"`,
+  `https://${process.env.HOST_IP} || "localhost"`,
   "http://localhost:3000",
   "https://localhost:3000",
   "http://localhost:5000",
   "https://localhost:5000",
   "http://localhost:5173",
   "https://localhost:5173",
+
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
 ].filter(Boolean);

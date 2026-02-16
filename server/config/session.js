@@ -2,7 +2,7 @@ const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const { db } = require("./db-connection");
 
-const isProd = process.env.NODE_ENV === "production"
+const isProd = process.env.NODE_ENV === "production";
 
 const sessionConfig = session({
   name: "volmed.sid",

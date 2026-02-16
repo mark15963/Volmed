@@ -4,13 +4,6 @@ const isDev = import.meta.env.VITE_ENV === "development";
 
 // Always send cookies/session data with requests
 axios.defaults.withCredentials = true;
-let baseURL: string;
-
-if (isDev) {
-  baseURL = "/";
-} else {
-  baseURL = import.meta.env.VITE_API_URL || "/";
-}
 
 /**
  * Axios instance configuration
@@ -21,7 +14,7 @@ if (isDev) {
  * No need to add "Content-Type":"application/json" header.
  */
 export const apiInstance = axios.create({
-  baseURL,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   validateStatus: () => true,
