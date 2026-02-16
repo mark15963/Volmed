@@ -31,6 +31,7 @@ const PORT = process.env.PORT || 5000;
 
 //#region ===== CORS setup =====
 const cors = require("cors");
+const { getLocalNetworkIP } = require("./utils/getLocalNetworkIP");
 app.use(cors(corsOptions));
 //#endregion
 
@@ -106,15 +107,19 @@ app.use((err, req, res, next) => {
 
 //#region ===== START SERVER =====
 async function startServer() {
+  const IP = getLocalNetworkIP();
   try {
     await testDbConnection();
     await initCacheOnStartup();
 
     server.listen(PORT, () => {
+      debug.log("");
       debug.log(`Server running on port ${PORT}`);
       debug.log(`Enviroment: ${process.env.NODE_ENV}`);
       debug.log(`Website link: ${process.env.FRONTEND_URL}`);
       debug.log(`Backend link: ${process.env.BACKEND_URL}`);
+      debug.log(`Local IP: ${IP}` || "Not found");
+      debug.log("");
 
       server.keepAliveTimeout = 1000 * 60;
       server.headersTimeout = 1000 * 65;
