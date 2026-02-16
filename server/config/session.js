@@ -2,7 +2,7 @@ const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const { db } = require("./db-connection");
 
-const isProd = process.env.NODE_ENV === "production";
+const isDev = process.env.NODE_ENV !== "production";
 
 const sessionConfig = session({
   name: "volmed.sid",
@@ -14,10 +14,10 @@ const sessionConfig = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,
+    secure: !isDev,
     httpOnly: true,
-    sameSite: "none",
-    partitioned: true,
+    sameSite: isDev ? "lax" : "none",
+    partitioned: !isDev,
     maxAge: 1000 * 60 * 60 * 24,
   },
   proxy: true,

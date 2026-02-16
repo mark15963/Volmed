@@ -21,6 +21,18 @@ export default defineConfig({
       usePolling: true,
       interval: 1000,
     },
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/socket.io": {
+        target: "http://localhost:5000",
+        ws: true,
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     host: "0.0.0.0",

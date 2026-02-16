@@ -14,7 +14,7 @@ axios.defaults.withCredentials = true;
  * No need to add "Content-Type":"application/json" header.
  */
 export const apiInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "/api",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   validateStatus: () => true,

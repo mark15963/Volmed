@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const res = await api.postLogin(credentials);
-
+      debug.warn(JSON.stringify(res, null, 2))
       if (!res.ok) {
         return {
           error: true,

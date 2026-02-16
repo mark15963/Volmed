@@ -80,12 +80,8 @@ router.post("/login", originMiddleware, async (req, res) => {
     // Setting session
     req.session.regenerate((error) => {
       if (error) {
-        console.error("Login error:", error);
-        res.status(500).json({
-          error: "Internal server auth error",
-          details:
-            process.env.NODE_ENV === "development" ? error.message : undefined,
-        });
+        console.error("Session SAVE failed:", saveErr);
+        return res.status(500).json({ error: "Failed to save session" });
       }
 
       if (user.status === "admin") {
@@ -104,14 +100,6 @@ router.post("/login", originMiddleware, async (req, res) => {
           console.error("Session save error:", error);
           return res.status(500).json({ error: "Internal server error" });
         }
-
-        res.cookie("user", user.username, {
-          httpOnly: false,
-          secure: true,
-          sameSite: "none",
-          partitioned: true,
-          maxAge: 1000 * 60 * 60 * 24,
-        });
 
         // returns for dev mode
         if (process.env.NODE_ENV === "development") {
@@ -205,11 +193,6 @@ router.post("/logout", isAuth, async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
-    });
-    res.clearCookie("user", {
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     return res.status(200).json({
