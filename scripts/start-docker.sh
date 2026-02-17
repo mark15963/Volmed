@@ -95,6 +95,7 @@ else
 fi
 
 echo ""
+sleep 2
 
 if $HEALTH_OK && $FRONT_OK; then
     clear

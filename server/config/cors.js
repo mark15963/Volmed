@@ -1,3 +1,4 @@
+const IP = getLocalNetworkIP();
 const allowedOrigins = [
   `http://${process.env.HOST_IP} || "localhost"`,
   `https://${process.env.HOST_IP} || "localhost"`,
@@ -7,7 +8,8 @@ const allowedOrigins = [
   "https://localhost:5000",
   "http://localhost:5173",
   "https://localhost:5173",
-
+  `http://${IP}`,
+  `https://${IP}`,
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
 ].filter(Boolean);
