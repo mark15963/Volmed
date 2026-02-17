@@ -22,15 +22,24 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
+    console.log(
+      "[CORS CHECK] Incoming Origin header:",
+      origin || "(no origin / same-origin)",
+    );
+    console.log("[CORS CHECK] Allowed list:", allowedOrigins);
+
     if (process.env.NODE_ENV === "development") {
+      console.log("[CORS] Dev mode → allowing everything");
       return callback(null, true);
     }
 
+    // Production / strict
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log("[CORS] Allowed ✓");
       return callback(null, true);
     }
 
-    console.log("CORS blocked:", origin);
+    console.log("[CORS BLOCKED ✗] Origin not in list:", origin);
     return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
