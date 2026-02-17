@@ -1,19 +1,23 @@
 const { getLocalNetworkIP } = require("../utils/getLocalNetworkIP");
 
-const IP = getLocalNetworkIP();
+const localIP = getLocalNetworkIP() || "localhost";
+
 const allowedOrigins = [
-  `http://${process.env.HOST_IP} || "localhost"`,
-  `https://${process.env.HOST_IP} || "localhost"`,
   "http://localhost:3000",
   "https://localhost:3000",
   "http://localhost:5000",
   "https://localhost:5000",
   "http://localhost:5173",
   "https://localhost:5173",
-  `http://${IP}`,
-  `https://${IP}`,
+
+  `http://${localIP}`,
+  `https://${localIP}`,
+
   process.env.FRONTEND_URL,
   process.env.BACKEND_URL,
+
+  process.env.HOST_IP ? `http://${process.env.HOST_IP}` : null,
+  process.env.HOST_IP ? `https://${process.env.HOST_IP}` : null,
 ].filter(Boolean);
 
 const corsOptions = {
