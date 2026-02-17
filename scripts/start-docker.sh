@@ -99,19 +99,12 @@ echo ""
 if $HEALTH_OK && $FRONT_OK; then
     clear
     echo "============== Deployment Complete ==============="
-    echo "|                                                |"
-    printf "|  Frontend: https://%-15s               |\n" "$HOST_IP"
-    printf "|  Backend API: https://%-15s/api        |\n" "$HOST_IP"
-    printf "|  API Health: https://%-15s/api/health  |\n" "$HOST_IP"
-    echo "|                                                |"
+    echo ""
+    echo "  Frontend: https://$HOST_IP"
+    echo "  Backend API: https://$HOST_IP/api"
+    echo ""
     echo "=================================================="
     echo ""
-    echo "   Open in browser → https://$HOST_IP"
-    echo ""
-    if command -v qrencode >/dev/null; then
-        echo "Scan this QR code on your phone:"
-        qrencode -t ansiutf8 "https://$HOST_IP"
-    fi
     echo ""
     read -p "Press enter to return to menu..."
 else
