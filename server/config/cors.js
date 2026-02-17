@@ -1,3 +1,5 @@
+const { getLocalNetworkIP } = require("../utils/getLocalNetworkIP");
+
 const IP = getLocalNetworkIP();
 const allowedOrigins = [
   `http://${process.env.HOST_IP} || "localhost"`,
