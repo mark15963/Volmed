@@ -4,7 +4,7 @@ resolver_timeout 5s;
 server {
   listen 80;
   listen [::]:80;
-  server_name 192.168.0.107;
+  server_name ${HOST_IP} localhost;
   
   return 301 https://$server_name$request_uri;
 }
@@ -13,7 +13,7 @@ server {
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
-  server_name 192.168.0.107;
+  server_name ${HOST_IP} localhost;
 
   # SSL certificates
   ssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;

@@ -22,11 +22,15 @@ echo "3. Detecting current network IP..."
 HOST_IP=$("./get-host-ip.sh")
 
 if [ -z "$HOST_IP" ]; then
-    HOST_IP="localhost"
-    echo "   Warning: Could not detect LAN IP -> falling back to localhost"
+    HOST_IP="127.0.0.1"
+    echo "   Warning: No LAN IP detected → using 127.0.0.1"
 else
-    echo "   Detected IP: $HOST_IP"
+    echo "   Using IP: $HOST_IP"
 fi
+
+export HOST_IP
+
+echo "HOST_IP=$HOST_IP" > .env
 echo ""
 
 echo ""

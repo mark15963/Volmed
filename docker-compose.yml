@@ -11,13 +11,14 @@ services:
     environment:
       - NODE_ENV=production
       - UPLOAD_DIR=/uploads/assets/images
-      - DATABASE_URL=postgresql://admin:159635741@192.168.0.107:5432/volmed_db
-      - DB_HOST=192.168.0.107
+      - DATABASE_URL=postgresql://admin:159635741@${HOST_IP:-host.docker.internal}:5432/volmed_db
+      - DB_HOST=${HOST_IP:-host.docker.internal}
       - DB_PORT=5432
       - DB_USER=admin
       - DB_PASSWORD=159635741
       - DB_NAME=volmed_db
       - DB_SSL=false
+      - HOST_IP=${HOST_IP}
     expose:
       - "5000"
     volumes:
@@ -40,8 +41,10 @@ services:
     ports:
       - "80:80"
       - "443:443" # certs
+    environment:
+      - HOST_IP=${HOST_IP}
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/volmed.conf:ro
+      - ./nginx.conf.template:/etc/nginx/conf.d/volmed.conf.template:ro
       - ./ssl:/etc/nginx/ssl:ro
       - assets:/usr/share/nginx/html/assets/images:ro
       - /dev/null:/etc/nginx/conf.d/default.conf:ro
@@ -49,6 +52,7 @@ services:
     depends_on:
       # - frontend
       - backend
+    command: ["/bin/sh", "/substitute-nginx.sh"]
 
   # db:
   #   image: postgres:15-alpine
