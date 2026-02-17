@@ -30,7 +30,7 @@ fi
 
 export HOST_IP
 
-echo "HOST_IP=$HOST_IP" > .env
+echo "HOST_IP=$HOST_IP" > ../.env
 echo ""
 
 echo ""
