@@ -4,6 +4,7 @@ import { AxiosError, AxiosResponse } from "axios";
  * Normalize API responses into a consistent shape.
  *
  * Always returns an object with the following structure:
+ * ```
  * {
  *   ok: boolean         - Success/failure indicator
  *   data?: T            - Payload (generic type)
@@ -11,6 +12,7 @@ import { AxiosError, AxiosResponse } from "axios";
  *   status?: number     - HTTP status code
  *   [key: string]: any  - Additional fields if present
  * }
+ * ```
  *
  * @param res - Axios response object (or any object with status/data)
  * @returns Normalized API response
@@ -24,7 +26,7 @@ import { AxiosError, AxiosResponse } from "axios";
  *   return { ok: false, message: parsed.message };
  * }
  */
-export interface ApiResponse<T = unknown>{
+export interface ApiResponse<T = unknown> {
   ok: boolean;
   data?: T;
   message?: string;
@@ -37,7 +39,7 @@ export interface ApiResponse<T = unknown>{
  *
  * @param res - Raw axios response or any object with status/data
  */
-export interface ApiError<T = unknown>{
+export interface ApiError<T = unknown> {
   ok: boolean;
   data?: T;
   message?: string;
@@ -52,9 +54,9 @@ export interface ApiError<T = unknown>{
  * @returns Normalized response object
  */
 export function parseApiResponse<T = unknown>(
-  res:  AxiosResponse | unknown
+  res: AxiosResponse | unknown,
 ): ApiResponse<T> {
-  if(!res || typeof res !== 'object'){
+  if (!res || typeof res !== "object") {
     return {
       ok: false,
       data: null as T,
@@ -62,29 +64,29 @@ export function parseApiResponse<T = unknown>(
       status: 0,
     };
   }
-  const status = 'status' in res ? (res as AxiosResponse).status : 200;
-  const data = 'data' in res ? (res as AxiosResponse).data : {};
+  const status = "status" in res ? (res as AxiosResponse).status : 200;
+  const data = "data" in res ? (res as AxiosResponse).data : {};
 
-    // Pull message from multiple possible sources
-    const message =
-      (data as any)?.message ||
-      (data as any)?.error ||
-      (status >= 200 && status < 300
-        ? "Request successful"
-        : `Request failed with status ${status}`);
+  // Pull message from multiple possible sources
+  const message =
+    (data as any)?.message ||
+    (data as any)?.error ||
+    (status >= 200 && status < 300
+      ? "Request successful"
+      : `Request failed with status ${status}`);
 
-    // Trust backend's ok flag if present
-    const ok =
-      typeof (data as any)?.ok === "boolean"
-        ? (data as any).ok
-        : status >= 200 && status < 300 && !(data as any)?.error;
+  // Trust backend's ok flag if present
+  const ok =
+    typeof (data as any)?.ok === "boolean"
+      ? (data as any).ok
+      : status >= 200 && status < 300 && !(data as any)?.error;
 
-    return {
-      ok,
-      data: data as T,
-      message,
-      status,
-    };
+  return {
+    ok,
+    data: data as T,
+    message,
+    status,
+  };
 }
 
 /**
@@ -96,25 +98,24 @@ export function parseApiResponse<T = unknown>(
  * @returns Normalized error response
  */
 export function parseApiError(error: unknown): ApiError<never> {
-  let status = 0
-  let message = "Request failed. Try again."
+  let status = 0;
+  let message = "Request failed. Try again.";
 
-  if (error instanceof AxiosError){
+  if (error instanceof AxiosError) {
     status = error.response?.status ?? 0;
-  
+
     message =
-    error?.response?.data?.message ||
-    error?.response?.data?.error ||
-    error.message ||
-    message;
-    
-    if (status === 401){
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error.message ||
+      message;
+
+    if (status === 401) {
       message = "Invalid username or password";
     }
-  } else if (error instanceof Error){
-    message = error.message
+  } else if (error instanceof Error) {
+    message = error.message;
   }
-
 
   return {
     ok: false,
