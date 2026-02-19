@@ -26,13 +26,21 @@ export default function LoginPage() {
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetchUserStatus()
-      if (!res.isAuthenticated) {
+
+      if(!res.ok){
+        debug.warn(`Auth check failed: ${res.message}`)
+        setErrors({
+          general: "Authentification service unavailable"
+        })
+      } else if (!res.isAuthenticated) {
         debug.warn(`Auth check: ${res.message}`)
         setErrors({
-          general: res.message
+          general: "Not authenticated"
         })
       }
 
+      setErrors({})
+      
       // Redirect to home if user came from another page
       if (res.isAuthenticated) {
         navigate('/')
