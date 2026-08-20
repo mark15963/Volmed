@@ -7,6 +7,7 @@ import { useConfig } from "../context";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?:
     | "text"
+    | "chat"
     | "password"
     | "email"
     | "tel"
@@ -38,6 +39,12 @@ interface TypeConfig {
 const TYPE_CONFIGS: Record<Exclude<InputProps["type"], undefined>, TypeConfig> = {
   text: {
     defaultStyles:{},
+  },
+  chat: {
+    defaultStyles:{
+      border: "1px solid #000000",
+      boxShadow: "none",
+    },
   },
   password: {
     defaultStyles:{},

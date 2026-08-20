@@ -70,6 +70,7 @@ export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, c
         <Input
           placeholder="Сообщение"
           className={styles.input}
+          type="chat"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
