@@ -1,6 +1,6 @@
 //#region === IMPORTS ===
 import { useEffect, useRef } from "react";
-import propTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 import Input from "../../Input";
 import Button from "../../Button";
