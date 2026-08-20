@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, CSSProperties, FC, useRef } from "react";
+import { InputHTMLAttributes, CSSProperties, FC, useRef, useMemo } from "react";
 import { Search } from "lucide-react"; // not permanent
 import "./styles/Input.scss";
 import Button from "./Button";
@@ -25,6 +25,54 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onSubmitClick?: () => void;
 }
 
+// ============================================
+// TYPE CONFIGURATIONS
+// ============================================
+interface TypeConfig {
+  defaultStyles: CSSProperties;
+  wrapperClass?: string;
+  showSearchIcon?: boolean;
+  isFile?: boolean;
+}
+
+const TYPE_CONFIGS: Record<Exclude<InputProps["type"], undefined>, TypeConfig> = {
+  text: {
+    defaultStyles:{},
+  },
+  password: {
+    defaultStyles:{},
+  },
+  email: {
+    defaultStyles:{},
+  },
+  tel: {
+    defaultStyles:{},
+  },
+  number: {
+    defaultStyles:{},
+  },
+  search: {
+    defaultStyles:{
+      borderWidth: "0px",
+      borderRadius: "25px",
+    },
+    wrapperClass: "input-wrapper--search",
+    showSearchIcon: true,
+  },
+  color: {
+    defaultStyles:{
+      width: "50px",
+      height: "30px",
+      padding: 0,
+      border: "none",
+    },
+  },
+  file: {
+    isFile: true,
+    defaultStyles:{},
+  },
+}
+
 const Input: FC<InputProps> = ({
   name,
   type = "text",
@@ -45,33 +93,47 @@ const Input: FC<InputProps> = ({
   const { theme } = useConfig();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const inputClass = ["input", loading ? "input--loading" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  // Get configuration for this input type
+  const config = TYPE_CONFIGS[type];
 
-  // if input type is COLOR - default color is black
+  // ============================================
+  // MERGE STYLES
+  // ============================================
+  const mergedStyle = useMemo((): CSSProperties => {
+    // Start with type-specific default styles
+    const baseStyle = config.defaultStyles;
+
+    // Handle color type special value
+    const colorValue = type === "color" ? value || "#000000" : undefined
+  
+    // Merge with user-provided styles
+    return{
+      ...baseStyle,
+      ...(type === "color" ? {value: colorValue}: {}),
+      ...style,
+    };
+  }, [type, value, style])
+
+  // ============================================
+  // CLASS NAMES
+  // ============================================
+  const inputClass = [
+    "input", 
+    loading && "input--loading",
+    className,
+  ].filter(Boolean).join(" ");
+
+  const wrapperClass = [
+    "input-wrapper",
+    config.wrapperClass,
+  ].filter(Boolean).join(" ");
+  
   const inputValue = type === "color" ? value || "#000000" : (value ?? "");
 
-  // style of input type COLOR
-  const mergedStyle: CSSProperties =
-    type === "color"
-      ? {
-          width: "50px",
-          height: "30px",
-          padding: 0,
-          border: "none",
-          ...style,
-        }
-      : style || {};
-
-  // style of input type SEARCH
-  if (type === "search") {
-    mergedStyle.borderWidth = "0px";
-    mergedStyle.borderRadius = "25px";
-  }
-
-  // style of input type FILE
-  if (type === "file") {
+  // ============================================
+  // FILE INPUT
+  // ============================================
+  if (config.isFile) {
     return (
       <div className="input-file-wrapper">
         <input
@@ -98,18 +160,19 @@ const Input: FC<InputProps> = ({
     );
   }
 
+  // ============================================
+  // RENDER
+  // ============================================
   return (
-    <div
-      className={`
-        input-wrapper ${type === "search" ? "input-wrapper--search" : ""}
-      `}
-    >
-      {loading && loadingPosition === "left" ? (
+    <div className={wrapperClass}>
+      {/* Left loading */}
+      {loading && loadingPosition === "left" && (
         <div className="input-loader input-loader--left">
           <div className="input-loader-spinner"></div>
         </div>
-      ) : (
-        type === "search" && (
+      )}
+
+      {!loading && config.showSearchIcon && (
           <button
             type="submit"
             className="input-search-button"
@@ -118,7 +181,6 @@ const Input: FC<InputProps> = ({
           >
             <Search size={18} />
           </button>
-        )
       )}
 
       <input
@@ -138,6 +200,7 @@ const Input: FC<InputProps> = ({
         {...props}
       />
 
+      {/* Right Loading */}
       {loading && loadingPosition === "right" && (
         <div className="input-loader input-loader--right">
           <div className="input-loader-spinner"></div>
