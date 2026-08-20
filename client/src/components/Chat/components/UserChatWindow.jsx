@@ -1,5 +1,6 @@
 //#region === IMPORTS ===
 import { useEffect, useRef } from "react";
+import propTypes from 'prop-types'
 
 import Input from "../../Input";
 import Button from "../../Button";
@@ -13,7 +14,7 @@ import debug from "../../../utils/debug";
  * Regular user chat window 
  * ------------------------
  */
-export const UserChatWindow = ({ messages: Array, onSendMessage, message: string, setMessage, currentUserId: number, displayName }) => {
+export const UserChatWindow = ({ messages, onSendMessage, message, setMessage, currentUserId, displayName }) => {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -87,6 +88,15 @@ export const UserChatWindow = ({ messages: Array, onSendMessage, message: string
       </div>
     </div>
   )
+}
+
+UserChatWindow.propTypes = {
+  messages: PropTypes.array.isRequired,
+  onSendMessage: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  setMessage: PropTypes.func.isRequired,
+  currentUserId: PropTypes.number.isRequired,
+  displayName: PropTypes.string.isRequired
 }
 
 export default UserChatWindow
