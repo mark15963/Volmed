@@ -10,6 +10,7 @@ import NotFoundState from "./tabs/Components/States/NotFoundState";
 import { SpinLoader } from "../../components/ui/loaders/SpinLoader";
 
 // Menu tabs
+import { SEARCH_RESULT_TABS } from "../../constants";
 import Tab1 from "./tabs/tab1";
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
@@ -147,11 +148,7 @@ const SearchResultsView = ({
       </span>
 
       <Menu
-        items={[
-          { name: 'Основное' },
-          { name: 'Анализы' },
-          { name: 'Назначения' },
-        ]}
+        items={SEARCH_RESULT_TABS}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />

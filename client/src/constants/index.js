@@ -2,6 +2,7 @@ export * from "./patient-form.constants";
 export * from "./patient-status.constants";
 export * from "./select-options.constants";
 export * from "./config.constants";
+export * from "./tabs.constants"
 
 export const SERVICE = [
   {

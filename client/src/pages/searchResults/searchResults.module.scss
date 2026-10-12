@@ -252,12 +252,12 @@
 
 @media print {
   @page {
-    margin: 5mm;
+    margin: 10mm 5mm 5mm 5mm;
     size: auto;
     marks: none;
   }
-  @page :not-first {
-    margin-top: 10mm;
+  @page :first {
+    margin-top: 5mm;
   }
 
   * {
