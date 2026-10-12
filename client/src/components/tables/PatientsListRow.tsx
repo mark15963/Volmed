@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 import moment from "moment";
 
 import { calculateAge, getStateClass, debug } from "../../utils";
-import { PatientRowProps } from "../../custom-types";
+import type { PatientRowProps } from "../../custom-types";
+export type { PatientRowProps }
 import { extractMkbCode } from "../../services/extractMkbCode";
 
 import { SexIcon } from "../icons";
