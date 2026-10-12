@@ -30,7 +30,7 @@ fi
 
 export HOST_IP
 
-echo "HOST_IP=$HOST_IP" > ../.env
+sed -i "s/^HOST_IP=.*/HOST_IP=$HOST_IP/" ../.env
 echo ""
 
 echo ""
@@ -54,7 +54,7 @@ echo ""
 
 echo ""
 echo "7. Waiting for services to be healthy..."
-sleep 10
+wait until /api/health == healthy 
 echo ""
 
 echo ""
