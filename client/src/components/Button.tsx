@@ -188,6 +188,7 @@ const Button: FC<ButtonProps> = ({
     <button
       onClick={handleClick}
       onTouchEnd={(e) => {
+        e.preventDefault();
         e.currentTarget.blur();
         onClick?.();
       }}

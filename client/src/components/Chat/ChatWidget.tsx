@@ -56,8 +56,9 @@ export const ChatWidget = memo(() => {
           icon="chat"
           shape="circle"
           style={{
-            touchAction: "manipulation",
-            WebkitTapHighlightColor: "transparent",
+            // touchAction: "manipulation",
+            // WebkitTapHighlightColor: "transparent",
+            padding: "6px",
           }}
         />
       </div>
