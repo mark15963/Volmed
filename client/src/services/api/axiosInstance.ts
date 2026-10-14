@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const isDev = import.meta.env.VITE_ENV === "development";
+const isDev = import.meta.env.MODE === "development";
 
 // Always send cookies/session data with requests
 axios.defaults.withCredentials = true;

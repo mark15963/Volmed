@@ -113,7 +113,7 @@ export const useChat = (initialRoomName, currentUserId) => {
 
   //#region === SOCKET SETUP ===
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_API_URL_SOCKET, {
+    const socket = io(`/`, {
       withCredentials: true,
       autoConnect: true,
       transports: ["websocket"],
