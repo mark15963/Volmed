@@ -23,7 +23,8 @@
   &:active {
     color: var(--button-active-text-color);
     background-color: var(--button-active-background-color);
-    &[data-theme-app="dark"] {
+
+    [data-theme-app="dark"] & {
       transition: all 0.15s;
       box-shadow: inset 0px 0px 2px 1px #000000ad;
     }
