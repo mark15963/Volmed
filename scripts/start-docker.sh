@@ -8,110 +8,43 @@ echo ""
 echo "=== Starting VolMed Docker Deployment ==="
 echo ""
 
-./stop-docker.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$SCRIPT_DIR/lib"
 
-echo ""
-echo "2. Starting PostgreSQL (host service)..."
-sudo systemctl start postgresql
-sudo systemctl enable postgresql >/dev/null 2>&1
-echo "   PostgreSQL status: $(sudo systemctl is-active postgresql)"
-echo ""
+# Load helpers + functions into THIS shell
+# shellcheck source=lib/common.sh
+source "$LIB/common.sh"
+# shellcheck source=lib/deploy-function.sh
+source "$LIB/deploy-functions.sh"
 
-echo ""
-echo "3. Detecting current network IP..."
-HOST_IP=$("./get-host-ip.sh")
+step "1. Starting PostgreSQL (host service)..."
+start_postgres
 
-if [ -z "$HOST_IP" ]; then
-    HOST_IP="127.0.0.1"
-    echo "   Warning: No LAN IP detected → using 127.0.0.1"
-else
-    echo "   Using IP: $HOST_IP"
-fi
-
+step "2. Detecting current network IP..."
+find_ip
 export HOST_IP
 
-sed -i "s/^HOST_IP=.*/HOST_IP=$HOST_IP/" ../.env
-echo ""
+step "3. Building frontend..."
+build_frontend
 
-echo ""
-echo "4. Building frontend..."
-cd /var/www/volmed || { echo "Client folder not found!"; exit 1; }
-cd client
-sudo npm run build
-cd ..
-echo ""
+step "4. Building Docker images..."
+build_docker
 
-echo ""
-echo "5. Building Docker images..."
-sudo docker compose build --no-cache
-echo ""
+step "5. Starting Docker services..."
+start_docker_services
 
-echo ""
-echo "6. Starting Docker services..."
-sudo fuser -k 80/tcp 2>/dev/null || true
-sudo docker compose up -d --remove-orphans
-echo ""
+step "6. Waiting for services to be healthy..."
+wait_healthy
 
-echo ""
-echo "7. Waiting for services to be healthy..."
-wait until /api/health == healthy 
-echo ""
+step "7. Checking service status..."
+check_status
 
-echo ""
-echo "8. Checking service status..."
-echo "   Backend: $(sudo docker compose ps backend --format '{{.Status}}')"
-echo "   Nginx: $(sudo docker compose ps nginx --format '{{.Status}}')"
-echo "   PostgreSQL (host): $(sudo systemctl is-active postgresql)"
-echo ""
-
-echo ""
-echo "9. Testing application on detected IP ($HOST_IP)..."
-
-HEALTH_OK=false
-FRONT_OK=false
-
-echo -n "   Backend API (/api/health) ... "
-
-if curl -k -s --max-time 5 "https://$HOST_IP/api/health" > /dev/null; then
-    echo "✓ responding (https)"
-    HEALTH_OK=true
-elif curl -s --max-time 5 "http://$HOST_IP/api/health" > /dev/null; then
-    echo "✓ responding (http fallback)"
-    HEALTH_OK=true
-else
-    echo "✗ not responding"
-    echo "      tried: https://$HOST_IP/api/health"
-    echo "         &  http://$HOST_IP/api/health"
-fi
-
-echo -n "   Frontend (/) ............ "
-
-if curl -k -s --max-time 5 "https://$HOST_IP/" > /dev/null; then
-    echo "✓ serving (https)"
-    FRONT_OK=true
-elif curl -s --max-time 5 "http://$HOST_IP/" > /dev/null; then
-    echo "✓ serving (http fallback)"
-    FRONT_OK=true
-else
-    echo "✗ not serving"
-    echo "      tried: https://$HOST_IP/"
-    echo "         &  http://$HOST_IP/"
-fi
-
-echo ""
+step "8. Testing application on detected IP ($HOST_IP)..."
 sleep 2
 
-if $HEALTH_OK && $FRONT_OK; then
+if test_app; then
     clear
-    echo "============== Deployment Complete ==============="
-    echo ""
-    echo "  Frontend: https://$HOST_IP"
-    echo "  Backend API: https://$HOST_IP/api"
-    echo ""
-    echo "=================================================="
-    echo ""
-    echo ""
-    read -p "Press enter to return to menu..."
+    "$SCRIPT_DIR/status-docker.sh"
 else
     echo ""
     echo "⚠️  One or more checks failed!"
