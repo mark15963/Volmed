@@ -1,10 +1,11 @@
 //#region ===== REQUIRES & CONSTS =====
 const path = require("path");
 const dotenv = require("dotenv");
-const { env } = require("process");
+const mode = process.env.NODE_ENV || "development";
 
 dotenv.config({ path: path.join(__dirname, ".env") });
-dotenv.config({ path: path.join(__dirname, `.env.${env}`) });
+dotenv.config({ path: path.join(__dirname, `.env.${env}`), override: true });
+
 console.log(`[env] mode = ${env}`);
 console.log(`[env] FRONTEND_URL = ${process.env.FRONTEND_URL}`);
 console.log(`[env] BACKEND_URL  = ${process.env.BACKEND_URL}`);
