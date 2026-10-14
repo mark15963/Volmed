@@ -14,16 +14,19 @@
   user-select: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 1px 1px 3px 1px #374960;
+  box-shadow: var(--button-box-shadow);
   &:hover {
     transition: all 0.15s;
-    color: #1677ff;
+    color: var(--button-hover-text-color);
     box-shadow: none;
   }
   &:active {
-    color: #1677ff;
-    // border: 2px solid #1677ff;
-    background-color: #cfeffe;
+    color: var(--button-active-text-color);
+    background-color: var(--button-active-background-color);
+    &[data-theme-app="dark"] {
+      transition: all 0.15s;
+      box-shadow: inset 0px 0px 2px 1px #000000ad;
+    }
   }
   &:focus {
     outline: none;
