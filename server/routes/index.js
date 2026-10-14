@@ -19,6 +19,8 @@ router.get(["/", ""], (req, res) => {
   try {
     console.log("Attempting to render main.ejs");
     res.type("html");
+    console.log("[main.ejs] sessionID:", req.session.user);
+    console.log("[main.ejs] isAuth:", req.session.isAuth);
     res.render("main", {
       NODE_ENV: process.env.NODE_ENV,
       FRONTEND_URL: process.env.FRONTEND_URL,
