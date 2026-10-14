@@ -25,7 +25,6 @@ const Content = () => {
   return (
     <main
       className={styles.main}
-      data-theme-app={theme.app}
     >
       <NetworkNotification />
 
