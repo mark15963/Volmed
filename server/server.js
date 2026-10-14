@@ -5,6 +5,9 @@ const { env } = require("process");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 dotenv.config({ path: path.join(__dirname, `.env.${env}`) });
+console.log(`[env] mode = ${env}`);
+console.log(`[env] FRONTEND_URL = ${process.env.FRONTEND_URL}`);
+console.log(`[env] BACKEND_URL  = ${process.env.BACKEND_URL}`);
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
