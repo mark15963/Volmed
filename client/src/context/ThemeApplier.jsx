@@ -1,4 +1,4 @@
-import { useConfig } from "@"
+import { useConfig } from "./ConfigContext"
 import { useEffect } from "react"
 
 const ThemeApplier = ({ children }) => {
