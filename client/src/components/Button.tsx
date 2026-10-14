@@ -55,7 +55,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * Size of button.
    *
-   * s -
+   * s - font 11
+   * m - font 13
+   * l - font 15
+   * xl - font 17
    *
    * @default "l"
    */
@@ -162,7 +165,11 @@ const Button: FC<ButtonProps> = ({
                 ? "newPatient"
                 : icon === "patients"
                   ? "patients"
-                  : "(no text)")
+                  : icon === "upload"
+                    ? "upload"
+                    : icon === "chat"
+                      ? "chat"
+                      : "(no text)")
       }`,
     );
 

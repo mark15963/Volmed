@@ -53,8 +53,12 @@ export const ChatWidget = memo(() => {
       <div ref={buttonRef}>
         <Button
           onClick={handleChatToggle}
-          text="Чат"
-          className={styles.chatButton}
+          icon="chat"
+          shape="circle"
+          style={{
+            touchAction: "manipulation",
+            WebkitTapHighlightColor: "transparent",
+          }}
         />
       </div>
 

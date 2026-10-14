@@ -6,11 +6,4 @@
   right: 10px;
   z-index: 1000;
   pointer-events: auto;
-
-  .chatButton {
-    height: fit-content;
-    padding: 5px 10px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: "transparent";
-  }
 }
