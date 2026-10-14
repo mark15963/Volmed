@@ -1,16 +1,10 @@
 //#region ===== REQUIRES & CONSTS =====
 const path = require("path");
 const dotenv = require("dotenv");
+const { env } = require("process");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
-dotenv.config({
-  path: path.join(
-    __dirname,
-    process.env.NODE_ENV === "production"
-      ? ".env.production"
-      : ".env.development",
-  ),
-});
+dotenv.config({ path: path.join(__dirname, `.env.${env}`) });
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -65,10 +59,25 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self'; connect-src 'self'; frame-src 'none'",
-  );
+  const csp =
+    process.env.NODE_ENV === "development"
+      ? "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data: http: https:; " +
+        "font-src 'self' data:; " +
+        "connect-src 'self' http: https: ws: wss:; " +
+        "frame-src 'none'"
+      : "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data: http: https:; " +
+        "font-src 'self'; " +
+        "connect-src 'self' ws: wss:; " +
+        "frame-src 'none'";
+
+  res.setHeader("Content-Security-Policy", csp);
+
   if (req.path.startsWith("/api")) {
     res.setHeader("Content-Type", "application/json");
   }
@@ -107,18 +116,17 @@ app.use((err, req, res, next) => {
 
 //#region ===== START SERVER =====
 async function startServer() {
-  const IP = getLocalNetworkIP();
+  const IP = getLocalNetworkIP() || "localhost";
   try {
     await testDbConnection();
     await initCacheOnStartup();
 
-    server.listen(PORT, () => {
+    server.listen(PORT, "0.0.0.0", () => {
       debug.log("");
       debug.log(`Server running on port ${PORT}`);
       debug.log(`Enviroment: ${process.env.NODE_ENV}`);
-      debug.log(`Website link: ${process.env.FRONTEND_URL}`);
-      debug.log(`Backend link: ${process.env.BACKEND_URL}`);
-      debug.log(`Local IP: ${IP}` || "Not found");
+      debug.log(`Local:   https://localhost:${PORT}`);
+      debug.log(`LAN:     https://${IP}:${PORT}`);
       debug.log("");
 
       server.keepAliveTimeout = 1000 * 60;

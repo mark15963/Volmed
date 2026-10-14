@@ -1,5 +1,9 @@
 import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
+import { useNavigate } from "react-router";
+
+import { PAGES } from "../constants";
 import debug from "../utils/debug";
+
 import {
   LoginOutlined,
   LogoutOutlined,
@@ -8,13 +12,25 @@ import {
   UploadOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+import { MessagesSquare } from "lucide-react";
 import "./styles/Button.scss";
-import { PAGES } from "../constants";
-import { useNavigate } from "react-router";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Callback fired when the button is clicked. */
   onClick?: () => void;
+
+  /**
+   * Sape of the button.
+   * @default "default"
+   */
   shape?: "default" | "circle";
+
+  /**
+   * Icon in the button. None - for no icon.
+   * @example
+   * <Button icon="search" />
+   * @default "none"
+   */
   icon?:
     | "none"
     | "login"
@@ -22,19 +38,64 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "newPatient"
     | "patients"
     | "search"
-    | "upload";
+    | "upload"
+    | "chat";
+
+  /**
+   * Text in the button
+   * @example
+   * <Button text="TEXT" />
+   */
   text?: string;
+
+  /** Add CSS inline */
   style?: CSSProperties;
   className?: string;
+
+  /**
+   * Size of button.
+   *
+   * s -
+   *
+   * @default "l"
+   */
   size?: "s" | "m" | "l" | "xl";
   disabled?: boolean;
   loading?: boolean;
   type?: "button" | "submit" | "reset";
+
+  /** Text while loading */
   loadingText?: string;
+
+  /** Route key from `PAGES` to navigate to when clicked. */
   navigateTo?: keyof typeof PAGES;
+
+  /**
+   * If true, replaces history entry instead of pushing.
+   * @default false
+   */
   replace?: boolean;
 }
 
+/**
+ * Button component
+ * ----------------
+ * @example
+ * <Button
+ *   type="button"
+ *   style={{ color: "black" }}
+ *   className=
+ *   size="l"
+ *   shape="default"
+ *   icon="none"
+ *   text="Button text"
+ *   loadingText="Loading text"
+ *   disabled
+ *   loading
+ *   replace
+ *   onClick={function}
+ * />
+ */
 const Button: FC<ButtonProps> = ({
   onClick,
   shape = "default",
@@ -43,8 +104,8 @@ const Button: FC<ButtonProps> = ({
   style,
   className,
   size = "l",
-  disabled,
-  loading,
+  disabled = false,
+  loading = false,
   type = "button",
   loadingText,
   navigateTo,
@@ -80,7 +141,9 @@ const Button: FC<ButtonProps> = ({
         return <SearchOutlined />;
       case "upload":
         return <UploadOutlined />;
-      default:
+      case "chat":
+        return <MessagesSquare />;
+      default: // If the icon doesn't matches the options -> null
         return icon ? <i className={icon} /> : null;
     }
   };
