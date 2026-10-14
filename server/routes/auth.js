@@ -266,10 +266,6 @@ router.get("/dashboard", isAuth, async (req, res) => {
           ? JSON.stringify(req.session, null, 2)
           : "null";
 
-        console.log("[dashboard] sessionID:", req.sessionID);
-        console.log("[dashboard] isAuth:", req.session.isAuth);
-        console.log("[dashboard] host:", req.headers.host);
-
         return res.render("dashboard", {
           NODE_ENV: process.env.NODE_ENV,
           FRONTEND_URL: process.env.FRONTEND_URL,

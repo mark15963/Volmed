@@ -6,10 +6,6 @@ const mode = process.env.NODE_ENV || "development";
 dotenv.config({ path: path.join(__dirname, ".env") });
 dotenv.config({ path: path.join(__dirname, `.env.${mode}`), override: true });
 
-console.log(`[env] mode = ${mode}`);
-console.log(`[env] FRONTEND_URL = ${process.env.FRONTEND_URL}`);
-console.log(`[env] BACKEND_URL  = ${process.env.BACKEND_URL}`);
-
 const express = require("express");
 const cookieParser = require("cookie-parser");
 

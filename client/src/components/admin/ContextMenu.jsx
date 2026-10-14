@@ -13,7 +13,7 @@ import { Dropdown } from "antd"
 import styles from './styles/sideMenu.module.css'
 //#endregion
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = "/api";
 
 export const ContextMenu = ({ authState, children }) => {
   const [sideMenuVisible, setSideMenuVisible] = useState(false)
