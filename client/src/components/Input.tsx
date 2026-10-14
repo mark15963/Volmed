@@ -1,8 +1,8 @@
 import { InputHTMLAttributes, CSSProperties, FC, useRef, useMemo } from "react";
 import { Search } from "lucide-react"; // not permanent
-import "./styles/Input.scss";
 import Button from "./Button";
 import { useConfig } from "../context";
+import "./styles/Input.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?:
@@ -36,30 +36,33 @@ interface TypeConfig {
   isFile?: boolean;
 }
 
-const TYPE_CONFIGS: Record<Exclude<InputProps["type"], undefined>, TypeConfig> = {
+const TYPE_CONFIGS: Record<
+  Exclude<InputProps["type"], undefined>,
+  TypeConfig
+> = {
   text: {
-    defaultStyles:{},
+    defaultStyles: {},
   },
   chat: {
-    defaultStyles:{
+    defaultStyles: {
       border: "1px solid #000000",
       boxShadow: "none",
     },
   },
   password: {
-    defaultStyles:{},
+    defaultStyles: {},
   },
   email: {
-    defaultStyles:{},
+    defaultStyles: {},
   },
   tel: {
-    defaultStyles:{},
+    defaultStyles: {},
   },
   number: {
-    defaultStyles:{},
+    defaultStyles: {},
   },
   search: {
-    defaultStyles:{
+    defaultStyles: {
       borderWidth: "0px",
       borderRadius: "25px",
     },
@@ -67,7 +70,7 @@ const TYPE_CONFIGS: Record<Exclude<InputProps["type"], undefined>, TypeConfig> =
     showSearchIcon: true,
   },
   color: {
-    defaultStyles:{
+    defaultStyles: {
       width: "50px",
       height: "30px",
       padding: 0,
@@ -76,9 +79,9 @@ const TYPE_CONFIGS: Record<Exclude<InputProps["type"], undefined>, TypeConfig> =
   },
   file: {
     isFile: true,
-    defaultStyles:{},
+    defaultStyles: {},
   },
-}
+};
 
 const Input: FC<InputProps> = ({
   name,
@@ -111,30 +114,27 @@ const Input: FC<InputProps> = ({
     const baseStyle = config.defaultStyles;
 
     // Handle color type special value
-    const colorValue = type === "color" ? value || "#000000" : undefined
-  
+    const colorValue = type === "color" ? value || "#000000" : undefined;
+
     // Merge with user-provided styles
-    return{
+    return {
       ...baseStyle,
-      ...(type === "color" ? {value: colorValue}: {}),
+      ...(type === "color" ? { value: colorValue } : {}),
       ...style,
     };
-  }, [type, value, style])
+  }, [type, value, style]);
 
   // ============================================
   // CLASS NAMES
   // ============================================
-  const inputClass = [
-    "input", 
-    loading && "input--loading",
-    className,
-  ].filter(Boolean).join(" ");
+  const inputClass = ["input", loading && "input--loading", className]
+    .filter(Boolean)
+    .join(" ");
 
-  const wrapperClass = [
-    "input-wrapper",
-    config.wrapperClass,
-  ].filter(Boolean).join(" ");
-  
+  const wrapperClass = ["input-wrapper", config.wrapperClass]
+    .filter(Boolean)
+    .join(" ");
+
   const inputValue = type === "color" ? value || "#000000" : (value ?? "");
 
   // ============================================
@@ -180,14 +180,14 @@ const Input: FC<InputProps> = ({
       )}
 
       {!loading && config.showSearchIcon && (
-          <button
-            type="submit"
-            className="input-search-button"
-            onClick={onSubmitClick}
-            disabled={disabled}
-          >
-            <Search size={18} />
-          </button>
+        <button
+          type="submit"
+          className="input-search-button"
+          onClick={onSubmitClick}
+          disabled={disabled}
+        >
+          <Search size={18} />
+        </button>
       )}
 
       <input
