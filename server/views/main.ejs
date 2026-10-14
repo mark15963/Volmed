@@ -9,9 +9,9 @@
     <a href="<%= FRONTEND_URL %>"> <%= FRONTEND_URL %> </a>
   </p>
 
-  <% if (sessionAuth && cookiesUser) {%>
+  <% if (sessionAuth) {%>
   <p>Выполнен вход: <%= sessionAuth %></p>
-  <p>Аккаунт: <%= cookiesUser %></p>
+  <p>Аккаунт: <%= sessionUser %></p>
   <% } else { %>
   <p>Выполнен вход: Нет</p>
   <% } %>

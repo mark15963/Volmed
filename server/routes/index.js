@@ -25,9 +25,9 @@ router.get(["/", ""], (req, res) => {
       NODE_ENV: process.env.NODE_ENV,
       FRONTEND_URL: process.env.FRONTEND_URL,
       sessionAuth: req.session.isAuth,
-      cookiesUser: req.cookies.user,
+      sessionUser: req.cookies.user,
     });
-  } catch (error) {
+  } catch (err) {
     console.error("View rendering error:", err);
     res.status(500).send("Error rendering view");
   }
