@@ -9,9 +9,10 @@ import { debug } from "../utils";
 debug.log("DEVELOPER VERSION")
 
 export const AppProviders = ({ children }) => {
+  // <ConfigProvider> must be the most outer layer
   return (
-    <ThemeApplier>
-      <ConfigProvider>
+    <ConfigProvider>
+      <ThemeApplier>
         <MessageProvider>
           <AuthProvider>
             {/* <UsersDataProvider> */}
@@ -21,8 +22,8 @@ export const AppProviders = ({ children }) => {
             {/* </UsersDataProvider> */}
           </AuthProvider>
         </MessageProvider>
-      </ConfigProvider>
-    </ThemeApplier>
+      </ThemeApplier>
+    </ConfigProvider>
   );
 };
 
