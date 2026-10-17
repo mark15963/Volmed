@@ -2,17 +2,41 @@ import { debug } from "../../utils";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-type CacheKey = 'app_config_cache_v1' | 'cachedPatients' | string
+type CacheKey = "app_config_cache_v1" | "cachedPatients" | string;
 
 /**
  * Saves any data to localStorage with timestamp and optional expiry.
+ * @example
+ * const CONFIG_CACHE_KEY = "app_config_cache_v1";
+ *
+ * saveToLocalStorage(CONFIG_CACHE_KEY, {
+ *   general: {
+ *     title,
+ *     color: {
+ *       headerColor: color.header,
+ *       contentColor: color.content,
+ *       containerColor: color.container
+ *     },
+ *     logoUrl: logo,
+ *     theme: {
+ *       table: theme.table,
+ *       app: theme.app
+ *     }
+ *   }
+ * })
+ *
  * @param {string} key - Unique storage key (e.g. 'app_config_cache_v1', 'cachedPatients')
  * @param {any} data - Data to save
  * @param {number} [expiryMs=ONE_DAY_MS] - Optional expiry time in ms (default - 24 hours)
  */
-export const saveToLocalStorage = (key: CacheKey, data: unknown, expiryMs = ONE_DAY_MS) => {
+export const saveToLocalStorage = (
+  key: CacheKey,
+  data: unknown,
+  expiryMs = ONE_DAY_MS,
+) => {
   try {
     const payload = {
+      // Shown in browser Local storage
       timestamp: Date.now(),
       data,
     };

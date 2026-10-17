@@ -29,6 +29,11 @@ const NetworkNotification: React.FC<OfflineFallbackProps> = ({
   const [animation, setAnimation] = useState("");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const statusRef = useRef(status);
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
   const showStatus = (newStatus: ConnectionStatus) => {
     // Clear any pending timeouts
     if (timeoutRef.current) {
@@ -52,7 +57,7 @@ const NetworkNotification: React.FC<OfflineFallbackProps> = ({
       newStatus === "timeout"
     )
       displayDuration = Infinity; // never auto-hide offline
-    if (newStatus === "online") displayDuration = 2000; // fade out online quickly
+    if (newStatus === "online") displayDuration = 2000; // fade out online status quickly
 
     // Auto-hide for transient statuses (not offline)
     if (displayDuration !== Infinity) {
@@ -75,8 +80,21 @@ const NetworkNotification: React.FC<OfflineFallbackProps> = ({
   useEffect(() => {
     const handleOffline = () => showStatus("offline");
     const handleOnline = () => showStatus("online");
+
     const handleServerError = (e: CustomEvent) => {
       const detail = e.detail as ConnectionStatus;
+
+      const offlineFamily: ConnectionStatus[] = [
+        "offline",
+        "server-error",
+        "timeout",
+      ];
+      if (
+        offlineFamily.includes(detail) &&
+        offlineFamily.includes(statusRef.current)
+      ) {
+        return; // silently ignore duplicate failures
+      }
       showStatus(detail);
     };
 

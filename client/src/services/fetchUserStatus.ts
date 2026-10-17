@@ -51,6 +51,7 @@ export async function fetchUserStatus(): Promise<UserStatus> {
 
       return {
         ok: false,
+        offline: false,
         isAuthenticated: false,
         isAdmin: false,
         user: null,
@@ -63,6 +64,7 @@ export async function fetchUserStatus(): Promise<UserStatus> {
 
     return {
       ok: true,
+      offline: false,
       isAuthenticated: (res as any).data?.isAuthenticated ?? false,
       isAdmin,
       user,
@@ -76,6 +78,7 @@ export async function fetchUserStatus(): Promise<UserStatus> {
 
     return {
       ok: false,
+      offline: true,
       isAuthenticated: false,
       isAdmin: false,
       user: null,

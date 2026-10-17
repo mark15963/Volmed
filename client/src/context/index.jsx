@@ -10,8 +10,8 @@ debug.log("DEVELOPER VERSION")
 
 export const AppProviders = ({ children }) => {
   return (
-    <ConfigProvider>
-      <ThemeApplier>
+    <ThemeApplier>
+      <ConfigProvider>
         <MessageProvider>
           <AuthProvider>
             {/* <UsersDataProvider> */}
@@ -21,8 +21,8 @@ export const AppProviders = ({ children }) => {
             {/* </UsersDataProvider> */}
           </AuthProvider>
         </MessageProvider>
-      </ThemeApplier>
-    </ConfigProvider>
+      </ConfigProvider>
+    </ThemeApplier>
   );
 };
 

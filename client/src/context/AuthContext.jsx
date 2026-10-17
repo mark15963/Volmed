@@ -39,14 +39,20 @@ export const AuthProvider = ({ children }) => {
       isLoading: false
     })
 
-    // Redirect to login if unauthenticated
-    if (!isAuthenticated && redirectIfUnauth && window.location.pathname !== '/login') {
+    // Redirect to login if unauthenticated AND online
+    if (
+      !isAuthenticated &&
+      !res.offline &&
+      redirectIfUnauth &&
+      window.location.pathname !== '/login'
+    ) {
       navigate('/login')
     }
 
     // If auth success
     return {
       ok: isAuthenticated,
+      offline: res.offline ?? false,
       user,
       isAdmin,
       error
@@ -56,10 +62,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAndRedirect = async () => {
       const res = await checkAuthStatus(false)
-      if (!res.ok && window.location.pathname !== '/login') {
-        setTimeout(() => {
-          navigate('/login'); // if not authenticated -> /login in 0.5s
-        }, 500)
+
+      if (
+        !res.ok &&
+        !res.offline &&
+        window.location.pathname !== '/login'
+      ) {
+        setTimeout(() => navigate('/login'), 500)
       }
     }
     checkAndRedirect();
@@ -99,8 +108,8 @@ export const AuthProvider = ({ children }) => {
         error: false,
         data: authRes.data
       }
-    } catch (error) {
-      const parsed = parseApiError(error)
+    } catch (err) {
+      const parsed = parseApiError(err)
       debug.error(`Login error:`, parsed.message)
       return {
         error: true,
@@ -140,8 +149,8 @@ export const AuthProvider = ({ children }) => {
       navigate('/login');
       debug.log(parsed.message) // From backend
       return { ok: true, message: "Logged out" }
-    } catch (error) {
-      const parsed = parseApiError(error)
+    } catch (err) {
+      const parsed = parseApiError(err)
       debug.error("Logout error:", parsed.message, "Status:", parsed.status)
       return { ok: false, message: parsed.message }
     } finally {
@@ -149,11 +158,22 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate])
 
-  // Auth check every 10 min
+  // Auth check every 10/30 min
   useEffect(() => {
-    const interval = setInterval(checkAuthStatus, 1000 * 60 * 10);
-    return () => clearInterval(interval);
-  }, [checkAuthStatus]);
+    const BASE_INTERVAL = 1000 * 60 * 10  // 10 min when online
+    const FAST_INTERVAL = 1000 * 30       // 30 min when offline
+
+    let timer
+
+    const loop = async () => {
+      const res = await checkAuthStatus(false)
+      const next = res.offline ? FAST_INTERVAL : BASE_INTERVAL
+      timer = setTimeout(loop, next)
+    }
+
+    timer = setTimeout(loop, BASE_INTERVAL)
+    return () => clearTimeout(timer)
+  }, [checkAuthStatus])
 
   return (
     <AuthContext.Provider value={{
