@@ -48,7 +48,21 @@ find_ip() {
 build_frontend() {
     local dir="/var/www/volmed/client"
     [ -d "$dir" ] || die "Client folder not found: $dir"
-    ( cd "$dir" && sudo npm run build ) || die "Frontend build failed"
+
+    ( cd "$dir" && npm run build )
+    
+    local build_exit_code=$?
+
+    if [ $build_exit_code -ne 0 ]; then
+        echo ""
+        echo "❌ ERROR: Frontend build failed with code $build_exit_code"
+        echo "Check the output above for details."
+        echo ""
+        # PAUSE HERE so you can read the error
+        read -p "Press Enter to continue..."
+        die "Frontend build failed"
+    fi
+    
     ok "Frontend built"
 }
 

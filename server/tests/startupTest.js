@@ -99,7 +99,7 @@ async function runStartupTests() {
     //#endregion
 
     //#region ===== LOGIN =====
-    loginSuccess = false;
+    let loginSuccess = false;
     try {
       const axiosInstance = createAxiosInstance();
       const loginRes = await axiosInstance.post(
@@ -313,7 +313,7 @@ async function runStartupTests() {
     debug.log("==================================");
     debug.log("All startup tests PASSED.");
   } catch (err) {
-    debug.error("startup test failed:");
+    debug.error("Startup test failed!");
     if (err.response) {
       debug.error("Status:", err.response.status);
       debug.error("Data:", err.response.data);

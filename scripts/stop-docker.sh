@@ -20,5 +20,5 @@ sudo docker image prune -f 2>/dev/null || true
 
 echo ""
 echo "========= All Services Stopped =========="
-sleep 5
+sleep 2
 exit 0

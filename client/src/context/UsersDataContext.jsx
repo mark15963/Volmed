@@ -27,12 +27,6 @@ const UsersDataContext = createContext()
  * -----------------
  * Provides global access to the user list and related operations.
  * Automatically fetches users when the user is authenticated.
- *
- * @component
- * @example
- * <UsersDataProvider>
- *   <App />
- * </UsersDataProvider>
  */
 export const UsersDataProvider = ({ children }) => {
     const [users, setUsers] = useState([])

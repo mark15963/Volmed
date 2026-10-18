@@ -10,8 +10,7 @@ import {
   ALLOWED_NURSE_USERS
 } from '../../constants/users';
 
-import { useAuth } from '../../context/AuthContext'
-import { useConfig } from '../../context';
+import { useConfig, useAuth } from '../../context';
 
 import styles from '../../layouts/content/content.module.scss'
 //#endregion

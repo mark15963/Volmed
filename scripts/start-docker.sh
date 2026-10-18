@@ -43,6 +43,7 @@ step "8. Testing application on detected IP ($HOST_IP)..."
 sleep 2
 
 if test_app; then
+    sleep 2
     clear
     "$SCRIPT_DIR/status-docker.sh"
 else
