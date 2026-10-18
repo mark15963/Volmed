@@ -3,9 +3,9 @@ import { IMaskInput } from 'react-imask';
 
 
 // TOOLS
-import Input from '../../../components/Input';
-const { default: dayjs, datePickerLocale } = await import('../../../utils/dayjs.config')
-import { PhoneField } from '../../../components/PhoneField';
+import { Input } from '../../../components';
+import { datePickerLocale } from '../../../utils'
+import { PhoneField } from './PhoneField';
 import {
   ADMISSION_TYPE_OPTIONS,
   SEX_OPTIONS,

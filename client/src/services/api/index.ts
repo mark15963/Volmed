@@ -1,7 +1,6 @@
 import { endpoints } from "./endpoints";
 import { requestWrapper } from "./requestWrapper";
 
-
 /**
  * API Service
  * ------------
@@ -29,18 +28,22 @@ import { requestWrapper } from "./requestWrapper";
  *    const { ok, data } = await api.getPatients();
  *    if (ok) console.log(data);
  */
-const apiCore = { // public HTTP verb helpers
+const apiCore = {
+  // public HTTP verb helpers
 
   // example: api.get(/patients)
   get: (url: string, config = {}) => requestWrapper("get", url, null, config),
-  post: (url: string, data?: any, config = {}) => requestWrapper("post", url, data, config),
-  put: (url: string, data?: any, config = {}) => requestWrapper("put", url, data, config),
-  delete: (url: string, config = {}) => requestWrapper("delete", url, null, config),
+  post: (url: string, data?: any, config = {}) =>
+    requestWrapper("post", url, data, config),
+  put: (url: string, data?: any, config = {}) =>
+    requestWrapper("put", url, data, config),
+  delete: (url: string, config = {}) =>
+    requestWrapper("delete", url, null, config),
 };
 
 const api = {
   ...apiCore,
-  ...endpoints // domain-specific methods using apiCore
-}
+  ...endpoints, // domain-specific methods using apiCore
+};
 
-export default api
+export default api;

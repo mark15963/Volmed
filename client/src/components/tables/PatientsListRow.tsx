@@ -3,10 +3,14 @@ import { FC } from "react";
 import { useNavigate } from "react-router";
 import moment from "moment";
 
-import { calculateAge, getStateClass, debug } from "../../utils";
+import {
+  calculateAge,
+  getStateClass,
+  debug,
+  extractMkbCode,
+} from "../../utils";
 import type { PatientRowProps } from "../../custom-types";
-export type { PatientRowProps }
-import { extractMkbCode } from "../../services/extractMkbCode";
+export type { PatientRowProps };
 
 import { SexIcon } from "../icons";
 import styles from "./PatientsListRow.module.scss";
@@ -68,6 +72,11 @@ export const PatientsListRow: FC<PatientRowProps> = ({
     allergy = "Неизвестно",
   } = patient;
 
+  const mkbCode = extractMkbCode(diag);
+  if (mkbCode === "-" && diag) {
+    debug.warn("Could not extract MKB code from:", diag);
+  }
+
   const displayAge = calculateAge(birthDate);
   const stateClassName = styles[getStateClass(state)] || "";
 
@@ -106,7 +115,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       <td>{moment(created_at).format("DD.MM.YYYY")}</td>
       <td>{room || "-"}</td>
       <td>{doctor || "-"}</td>
-      <td>{extractMkbCode(diag)}</td>
+      <td>{mkbCode}</td>
       <td className={stateClassName}>{state}</td>
       <td>{allergy}</td>
     </tr>

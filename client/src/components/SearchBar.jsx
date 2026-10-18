@@ -1,15 +1,13 @@
 //#region ===== IMPORTS =====
-import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import Button from './Button';
-import Input from './Input';
+import { Button, Input } from './'
 
 import { useSafeMessage } from '../hooks/useSafeMessage';
 
 import api from '../services/api/index';
-import debug from '../utils/debug';
+import { debug } from '../utils';
 
 import styles from './styles/SearchBar.module.scss'
 import { useConfig } from '../context';

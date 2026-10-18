@@ -1,0 +1,13 @@
+services is where your application talks to the outside world. It encapsulates the logic required to fulfill a specific business need.
+
+Purpose: To handle API requests, interact with localStorage, or contain complex business rules. This keeps your React components focused on rendering the UI, not on how to fetch or process data .
+
+Characteristics: These are usually modules (or classes) that export functions like getUser(), login(), or fetchProducts(). They often depend on an HTTP client (like axios or fetch) and may have side effects (network requests) .
+
+Examples:
+
+userService.ts: Contains getProfile(), updateSettings().
+
+authService.ts: Contains login(credentials), logout().
+
+apiClient.ts: Configures interceptors for Axios or sets a base URL .

@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 
-const { default: dayjs } = await import("../../utils/dayjs.config");
+import { dayjs } from "../../utils";
 
 // Components
 import { PersonalInfoFields } from "./Components/PersonalInfoFields";
@@ -27,7 +27,7 @@ import api from "../../services/api/index";
 import {
   ensureString,
   formatDateForServer,
-  formatPhone,
+  formatPhoneForServer,
   PatientForSearch,
 } from "../../utils";
 //#endregion
@@ -66,8 +66,13 @@ export const RegisterPatient = ({
   });
 
   // Doctor's name
-  const doctor =
-    `${authState.user?.lastName ?? ""} ${authState.user?.firstName ?? ""} ${authState.user?.patr ?? ""}`.trim();
+  const doctor = [
+    authState.user?.lastName,
+    authState.user?.firstName,
+    authState.user?.patr,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const handleChange = (name: keyof PatientFormValues, value: unknown) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -83,7 +88,7 @@ export const RegisterPatient = ({
       const formattedValues = {
         ...formValues,
         birthDate: formatDateForServer(formValues.birthDate),
-        phone: formatPhone(formValues.phone),
+        phone: formatPhoneForServer(formValues.phone),
         doctor: doctor || "",
 
         ...Object.fromEntries(
@@ -115,9 +120,9 @@ export const RegisterPatient = ({
         navigate(`/search/${newOrUpdateId}`, {
           state: {
             results: patient,
-            searchQuery: `${patient?.lastName ?? ""} ${
-              patient?.firstName ?? ""
-            } ${patient?.patr ?? ""}`,
+            searchQuery: [patient?.lastName, patient?.firstName, patient?.patr]
+              .filter(Boolean)
+              .join(" "),
           },
         });
       }, 1000);

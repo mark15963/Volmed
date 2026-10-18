@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
 import { useNavigate } from "react-router";
 
 import { PAGES } from "../constants";
-import debug from "../utils/debug";
+import { debug } from "../utils";
 
 import {
   LoginOutlined,

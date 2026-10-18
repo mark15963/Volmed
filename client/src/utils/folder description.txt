@@ -1,0 +1,16 @@
+Project's toolbox. 
+It should contain functions that are pure, stateless, and business-agnostic.
+
+Purpose: To perform generic operations that are reused throughout the app. They do not care about your app's specific rules; they just take an input and return an output .
+
+Characteristics: No side effects, no React dependencies (no hooks), and no knowledge of your global state or API endpoints.
+
+Examples:
+
+formatDate(date) (converting a timestamp to a readable string)
+
+debounce(func, delay)
+
+calculatePercentage(value, total)
+
+cn(...classes) (merging CSS classes, common with Tailwind)
