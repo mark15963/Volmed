@@ -1,7 +1,7 @@
 import { Block } from '../pages/searchResults/tabs/Components/Block';
 import { Divider } from 'antd';
 import moment from 'moment';
-import { formatPhoneNumber } from '../utils';
+import { formatPhoneForServer } from '../utils';
 import styles from '../pages/searchResults/searchResults.module.scss';
 
 export const PatientInfoPage = ({ patient, data }) => {
@@ -68,7 +68,7 @@ export const PatientInfoPage = ({ patient, data }) => {
           )}
           <Block
             text="Номер телефона:"
-            content={formatPhoneNumber(patient.phone)}
+            content={formatPhoneForServer(patient.phone)}
           />
           <Block
             text="Адрес:"
