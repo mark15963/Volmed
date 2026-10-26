@@ -9,7 +9,6 @@ const Main = lazy(() => import("../pages/main/Main"));
 const SearchResults = lazy(() =>
   import("../pages/searchResults/SearchResults")
 );
-const List = lazy(() => import("../pages/patientsList/List"));
 const RegisterPatient = lazy(() => import("../pages/register/RegisterPatient"));
 const EditPatient = lazy(() => import("../pages/edit/EditPatient"));
 const Login = lazy(() => import("../pages/login/LoginPage"));
@@ -18,7 +17,7 @@ const Discharged = lazy(() => import("../pages/nurse/Discharged"));
 const Hospitalized = lazy(() => import("../pages/nurse/Hospitalized"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const NotFound = lazy(() => import("../pages/NotFound"));
-const NurseDisplay = lazy(() => import("../pages/main/components/NurseDisplay"));
+const NurseDisplay = lazy(() => import("../pages/main(depricated)/components/NurseDisplay"));
 //#endregion
 
 /**
@@ -40,16 +39,8 @@ export const appRoutes = [
     path: "/",
     element: (
       <ProtectedRoute>
-        <Main />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/patients",
-    element: (
-      <ProtectedRoute>
         <PatientDataProvider>
-          <List />
+          <Main />
         </PatientDataProvider>
       </ProtectedRoute>
     ),

@@ -93,11 +93,25 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  *   icon="none"
  *   text="Button text"
  *   loadingText="Loading text"
+ *   navigateTo="INDEX"
  *   disabled
  *   loading
  *   replace
  *   onClick={function}
  * />
+ *
+ * // Patient list → open patient → "go back"
+ * <Button text="Назад" onClick={() => navigate(-1)} />       // no replace needed
+ *
+ * // After registration — go to the new patient
+ * <Button text="Перейти" navigateTo="PATIENT" replace />      // ← replace it
+ *
+ * // Normal nav in a menu
+ * <Button text="Пациенты" navigateTo="PATIENTS" />            // ← push (default)
+ *
+ * // After logout
+ *<Button text="Выйти" navigateTo="LOGIN" replace />
+ *
  */
 const Button: FC<ButtonProps> = ({
   onClick,

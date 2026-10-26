@@ -27,7 +27,7 @@
 //
 //#endregion
 //#region ===== IMPORTS =====
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Navigate, useLocation } from "react-router";
 
 import { useAuth } from "../../../context";
@@ -89,9 +89,14 @@ import { AccessDenied } from "../AccessDenied";
 const ProtectedRoute = ({ children, roles = [] }) => {
   const { authState, checkAuthStatus } = useAuth();
   const location = useLocation();
+  const firstRender = useRef(true)
 
   useEffect(() => {
     // Refresh authState on route change
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     checkAuthStatus(false);
   }, [checkAuthStatus, location.pathname]);
 

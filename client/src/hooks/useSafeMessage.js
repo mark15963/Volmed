@@ -1,5 +1,6 @@
 // Used in:
 // - SearchResults.jsx
+// - RegisterPatients.tsx
 
 import { useRef, useCallback } from "react";
 import { useMessageApi } from "../context/MessageContext";
@@ -77,7 +78,7 @@ export const useSafeMessage = () => {
       // Reset lock after duration (or default 1s)
       setTimeout(() => (lockRef.current = false), duration * 1000);
     },
-    [messageApi]
+    [messageApi],
   );
   return showMessage;
 };

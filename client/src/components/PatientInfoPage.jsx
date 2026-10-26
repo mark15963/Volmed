@@ -3,6 +3,9 @@ import { Divider } from 'antd';
 import moment from 'moment';
 import { formatPhoneForServer } from '../utils';
 import styles from '../pages/searchResults/searchResults.module.scss';
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+dayjs.extend(utc)
 
 export const PatientInfoPage = ({ patient, data }) => {
   return (
@@ -35,7 +38,7 @@ export const PatientInfoPage = ({ patient, data }) => {
           />
           <Block
             text="Дата рождения:"
-            content={moment(patient.birthDate).format('DD.MM.YYYY')}
+            content={patient.birthDate ? dayjs.utc(patient.birthDate).format('DD.MM.YYYY') : "-"}
           />
           {data.sender ? (
             <Block

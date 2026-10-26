@@ -70,18 +70,56 @@ build_frontend() {
 # Step 4 — Build Docker images
 # ---------------------------------------------------------------------------
 build_docker() {
-    ( cd "$SCRIPT_DIR/.." && sudo docker compose build --no-cache ) \
-        || die "Docker build failed"
+    local logdir="$SCRIPT_DIR/../logs"
+    mkdir -p "$logdir"
+    local logfile="$logdir/docker-build-$(date +%Y%m%d-%H%M%S).log"
+    info "Build log: $logfile"
+    
+    set -o pipefail
+    if ! ( cd "$SCRIPT_DIR/.." && sudo docker compose build ) 2>&1 | tee "$logfile"; then
+        err "Docker build failed"
+        echo ""
+        info "Error context:"
+        grep -A 8 -E '^Dockerfile:[0-9]+[[:space:]]*$' "$logfile" \
+            || echo "  (no Dockerfile:N pattern found — see log below)"
+        echo ""
+        info "Last 20 lines of the log:"
+        tail -20 "$logfile"
+        echo ""
+        info "Full log: $logfile"
+        [ -t 0 ] && read -p "Press Enter to continue..." _
+        return 1
+    fi
     ok "Docker built"
+    return 0
 }
 
 # ---------------------------------------------------------------------------
 # Step 5 — Start Docker services
 # ---------------------------------------------------------------------------
 start_docker_services() {
+    local pids
+    pids=$(sudo docker ps -q --filter "publish=80" 2>/dev/null || true)
+    if [ -n "$pids" ]; then
+        info "Stopping containers using port 80: $pids"
+        sudo docker stop $pids >/dev/null
+    fi
     sudo fuser -k 80/tcp 2>/dev/null || true
-    ( cd "$SCRIPT_DIR/.." && sudo docker compose up -d --remove-orphans ) \
-        || die "Docker compose up failed"
+    sleep 1
+
+    local logdir="$SCRIPT_DIR/../logs"
+    mkdir -p "$logdir"
+    local logfile="$logdir/docker-up-$(date +%Y%m%d-%H%M%S).log"
+
+    set -o pipefail
+    if ! ( cd "$SCRIPT_DIR/.." && sudo docker compose up -d --remove-orphans ) 2>&1 | tee "$logfile" ; then
+        err "Docker compose up failed"
+        echo ""
+        info "Last 40 lines:"
+        tail -40 "$logfile"
+        [ -t 0 ] && read -p "Press Enter to continue..." _
+        return 1
+    fi
     ok "Docker started"
 }
 
@@ -92,9 +130,21 @@ wait_healthy() {
     local tries=0
     until curl -sk --max-time 2 "https://${HOST_IP}/api/health" >/dev/null 2>&1; do
         tries=$((tries + 1))
-        [ "$tries" -ge 30 ] && die "Services did not become healthy in time"
+        if [ "$tries" -ge 30 ]; then 
+            err "Services did not become healthy in time"
+            echo ""
+            info "Container states:"
+            sudo docker compose ps
+            echo ""
+            info "Recent container logs:"
+            sudo docker compose logs --tail=20
+            [ -t 0 ] && read -p "Press Enter to continue..." _
+            return 1
+        fi
+        echo -n "."
         sleep 2
     done
+    echo ""
     ok "Services are healthy"
 }
 

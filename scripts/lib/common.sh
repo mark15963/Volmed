@@ -22,4 +22,13 @@ info() { echo "${C_CYAN}   ℹ $*${C_RESET}"; }
 
 step() { echo ""; echo "${C_BOLD}$1${C_RESET}"; }
 
-die()  { err "$*"; exit 1; }
+die() {
+    local msg="$*"
+    err "$msg"
+    # Only pause if running interactively; skip in CI / cron / pipes
+    if [ -t 0 ]; then
+        echo ""
+        read -p "Press Enter to continue..." _
+    fi
+    exit 1
+}

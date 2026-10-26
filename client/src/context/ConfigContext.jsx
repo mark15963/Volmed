@@ -70,33 +70,20 @@ const CONFIG_EXP = 1000 * 60 * 60 * 24 * 30;
  *   )
  * }
  *
- * @component
- * @param {Object} props - React component props.
- * @param {React.ReactNode} props.children - The components that will have access to the configuration context.
- *
- * @returns {JSX.Element} A context provider wrapping its children.
- *
- * @typedef {Object} ConfigContextValue
- * @property {Object} title - Current site title.
- * @property {Function} setTitle - Updates the title both locally and via API.
- * @property {Object} color - Color palette for different UI areas.
- * @property {string} color.header - Header background color.
- * @property {string} color.content - Main background color.
- * @property {string} color.container - Container color.
- * @property {Function} setColor - Updates the color palette both locally and via API.
- * @property {?string} logo - URL of the site logo image.
- * @property {Function} setLogo - Updates the logo URL (client-side only).
- * @property {?string} theme
- * @property {Function} setTheme
- * @property {boolean} isLoading - Indicates if configuration data is still loading.
- * @property {Object} defaults - Default configuration constants.
  */
 
 export const ConfigProvider = ({ children }) => {
   const [title, setTitleState] = useState(CONFIG_DEFAULTS.GENERAL.TITLE);
-  const [color, setColorState] = useState(CONFIG_DEFAULTS.GENERAL.COLOR);
+  const [color, setColorState] = useState({
+    header: CONFIG_DEFAULTS.GENERAL.COLOR?.HEADER ?? "",
+    content: CONFIG_DEFAULTS.GENERAL.COLOR?.CONTENT ?? "",
+    container: CONFIG_DEFAULTS.GENERAL.COLOR?.CONTAINER ?? "",
+  });
   const [logo, setLogoState] = useState(CONFIG_DEFAULTS.GENERAL.LOGO);
-  const [theme, setThemeState] = useState(CONFIG_DEFAULTS.GENERAL.THEME);
+  const [theme, setThemeState] = useState({
+    table: CONFIG_DEFAULTS.GENERAL.THEME?.TABLE ?? "default",
+    app: CONFIG_DEFAULTS.GENERAL.THEME?.APP ?? "default"
+  });
   const [isLoading, setIsLoading] = useState(true)
 
   // --- Initial load ---
@@ -164,9 +151,9 @@ export const ConfigProvider = ({ children }) => {
       ])
 
       if (configRes.status === "fulfilled" && configRes.value?.ok && configRes.value.data?.general) {
-
         const gen = configRes.value.data.general;
-        setTitleState(gen.title ?? title ?? CONFIG_DEFAULTS.GENERAL.TITLE)
+
+        setTitleState((prev) => gen.title ?? prev ?? CONFIG_DEFAULTS.GENERAL.TITLE)
         setColorState((prev) => ({
           header: gen.color?.headerColor ?? prev.header ?? CONFIG_DEFAULTS.GENERAL.COLOR.HEADER,
           content: gen.color?.contentColor ?? prev.content ?? CONFIG_DEFAULTS.GENERAL.COLOR.CONTENT,
@@ -194,7 +181,7 @@ export const ConfigProvider = ({ children }) => {
       console.error("[CONFIG] Refresh failed:", err)
       debug.warn("API refresh failed → keeping cached/default values");
     }
-  }, [title, saveToLocalStorage])
+  }, [])
 
 
   // --- Update setters ---
@@ -219,7 +206,7 @@ export const ConfigProvider = ({ children }) => {
         }))
       }
       if (data.theme) {
-        setThemeState(prev => ({
+        setThemeState((prev) => ({
           table: data.theme.tableTheme ?? prev.table ?? CONFIG_DEFAULTS.GENERAL.THEME.TABLE,
           app: data.theme.appTheme ?? prev.app ?? CONFIG_DEFAULTS.GENERAL.THEME.APP
         }))

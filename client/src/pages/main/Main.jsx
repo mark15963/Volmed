@@ -1,44 +1,40 @@
-//#region ===== IMPORTS =====
-import { useState } from 'react'
+import { useNavigate } from 'react-router'
 
-import DoctorDisplay from './components/DoctorDisplay';
-import NurseDisplay from './components/NurseDisplay';
-import Loader from '../../components/ui/loaders/Loader';
+import { PatientCount } from './components/PatientsCount'
+import { SearchBar, Button, ListOfPatients } from '../../components'
 
-import {
-  ALLOWED_DOCTOR_USERS,
-  ALLOWED_NURSE_USERS
-} from '../../constants/users';
+import styles from './main.module.scss'
+import '@/layouts/content/content.module.scss'
+import '@/styles/index.scss'
 
-import { useConfig, useAuth } from '../../context';
+export const Main = () => {
+  const navigate = useNavigate()
 
-import styles from '../../layouts/content/content.module.scss'
-//#endregion
-
-export default function Main() {
-  const { authState } = useAuth()
-  const userRole = authState.user.status;
-  const { color } = useConfig()
-
-  //#region === RENDERING LOGIC ===
-  if (!authState.isAuthenticated) return null
-
-  // User role -> Doctor, tester, admin
-  if (ALLOWED_DOCTOR_USERS.includes(userRole)) return <DoctorDisplay />
-
-  // User role -> Nurse
-  if (ALLOWED_NURSE_USERS.includes(userRole)) return <NurseDisplay />
-
-  // Not auth
   return (
     <div
       className={styles.mainBlock}
-      style={{ backgroundColor: color.container }}
     >
-      <div style={{ color: 'aliceblue' }}>
-        Пользователь не авторизован
+      <div className={styles.list}>
+        <div className={styles.searchbar}>
+          <SearchBar />
+        </div>
+        <div className={styles.table}>
+          <ListOfPatients option='active' theme='light' />
+        </div>
+        <div className={styles.counter}>
+          <PatientCount />
+        </div>
+
+        <div className={styles.buttonContainer}>
+          <Button
+            text='Новый пациент'
+            icon='newPatient'
+            navigateTo='REGISTER'
+          />
+        </div>
       </div>
     </div>
   )
-  //#endregion
 }
+
+export default Main

@@ -1,5 +1,7 @@
 const { Pool } = require("pg");
 const debug = require("../utils/debug");
+const { types } = require("pg");
+types.setTypeParser(1082, (val) => val);
 
 const isProduction = process.env.NODE_ENV === "production";
 

@@ -1,4 +1,12 @@
-const isDebug = import.meta.env.VITE_DEBUG === "true";
+let isDebug = import.meta.env.VITE_DEBUG === "true";
+
+/**
+ * Enables debug logging.
+ */
+export const enableDebug = () => {
+  isDebug = true;
+};
+
 /**
  * Formats console group titles with color and emoji for quick scanning.
  */
@@ -30,7 +38,13 @@ const formatTitle = (type, title) => {
   return [`%c${icon} ${label} ${title}`, colors[type]];
 };
 
-// Enhanced version with better stack traces
+/**
+ * Custom debug
+ * ------------
+ * Works in dev mode and for admin in any mode
+ * @example
+ * debug.log("Text", detail)
+ */
 export const debug = {
   log: (title = "", ...details) => {
     if (!isDebug) return;

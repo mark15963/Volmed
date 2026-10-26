@@ -2,6 +2,7 @@
 // React, Router, Axios
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
+import type { Dayjs } from "dayjs";
 
 import { dayjs } from "../../utils";
 
@@ -11,13 +12,13 @@ import { MedHistoryFields } from "./Components/MedHistoryFields";
 import { Buttons } from "./Components/Buttons";
 
 // Hooks & Context
-import { useAuth } from "../../context";
+import { useAuth, useConfig } from "../../context";
 import { useSafeMessage } from "../../hooks/useSafeMessage";
 
 // Constants
 import {
   PATIENT_FORM_INITIAL_VALUES,
-  PATIENT_STRING_FIELDS_TO_EMPTY,
+  type PatientApiPayload,
   type PatientFormValues,
 } from "../../constants";
 
@@ -28,12 +29,16 @@ import {
   ensureString,
   formatDateForServer,
   formatPhoneForServer,
-  PatientForSearch,
+  type PatientForSearch,
 } from "../../utils";
 //#endregion
 
 interface RegisterPatientsProps {
-  initialValues?: Partial<PatientFormValues> | null;
+  initialValues?:
+    | (Partial<Omit<PatientFormValues, "birthDate">> & {
+        birthDate?: string | Dayjs | null;
+      })
+    | null;
   isEditMode?: boolean;
   patientId?: string | null;
 }
@@ -45,8 +50,8 @@ export const RegisterPatient = ({
 }: RegisterPatientsProps) => {
   const navigate = useNavigate();
   const { authState } = useAuth();
-
   const safeMessage = useSafeMessage();
+  const { color } = useConfig();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -74,66 +79,100 @@ export const RegisterPatient = ({
     .filter(Boolean)
     .join(" ");
 
-  const handleChange = (name: keyof PatientFormValues, value: unknown) => {
+  const handleChange = <K extends keyof PatientFormValues>(
+    name: K,
+    value: PatientFormValues[K],
+  ) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading) return;
+
+    const required: { key: keyof PatientFormValues; label: string }[] = [
+      { key: "lastName", label: "Фамилия" },
+      { key: "firstName", label: "Имя" },
+      { key: "phone", label: "Номер телефона" },
+    ];
+
+    const missing = required.find(({ key }) => {
+      const v = formValues[key];
+      return v === null || v === undefined || v === "";
+    });
+
+    if (missing) {
+      safeMessage("warning", `Заполните: ${missing.label}`);
+      return;
+    }
+
+    const formattedPhone = formatPhoneForServer(formValues.phone);
+    if (!formattedPhone) {
+      safeMessage("warning", "Введите корректный номер телефона");
+      return;
+    }
+
     try {
       setIsLoading(true);
-      safeMessage("loading", "Данные сохраняются...", 1);
+      safeMessage("loading", "Данные сохраняются...");
       setError("");
 
-      const formattedValues = {
-        ...formValues,
+      const formattedValues: PatientApiPayload = {
+        lastName: formValues.lastName,
+        firstName: formValues.firstName,
+        patr: ensureString(formValues.patr),
+        type: formValues.type,
+        sex: formValues.sex,
         birthDate: formatDateForServer(formValues.birthDate),
-        phone: formatPhoneForServer(formValues.phone),
-        doctor: doctor || "",
+        sender: ensureString(formValues.sender),
+        sendingTime: ensureString(formValues.sendingTime),
+        insurance: ensureString(formValues.insurance),
+        phone: formattedPhone,
+        address: ensureString(formValues.address),
+        email: ensureString(formValues.email),
+        freq: formValues.freq,
+        firstDiag: ensureString(formValues.firstDiag),
+        complaint: ensureString(formValues.complaint),
+        anam: ensureString(formValues.anam),
+        life: ensureString(formValues.life),
+        status: ensureString(formValues.status),
+        mkb: ensureString(formValues.mkb),
+        diag: ensureString(formValues.diag),
+        sop_zab: ensureString(formValues.sop_zab),
+        rec: ensureString(formValues.rec),
+        state: formValues.state,
+        doctor,
+      };
 
-        ...Object.fromEntries(
-          PATIENT_STRING_FIELDS_TO_EMPTY.map((field) => [
-            field,
-            ensureString(formValues[field] ?? ""),
-          ]),
-        ),
-      } as PatientFormValues;
+      const res =
+        isEditMode && patientId
+          ? await api.updatePatient(patientId, formattedValues)
+          : await api.createPatient(formattedValues);
 
-      let res;
-      if (isEditMode && patientId) {
-        res = await api.updatePatient(patientId, formattedValues);
-        if (!res.ok) throw new Error(res.message ?? "Update failed");
-      } else {
-        res = await api.createPatient(formattedValues);
-        if (!res.ok) throw new Error(res.message ?? "Create failed");
-      }
+      if (!res.ok) throw new Error(res.message ?? "Create failed");
 
-      setFormValues((prev) => ({ ...prev, mkb: "" }));
+      const patient = res.data as PatientForSearch | undefined;
+      const newOrUpdateId = isEditMode ? patientId : patient?.id;
+      if (!newOrUpdateId) throw new Error("Сервер не вернул ID пациента");
 
-      setTimeout(() => {
-        safeMessage("success", "Данные сохранены!", 2.5);
-        const newOrUpdateId = isEditMode ? patientId : (res as any)?.data?.id;
-        if (!newOrUpdateId) throw new Error("No ID returned");
+      const searchQuery = [patient?.lastName, patient?.firstName, patient?.patr]
+        .filter(Boolean)
+        .join(" ");
 
-        const patient = res?.data as PatientForSearch | undefined;
-
-        navigate(`/search/${newOrUpdateId}`, {
-          state: {
-            results: patient,
-            searchQuery: [patient?.lastName, patient?.firstName, patient?.patr]
-              .filter(Boolean)
-              .join(" "),
-          },
-        });
-      }, 1000);
+      safeMessage("success", "Данные сохранены!", 2.5);
+      navigate(`/search/${newOrUpdateId}`, {
+        state: { results: patient, searchQuery },
+        replace: true, // Clicking back wont return to the registration
+      });
     } catch (err: unknown) {
       const message =
         err instanceof Error
           ? err.message
-          : ((err as any)?.response?.data?.error ?? "Неизвестная ошибка");
+          : ((err as { response?: { data?: { error?: string } } })?.response
+              ?.data?.error ?? "Неизвестная ошибка");
       setError(message);
       console.error("Registration error:", err);
-    } finally {
+      safeMessage("error", message);
       setIsLoading(false);
     }
   };
@@ -144,7 +183,7 @@ export const RegisterPatient = ({
         {isEditMode ? "Редактировать пациента" : "Регистрация пациента"}
       </span>
 
-      {error && <div className={styles.error}>{error}</div>}
+      {/* {error && <div className={styles.error}>{error}</div>} */}
 
       <form onSubmit={onSubmit}>
         <div className={styles.info}>
@@ -159,7 +198,7 @@ export const RegisterPatient = ({
                 formValues={formValues}
                 handleChange={handleChange}
               />
-              <Buttons isEditMode={isEditMode} />
+              <Buttons isEditMode={isEditMode} isLoading={isLoading} />
             </div>
           </div>
         </div>

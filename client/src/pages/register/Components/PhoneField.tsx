@@ -16,20 +16,23 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
 
   const handleAccept = (val: string) => {
     onChange(val === "7" ? "" : val);
+  };
 
-    if (val && val.length < 16) setHasError(true);
-    else setHasError(false);
+  const handleFocus = () => {
+    setHasError(false);
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (val && val.length < 16) {
+    const digits = val.replace(/\D/g, "");
+    const isEmpty = digits.length <= 1;
+    const isComplete = digits.length === 11;
+
+    if (!isEmpty && !isComplete) {
       setHasError(true);
-      safeMessage("warning", "Номер телефона неполный");
     } else {
       setHasError(false);
     }
-    onChange(val);
   };
 
   return (
@@ -40,6 +43,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
         definitions={{ "0": /[0-9]/ }}
         placeholder="+7 (___) ___-__-__"
         onAccept={handleAccept}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         style={{
           width: "100%",

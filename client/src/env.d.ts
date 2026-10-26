@@ -5,9 +5,9 @@ interface ImportMetaEnv {
   readonly VITE_API_HOST: string;
   readonly VITE_API_URL: string;
   readonly VITE_ENV: "development" | "production";
-  readonly VITE_DEBUG?: boolean
+  readonly VITE_DEBUG?: string;
 }
 
-interface ImportMeta{
+interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

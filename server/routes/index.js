@@ -1,46 +1,26 @@
 const { Router } = require("express");
 const { db } = require("../config/db-connection");
 
-const authRouter = require("./auth");
-const patientsRouter = require("./patients");
-const usersRouter = require("./users");
-const chatRoutes = require("./chat");
-const generalRoutes = require("./general");
-
 const router = Router();
 
-router.use(authRouter);
-router.use(patientsRouter);
-router.use(usersRouter);
-router.use("/chat", chatRoutes);
-router.use("/general", generalRoutes);
-
-router.get(["/", ""], (req, res) => {
+// Health Check
+router.get("/health", async (req, res) => {
   try {
-    console.log("Attempting to render main.ejs");
-    res.type("html");
-    console.log("[main.ejs] sessionID:", req.session.user);
-    console.log("[main.ejs] isAuth:", req.session.isAuth);
-    res.render("main", {
-      NODE_ENV: process.env.NODE_ENV,
-      FRONTEND_URL: process.env.FRONTEND_URL,
-      sessionAuth: req.session.isAuth,
-      lastName: req.session.lastName,
-      firstName: req.session.firstName,
-      patr: req.session.patr,
+    await db.query("SELECT 1");
+    res.status(200).json({
+      status: "healthy",
+      database: "connected",
     });
-  } catch (err) {
-    console.error("View rendering error:", err);
-    res.status(500).send("Error rendering view");
+  } catch (e) {
+    res.status(503).json({
+      status: "unhealthy",
+      database: "disconnected",
+      error: e.message,
+    });
   }
 });
 
-// Health Check
-router.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "healthy",
-    database: db ? "connected" : "disconnected",
-  });
-});
+router.use(require("./api"));
+router.use(require("./pages"));
 
 module.exports = router;

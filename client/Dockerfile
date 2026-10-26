@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # -------------------
 #  BUILD STAGE
 # -------------------
@@ -5,11 +7,15 @@ FROM node:24-slim AS build
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+
+RUN --mount=type=cache,target=/root/.npm \ 
+  npm ci
 
 COPY . .
-RUN npm run build
+
+RUN --mount=type=cache,target=/app/node_modules/.vite \
+  npm run build
 
 # -------------------
 #  PRODUCTION STAGE

@@ -31,6 +31,7 @@ export interface ApiResponse<T = unknown> {
   data?: T;
   message?: string;
   status?: number;
+  offline: boolean;
   [key: string]: unknown;
 }
 
@@ -44,6 +45,7 @@ export interface ApiError<T = unknown> {
   data?: T;
   message?: string;
   status?: number;
+  offline: boolean;
   [key: string]: unknown;
 }
 
@@ -62,6 +64,7 @@ export function parseApiResponse<T = unknown>(
       data: null as T,
       message: "Invalid response format",
       status: 0,
+      offline: false,
     };
   }
   const status = "status" in res ? (res as AxiosResponse).status : 200;
@@ -86,6 +89,7 @@ export function parseApiResponse<T = unknown>(
     data: data as T,
     message,
     status,
+    offline: false,
   };
 }
 
@@ -100,8 +104,10 @@ export function parseApiResponse<T = unknown>(
 export function parseApiError(error: unknown): ApiError<never> {
   let status = 0;
   let message = "Request failed. Try again.";
+  let offline = false;
 
   if (error instanceof AxiosError) {
+    offline = !error.response;
     status = error.response?.status ?? 0;
 
     message =
@@ -122,5 +128,6 @@ export function parseApiError(error: unknown): ApiError<never> {
     data: undefined,
     message,
     status,
+    offline,
   };
 }

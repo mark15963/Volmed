@@ -39,6 +39,14 @@
   animation: slideOutToLeft 0.4s ease-out forwards;
 }
 
+.transitionIn {
+  animation: slideInFromLeft 0.2s ease-out forwards;
+}
+
+.transitionOut {
+  animation: slideOutToLeft 0.2s ease-out forwards;
+}
+
 @keyframes slideInFromLeft {
   0% {
     left: -300px;

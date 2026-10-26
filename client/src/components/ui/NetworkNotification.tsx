@@ -1,22 +1,34 @@
 // Used in Content.jsx
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 import styles from "./NetworkNotification.module.scss";
-import { ConnectionStatus } from "../../custom-types";
-import { OfflineFallbackProps } from "../../interfaces";
+
+import type { ConnectionStatus } from "../../custom-types";
+import type { OfflineFallbackProps } from "../../interfaces";
+
+import { useConnectionEvents } from "../../components/ui/hooks/useConnectionEvents";
+
+const OFFLINE_FAMILY: readonly ConnectionStatus[] = [
+  "offline",
+  "server-error",
+  "timeout",
+  "reconnecting",
+];
+
+const MESSAGES: Record<ConnectionStatus, string> = {
+  online: "✅ В сети",
+  offline: "⚠️ Отключен от сети",
+  "server-error": "❌ Ошибка сервера",
+  timeout: "⏱️ Тайм-аут соединения",
+  reconnecting: "🔄 Попытка переподключения",
+};
+
+const NOTIFICATION_DURATION = 2000;
 
 /**
- * Usage
- * -----
- * For costum messages of connection error use:
- * ```jsx
- * if (!res.ok) {
- *   window.dispatchEvent(
- *     new CustomEvent('connection-status', { detail: 'server-error' })
- *   )
- * }
- * ```
- *
+ * NetworkNotification
+ * -------------------
+ * Manages notification state, timers, animations, and rendering.
  */
 const NetworkNotification: React.FC<OfflineFallbackProps> = ({
   status: forceStatus,
@@ -24,111 +36,128 @@ const NetworkNotification: React.FC<OfflineFallbackProps> = ({
   const [status, setStatus] = useState<ConnectionStatus>(
     navigator.onLine ? "online" : "offline",
   );
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
   const [isVisible, setIsVisible] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [animation, setAnimation] = useState("");
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const statusRef = useRef(status);
-  useEffect(() => {
-    statusRef.current = status;
-  }, [status]);
+  const statusRef = useRef<ConnectionStatus>(status);
 
-  const showStatus = (newStatus: ConnectionStatus) => {
-    // Clear any pending timeouts
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingStatusRef = useRef<ConnectionStatus | null>(null);
+
+  /**
+   * Clears all pending notification timers.
+   */
+  const clearTimers = useCallback(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
     }
+    if (fadeTimerRef.current) {
+      clearTimeout(fadeTimerRef.current);
+      fadeTimerRef.current = null;
+    }
+  }, []);
 
-    setStatus(newStatus);
-    setIsOffline(
-      newStatus === "offline" ||
-        newStatus === "server-error" ||
-        newStatus === "timeout",
-    );
-    setIsVisible(true);
-    setAnimation(styles.slideIn);
+  /**
+   * Updates the connection status and controls the notification.
+   */
+  const showStatus = useCallback(
+    (newStatus: ConnectionStatus) => {
+      // f the status hasn't changed, the function returns without doing anything.
+      if (newStatus === statusRef.current) return;
 
-    let displayDuration = 3000;
-    if (
-      newStatus === "offline" ||
-      newStatus === "server-error" ||
-      newStatus === "timeout"
-    )
-      displayDuration = Infinity; // never auto-hide offline
-    if (newStatus === "online") displayDuration = 2000; // fade out online status quickly
+      // Existing notification timers are cleared.
+      clearTimers();
 
-    // Auto-hide for transient statuses (not offline)
-    if (displayDuration !== Infinity) {
-      timeoutRef.current = setTimeout(() => {
-        setAnimation(styles.slideOut);
-        timeoutRef.current = setTimeout(() => {
+      // The new status is stored in statusRef
+      statusRef.current = newStatus;
+
+      if (isVisible) {
+        pendingStatusRef.current = newStatus;
+        setIsTransitioning(true);
+        setAnimation(styles.transitionOut);
+        return;
+      }
+
+      setStatus(newStatus);
+      setIsVisible(true);
+      setAnimation(styles.slideIn);
+    },
+    [clearTimers, isVisible],
+  );
+
+  const handleAnimationEnd = useCallback(
+    (event: React.AnimationEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) return;
+
+      const isSlideIn =
+        animation === styles.slideIn || animation === styles.transitionIn;
+
+      const isSlideOut =
+        animation === styles.slideOut || animation === styles.transitionOut;
+
+      if (isSlideIn) {
+        if (isTransitioning) {
+          setIsTransitioning(false);
+        }
+
+        if (!OFFLINE_FAMILY.includes(status)) {
+          hideTimerRef.current = setTimeout(() => {
+            setAnimation(styles.slideOut);
+            hideTimerRef.current = null;
+          }, NOTIFICATION_DURATION);
+        }
+
+        return;
+      }
+
+      if (isSlideOut) {
+        const nextStatus = pendingStatusRef.current;
+
+        if (nextStatus !== null) {
+          pendingStatusRef.current = null;
+          setStatus(nextStatus);
+          setAnimation(styles.transitionIn);
+        } else {
           setIsVisible(false);
           setAnimation("");
-        }, 400); // animation duration
-      }, displayDuration);
-    }
-  };
+        }
+      }
+    },
+    [animation, isTransitioning, status],
+  );
+
+  /**
+   * Subscribe to browser connectivity and custom connection events.
+   */
+  useConnectionEvents({
+    onStatusChange: showStatus,
+  });
 
   /** React to prop changes (optional forced status) */
   useEffect(() => {
     if (forceStatus) showStatus(forceStatus);
-  }, [forceStatus]);
+  }, [forceStatus, showStatus]);
 
-  /** listen to window events */
+  /**
+   * Clear pending timers when the component unmounts.
+   */
   useEffect(() => {
-    const handleOffline = () => showStatus("offline");
-    const handleOnline = () => showStatus("online");
-
-    const handleServerError = (e: CustomEvent) => {
-      const detail = e.detail as ConnectionStatus;
-
-      const offlineFamily: ConnectionStatus[] = [
-        "offline",
-        "server-error",
-        "timeout",
-      ];
-      if (
-        offlineFamily.includes(detail) &&
-        offlineFamily.includes(statusRef.current)
-      ) {
-        return; // silently ignore duplicate failures
-      }
-      showStatus(detail);
-    };
-
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener(
-      "connection-status",
-      handleServerError as EventListener,
-    );
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener(
-        "connection-status",
-        handleServerError as EventListener,
-      );
-    };
-  }, []);
+    return clearTimers;
+  }, [clearTimers]);
 
   if (!isVisible) return null;
 
-  const messageMap: Record<ConnectionStatus, string> = {
-    online: "✅ В сети",
-    offline: "⚠️ Отключен от сети",
-    "server-error": "❌ Ошибка сервера",
-    timeout: "⏱️ Тайм-аут соединения",
-    reconnecting: "🔄 Попытка переподключения",
-  };
-
   return (
-    <div className={`${styles.container} ${animation}`} data-status={status}>
-      {messageMap[status]}
+    <div
+      className={`${styles.container} ${animation}`}
+      data-status={status}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      {MESSAGES[status]}
     </div>
   );
 };

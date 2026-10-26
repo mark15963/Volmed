@@ -2,6 +2,9 @@
   --main-block: #0073c7;
   --font-size: 0.8rem;
 
+  --input-background: #ffffff;
+  --input-placeholder-color: #00000040;
+
   // Table defaults
   --table-bg: #005fa3;
   --table-row: #006fbe;
@@ -70,12 +73,16 @@
   --header-background: #3c97e6;
   --header-text-color: #f0f8ff;
   --content-background: #a5c6e2;
+  --info-background: #ababab;
+
   --app-text-color: #f0f8ff;
 
   --button-box-shadow: 1px 1px 3px 1px #374960;
   --button-hover-text-color: #1677ff;
   --button-active-text-color: #1677ff;
   --button-active-background-color: #cfeffe;
+
+  --input-hover-box-shadow: 0px 0px 2px 2px #1890ff;
 
   --searchbar-background: #edf2f7;
   --searchbar-text-color: #939393;
@@ -101,12 +108,16 @@
   --header-background: #e1e1e1;
   --header-text-color: #1f2937;
   --content-background: #f1f1f1;
+  --info-background: #ababab;
+
   --app-text-color: #1f2937;
 
   --button-box-shadow: 1px 1px 3px 1px #374960;
   --button-hover-text-color: #1677ff;
   --button-active-text-color: #1677ff;
   --button-active-background-color: #cfeffe;
+
+  --input-hover-box-shadow: 0px 0px 2px 2px #1890ff;
 
   --searchbar-background: #edf2f7;
   --searchbar-text-color: #939393;
@@ -132,14 +143,17 @@
   --header-text-color: #d4d4d4;
   --main-block: #7c7c7c;
   --content-background: #393939;
+  --info-background: #ababab;
+
+  --app-text-color: #000000;
 
   --button-box-shadow: 1px 1px 3px 1px #000000ad;
   --button-hover-text-color: #000000;
   --button-active-text-color: #4b4b4b;
   --button-active-background-color: #a8a8a8;
 
-  --searchbar-background: #edf2f7;
-  --searchbar-text-color: #939393;
+  --input-hover-box-shadow: 0px 0px 2px 2px #00000000;
+
   --search-button-background: #edf2f7;
   --search-button-icon-color: #c8c8c8;
 

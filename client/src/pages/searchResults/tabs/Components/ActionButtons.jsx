@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 
-import Button from "@/components/Button";
+import Button from "../../../../components/Button";
 
 import { useAuth } from "@/context/AuthContext";
 
@@ -54,7 +54,7 @@ export const ActionButtons = ({
       </div>
       <Button
         text="Назад в список"
-        onClick={() => navigate('/patients')}
+        navigateTo="INDEX"
       />
     </div>
   )

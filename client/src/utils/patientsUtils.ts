@@ -36,14 +36,16 @@ export const getStateClass = (state: string) => {
   }
 };
 
-export const calculateAge = (birthDate: string): string => {
+export const calculateAge = (
+  birthDate: string | Date | null | undefined,
+): string => {
   if (!birthDate) return "";
-  try {
-    const [day, month, year] = birthDate.split(".");
-    const birth = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-    const today = moment();
-    const age = today.diff(birth, "years");
 
+  try {
+    const birth = moment.utc(birthDate);
+    if (!birth.isValid()) return "";
+
+    const age = moment.utc().diff(birth, "years");
     if (age < 0) return "";
 
     return `${age} ${getAgeSuffix(age)}`;

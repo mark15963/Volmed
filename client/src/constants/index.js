@@ -2,7 +2,7 @@ export * from "./patient-form.constants";
 export * from "./patient-status.constants";
 export * from "./select-options.constants";
 export * from "./config.constants";
-export * from "./tabs.constants"
+export * from "./tabs.constants";
 
 export const SERVICE = [
   {
@@ -15,7 +15,6 @@ export const SERVICE = [
 export const PAGES = {
   INDEX: "/",
   LOGIN: "/login",
-  PATIENTS: "/patients",
   SEARCH: "/search",
   REGISTER: "/register",
   EDIT: "/edit",

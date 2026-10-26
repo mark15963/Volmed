@@ -18,7 +18,7 @@ source "$LIB/common.sh"
 source "$LIB/deploy-functions.sh"
 
 step "1. Starting PostgreSQL (host service)..."
-start_postgres
+start_postgres || die "Postgres failed"
 
 step "2. Detecting current network IP..."
 find_ip
@@ -28,13 +28,13 @@ step "3. Building frontend..."
 build_frontend
 
 step "4. Building Docker images..."
-build_docker
+build_docker || die "Docker build failed"
 
 step "5. Starting Docker services..."
-start_docker_services
+start_docker_services || die "Docker start failed"
 
 step "6. Waiting for services to be healthy..."
-wait_healthy
+wait_healthy || die "Services never became healthy"
 
 step "7. Checking service status..."
 check_status

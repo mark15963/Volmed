@@ -68,7 +68,8 @@ export const PersonalInfoFields = ({ formValues, handleChange, safeMessage }) =>
             {SEX_OPTIONS.map(opt => (
               <Radio
                 key={opt.value}
-                style={{ color: 'aliceblue', fontWeight: '500' }}
+                className={styles.sexLabel}
+                // style={{ color: 'aliceblue', fontWeight: '500' }}
                 value={opt.value}
               >
                 {opt.label}

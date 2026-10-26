@@ -93,7 +93,7 @@ export function useSearchResultsManager({
         if (res.ok) {
           debug.success(`Patient id ${id} deleted successfilly`);
           safeMessage("success", "Пациент удален успешно!", 2.5);
-          setTimeout(() => navigate("/patients"), 1500);
+          setTimeout(() => navigate("/patients", { replace: true }), 1500);
         } else {
           throw new Error(res.message);
         }

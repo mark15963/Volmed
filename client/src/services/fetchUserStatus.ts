@@ -41,48 +41,17 @@ import api from "../services/api/index";
  * @returns {Promise<UserStatus>} Normalized user status object
  */
 export async function fetchUserStatus(): Promise<UserStatus> {
-  try {
-    const res = await api.status();
-    if (!res.ok) {
-      // Inform OfflineFallback that the server is unreachable
-      window.dispatchEvent(
-        new CustomEvent("connection-status", { detail: "server-error" }),
-      );
-
-      return {
-        ok: false,
-        offline: false,
-        isAuthenticated: false,
-        isAdmin: false,
-        user: null,
-        message: res.message,
-      };
-    }
-
-    const user = (res as any).data?.user || null;
-    const isAdmin = ["admin"].includes(user?.status);
-
-    return {
-      ok: true,
-      offline: false,
-      isAuthenticated: (res as any).data?.isAuthenticated ?? false,
-      isAdmin,
-      user,
-      message: res.message,
-    };
-  } catch (err: any) {
-    // Network error (VPN/offline)
-    window.dispatchEvent(
-      new CustomEvent("connection-status", { detail: "offline" }),
-    );
-
-    return {
-      ok: false,
-      offline: true,
-      isAuthenticated: false,
-      isAdmin: false,
-      user: null,
-      message: err.message,
-    };
-  }
+  const res = await api.status();
+  return {
+    ok: res.ok,
+    offline: res.offline === true,
+    isAuthenticated: res.ok
+      ? ((res as any).data?.isAuthenticated ?? false)
+      : false,
+    isAdmin: res.ok
+      ? ["admin"].includes((res as any).data?.user?.status)
+      : false,
+    user: res.ok ? ((res as any).data?.user ?? null) : null,
+    message: res.message,
+  };
 }

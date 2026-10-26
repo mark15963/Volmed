@@ -7,9 +7,12 @@ import App from './App.jsx'
 import { ConfigProvider } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
 import './index.css'
+import { initDebugBypass } from './utils/debugBypass';
 
 // Axios global config
 axios.defaults.withCredentials = true;
+
+initDebugBypass()
 
 createRoot(document.getElementById('root')).render(
   <ConfigProvider

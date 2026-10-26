@@ -18,6 +18,7 @@ export const apiInstance = axios.create({
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   validateStatus: () => true,
+  timeout: 10000, // Fail after 10s
 });
 
 if (isDev) {
