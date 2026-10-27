@@ -1,16 +1,15 @@
 //#region ===== IMPORTS =====
 import { IMaskInput } from 'react-imask';
 
-
 // TOOLS
-import { Input } from '../../../components';
-import { datePickerLocale } from '../../../utils'
+import { Input } from '@components';
+import { datePickerLocale } from '@utils'
 import { PhoneField } from './PhoneField';
 import {
   ADMISSION_TYPE_OPTIONS,
   SEX_OPTIONS,
   FORM_OF_CARE_OPTIONS
-} from '../../../constants';
+} from '@constants';
 
 // UI
 import { DatePicker, Radio, Form, Select } from 'antd';

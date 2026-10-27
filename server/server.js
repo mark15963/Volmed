@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 const { db, testDbConnection } = require("./config/db-connection");
 const { corsOptions, allowedOrigins } = require("./config/cors");
 const sessionConfig = require("./config/session");
+const { isAuth } = require("./middleware/auth");
 const { initCacheOnStartup } = require("./utils/initCache");
 const http = require("http");
 
@@ -47,6 +48,7 @@ app.use(sessionConfig);
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", isAuth, express.static(path.join(__dirname, "uploads")));
 app.use(
   "/assets",
   express.static(path.join(__dirname, "..", "client", "public", "assets")),

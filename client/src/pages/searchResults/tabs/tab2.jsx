@@ -4,20 +4,19 @@ import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { Upload, Form, Collapse } from "antd"
 const { Dragger } = Upload;
 
-import Input from '../../../components/Input';
+import { Input } from '@components';
 import Graph from './Components/Graph';
-import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
+import { SpinLoader } from '@components/UI/loaders/SpinLoader';
 
-import { usePatientFiles } from '../../../hooks/Patients/usePatientFiles';
-import { useSafeMessage } from '../../../hooks/useSafeMessage';
+import { usePatientFiles } from '@hooks/Patients/usePatientFiles';
+import { useSafeMessage } from '@hooks/useSafeMessage';
 
-import api from '../../../services/api/index'
-import debug from '../../../utils/debug';
+import api from '@services/api/index'
+import debug from '@utils/debug';
 
 import styles from './styles/tab2.module.scss'
+import { appConfig } from '@/config/app.config';
 //#endregion
-
-const apiUrl = import.meta.env.VITE_API_URL
 
 export const Tab2 = memo(({ id }) => {
   //#region -----HOOKS-----
@@ -266,20 +265,25 @@ export const Tab2 = memo(({ id }) => {
   const frame = (filePath) => {
     const fullPath = filePath.startsWith('http')
       ? filePath
-      : `${apiUrl}${filePath}`;
+      : filePath;
+
     setSelectedFile((prev) => (prev === fullPath ? null : fullPath));
   }
 
   const openFile = (filePath) => {
+    const fullPath = filePath.startsWith('http')
+      ? filePath
+      : filePath;
+
     debug.log(`Opening file from: ${filePath}`)
-    window.open(`${apiUrl}${filePath}`, '_blank');
+    window.open(filePath, '_blank');
   };
 
   const uploadProps = {
     name: 'file',
     multiple: true,
     fileList,
-    action: `${apiUrl}/api/patients/${id || 'temp'}/upload`,
+    action: `${appConfig.api.baseUrl}/patients/${id || 'temp'}/upload`,
     headers: { 'X-Requested-With': null },
     withCredentials: true,
     onChange(info) {
@@ -346,52 +350,54 @@ export const Tab2 = memo(({ id }) => {
               <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                 <SpinLoader size="30px" />
               </div>
-            ) : files.length === 0 && !isEditing ? (
-              <p style={{ cursor: 'default', textAlign: 'center', marginBottom: '10px' }}>
-                Нет загруженных документов
-              </p>
-            ) : !isEditing ? (
-              <>
-                <ul
-                  className={styles.fileContainer}
-                >
-                  {files.map((file, index) => (
-                    <li
-                      key={index}
-                      className={styles.fileItem}
-                      onClick={() => frame(file.path)}
+            )
+              : files.length === 0 && !isEditing ? (
+                <p style={{ cursor: 'default', textAlign: 'center', marginBottom: '10px' }}>
+                  Нет загруженных документов
+                </p>
+              )
+                : !isEditing ? (
+                  <>
+                    <ul
+                      className={styles.fileContainer}
                     >
-                      <span>{file.originalname || file.filename}</span>
-                      <span className={styles.fileSize}>
-                        {' '}{(file.size / 1024).toFixed(2)} KB
-                      </span>
-                      {selectedFile ? (
-                        <iframe
-                          src={selectedFile}
-                          height={400}
-                          width="100%"
-                          title='Документ'
-                          className={styles.frame}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-
-
-              </>
-            ) : (
-              <Form.Item className={styles.uploadArea}>
-                <Dragger {...uploadProps} className={styles.uploadListText}>
-                  <p className="ant-upload-drag-icon">
-                    <UploadOutlined />
-                  </p>
-                  <p className={styles.uploadAreaText}>Нажмите или перетащите файлы в эту область</p>
-                </Dragger>
-              </Form.Item>
-            )}
+                      {files.map((file, index) => (
+                        <li
+                          key={index}
+                          className={styles.fileItem}
+                          onClick={() => frame(file.path)}
+                        >
+                          <span>{file.originalname || file.filename}</span>
+                          <span className={styles.fileSize}>
+                            {' '}{(file.size / 1024).toFixed(2)} KB
+                          </span>
+                          {selectedFile ? (
+                            <iframe
+                              src={selectedFile}
+                              height={400}
+                              width="100%"
+                              title='Документ'
+                              className={styles.frame}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )
+                  : (
+                    <Form.Item className={styles.uploadArea}>
+                      {/* {debug.log('Rendering upload area')} */}
+                      <Dragger {...uploadProps} className={styles.uploadListText}>
+                        <p className="ant-upload-drag-icon">
+                          <UploadOutlined />
+                        </p>
+                        <p className={styles.uploadAreaText}>Нажмите или перетащите файлы в эту область</p>
+                      </Dragger>
+                    </Form.Item>
+                  )}
           </div>
         </div>
       </div>

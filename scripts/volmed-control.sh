@@ -23,6 +23,10 @@ while true; do
     echo "║  6) Update scripts                   ║"
     echo "║  7) Update code                      ║"
     echo "║  8) Open in Browser                  ║"
+    echo "║  9) Start DEV MODE                   ║"
+    echo "║  10) Stop DEV MODE                   ║"
+    echo "║  11) DEV MODE status                 ║"
+    echo "║  12) DEV MODE logs                   ║"
     echo "║                                      ║"
     echo "║  0) Exit                             ║"
     echo "╚══════════════════════════════════════╝"
@@ -35,7 +39,7 @@ while true; do
     fi
 
     echo ""
-    read -p "Select option [1-8, 0]: " choice
+    read -p "Select option [1-12, 0]: " choice
 
     case $choice in
         1)
@@ -82,12 +86,32 @@ while true; do
             echo ""
             read -p "Press Enter to return to menu..."
             ;;
+        9)
+            clear
+            echo "Starting app in DEV MODE..."
+            ./start-dev.sh
+            ;;
+        10)
+            clear
+            echo "Stopping app in DEV MODE..."
+            ./stop-dev.sh
+            ;;
+        11)
+            clear
+            echo "Checking DEV MODE status..."
+            ./status-dev.sh
+            ;;
+        12)
+            clear
+            echo "Showing DEV MODE logs (Ctrl+C to exit)..."
+            ./logs-dev.sh
+            ;;
         0)
             echo "Exiting..."
             exit 0
             ;;
         *)
-            error_message="Invalid option: '$choice'. Please select 1-8 or 0"
+            error_message="Invalid option: '$choice'. Please select 1-12 or 0"
             ;;
     esac
 done

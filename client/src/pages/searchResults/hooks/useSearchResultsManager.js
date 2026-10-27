@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import api from "../../../services/api/index";
-import debug from "../../../utils/debug";
+import api from "@services/api/index";
+import { debug } from "@utils";
 
 export function useSearchResultsManager({
   activeTab,
@@ -48,13 +48,12 @@ export function useSearchResultsManager({
       filesHook.files.length > 0 &&
       (!filesHook.fileList || filesHook.fileList.length === 0)
     ) {
-      const apiUrl = import.meta.env.VITE_API_URL;
       filesHook.setFileList(
         filesHook.files.map((file) => ({
           uid: file.path,
           name: file.originalname,
           status: "done",
-          url: `${apiUrl}${file.path}`,
+          url: file.path,
           response: { path: file.path },
         })),
       );

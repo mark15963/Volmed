@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router';
-import PatientInfoPage from '../../../components/PatientInfoPage';
+import PatientInfoPage from '@components/PatientInfoPage';
 import styles from '../searchResults.module.scss';
 
 const Tab1 = ({ data }) => {

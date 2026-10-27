@@ -1,12 +1,11 @@
 //#region === IMPORTS ===
 import { useState } from 'react';
 
-import Button from '../../../components/Button';
-import Input from '../../../components/Input';
+import { Button, Input } from '@components';
 import ErrorDisplay from './ErrorDisplay';
 
-import { useConfig } from '../../../context';
-import { debug } from '../../../utils/debug';
+import { useConfig } from '@context';
+import { debug } from '@utils';
 
 import styles from '../styles/login.module.scss';
 import '@/styles/index.scss'

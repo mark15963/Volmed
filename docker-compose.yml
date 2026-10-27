@@ -22,7 +22,7 @@ services:
     expose:
       - "5000"
     volumes:
-      # - ./server/uploads:/uploads
+      - ./server/uploads:/app/uploads
       - assets:/uploads/assets/images
     extra_hosts:
       - "host.docker.internal:host-gateway"

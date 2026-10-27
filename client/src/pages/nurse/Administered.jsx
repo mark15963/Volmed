@@ -4,15 +4,15 @@ import { useNavigate } from "react-router";
 import moment from 'moment';
 
 // Components
-import Button from "../../components/Button";
+import { Button } from "@components";
 
-import api from "../../services/api/index";
-import { debug, parseApiResponse } from "../../utils";
-import { useApi } from "../../hooks/useApi";
+import api from "@services/api/index";
+import { debug, parseApiResponse } from "@utils";
+import { useApi } from "@hooks/useApi";
 
 // UI
 import styles from "./administeredStyles.module.scss"
-import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
+import { SkeletonLoader } from "@components/UI/loaders/SkeletonLoader";
 //#endregion
 
 const Administered = () => {

@@ -1,5 +1,4 @@
-import debug from "../../../utils/debug";
-import type { ConnectionStatus } from "../../../custom-types";
+import type { ConnectionStatus } from "@custom-types";
 
 /**
  * dispatchConnectionStatus(status)

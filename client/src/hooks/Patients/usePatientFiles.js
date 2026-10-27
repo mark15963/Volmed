@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import api from "../../services/api/index";
-import debug from "../../utils/debug";
+import api from "@services/api/index";
+import debug from "@utils/debug";
 
 /**
  * Hook for managing a patient's uploaded files.
@@ -95,7 +95,7 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
           uid: file.path,
           name: file.originalname,
           status: "done",
-          url: `${import.meta.env.VITE_API_URL}${file.path}`,
+          url: file.path,
           response: { path: file.path },
         })),
       );

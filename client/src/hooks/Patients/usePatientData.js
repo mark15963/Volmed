@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import api from "../../services/api/index";
-import debug from "../../utils/debug";
-import { useApi } from "../useApi";
+import api from "@services/api/index";
+import debug from "@utils/debug";
+import { useApi } from "@hooks/useApi";
+import { CONFIG_DEFAULTS } from "@/constants";
 
 /**
  * usePatientData
@@ -60,7 +61,7 @@ import { useApi } from "../useApi";
 export function usePatientData(id, preloaded) {
   const preloadedPatient =
     preloaded?.patient || //From ListOfPatients
-    preloaded?.results?.[0] || // FromSearchBar
+    preloaded?.results?.[0] || // From SearchBar
     null;
 
   const isFromList = Boolean(preloaded?.patient);
@@ -113,7 +114,8 @@ export function usePatientData(id, preloaded) {
     document.title = title;
 
     return () => {
-      document.title = "ГБУ «Городская больница Волновахского района»";
+      // document.title = "ГБУ «Городская больница Волновахского района»";
+      document.title = CONFIG_DEFAULTS.GENERAL.TITLE || "VolMed";
     };
   }, [loading, error, patientData]);
 

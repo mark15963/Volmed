@@ -4,13 +4,13 @@ import { lazy, Suspense } from 'react'
 
 import { appRoutes } from "../../routes/appRoutes";
 import { useConfig } from '../../context'
-import { debug, usePageTitle } from "../../utils";
+import { debug, usePageTitle } from "@utils";
 
 // Components
 {/* Handicap loader */ }
-import Loader from "../../components/ui/loaders/Loader";
+import Loader from "@components/UI/loaders/Loader";
 import ProtectedRoute from './components/ProtectedRoute'
-import NetworkNotification from "../../components/ui/NetworkNotification";
+import NetworkNotification from "@/components/UI/networkNotification/NetworkNotification";
 
 // UI
 import styles from './content.module.scss'

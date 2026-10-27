@@ -2,22 +2,22 @@
 
 import { lazy } from "react";
 import ProtectedRoute from "../layouts/content/components/ProtectedRoute";
-import { PatientDataProvider, UsersDataProvider } from "../context";
+import { PatientDataProvider, UsersDataProvider } from "@context";
 
 //#region === PAGES ===
 const Main = lazy(() => import("../pages/main/Main"));
 const SearchResults = lazy(() =>
   import("../pages/searchResults/SearchResults")
 );
-const RegisterPatient = lazy(() => import("../pages/register/RegisterPatient"));
-const EditPatient = lazy(() => import("../pages/edit/EditPatient"));
-const Login = lazy(() => import("../pages/login/LoginPage"));
-const Administered = lazy(() => import("../pages/nurse/Administered"));
-const Discharged = lazy(() => import("../pages/nurse/Discharged"));
-const Hospitalized = lazy(() => import("../pages/nurse/Hospitalized"));
-const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
-const NotFound = lazy(() => import("../pages/NotFound"));
-const NurseDisplay = lazy(() => import("../pages/main(depricated)/components/NurseDisplay"));
+const RegisterPatient = lazy(() => import("@pages/register/RegisterPatient"));
+const EditPatient = lazy(() => import("@pages/edit/EditPatient"));
+const Login = lazy(() => import("@pages/login/LoginPage"));
+const Administered = lazy(() => import("@pages/nurse/Administered"));
+const Discharged = lazy(() => import("@pages/nurse/Discharged"));
+const Hospitalized = lazy(() => import("@pages/nurse/Hospitalized"));
+const Dashboard = lazy(() => import("@pages/dashboard/Dashboard"));
+const NotFound = lazy(() => import("@pages/NotFound"));
+const NurseDisplay = lazy(() => import("@pages/main(depricated)/components/NurseDisplay"));
 //#endregion
 
 /**

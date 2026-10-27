@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import moment from 'moment';
 
-import Button from "../../components/Button";
+import { Button } from "@components";
 
-import api from "../../services/api/index";
-import debug from "../../utils/debug";
-import { useAuth } from "../../context"
+import api from "@services/api/index";
+import { debug } from "@utils";
+import { useAuth } from "@context"
 
 import styles from "./hospitalizedStyles.module.scss"
-import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
+import { SkeletonLoader } from "@components/UI/loaders/SkeletonLoader";
 
 const Hospitalized = () => {
   const [patients, setPatients] = useState([])

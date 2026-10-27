@@ -4,7 +4,7 @@ import styles from './header.module.scss'
 
 import Title from "./components/Title";
 import UserContainer from "./components/UserContainer";
-import { useConfig } from "../../context";
+import { useConfig } from "@context";
 
 export const Header = memo(() => {
   const { color, theme } = useConfig()

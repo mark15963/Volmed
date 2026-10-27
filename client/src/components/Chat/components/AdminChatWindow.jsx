@@ -1,12 +1,10 @@
 import { useEffect, useRef } from "react"
 
-import Button from "../../Button"
-import Input from "../../Input"
-import { SpinLoader } from "../../ui/loaders/SpinLoader"
-import { formatChatTime } from "../../../utils/time"
+import { Input, Button } from "@components"
+import { SpinLoader } from "../../UI/loaders/SpinLoader"
+import { debug, formatChatTime } from "@utils"
 
 import styles from '../styles/Chat.module.scss'
-import debug from "../../../utils/debug"
 
 export const AdminChatWindow = ({
   activeChats,

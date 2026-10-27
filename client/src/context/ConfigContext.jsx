@@ -32,10 +32,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-import api from "../services/api/index";
-import { CONFIG_DEFAULTS } from "../constants"
-import debug from "../utils/debug";
-import { loadFromLocalStorage, saveToLocalStorage } from "../services/localStorage/localCache";
+import api from "@services/api/index";
+import { CONFIG_DEFAULTS } from "@constants"
+import debug from "@utils/debug";
+import { loadFromLocalStorage, saveToLocalStorage } from "@services/localStorage/localCache";
 
 const ConfigContext = createContext(null);
 

@@ -1,7 +1,7 @@
 // Used in PatientsCount.jsx
 import { FC, useState } from "react";
 import styles from "./TooltipHover.module.scss";
-import { TooltipHoverProps } from "../../interfaces";
+import { TooltipHoverProps } from "@interfaces";
 
 /**
  * TooltipHover component

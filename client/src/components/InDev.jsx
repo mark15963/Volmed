@@ -1,6 +1,6 @@
-import { useAuth } from '../context/AuthContext'
-import debug from '../utils/debug'
-import { SpinLoader } from './ui/loaders/SpinLoader'
+import { useAuth } from '@context/AuthContext'
+import debug from '@utils/debug'
+import { SpinLoader } from './UI/loaders/SpinLoader'
 
 const env = import.meta.env.VITE_ENV
 

@@ -2,13 +2,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-import { useAuth } from '../../context/AuthContext';
-import { fetchUserStatus } from "../../services/fetchUserStatus";
-import { debug } from "../../utils";
+import { useAuth } from '@context';
+import { fetchUserStatus } from "@services/fetchUserStatus";
+import { debug } from "@utils";
 
-import Loader from "../../components/ui/loaders/Loader";
+import Loader from "@components/UI/loaders/Loader";
 import LoginForm from "./components/LoginForm";
-import { SpinLoader } from "../../components/ui/loaders/SpinLoader";
+import { SpinLoader } from "@components/UI/loaders/SpinLoader";
 //#endregion
 
 export default function LoginPage() {
@@ -27,7 +27,7 @@ export default function LoginPage() {
     const checkAuth = async () => {
       const res = await fetchUserStatus()
 
-      if(!res.ok){
+      if (!res.ok) {
         debug.warn(`Auth check failed: ${res.message}`)
         setErrors({
           general: "Authentification service unavailable"
@@ -40,7 +40,7 @@ export default function LoginPage() {
       }
 
       setErrors({})
-      
+
       // Redirect to home if user came from another page
       if (res.isAuthenticated) {
         navigate('/')

@@ -1,4 +1,4 @@
-import useChat from "../../../hooks/Chat/useChat";
+import { useChat } from "@hooks/Chat/useChat";
 import AdminChatWindow from "./AdminChatWindow";
 
 const AdminChat = () => {

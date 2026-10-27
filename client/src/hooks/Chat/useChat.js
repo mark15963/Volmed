@@ -4,8 +4,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 
-import api from "../../services/api/index";
-import debug from "../../utils/debug";
+import api from "@services/api/index";
+import debug from "@utils/debug";
 //#endregion
 
 /**

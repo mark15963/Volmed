@@ -5,12 +5,12 @@ import { createPortal } from "react-dom";
 
 import UserChat from "./components/UserChat";
 import AdminChat from "./components/AdminChat";
-import Button from "../Button";
+import Button from "@components/UI/button/Button";
 import { useAuth } from "../../context";
-import { useOnClickOutside } from "../../hooks/UX/useOnClickOutside";
+import { useOnClickOutside } from "@hooks/UX/useOnClickOutside";
 
 import styles from "./styles/chatWidget.module.scss";
-import debug from "../../utils/debug";
+import debug from "@utils/debug";
 //#endregion
 
 export const ChatWidget = memo(() => {

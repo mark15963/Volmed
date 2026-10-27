@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Graph from "../../searchResults/tabs/Components/Graph"
-import { debug } from "../../../utils"
-import { SpinLoader } from "../../../components/ui/loaders/SpinLoader"
+import { debug } from "@utils"
+import { SpinLoader } from "@components/UI/loaders/SpinLoader"
 
 export const UserData = ({ user, onClose }) => {
 

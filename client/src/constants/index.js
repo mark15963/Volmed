@@ -3,6 +3,10 @@ export * from "./patient-status.constants";
 export * from "./select-options.constants";
 export * from "./config.constants";
 export * from "./tabs.constants";
+export * from "./users.constants";
+import { useNavigate } from "react-router";
+
+const navigate = useNavigate();
 
 export const SERVICE = [
   {
@@ -24,16 +28,4 @@ export const PAGES = {
   DASHBOARD: "/dashboard",
   NOTFOUND: "/*",
   NURSE: "/nurse-menu",
-};
-
-// Interface of .env from /src/env.d.ts
-export const appConfig = {
-  appName: import.meta.env.VITE_APP_NAME ?? "",
-  api: {
-    baseUrl: `https://${import.meta.env.VITE_API_URL}/api`,
-    socketUrl: `https://${import.meta.env.VITE_API_URL}`,
-  },
-
-  isDev: import.meta.env.VITE_ENV === "development",
-  isDebug: import.meta.env.VITE_DEBUG === "true",
 };

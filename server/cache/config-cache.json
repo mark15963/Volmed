@@ -6,11 +6,11 @@
       "contentColor": "#a5c6e2",
       "containerColor": "#0073c7"
     },
-    "logoUrl": "",
     "theme": {
       "tableTheme": "light",
       "appTheme": "dark"
-    }
+    },
+    "logoUrl": ""
   },
-  "timestamp": 1792965436591
+  "timestamp": 1793052058458
 }

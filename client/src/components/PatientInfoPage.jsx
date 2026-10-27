@@ -1,12 +1,20 @@
-import { Block } from '../pages/searchResults/tabs/Components/Block';
-import { Divider } from 'antd';
 import moment from 'moment';
-import { formatPhoneForServer } from '../utils';
-import styles from '../pages/searchResults/searchResults.module.scss';
+import { Block } from '@pages/searchResults/tabs/Components/Block';
+import { Divider } from 'antd';
+import { formatPhoneForServer } from '@utils';
+
+import styles from '@pages/searchResults/searchResults.module.scss';
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 dayjs.extend(utc)
 
+/**
+ * Renders the information page for a specific patient.
+ * @param {Object} props - The component props.
+ * @param {Object} props.patient - The patient data.
+ * @param {Object} props.data - Additional data.
+ * @returns {JSX.Element} The rendered component.
+ */
 export const PatientInfoPage = ({ patient, data }) => {
   return (
     <div className={styles.bg}>
@@ -129,6 +137,11 @@ export const PatientInfoPage = ({ patient, data }) => {
         <Block
           text="Сопутствующие заболевания:"
           content={patient.sop_zab}
+        />
+        <br />
+        <Block
+          text="Аллергии:"
+          content={patient.allergies}
         />
         <br />
         <Block

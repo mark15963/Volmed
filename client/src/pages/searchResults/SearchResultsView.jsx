@@ -3,14 +3,14 @@
 
 //#region ===== IMPORTS =====
 import React, { lazy, Suspense, useMemo } from "react";
-import { Menu } from "../../components/Menu";
+import { Tabs } from "@components/UI/tabs/Tabs";
+import { SpinLoader } from "@components/UI/loaders/SpinLoader";
 import ActionButtons from "./tabs/Components/ActionButtons";
 import ErrorState from "./tabs/Components/States/ErrorState";
 import NotFoundState from "./tabs/Components/States/NotFoundState";
-import { SpinLoader } from "../../components/ui/loaders/SpinLoader";
 
-// Menu tabs
-import { SEARCH_RESULT_TABS } from "../../constants";
+// Tabs
+import { SEARCH_RESULT_TABS } from "@constants";
 import Tab1 from "./tabs/tab1";
 const Tab2 = lazy(() => import('./tabs/tab2'))
 const Tab3 = lazy(() => import('./tabs/tab3'))
@@ -147,7 +147,7 @@ const SearchResultsView = ({
           : `Карта пациента №${id}`}
       </span>
 
-      <Menu
+      <Tabs
         items={SEARCH_RESULT_TABS}
         activeTab={activeTab}
         onTabChange={setActiveTab}

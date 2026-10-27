@@ -2,8 +2,8 @@
 // - AuthContext.jsx
 // - LoginPage.jsx
 
-import { UserStatus } from "../interfaces/UserInterface";
-import api from "../services/api/index";
+import { UserStatus } from "@interfaces/UserInterface";
+import api from "@services/api/index";
 
 /**
  * FETCH USER STATUS

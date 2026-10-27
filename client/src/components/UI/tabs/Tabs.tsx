@@ -1,38 +1,36 @@
 // Tabs names in constants
-import styles from './styles/Menu.module.scss'
+import styles from "./Tabs.module.scss";
 
-type MenuItem = {name: string};
+type TabsItem = { name: string };
 type CardProps = {
-  name: string,
-  isActive: boolean,
+  name: string;
+  isActive: boolean;
   onClick: () => void;
-}
-type MenuProps = {
-  items?: MenuItem[];
+};
+type TabsProps = {
+  items?: TabsItem[];
   activeTab?: number;
   onTabChange?: (index: number) => void;
-}
+};
 
 export const Card = ({ name, isActive, onClick }: CardProps) => {
   return (
     <div
-      className={`${styles.menuCard} ${isActive ? styles.active : ''}`}
+      className={`${styles.tabsCard} ${isActive ? styles.active : ""}`}
       onClick={onClick}
     >
-      <h3 style={{ margin: '4px 0' }}>
-        {name}
-      </h3>
+      <h3 style={{ margin: "4px 0" }}>{name}</h3>
     </div>
-  )
-}
+  );
+};
 
-export const Menu = ({ 
-  items = [], 
-  activeTab = 0, 
-  onTabChange = () => {} 
-}: MenuProps) => {
+export const Tabs = ({
+  items = [],
+  activeTab = 0,
+  onTabChange = () => {},
+}: TabsProps) => {
   return (
-    <div className={styles.menuContainer}>
+    <div className={styles.tabsContainer}>
       {items.map((item, index) => (
         <Card
           key={index}

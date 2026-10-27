@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { TooltipHover } from "../../../components/ui/TooltipHover";
+import { TooltipHover } from "@/components/UI/tooltipHover/TooltipHover";
 
-import debug from "../../../utils/debug";
-import api from "../../../services/api/index";
+import debug from "@utils/debug";
+import api from "@services/api/index";
 
 import styles from './styles/patientList.module.scss'
 //#endregion

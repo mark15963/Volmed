@@ -2,7 +2,7 @@
 // - Administered.jsx
 
 import { useState, useEffect } from "react";
-import debug from "../utils/debug";
+import debug from "@utils/debug";
 
 /**
  * useApi()
@@ -60,7 +60,7 @@ export function useApi(apiFn, params = [], deps = []) {
 
     // ✅ Skip API call if params contain falsy values (undefined, null, '')
     const shouldFetch = params.every(
-      (p) => p !== undefined && p !== null && p !== ""
+      (p) => p !== undefined && p !== null && p !== "",
     );
     if (!shouldFetch) {
       debug.log("[useApi] Skipping fetch because params not ready:", params);
@@ -79,7 +79,7 @@ export function useApi(apiFn, params = [], deps = []) {
 
         if (res.ok) {
           setData(
-            res.patients || res.patient || res.data || res.medications || []
+            res.patients || res.patient || res.data || res.medications || [],
           );
         } else {
           setError(res.message || "Ошибка при получении данных");

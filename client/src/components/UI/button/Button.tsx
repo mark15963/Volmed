@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, CSSProperties, FC } from "react";
 import { useNavigate } from "react-router";
 
-import { PAGES } from "../constants";
-import { debug } from "../utils";
+import { PAGES } from "@constants";
+import { debug } from "@utils";
 
 import {
   LoginOutlined,
@@ -13,7 +13,7 @@ import {
   UserAddOutlined,
 } from "@ant-design/icons";
 import { MessagesSquare } from "lucide-react";
-import "./styles/Button.scss";
+import "./Button.scss";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Callback fired when the button is clicked. */

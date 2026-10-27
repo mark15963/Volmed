@@ -17,15 +17,15 @@ export const PATIENT_STATE_OPTIONS = [
   { value: "Удовлетворительно", label: "Удовлетворительно" },
   { value: "Средней степени тяжести", label: "Средней степени тяжести" },
   { value: "Тяжёлое", label: "Тяжёлое" },
-  { value: "Крайне тяжелое", label: "Крайне тяжелое" },
+  { value: "Крайне тяжёлое", label: "Крайне тяжёлое" },
   { value: "Выписан", label: "Выписан" },
 ];
 export const PATIENT_STATES = {
-  SATISFACTORY:     'Удовлетворительно',
-  MODERATE:         'Средней степени тяжести',
-  SEVERE:           'Тяжёлое',
-  CRITICAL:         'Крайне тяжелое',
-  DISCHARGED:       'Выписан',
+  SATISFACTORY: "Удовлетворительно",
+  MODERATE: "Средней степени тяжести",
+  SEVERE: "Тяжёлое",
+  CRITICAL: "Крайне тяжёлое",
+  DISCHARGED: "Выписан",
 } as const;
 
-export type PatientState = typeof PATIENT_STATES[keyof typeof PATIENT_STATES]
+export type PatientState = (typeof PATIENT_STATES)[keyof typeof PATIENT_STATES];

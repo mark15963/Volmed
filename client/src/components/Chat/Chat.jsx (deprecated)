@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import Input from "./Input";
+import Input from "../Input";
 import Button from "./Button";
 
 const socket = io.connect(import.meta.env.VITE_API_URL_SOCKET)

@@ -1,19 +1,18 @@
-// Use in components to get state & login/logout
-
 //#region ===== IMPORTS =====
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 
-import api from "../services/api/index";
+import api from "@services/api/index";
 
-import debug from "../utils/debug";
-import { parseApiError, parseApiResponse } from "../utils";
-import { fetchUserStatus } from "../services/fetchUserStatus";
-import { useSafeMessage } from "../hooks/useSafeMessage";
+import debug from "@utils/debug";
+import { parseApiError, parseApiResponse } from "@utils";
+import { fetchUserStatus } from "@services/fetchUserStatus";
+import { useSafeMessage } from "@hooks/useSafeMessage";
 //#endregion
 
 const AuthContext = createContext();
 
+/** Use in components to get state & login/logout */
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
@@ -261,6 +260,7 @@ export const AuthProvider = ({ children }) => {
   );
 }
 
+/** Use in components to get state & login/logout */
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {

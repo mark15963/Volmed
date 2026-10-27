@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router'
 
 import { PatientCount } from './components/PatientsCount'
-import { SearchBar, Button, ListOfPatients } from '../../components'
+import { SearchBar, Button } from '@components'
+import { ListOfPatients } from '@components/tables/ListOfPatients'
 
 import styles from './main.module.scss'
 import '@/layouts/content/content.module.scss'

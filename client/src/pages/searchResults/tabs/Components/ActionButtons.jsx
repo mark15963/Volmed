@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
 
-import Button from "../../../../components/Button";
+import Button from "@components/UI/button/Button";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@context/AuthContext";
 
 import styles from '../../searchResults.module.scss'
 

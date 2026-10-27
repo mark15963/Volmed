@@ -5,16 +5,15 @@ import axios from 'axios';
 import { message } from 'antd';
 import { CalendarTwoTone, FieldTimeOutlined, MedicineBoxTwoTone } from '@ant-design/icons';
 
-import { useSafeMessage } from '../../../hooks/useSafeMessage';
+import { useSafeMessage } from '@hooks/useSafeMessage';
 
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
+import { Button, Input } from '@components';
 
-import { SpinLoader } from '../../../components/ui/loaders/SpinLoader';
+import { SpinLoader } from '@components/UI/loaders/SpinLoader';
 import styles from './styles/tab3.module.scss'
 
-import api from '../../../services/api/index';
-import debug from '../../../utils/debug';
+import api from '@services/api/index';
+import debug from '@utils/debug';
 //#endregion
 
 axios.defaults.withCredentials = true;

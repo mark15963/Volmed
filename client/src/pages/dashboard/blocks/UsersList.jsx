@@ -1,28 +1,24 @@
 //#region === IMPORTS ===
 import { useEffect, useState } from 'react'
 
-import { useAuth } from '../../../context'
-import { useUsers } from "../../../context/UsersDataContext"
+import { useAuth, useUsers } from '@context'
 
-import { usePerItemLoading } from '../../../hooks/usePerItemLoading'
-import { useSafeMessage } from '../../../hooks/useSafeMessage'
+import { usePerItemLoading } from '@hooks/usePerItemLoading'
+import { useSafeMessage } from '@hooks/useSafeMessage'
 
-import Button from '../../../components/Button'
-import { SpinLoader } from '../../../components/ui/loaders/SpinLoader'
+import { Button } from '@components'
+import { SpinLoader } from '@components/UI/loaders/SpinLoader'
 
-import { statusDisplayMap, displayStatusMap } from "../../../utils/statusMap"
-import api from '../../../services/api/index'
+import {
+  statusDisplayMap,
+  displayStatusMap,
+  USER_STATUS_OPTIONS
+} from "@constants"
+import api from '@services/api/index'
 
 import styles from './styles/UsersList.module.scss'
 import { UserData } from '../pages/UserData'
 //#endregion
-
-const statusOptions = [
-  'Администратор',
-  'Тестировщик',
-  'Сестра',
-  'Врач'
-]
 
 const UsersList = () => {
   //#region === CONSTS ===

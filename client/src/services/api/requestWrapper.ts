@@ -1,8 +1,9 @@
-import { dispatchConnectionStatus } from "../../components/ui/utils/connectionEvent";
-import { parseApiResponse, parseApiError, debug } from "../../utils";
+import { dispatchConnectionStatus } from "@utils/connectionEvent";
+
+import { parseApiResponse, parseApiError, debug } from "@utils";
 import apiInstance from "./axiosInstance";
 
-const RETRY_DELAYS = [3000, 3000, 3000, 3000, 3000];
+const RETRY_DELAYS = [5000, 5000, 5000, 5000, 5000];
 
 /**
  * requestWrapper()

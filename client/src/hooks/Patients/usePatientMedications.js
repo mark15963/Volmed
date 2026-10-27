@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-import api from "../../services/api/index";
-import debug from "../../utils/debug";
+import api from "@services/api/index";
+import debug from "@utils/debug";
 
 export function usePatientMedications(patientId, safeMessage) {
   const [medications, setMedications] = useState([]);

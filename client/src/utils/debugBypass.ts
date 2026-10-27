@@ -1,6 +1,7 @@
-import { fetchUserStatus } from "../services/fetchUserStatus";
+import { fetchUserStatus } from "@services/fetchUserStatus";
 import { enableDebug } from "./debug";
 
+/** Bypass debug initialization for admin users */
 export async function initDebugBypass(): Promise<void> {
   if (import.meta.env.VITE_DEBUG === "true") return;
 

@@ -1,5 +1,5 @@
-import { SpinLoader } from "@/components/ui/loaders/SpinLoader"
-import { usePatients, useUsers } from '../../../context'
+import { SpinLoader } from "@components/UI/loaders/SpinLoader"
+import { usePatients, useUsers } from '@context'
 
 import styles from '../../dashboard/dashboard.module.scss'
 
@@ -8,7 +8,7 @@ export const PatientsStatus = () => {
   const safePatients = patients ?? []
 
   const countPatients = safePatients.length
-  const stablePatients = safePatients.filter(patient => patient.state === 'Стабильно').length
+  const stablePatients = safePatients.filter(patient => patient.state === 'Удовлетворительно').length
   const dischargedPatients = safePatients.filter(
     patient => patient.state === 'Выписан' ||
       patient.state === 'Выписана'

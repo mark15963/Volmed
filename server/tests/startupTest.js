@@ -37,8 +37,10 @@ async function retryOperation(operation, maxRetries = 3, delayMs = 1000) {
 // Create axios instance that accepts self-signed certs
 const createAxiosInstance = (cookies = []) => {
   const instance = axios.create({
+    // Accept self-signed certificates when using HTTPS.
+    // This option has no effect on ordinary HTTP requests.
     httpsAgent: new https.Agent({
-      rejectUnauthorized: false, // Accept self-signed certificates
+      rejectUnauthorized: false,
     }),
   });
 
@@ -53,6 +55,7 @@ const createAxiosInstance = (cookies = []) => {
 async function runStartupTests() {
   //#region ===== CONSTS =====
   const BASE_URL = process.env.BACKEND_URL;
+  debug.log(`[Startup tests] BACKEND_URL=${BASE_URL}`);
   const username = "test";
   const password = `test321`;
 
@@ -108,6 +111,11 @@ async function runStartupTests() {
         { withCredentials: true },
       );
       cookies = loginRes.headers["set-cookie"] || [];
+      debug.log(
+        `[Startup tests] Cookies received: ${
+          cookies.map((cookie) => cookie.split("=")[0]).join(", ") || "(none)"
+        }`,
+      );
       logTestResult("Login", loginRes.data.success === true);
     } catch (err) {
       logTestResult("Login", false);

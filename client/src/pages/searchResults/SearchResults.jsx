@@ -7,14 +7,14 @@ import React, { useState } from 'react'
 import SearchResultsView from './SearchResultsView.jsx'
 
 // Local Hooks
-import { useSafeMessage } from '../../hooks/useSafeMessage.js'
+import { useSafeMessage } from '@hooks/useSafeMessage.js'
 import { useSearchResultsManager } from './hooks/useSearchResultsManager.js'
-import { usePatientFiles } from '../../hooks/Patients/usePatientFiles.js'
-import { usePatientData } from '../../hooks/Patients/usePatientData.js'
-import { usePatientMedications } from '../../hooks/Patients/usePatientMedications.js'
+import { usePatientFiles } from '@hooks/Patients/usePatientFiles.js'
+import { usePatientData } from '@hooks/Patients/usePatientData.js'
+import { usePatientMedications } from '@hooks/Patients/usePatientMedications.js'
 
 // Utils
-import debug from '../../utils/debug.js'
+import { debug } from '@utils'
 //#endregion
 
 //#region ===== Constants =====

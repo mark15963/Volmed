@@ -69,7 +69,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
     doctor,
     diag,
     state,
-    allergy = "Неизвестно",
+    allergies = "Неизвестно",
   } = patient;
 
   const mkbCode = extractMkbCode(diag);
@@ -79,6 +79,9 @@ export const PatientsListRow: FC<PatientRowProps> = ({
 
   const displayAge = calculateAge(birthDate);
   const stateClassName = styles[getStateClass(state)] || "";
+
+  const displayOrUnknown = (value: string | null | undefined) =>
+    value?.trim() || "Неизвестно";
 
   const handleClick = () => {
     if (onRowClick === "navigate") {
@@ -117,7 +120,7 @@ export const PatientsListRow: FC<PatientRowProps> = ({
       <td>{doctor || "-"}</td>
       <td>{mkbCode}</td>
       <td className={stateClassName}>{state}</td>
-      <td>{allergy}</td>
+      <td>{displayOrUnknown(allergies)}</td>
     </tr>
   );
 };

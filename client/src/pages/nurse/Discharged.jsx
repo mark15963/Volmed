@@ -4,13 +4,13 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import moment from 'moment';
 
-import Button from "../../components/Button";
+import { Button } from "@components";
 
-import api from "../../services/api";
-import debug from "../../utils/debug";
+import api from "@services/api";
+import debug from "@utils/debug";
 
 import styles from "./dischargedStyles.module.scss"
-import { SkeletonLoader } from "../../components/ui/loaders/SkeletonLoader";
+import { SkeletonLoader } from "@components/UI/loaders/SkeletonLoader";
 //#endregion
 
 const Discharged = () => {

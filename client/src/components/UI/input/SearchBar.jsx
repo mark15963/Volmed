@@ -2,15 +2,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { Button, Input } from './'
+import { Button, Input } from '@components'
 
-import { useSafeMessage } from '../hooks/useSafeMessage';
+import { useSafeMessage } from '@hooks/useSafeMessage';
 
-import api from '../services/api/index';
-import { debug } from '../utils';
+import api from '@services/api/index';
+import { debug } from '@utils';
 
-import styles from './styles/SearchBar.module.scss'
-import { useConfig } from '../context';
+import styles from './SearchBar.module.scss'
+import { useConfig } from '@context';
 //#endregion
 
 export const SearchBar = () => {

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-import type { ConnectionStatus } from "../../../custom-types";
-import debug from "../../../utils/debug";
+import type { ConnectionStatus } from "@custom-types";
+import debug from "@utils/debug";
 
 interface UseConnectionEventsOptions {
   onStatusChange: (status: ConnectionStatus) => void;

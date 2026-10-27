@@ -7,7 +7,7 @@ import UserChat from "../Chat/components/UserChat"
 import AdminChat from "../Chat/components/AdminChat"
 import SideMenu from "./SideMenu"
 
-import debug from "../../utils/debug"
+import { debug } from "@utils"
 
 import { Dropdown } from "antd"
 import styles from './styles/sideMenu.module.css'

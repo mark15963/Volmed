@@ -3,10 +3,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 import styles from "./NetworkNotification.module.scss";
 
-import type { ConnectionStatus } from "../../custom-types";
-import type { OfflineFallbackProps } from "../../interfaces";
+import type { ConnectionStatus } from "@custom-types";
+import type { OfflineFallbackProps } from "@interfaces";
 
-import { useConnectionEvents } from "../../components/ui/hooks/useConnectionEvents";
+import { useConnectionEvents } from "@hooks/useConnectionEvents";
 
 const OFFLINE_FAMILY: readonly ConnectionStatus[] = [
   "offline",

@@ -7,14 +7,14 @@ import { PatientsStatus, UsersStatus } from "./blocks/Status"
 import UsersList from "./blocks/UsersList"
 
 //
-import { useConfig } from "../../context"
-import { PAGES } from "@/constants"
+import { useConfig } from "@context"
+import { PAGES } from "@constants"
 
 // Components
 import Block from "./components/Block"
 import Row from "./components/Row"
-import Button from "@/components/Button"
-import { ListOfPatients } from "../../components/tables/ListOfPatients"
+import { Button } from "@components"
+import { ListOfPatients } from "@components/tables/ListOfPatients"
 
 // UI
 import styles from './dashboard.module.scss'

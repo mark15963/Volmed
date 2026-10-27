@@ -14,7 +14,7 @@ const sessionConfig = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV !== "production",
+    secure: process.env.NODE_ENV === "production",
     domain: process.env.COOKIE_DOMAIN || undefined,
     httpOnly: true,
     sameSite: isDev ? "lax" : "none",

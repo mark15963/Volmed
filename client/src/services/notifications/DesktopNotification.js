@@ -14,7 +14,7 @@
 //---------------------------------------------------------------
 //#endregion
 
-import { debug } from "../../utils/debug";
+import { debug } from "@utils";
 
 export default {
   requestPermission: () => {

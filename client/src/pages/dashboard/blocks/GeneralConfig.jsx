@@ -2,14 +2,13 @@
 import { useEffect } from "react"
 
 // Components
-import Button from "../../../components/Button"
-import Input from "../../../components/Input"
+import { Button, Input } from "@components"
 
 // Tools
-import { useSafeMessage } from "../../../hooks/useSafeMessage"
+import { useSafeMessage } from "@hooks/useSafeMessage"
 import { useEditGeneralConfig } from "./hooks/EditGeneralConfig.hooks"
-import { useConfig } from "../../../context"
-import debug from "../../../utils/debug"
+import { useConfig } from "@context"
+import { debug } from "@utils"
 
 // UI
 import styles from "./styles/GeneralConfig.module.scss"

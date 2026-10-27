@@ -9,8 +9,8 @@ interface ConfigDefaultValues {
     };
     LOGO: string;
     THEME: {
-      TABLE: 'default' | 'light' | 'dark';
-      APP: 'default' | 'light' | 'dark';
+      TABLE: "default" | "light" | "dark";
+      APP: "default" | "light" | "dark";
     };
   };
 }
@@ -29,7 +29,7 @@ export const CONFIG_DEFAULTS: ConfigDefaultValues = {
       APP: "default",
     },
   },
-};
+} satisfies ConfigDefaultValues;
 
 export const CONFIG_KEYS = {
   TITLE: "general.title",
@@ -40,7 +40,7 @@ export const CONFIG_KEYS = {
   },
   LOGO: "general.logoUrl",
   THEME: {
-    TABLE: "general.theme",
-    APP: "general.theme",
+    TABLE: "general.theme.table",
+    APP: "general.theme.app",
   },
 };

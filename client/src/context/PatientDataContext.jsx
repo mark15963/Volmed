@@ -51,6 +51,11 @@ export const PatientDataProvider = ({ children }) => {
   )
 }
 
+/**
+ * Fetching patients data and saving it to localStorage. This hook provides the patients data, loading state, error state, and a refresh function to re-fetch the data.
+ * @returns {Object} - An object containing patients data, loading state, error state, and a refresh function.
+ * @throws {Error} - Throws an error if used outside of PatientDataProvider.
+ */
 export const usePatients = () => {
   const context = useContext(PatientDataContext)
   if (!context) {

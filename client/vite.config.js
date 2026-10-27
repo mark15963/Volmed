@@ -15,29 +15,35 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-      "@custom-types": path.resolve(import.meta.dirname, "./src/custom-types"),
-      "@interfaces": path.resolve(import.meta.dirname, "./src/interfaces"),
-      "@components": path.resolve(import.meta.dirname, "./src/components"),
+      "@": path.resolve(dirname, "src"),
+      "@custom-types": path.resolve(dirname, "src/custom-types"),
+      "@interfaces": path.resolve(dirname, "src/interfaces"),
+      "@components": path.resolve(dirname, "src/components"),
+      "@hooks": path.resolve(dirname, "src/hooks"),
+      "@services": path.resolve(dirname, "src/services"),
+      "@utils": path.resolve(dirname, "src/utils"),
+      "@pages": path.resolve(dirname, "src/pages"),
+      "@context": path.resolve(dirname, "src/context"),
+      "@constants": path.resolve(dirname, "src/constants"),
     },
   },
   base: "/",
   envDir: "./",
   server: {
     host: "0.0.0.0",
-    port: 3000,
+    port: 5173,
     watch: {
       usePolling: true,
       interval: 1000,
     },
     proxy: {
       "/api": {
-        target: "https://localhost:5000",
+        target: "http://backend:5000",
         changeOrigin: true,
         secure: false,
       },
       "/socket.io": {
-        target: "https://localhost:5000",
+        target: "http://backend:5000",
         ws: true,
         changeOrigin: true,
         secure: false,
@@ -87,7 +93,7 @@ export default defineConfig({
           @use "@/styles/mixins" as *; 
           @use "@/styles/variables" as *;
           `,
-        includePaths: [path.resolve(import.meta.dirname, "src")],
+        includePaths: [path.resolve(dirname, "src")],
       },
     },
   },

@@ -1,4 +1,4 @@
-import { debug } from '../../../utils/debug'
+import { debug } from '@utils';
 import styles from '../styles/login.module.scss'
 
 const ErrorDisplay = ({ errors }) => {

@@ -24,6 +24,7 @@ export interface PatientFormValues {
   sop_zab: string;
   rec: string;
   state: string;
+  allergies?: string;
 }
 
 export type PatientApiPayload = Omit<PatientFormValues, "birthDate"> & {
@@ -55,7 +56,8 @@ export const PATIENT_FORM_INITIAL_VALUES: PatientFormValues = {
   sop_zab: "",
   rec: "",
   state: "Удовлетворительно",
-} as const;
+  allergies: "Неизвестно",
+};
 
 // ──────────────────────────────────────────────
 // Fields that should become empty string if undefined/null

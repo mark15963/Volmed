@@ -18,7 +18,7 @@ const makePatient = (overrides: Partial<PatientRowProps["patient"]> = {}) =>
     room: "301",
     doctor: "Винер М.И.",
     diag: "I21.0",
-    state: "Удовлетворительное",
+    state: "Удовлетворительно",
     allergy: "-",
     ...overrides,
   }) as PatientRowProps["patient"];
@@ -41,34 +41,34 @@ const meta = {
   decorators: [
     (Story) => (
       <MemoryRouter>
-      <div style={{ width: "fit-content" }}>
-        <table className={styles.table}>
-          <thead>
-            <tr className={styles.rows}>
-              <th>#</th>
-              <th>ФИО</th>
-              <th>Возраст</th>
-              <th>Пол</th>
-              <th>Дата поступления</th>
-              <th>Отделение/Палата</th>
-              <th>Лечащий врач</th>
-              <th>Основной Диагноз (МКБ)</th>
-              <th>Общее состояние</th>
-              {/*  
-                · зелёный - Удовлетворительное 
+        <div style={{ width: "fit-content" }}>
+          <table className={styles.table}>
+            <thead>
+              <tr className={styles.rows}>
+                <th>#</th>
+                <th>ФИО</th>
+                <th>Возраст</th>
+                <th>Пол</th>
+                <th>Дата поступления</th>
+                <th>Отделение/Палата</th>
+                <th>Лечащий врач</th>
+                <th>Основной Диагноз (МКБ)</th>
+                <th>Общее состояние</th>
+                {/*  
+                · зелёный - Удовлетворительно 
                 · жёлтый - Средней степени тяжести 
                 · оранжевый - Тяжёлое
                 · красный - Крайне тяжёлое 
                 · #86e5ffbf - Выписан / Переведён / Отказ от госпитализации
               */}
-              <th>Риски/Аллергии</th>
-            </tr>
-          </thead>
-          <tbody>
-            <Story />
-          </tbody>
-        </table>
-      </div>
+                <th>Риски/Аллергии</th>
+              </tr>
+            </thead>
+            <tbody>
+              <Story />
+            </tbody>
+          </table>
+        </div>
       </MemoryRouter>
     ),
   ],
@@ -108,7 +108,7 @@ export const ManyRows: Story = {
           doctor: "Оборовский В.Д.",
           diag: "I21.0",
           state: "Средней степени тяжести",
-          allergy: "-"
+          allergy: "-",
         })}
         onRowClick="navigate"
       />
@@ -118,7 +118,7 @@ export const ManyRows: Story = {
           id: 1894,
           lastName: "Смирнов",
           firstName: "Дмитрий",
-          patr:"Александрович",
+          patr: "Александрович",
           birthDate: "1965-09-14",
           sex: "M",
           created_at: "08.01.2026",
@@ -126,7 +126,7 @@ export const ManyRows: Story = {
           doctor: "Оборовский В.Д.",
           diag: "I21.0",
           state: "Крайне тяжёлое",
-          allergy: "Пенициллин"
+          allergy: "Пенициллин",
         })}
         onRowClick="navigate"
       />
@@ -144,7 +144,7 @@ export const ManyRows: Story = {
           doctor: "Винер М.И.",
           diag: "I21.0",
           state: "Выписан",
-          allergy: "-"
+          allergy: "-",
         })}
         onRowClick="navigate"
       />

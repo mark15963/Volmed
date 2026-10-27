@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "react-router";
 import { useAuth } from "../../../context";
-import { ContextMenu } from "../../../components/admin/ContextMenu";
+import { ContextMenu } from "@components/admin/ContextMenu";
 
 import styles from '../header.module.scss'
-import Button from "../../../components/Button";
+import { Button } from "@components";
 import { useCallback, useState } from "react";
 
 const UserContainer = () => {
@@ -19,7 +19,7 @@ const UserContainer = () => {
     setIsButtonLoading(true)
     await logout()
     setIsButtonLoading(false)
-    navigate('/')
+    navigate('/login')
   }, [logout, navigate])
 
   const handleLogin = useCallback(() => {

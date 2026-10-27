@@ -1,8 +1,11 @@
 // Used in ProtectedRoutes.jsx
 
-import Button from "@/components/Button"
+import { Button } from "@components"
 import '@/styles/index.scss'
-import { statusDisplayMap } from "@/utils/statusMap"
+import {
+  statusDisplayMap,
+  displayStatusMap
+} from "@constants"
 
 export const AccessDenied = ({ roles, userRole }) => {
   const styles = {
@@ -24,7 +27,7 @@ export const AccessDenied = ({ roles, userRole }) => {
     },
   }
 
-  const displayRoles = roles.map(r => statusDisplayMap[r] || r)
+  const displayRoles = roles.map(role => statusDisplayMap[role] || role)
 
   return (
     <div className={`mainBlock ${styles.container}`}>
@@ -39,7 +42,7 @@ export const AccessDenied = ({ roles, userRole }) => {
       <p className={styles.roles}>
         Требуемые роли: {displayRoles.join(", ")}
         <br />
-        Ваша роль: {userRole || "Не определена"}
+        Ваша роль: {statusDisplayMap[userRole] || userRole || "Не определена"}
       </p>
       <div className={styles.buttonContainer}>
         <Button

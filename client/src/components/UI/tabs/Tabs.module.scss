@@ -1,4 +1,4 @@
-.menuContainer {
+.tabsContainer {
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -6,7 +6,7 @@
   width: 100%;
   box-sizing: border-box;
 
-  .menuCard {
+  .tabsCard {
     position: relative;
     background-color: var(--tab-background);
     border-radius: 10px 10px 0 0;
@@ -71,7 +71,7 @@
 }
 
 @media print {
-  .menuContainer {
+  .tabsContainer {
     display: none;
   }
 }
@@ -82,8 +82,8 @@
     line-height: 10px;
   }
 
-  .menuContainer {
-    .menuCard {
+  .tabsContainer {
+    .tabsCard {
       min-width: 0;
       flex: 1 1 100%;
       max-width: 100%;
@@ -100,7 +100,7 @@
 }
 
 @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1224px) {
-  .menuContainer {
+  .tabsContainer {
     width: calc(100% - 40px);
   }
 }

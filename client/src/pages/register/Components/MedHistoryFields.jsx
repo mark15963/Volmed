@@ -1,8 +1,8 @@
 //#region ===== IMPORTS =====
 import { useState } from 'react';
 
-import Textarea from '../../../components/Textarea';
-import { PATIENT_STATE_OPTIONS } from '../../../constants';
+import { Textarea } from '@components';
+import { PATIENT_STATE_OPTIONS } from '@constants';
 
 import { Form, Input, Select, Tooltip } from 'antd';
 import styles from '../register.module.scss'
@@ -131,6 +131,15 @@ export const MedHistoryFields = ({ formValues, handleChange }) => {
         <Textarea
           value={formValues.sop_zab}
           onChange={e => handleChange("sop_zab", e.target.value)}
+          autoSize={{ minRows: 3 }}
+        />
+      </div>
+
+      <div className={styles.formItem}>
+        <label>Аллергии</label>
+        <Textarea
+          value={formValues.allergies}
+          onChange={e => handleChange("allergies", e.target.value)}
           autoSize={{ minRows: 3 }}
         />
       </div>

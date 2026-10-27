@@ -1,24 +1,49 @@
 services:
   backend:
     build: ./server
-    volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    environment:
+      NODE_ENV: development
+      FRONTEND_URL: http://localhost:5173
+      BACKEND_URL: http://localhost:5000
+      UPLOAD_DIR: /uploads/assets/images
+      DATABASE_URL: postgresql://admin:159635741@${HOST_IP:-host.docker.internal}:5432/volmed_db
+      DB_HOST: ${HOST_IP:-host.docker.internal}
+      DB_PORT: "5432"
+      DB_USER: admin
+      DB_PASSWORD: "159635741"
+      DB_NAME: volmed_db
+      DB_SSL: "false"
+      HOST_IP: ${HOST_IP:-host.docker.internal}
     ports:
       - "5000:5000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+      - dev-assets:/uploads/assets/images
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: npm run dev
 
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      target: build
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
     volumes:
       - ./client:/app
       - /app/node_modules
-    ports:
-      - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:5000 # or http://host.docker.internal:5000
-    command: npm run dev
+      - VITE_API_URL=http://localhost/api
+    command: npm run dev -- --host 0.0.0.0 --port 5173 --strictPort
 
+volumes:
+  dev-assets:
+    driver: local
 
-# run with: 
+# run with:
 # docker compose -f docker-compose.dev.yml up --build

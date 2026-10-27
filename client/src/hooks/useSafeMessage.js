@@ -2,7 +2,7 @@
 // - SearchResults.jsx
 // - RegisterPatients.tsx
 
-import { useRef, useCallback } from "react";
+import { useCallback } from "react";
 import { useMessageApi } from "../context/MessageContext";
 import { message } from "antd";
 
@@ -60,23 +60,35 @@ import { message } from "antd";
  */
 export const useSafeMessage = () => {
   const messageApi = useMessageApi();
-  const lockRef = useRef(false);
 
   const showMessage = useCallback(
     (type, content, duration = 2) => {
-      if (lockRef.current) return;
-      lockRef.current = true;
-
       const mApi = messageApi || message;
+      const key = "app-notification"; // Unique key for the message
 
-      if (type === "success") mApi.success(content, duration);
-      else if (type === "error") mApi.error(content, duration);
-      else if (type === "info") mApi.info(content, duration);
-      else if (type === "warning") mApi.warning(content, duration);
-      else if (type === "loading") mApi.open({ type, content, duration });
+      if (type === "loading") {
+        mApi.open({
+          key,
+          type: "loading",
+          content,
+          duration: 0, // Keep it open until manually closed
+        });
+        return;
+      }
+      mApi.open({
+        key,
+        type,
+        content,
+        duration,
+      });
 
-      // Reset lock after duration (or default 1s)
-      setTimeout(() => (lockRef.current = false), duration * 1000);
+      // else if (type === "success") mApi.success(content, duration);
+      // else if (type === "error") mApi.error(content, duration);
+      // else if (type === "info") mApi.info(content, duration);
+      // else if (type === "warning") mApi.warning(content, duration);
+
+      // // Reset lock after duration (or default 1s)
+      // setTimeout(() => (lockRef.current = false), duration * 1000);
     },
     [messageApi],
   );

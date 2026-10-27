@@ -1,0 +1,1 @@
+fixed application values and domain definitions.

@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import styles from '../header.module.scss'
-import debug from '../../../utils/debug';
+import debug from '@utils/debug';
 import { useNavigate } from 'react-router';
 import { useConfig } from '../../../context';
-import Loader from '../../../components/ui/loaders/Loader';
+import Loader from '@components/UI/loaders/Loader';
 
 const Title = () => {
   const navigate = useNavigate();
@@ -12,14 +12,28 @@ const Title = () => {
   const logoSource = logo || null
 
   useEffect(() => {
-    if (logoSource) {
-      const img = new Image()
-      img.src = logoSource
+    if (!logoSource) return
+
+    const img = new Image()
+
+    img.onload = () => {
+      debug.success("[Logo] Logo loaded successfully")
+    }
+
+    img.onerror = () => {
+      debug.warn("[Logo] Failed to load logo")
+      img.src = `${logoSource}${logoSource.includes('?') ? '&' : '?'}t=${Date.now()}`
+    }
+
+    img.src = logoSource
+    return () => {
+      img.onload = null
+      img.onerror = null
     }
   }, [logoSource])
 
   const handleClick = useCallback(() => {
-    debug.log("Clicked on logo")
+    debug.log("[Logo] Clicked on logo")
     navigate('/');
   }, [navigate])
 
@@ -36,11 +50,20 @@ const Title = () => {
         loading='eager'
         draggable='false'
         onLoad={(e) => {
+          debug.success("[Logo] Logo loaded successfully")
           e.target.style.display = 'block'
         }}
         onError={(e) => {
-          console.log("Can not load logo", logoSource, e)
-          e.target.style.display = 'none'
+          const img = e.currentTarget
+
+          if (!img.dataset.retried) {
+            img.dataset.retried = true
+            img.src = `${logoSource}${logoSource.includes('?') ? '&' : '?'}t=${Date.now()}`
+            return
+          }
+
+          debug.warn("[Logo] Failed to load logo")
+          img.style.display = 'none'
         }}
       />
       <div

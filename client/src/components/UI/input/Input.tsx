@@ -1,8 +1,8 @@
 import { InputHTMLAttributes, CSSProperties, FC, useRef, useMemo } from "react";
 import { Search } from "lucide-react"; // not permanent
-import Button from "./Button";
-import { useConfig } from "../context";
-import "./styles/Input.scss";
+import { Button } from "@components";
+import { useConfig } from "@context";
+import "./Input.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?:
@@ -83,6 +83,19 @@ const TYPE_CONFIGS: Record<
   },
 };
 
+/**
+ * Input component
+ * ----------------
+ * @example
+ * <Input
+ *   type="text"
+ *   placeholder="Enter text"
+ *   onChange={(e) => console.log(e.target.value)}
+ *   loading={false}
+ *   loadingPosition="right"
+ *   loadingText="Loading..."
+ * />
+ */
 const Input: FC<InputProps> = ({
   name,
   type = "text",

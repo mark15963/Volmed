@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import debug from '@/utils/debug'
+import debug from '@utils/debug'
 
 import loader from '@/assets/images/Loader.gif'
 import { Spin } from 'antd'

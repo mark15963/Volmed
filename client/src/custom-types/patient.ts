@@ -10,7 +10,7 @@ export interface Patient {
   doctor: string;
   diag: string;
   state: string;
-  allergy?: string;
+  allergies?: string;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useConfig } from "../context";
+import { useConfig } from "@context";
 import { matchPath, useLocation } from "react-router";
-import { CONFIG_DEFAULTS } from "../constants";
+import { CONFIG_DEFAULTS } from "@constants";
 
 const pageTitleConfig = {
   "/": {

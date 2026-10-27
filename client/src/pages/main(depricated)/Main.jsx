@@ -3,12 +3,12 @@ import { useState } from 'react'
 
 import DoctorDisplay from './components/DoctorDisplay';
 import NurseDisplay from './components/NurseDisplay';
-import Loader from '../../components/ui/loaders/Loader';
+import Loader from '../../components/UI/loaders/Loader';
 
 import {
   ALLOWED_DOCTOR_USERS,
   ALLOWED_NURSE_USERS
-} from '../../constants/users';
+} from '../../constants/users.constants';
 
 import { useConfig, useAuth } from '../../context';
 

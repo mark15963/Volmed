@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import ChatWidget from '../../components/Chat/ChatWidget';
+import ChatWidget from '@components/Chat/ChatWidget';
 import { SERVICE } from '../../constants';
 import styles from './footer.module.scss'
 

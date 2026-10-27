@@ -12,7 +12,7 @@ export interface PatientForSearch {
 //#endregion
 //#region === TYPES ===
 export type PatientState =
-  | "Удовлетворительное"
+  | "Удовлетворительно"
   | "Средней степени тяжести"
   | "Тяжёлое"
   | "Крайне тяжёлое"
@@ -21,7 +21,7 @@ export type PatientState =
 
 export const getStateClass = (state: string) => {
   switch (state) {
-    case "Удовлетворительное":
+    case "Удовлетворительно":
       return "stable";
     case "Средней степени тяжести":
       return "moderate";

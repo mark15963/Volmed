@@ -11,7 +11,7 @@ import { usePatientList } from "../../hooks/Patients/usePatientsList";
 // --- UI ---
 import { ListOfPatientsProps } from "../../interfaces";
 import { Patient } from "../../custom-types/patient";
-import { SkeletonLoader } from "../ui/loaders/SkeletonLoader";
+import { SkeletonLoader } from "../UI/loaders/SkeletonLoader";
 import styles from "./PatientsListRow.module.scss";
 //#endregion
 

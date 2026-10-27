@@ -1,7 +1,6 @@
 //#region === IMPORTS ===
 import { useNavigate } from 'react-router'
-import Button from '../../../components/Button'
-import InDev from '../../../components/InDev'
+import { Button, InDev } from '@components'
 
 import nurseStyles from '../nurseMenu.module.scss'
 //#endregion

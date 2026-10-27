@@ -141,6 +141,7 @@ export const RegisterPatient = ({
         sop_zab: ensureString(formValues.sop_zab),
         rec: ensureString(formValues.rec),
         state: formValues.state,
+        allergies: ensureString(formValues.allergies),
         doctor,
       };
 
@@ -173,6 +174,7 @@ export const RegisterPatient = ({
       setError(message);
       console.error("Registration error:", err);
       safeMessage("error", message);
+    } finally {
       setIsLoading(false);
     }
   };

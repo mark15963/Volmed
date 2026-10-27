@@ -2,12 +2,11 @@
 import { useEffect, useRef } from "react";
 import PropTypes from 'prop-types'
 
-import Input from "../../Input";
-import Button from "../../Button";
+import { debug, formatChatTime } from "@utils";
 
-import { formatChatTime } from "../../../utils/time";
+import { Button, Input } from "@components";
+
 import styles from '../styles/Chat.module.scss'
-import debug from "../../../utils/debug";
 //#endregion
 
 /**

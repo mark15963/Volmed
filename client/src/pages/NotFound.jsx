@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router"
-import { useConfig } from "../context"
+import { useConfig } from "@context"
 import styles from '../layouts/content/content.module.scss'
 
 export const NotFound = () => {
