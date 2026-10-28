@@ -3,10 +3,11 @@ import { Block } from '@pages/searchResults/tabs/Components/Block';
 import { Divider } from 'antd';
 import { formatPhoneForServer } from '@utils';
 
-import styles from '@pages/searchResults/searchResults.module.scss';
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 dayjs.extend(utc)
+
+import styles from '../../searchResults.module.scss';
 
 /**
  * Renders the information page for a specific patient.
@@ -17,7 +18,7 @@ dayjs.extend(utc)
  */
 export const PatientInfoPage = ({ patient, data }) => {
   return (
-    <div className={styles.bg}>
+    <>
       <div className={styles.topForms}>
 
         <div className={styles.topFormsA}>
@@ -149,7 +150,7 @@ export const PatientInfoPage = ({ patient, data }) => {
           content={patient.rec}
         />
       </div>
-    </div>
+    </>
   )
 }
 

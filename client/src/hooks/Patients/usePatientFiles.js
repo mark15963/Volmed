@@ -47,22 +47,18 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
   const [retryCount, setRetryCount] = useState(0);
   const timeoutRef = useRef();
 
-  if (!patientId) {
-    console.error("usePatientFiles: No patientId provided");
-    return {
-      files: [],
-      fileList: [],
-      // ... other default values
-    };
-  }
-
   const fetchFiles = useCallback(async () => {
     if (!patientId || !enabled) return;
 
     setIsLoading(true);
+
     try {
       const response = await api.getPatientFiles(patientId);
-      const sizeKb = (response.data[0]?.size ?? 0) / 1024;
+      console.log("[usePatientFiles] Files API response:", {
+        data: response.data,
+        isArray: Array.isArray(response.data),
+        count: Array.isArray(response.data) ? response.data.length : null,
+      });
       setFiles(response.data);
       setRetryCount(0);
     } catch (error) {
@@ -90,13 +86,22 @@ export function usePatientFiles(patientId, safeMessage, enabled = false) {
     if (!patientId || !enabled) return;
     try {
       const res = await api.getPatientFiles(patientId);
+      console.log("[usePatientFiles] Files API response:", {
+        data: res.data,
+        isArray: Array.isArray(res.data),
+        count: Array.isArray(res.data) ? res.data.length : null,
+      });
       setFileList(
         res.data.map((file) => ({
           uid: file.path,
           name: file.originalname,
+          size: file.size,
           status: "done",
           url: file.path,
-          response: { path: file.path },
+          response: {
+            path: file.path,
+            size: file.size,
+          },
         })),
       );
     } catch (error) {

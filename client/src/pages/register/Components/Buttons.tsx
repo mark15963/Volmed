@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router";
-
 import { Button } from "@components";
 import { PAGES } from "@constants";
 
@@ -8,22 +6,14 @@ import styles from "../register.module.scss";
 interface ButtonsProps {
   isEditMode?: boolean;
   isLoading?: boolean;
+  onBack: () => void;
 }
 
 export const Buttons = ({
   isEditMode = false,
   isLoading = false,
+  onBack,
 }: ButtonsProps) => {
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    if (isEditMode) {
-      navigate(-1);
-    } else {
-      navigate(PAGES.INDEX);
-    }
-  };
-
   return (
     <div className={styles.buttonsContainer}>
       <Button
@@ -35,7 +25,7 @@ export const Buttons = ({
 
       <Button
         text="Назад"
-        onClick={handleBack}
+        onClick={onBack}
         disabled={isLoading}
         className={styles.buttons}
       />

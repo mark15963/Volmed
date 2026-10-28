@@ -17,6 +17,7 @@ import { useSafeMessage } from "../../hooks/useSafeMessage";
 
 // Constants
 import {
+  PAGES,
   PATIENT_FORM_INITIAL_VALUES,
   type PatientApiPayload,
   type PatientFormValues,
@@ -84,6 +85,14 @@ export const RegisterPatient = ({
     value: PatientFormValues[K],
   ) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBack = () => {
+    if (isEditMode) {
+      navigate(-1);
+    } else {
+      navigate(PAGES.INDEX);
+    }
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -200,7 +209,11 @@ export const RegisterPatient = ({
                 formValues={formValues}
                 handleChange={handleChange}
               />
-              <Buttons isEditMode={isEditMode} isLoading={isLoading} />
+              <Buttons
+                isEditMode={isEditMode}
+                isLoading={isLoading}
+                onBack={handleBack}
+              />
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@ import { debug, usePageTitle } from "@utils";
 {/* Handicap loader */ }
 import Loader from "@components/UI/loaders/Loader";
 import ProtectedRoute from './components/ProtectedRoute'
-import NetworkNotification from "@/components/UI/networkNotification/NetworkNotification";
 
 // UI
 import styles from './content.module.scss'
@@ -26,8 +25,6 @@ const Content = () => {
     <main
       className={styles.main}
     >
-      <NetworkNotification />
-
       <Suspense fallback={<Loader />}>
         <Routes>
           {appRoutes.map(({ path, element }, i) => (

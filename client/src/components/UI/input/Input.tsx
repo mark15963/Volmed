@@ -216,7 +216,6 @@ const Input: FC<InputProps> = ({
         style={mergedStyle}
         value={inputValue}
         disabled={disabled || loading}
-        data-theme-app={theme.app}
         {...props}
       />
 

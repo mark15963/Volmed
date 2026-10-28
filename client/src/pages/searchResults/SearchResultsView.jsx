@@ -2,18 +2,19 @@
 // - SearchResults.jsx
 
 //#region ===== IMPORTS =====
-import React, { lazy, Suspense, useMemo } from "react";
-import { Tabs } from "@components/UI/tabs/Tabs";
+import React, { lazy, Suspense, useEffect, useMemo } from "react";
+import { Tabs } from "./components/tabs/Tabs";
 import { SpinLoader } from "@components/UI/loaders/SpinLoader";
 import ActionButtons from "./tabs/Components/ActionButtons";
 import ErrorState from "./tabs/Components/States/ErrorState";
 import NotFoundState from "./tabs/Components/States/NotFoundState";
+import { useConfig } from "@/context/ConfigContext";
 
 // Tabs
 import { SEARCH_RESULT_TABS } from "@constants";
-import Tab1 from "./tabs/tab1";
-const Tab2 = lazy(() => import('./tabs/tab2'))
-const Tab3 = lazy(() => import('./tabs/tab3'))
+import Tab1 from "./tabs/Tab1";
+const Tab2 = lazy(() => import('./tabs/Tab2'))
+const Tab3 = lazy(() => import('./tabs/Tab3'))
 
 import styles from './searchResults.module.scss'
 //#endregion
@@ -108,20 +109,31 @@ const SearchResultsView = ({
   const { activeTab, setActiveTab } = uiProps
   const { filesHook, medsHook } = hooks
   const { handleEdit, handlePrint, handleDeletePatient } = handlers
+  const { theme } = useConfig()
   //#endregion
   //#region ===== RENDER LOGIC & CONTENT =====
-  const tabContents = useMemo(
-    () => [
-      <Tab1 data={data} />,
-      <Tab2 {...filesHook} isLoading={filesHook.isLoading} id={id} />,
-      <Tab3 {...medsHook} patientId={id} />,
-    ],
-    [data, filesHook, medsHook, id]
-  )
+  const tabContents = [
+    <Tab1
+      key="main"
+      data={data}
+    />,
+    <Tab2
+      key="files"
+      {...filesHook}
+      isLoading={filesHook.isLoading}
+      id={id}
+    />,
+    <Tab3
+      key="medications"
+      {...medsHook}
+      patientId={id}
+    />,
+  ]
   const renderContent = () => {
     if (loading && !data) return renderLoader('main')
     if (error) return <ErrorState error={error} />
     if (data === null) return <NotFoundState />
+
     return (
       <Suspense fallback={renderLoader('tab')}>
         {tabContents[activeTab]}
@@ -153,7 +165,14 @@ const SearchResultsView = ({
         onTabChange={setActiveTab}
       />
 
-      {renderContent()}
+      <div
+        data-theme={theme.table}
+        className={styles.info}
+      >
+        <div className={styles.bg}>
+          {renderContent()}
+        </div>
+      </div>
 
       <ActionButtons
         activeTab={activeTab}

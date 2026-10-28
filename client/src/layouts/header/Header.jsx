@@ -13,7 +13,6 @@ export const Header = memo(() => {
   return (
     <header
       className={styles.header}
-      data-theme-app={theme.app}
     >
       <div
         // style={{ backgroundColor: color.header }}

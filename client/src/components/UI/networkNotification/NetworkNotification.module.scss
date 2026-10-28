@@ -10,7 +10,7 @@
   border-radius: 6px;
   align-content: center;
   opacity: 0;
-  z-index: 1000;
+  z-index: 10001;
 
   &[data-status="online"] {
     background: #d1ecf1;

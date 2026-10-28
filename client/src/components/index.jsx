@@ -9,7 +9,7 @@ export { TooltipHover } from "./UI/tooltipHover/TooltipHover"
 
 export { default as NetworkNotification } from "./UI/networkNotification/NetworkNotification"
 
-export * from "./UI/tabs/Tabs"
+export * from "../pages/searchResults/components/tabs/Tabs"
 
 export { default as InDev } from "./InDev"
-export { default as PatientInfoPage } from "./PatientInfoPage"
+export { default as PatientInfoPage } from "../pages/searchResults/tabs/Components/PatientInfoPage"

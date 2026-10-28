@@ -6,7 +6,8 @@ const ThemeApplier = ({ children }) => {
 
   useEffect(() => {
     document.body.setAttribute("data-theme-app", theme?.app ?? "default")
-  }, [theme?.app])
+    document.body.setAttribute("data-theme-table", theme?.table ?? "default")
+  }, [theme?.app, theme?.table])
   return children;
 }
 

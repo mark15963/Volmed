@@ -4,9 +4,6 @@ export * from "./select-options.constants";
 export * from "./config.constants";
 export * from "./tabs.constants";
 export * from "./users.constants";
-import { useNavigate } from "react-router";
-
-const navigate = useNavigate();
 
 export const SERVICE = [
   {

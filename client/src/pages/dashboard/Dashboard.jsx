@@ -28,7 +28,6 @@ export const Dashboard = () => {
   return (
     <div
       className={styles.mainBlock}
-      data-theme-app={theme.app}
     >
       <div className={styles.title}>
         ПАНЕЛЬ УПРАВЛЕНИЯ

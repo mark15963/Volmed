@@ -1,36 +1,34 @@
 //#region ===== IMPORTS =====
-import { useState, useEffect, useRef, memo } from 'react';
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import { Upload, Form, Collapse } from "antd"
-const { Dragger } = Upload;
+import { useState, useEffect, memo } from 'react';
+import { Collapse } from "antd"
 
 import { Input } from '@components';
 import Graph from './Components/Graph';
 import { SpinLoader } from '@components/UI/loaders/SpinLoader';
 
-import { usePatientFiles } from '@hooks/Patients/usePatientFiles';
 import { useSafeMessage } from '@hooks/useSafeMessage';
 
 import api from '@services/api/index'
 import debug from '@utils/debug';
 
 import styles from './styles/tab2.module.scss'
-import { appConfig } from '@/config/app.config';
+import Files from './Components/Files';
 //#endregion
 
-export const Tab2 = memo(({ id }) => {
+export const Tab2 = memo(({
+  id,
+  files,
+  fileList,
+  setFileList,
+  isLoading,
+  isEditing,
+  setIsEditing,
+  handleRemoveFiles,
+  setUploadFilesStatus
+}) => {
   //#region -----HOOKS-----
   const safeMessage = useSafeMessage()
-  const {
-    files,
-    fileList,
-    setFileList,
-    isLoading,
-    isEditing,
-    setIsEditing,
-    handleRemoveFile,
-    setUploadFilesStatus
-  } = usePatientFiles(id, safeMessage, true)
+  //#endregion
 
   //#region -----LOCAL STATES (Pulse & O₂)-----
   const [loadingPulse, setLoadingPulse] = useState(true);
@@ -39,7 +37,6 @@ export const Tab2 = memo(({ id }) => {
   const [o2Value, setO2Value] = useState('');
   const [pulseValues, setPulseValues] = useState([]);
   const [o2Values, setO2Values] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
   //#endregion
 
   //#region -----PULSE DATA-----
@@ -261,147 +258,30 @@ export const Tab2 = memo(({ id }) => {
   ];
   //#endregion
 
-  //#region -----FILES-----
-  const frame = (filePath) => {
-    const fullPath = filePath.startsWith('http')
-      ? filePath
-      : filePath;
-
-    setSelectedFile((prev) => (prev === fullPath ? null : fullPath));
-  }
-
-  const openFile = (filePath) => {
-    const fullPath = filePath.startsWith('http')
-      ? filePath
-      : filePath;
-
-    debug.log(`Opening file from: ${filePath}`)
-    window.open(filePath, '_blank');
-  };
-
-  const uploadProps = {
-    name: 'file',
-    multiple: true,
-    fileList,
-    action: `${appConfig.api.baseUrl}/patients/${id || 'temp'}/upload`,
-    headers: { 'X-Requested-With': null },
-    withCredentials: true,
-    onChange(info) {
-      setFileList([...info.fileList])
-      const { status } = info.file
-      if (status !== 'uploading') {
-        setFileList(info.fileList)
-      }
-      else if (status === 'done' || status === 'error') {
-        setUploadStatus({
-          status,
-          fileName: info.file.name
-        });
-      }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-    onRemove: handleRemoveFile,
-    showUploadList: {
-      extra: (file) => {
-        const size = file.size || (file.response && file.response.size) || 0
-        const sizeText = size < 1024 * 1024
-          ? `(${(size / 1024).toFixed(2)}KB)`
-          : `(${(size / (1024 * 1024)).toFixed(2)}MB)`
-        return (
-          <span style={{ marginLeft: '8px', color: '#cccccc' }}>{sizeText}</span>
-        );
-      },
-      showPreventIcon: true,
-      showDownloadIcon: true,
-      downloadIcon: 'Скачать',
-      showRemoveIcon: true,
-      removeIcon: (
-        <DeleteOutlined
-          onClick={e => debug.log('Удаление файла', e)}
-        />
-      ),
-
-    }
-  }
-  //#endregion
-
   return (
-    <div className={styles.info}>
-      <div className={styles.bg}>
-        {/* GRAPHS */}
-        <div className={styles.collapseContainer}>
-          <div>
-            <Collapse items={HrItems} />
-          </div>
-          <div>
-            <Collapse items={O2Items} />
-          </div>
+    <>
+      {/* GRAPHS */}
+      <div className={styles.collapseContainer}>
+        <div>
+          <Collapse items={HrItems} />
         </div>
-
-        {/* FILES */}
-        <div className={styles.fileSection}>
-          <h3 className={styles.fileSectionTitle}>
-            Документы
-          </h3>
-          <div className={styles.fileList}>
-            {isLoading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-                <SpinLoader size="30px" />
-              </div>
-            )
-              : files.length === 0 && !isEditing ? (
-                <p style={{ cursor: 'default', textAlign: 'center', marginBottom: '10px' }}>
-                  Нет загруженных документов
-                </p>
-              )
-                : !isEditing ? (
-                  <>
-                    <ul
-                      className={styles.fileContainer}
-                    >
-                      {files.map((file, index) => (
-                        <li
-                          key={index}
-                          className={styles.fileItem}
-                          onClick={() => frame(file.path)}
-                        >
-                          <span>{file.originalname || file.filename}</span>
-                          <span className={styles.fileSize}>
-                            {' '}{(file.size / 1024).toFixed(2)} KB
-                          </span>
-                          {selectedFile ? (
-                            <iframe
-                              src={selectedFile}
-                              height={400}
-                              width="100%"
-                              title='Документ'
-                              className={styles.frame}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )
-                  : (
-                    <Form.Item className={styles.uploadArea}>
-                      {/* {debug.log('Rendering upload area')} */}
-                      <Dragger {...uploadProps} className={styles.uploadListText}>
-                        <p className="ant-upload-drag-icon">
-                          <UploadOutlined />
-                        </p>
-                        <p className={styles.uploadAreaText}>Нажмите или перетащите файлы в эту область</p>
-                      </Dragger>
-                    </Form.Item>
-                  )}
-          </div>
+        <div>
+          <Collapse items={O2Items} />
         </div>
       </div>
-    </div>
+
+      {/* FILES */}
+      <Files
+        id={id}
+        files={files}
+        fileList={fileList}
+        setFileList={setFileList}
+        isLoading={isLoading}
+        isEditing={isEditing}
+        handleRemoveFiles={handleRemoveFiles}
+        setUploadFilesStatus={setUploadFilesStatus}
+      />
+    </>
   )
 })
 

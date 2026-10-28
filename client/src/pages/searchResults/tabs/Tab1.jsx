@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router';
-import PatientInfoPage from '@components/PatientInfoPage';
+import PatientInfoPage from './Components/PatientInfoPage';
 import styles from '../searchResults.module.scss';
 
 const Tab1 = ({ data }) => {
@@ -10,12 +10,10 @@ const Tab1 = ({ data }) => {
   if (!patient) return <div>No patient data available.</div>
 
   return (
-    <div className={styles.info}>
-      <PatientInfoPage
-        patient={patient}
-        data={data}
-      />
-    </div>
+    <PatientInfoPage
+      patient={patient}
+      data={data}
+    />
   )
 }
 

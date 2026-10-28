@@ -12,6 +12,21 @@ const router = Router();
 const uploadDir = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+const decodeFilename = (filename) => {
+  // Only attempt conversion when the filename looks like UTF-8
+  // bytes that were incorrectly interpreted as Latin-1.
+  const looksLikeMojibake =
+    /(?:Ð[\u0080-\u00FF]|Ñ[\u0080-\u00FF]|Ã[\u0080-\u00FF]|â€|ï¿½)/.test(
+      filename,
+    );
+
+  if (!looksLikeMojibake) return filename;
+
+  const decoded = Buffer.from(filename, "latin1").toString("utf8");
+
+  return decoded.includes("\uFFFD") ? filename : decoded;
+};
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(uploadDir, "patients", req.params.id);
@@ -19,21 +34,32 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, ext);
-    const safeName = basename.replace(/[^a-zA-Z0-9-_]/g, "") + ext;
-    const fullPath = path.join(uploadDir, "patients", req.params.id, safeName);
+    const originalname = decodeFilename(file.originalname);
+
+    const ext = path.extname(originalname);
+    const basename = path.basename(originalname, ext);
+
+    const safeBasename =
+      basename.replace(/[<>:"/\\|?*\x00-\x1F]/g, "").trim() + ext;
+
+    if (!safeBasename) {
+      return cb(new Error("Invalid filename"));
+    }
+
+    const patientDir = path.join(uploadDir, "patients", req.params.id);
+    const safeName = `${safeBasename}${ext}`;
+    const fullPath = path.join(patientDir, safeName);
 
     if (!fs.existsSync(fullPath)) return cb(null, safeName);
 
     let counter = 1;
     let newName;
+
     do {
-      newName = `${basename} (${counter})${ext}`;
+      newName = `${safeBasename} (${counter})${ext}`;
       counter++;
-    } while (
-      fs.existsSync(path.join(uploadDir, "patients", req.params.id, newName))
-    );
+    } while (fs.existsSync(path.join(patientDir, newName)));
+
     cb(null, newName);
   },
 });

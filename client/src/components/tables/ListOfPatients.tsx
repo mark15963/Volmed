@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from "react";
 
 // --- COMPONENTS ---
 import { PatientsListRow } from "./PatientsListRow";
-import Tab1 from "../../pages/searchResults/tabs/tab1";
+import Tab1 from "../../pages/searchResults/tabs/Tab1";
 
 // --- HOOKS ---
 import { usePatientList } from "../../hooks/Patients/usePatientsList";

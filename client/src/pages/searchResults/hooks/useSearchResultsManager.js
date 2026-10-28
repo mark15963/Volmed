@@ -52,9 +52,13 @@ export function useSearchResultsManager({
         filesHook.files.map((file) => ({
           uid: file.path,
           name: file.originalname,
+          size: file.size,
           status: "done",
           url: file.path,
-          response: { path: file.path },
+          response: {
+            path: file.path,
+            size: file.size,
+          },
         })),
       );
     }
